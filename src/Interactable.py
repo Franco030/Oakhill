@@ -26,74 +26,51 @@ class _Interactable(_Obstacle):
         pass
 
 
-class Note(_Interactable):
+class _NoteHolder(_Interactable):
     """
-    An interactable object representing a note that the player can read.
+    Base class for interactable objects that hold notes.
     """
-    image_path = 'assets/images/note.png' 
-    flash_image_path = 'assets/images/note_flash.png'
-    images = [image_path] # Requirement for Asset_Config
-
-    def __init__(self, start_x, start_y, index_image=0):
-        super().__init__(start_x, start_y, self.image_path, RESIZE_FACTOR)
-
-
-        # Index image is called since JSON already stores it
-        # This index corresponds to the note text content NOT the image itself (not ideal, but it works)
-        # Maybe we change this, maybe we don't
-        if index_image >= len(ALL_NOTE_TEXTS):
-            index_image = 0
-
-        self.note_text_content = ALL_NOTE_TEXTS[index_image]
-
-        self.original_image = self.image.copy()
+    def __init__(self, start_x, start_y, image_path, flash_image_path, note_content_list, resize_factor=None):
+        super().__init__(start_x, start_y, image_path, resize_factor)
         
+        self.note_text_content = note_content_list
+        self.original_image = self.image.copy()
+
         try:
-            self.flash_image = pygame.image.load(self.flash_image_path).convert_alpha()
+            self.flash_image = pygame.image.load(flash_image_path).convert_alpha()
             self.flash_image = pygame.transform.scale(
                 self.flash_image, (self.image.get_width(), self.image.get_height())
             )
         except pygame.error:
-            print(f"ADVERTENCIA: No se pudo cargar '{self.flash_image_path}'. Usando destello blanco.")
+            print(f"ADVERTENCIA: No se pudo cargar '{flash_image_path}'. Usando destello blanco.")
             self.flash_image = self.original_image.copy()
             self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
 
         self.is_interacting = False
-        self.interaction_duration = 60
+        self.interaction_duration = 30
         self.interaction_timer = 0
 
-
     def interact(self):
-        """
-        Initiates interaction with the note.
-        """
-
         if self.interacted_once or self.is_interacting:
             return None
-        
         self.is_interacting = True
         self.interaction_timer = self.interaction_duration
+
         return "interaction_started"
     
-    
     def read(self):
-        """
-        Returns the text and autodestroys the note after reading.
-        """
         self.interacted_once = True
+        self.kill() 
         return self.note_text_content
     
     def update(self):
-        """
-        Controls the flashing effect when the note is being interacted with.
-        """
         if not self.is_interacting:
             return None
-        
-        self.interaction_timer -= 1
 
+
+        self.interaction_timer -= 1
         if self.interaction_timer > 0:
-            if (self.interaction_timer // 10) % 2 == 0:
+            if (self.interaction_timer // 10) % 2 == 0: 
                 self.image = self.flash_image
             else:
                 self.image = self.original_image
@@ -101,8 +78,136 @@ class Note(_Interactable):
             self.is_interacting = False
             self.image = self.original_image
             return "interaction_finished"
-        
         return None
+    
+class Note(_NoteHolder):
+    """
+    Una nota estándar que usa el banco de textos.
+    """
+    image_path = 'assets/images/note.png' 
+    flash_image_path = 'assets/images/note_flash.png'
+    images = [image_path]
+
+    def __init__(self, start_x, start_y, index_image=0):
+        if index_image >= len(ALL_NOTE_TEXTS):
+            index_image = 0
+        note_text = ALL_NOTE_TEXTS[index_image]
+        
+        super().__init__(start_x, start_y, self.image_path, self.flash_image_path, note_text, RESIZE_FACTOR)
+        self._collision_rect = self.rect.inflate(20, 20)
+
+
+class Scarecrow(_NoteHolder):
+    """
+    A scarecrow that holds a specific note.
+    """
+    images = ["assets/images/scarecrow.png"]
+    flash_images = ['assets/images/scarecrow_flash.png']
+
+    note_text_content = [
+        "El árbol susurra...",
+        "Sentí una presencia terrible",
+        "en la vieja escuela.",
+        "Ten cuidado."
+    ]
+
+    def __init__(self, start_x, start_y, index_image=0):
+        if index_image >= len(self.images):
+            index_image = 0
+            
+
+        image_path = self.images[index_image]
+        flash_image_path = self.flash_images[index_image]
+        
+        super().__init__(start_x, start_y, image_path, flash_image_path, self.note_text_content, RESIZE_FACTOR)
+        
+        trunk_width = self.rect.width // 3
+        self._collision_rect = pygame.Rect(
+            self.rect.left + trunk_width + 2,
+            self.rect.top + 60,
+            trunk_width,
+            self.rect.height - 60 - 30
+        )
+
+
+# class Note(_Interactable):
+#     """
+#     An interactable object representing a note that the player can read.
+#     """
+#     image_path = 'assets/images/note.png' 
+#     flash_image_path = 'assets/images/note_flash.png'
+#     images = [image_path] # Requirement for Asset_Config
+
+#     def __init__(self, start_x, start_y, index_image=0):
+#         super().__init__(start_x, start_y, self.image_path, RESIZE_FACTOR)
+
+
+#         # Index image is called since JSON already stores it
+#         # This index corresponds to the note text content NOT the image itself (not ideal, but it works)
+#         # Maybe we change this, maybe we don't
+#         if index_image >= len(ALL_NOTE_TEXTS):
+#             index_image = 0
+
+#         self.note_text_content = ALL_NOTE_TEXTS[index_image]
+
+#         self.original_image = self.image.copy()
+        
+#         try:
+#             self.flash_image = pygame.image.load(self.flash_image_path).convert_alpha()
+#             self.flash_image = pygame.transform.scale(
+#                 self.flash_image, (self.image.get_width(), self.image.get_height())
+#             )
+#         except pygame.error:
+#             print(f"ADVERTENCIA: No se pudo cargar '{self.flash_image_path}'. Usando destello blanco.")
+#             self.flash_image = self.original_image.copy()
+#             self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
+
+#         self.is_interacting = False
+#         self.interaction_duration = 60
+#         self.interaction_timer = 0
+
+
+#     def interact(self):
+#         """
+#         Initiates interaction with the note.
+#         """
+
+#         if self.interacted_once or self.is_interacting:
+#             return None
+        
+#         self.is_interacting = True
+#         self.interaction_timer = self.interaction_duration
+#         return "interaction_started"
+    
+    
+#     def read(self):
+#         """
+#         Returns the text and autodestroys the note after reading.
+#         """
+#         self.interacted_once = True
+#         self.kill()
+#         return self.note_text_content
+    
+#     def update(self):
+#         """
+#         Controls the flashing effect when the note is being interacted with.
+#         """
+#         if not self.is_interacting:
+#             return None
+        
+#         self.interaction_timer -= 1
+
+#         if self.interaction_timer > 0:
+#             if (self.interaction_timer // 10) % 2 == 0:
+#                 self.image = self.flash_image
+#             else:
+#                 self.image = self.original_image
+#         else:
+#             self.is_interacting = False
+#             self.image = self.original_image
+#             return "interaction_finished"
+        
+#         return None
         
 class Door(_Interactable):
     """

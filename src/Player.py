@@ -6,7 +6,7 @@ class Player(pygame.sprite.Sprite):
     """
     Represents the playable character in the game
     """
-    def __init__(self, start_x, start_y):
+    def __init__(self, start_x, start_y, walking_sound=None):
         super().__init__()
 
         self.image = pygame.image.load('assets/images/detective.png').convert_alpha()
@@ -28,6 +28,9 @@ class Player(pygame.sprite.Sprite):
         self.attack_duration = 30
         self.attack_timer = 0
         self.is_defeated = False
+        
+        self.walking_sound = walking_sound
+        self.is_walking_sound_playing = False
 
         # ---Animations---
         self.animations = {
@@ -57,6 +60,16 @@ class Player(pygame.sprite.Sprite):
         self.attack_rect.width = 0
         self.attack_rect.height = 0
 
+    def attack(self):
+        """
+        Initiates the player's attack
+        """
+        if not self.is_attacking and not hasattr(self, 'is_defeated') or not self.is_defeated:
+            self.is_attacking = True
+            self.attack_timer = self.attack_duration
+            self.direction.x = 0
+            self.direction.y = 0
+
     def defeat(self):
         """
         Handles the player's defeat state
@@ -75,6 +88,29 @@ class Player(pygame.sprite.Sprite):
         self.collision_rect.center = (start_x, start_y)
         self.facing = "down"
         self.image = self.animations['down'].images[0]
+        self.rect = self.image.get_rect(center = self.pos)
+
+        if self.is_walking_sound_playing:
+            self.walking_sound.stop()
+            self.is_walking_sound_playing = False
+
+    def _handle_walking_sound(self):
+        """
+        Starts or stops walking sound
+        """
+        if not self.walking_sound:
+            return
+        
+        is_moving = self.direction.length() > 0 and not self.is_attacking and not self.is_defeated
+
+        if is_moving:
+            if not self.is_walking_sound_playing:
+                self.walking_sound.play(loops=-1)
+                self.is_walking_sound_playing = True
+        else:
+            if self.is_walking_sound_playing:
+                self.walking_sound.stop()
+                self.is_walking_sound_playing = False
 
     def _player_input(self):
         """
@@ -87,12 +123,6 @@ class Player(pygame.sprite.Sprite):
 
 
         keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_SPACE] and not self.is_attacking:
-            self.is_attacking = True
-            self.attack_timer = self.attack_duration
-            self.direction.x = 0
-            self.direction.y = 0
 
 
         if self.is_attacking:
@@ -192,6 +222,8 @@ class Player(pygame.sprite.Sprite):
 
         self.prev_pos = self.pos.copy()
         self.velocity = self.direction * PLAYER_SPEED
+
+        self._handle_walking_sound()
 
         self._move_x(obstacles)
         self._move_y(obstacles)

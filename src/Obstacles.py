@@ -84,7 +84,7 @@ class Rock(_Obstacle):
         self._collision_rect.height = self._collision_rect.height
 
 class Wall(_Obstacle):
-    images = ['assets/images/fence_0.png']
+    images = ['assets/images/fence_0.png', 'assets/images/gravestone_0.png', 'assets/images/gravestone_1.png']
     def __init__(self, start_x, start_y, index_image: int):
         if index_image >= len(Wall.images):
             index_image = len(Wall.images) - 1
@@ -96,7 +96,7 @@ class Wall(_Obstacle):
         self._collision_rect.height = self._collision_rect.height - 10 - 30
 
 class Deco_Wall(_Obstacle):
-    images = ['assets/images/fence_0.png', 'assets/images/blood_1.png']
+    images = ['assets/images/water_1.png', 'assets/images/blood_1.png', 'assets/images/cross.png', 'assets/images/grass_0.png', 'assets/images/grass_1.png', 'assets/images/star.png', 'assets/images/corn_0.png', 'assets/images/corn_1.png']
     def __init__(self, start_x, start_y, index_image: int):
         if index_image >= len(Deco_Wall.images):
             index_image = len(Deco_Wall.images) - 1

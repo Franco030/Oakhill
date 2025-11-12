@@ -9,7 +9,7 @@ from .Asset_Config import OBSTACLE_CONFIG
 
 class SceneLoader:
     @staticmethod
-    def load_from_json(path: str, map_level: list, initial_zone: tuple, player) -> Scene:
+    def load_from_json(path: str, map_level: list, initial_zone: tuple, player, chase_sound, flee_sound) -> Scene:
         with open(path, 'r') as f:
             data = json.load(f)
 
@@ -49,7 +49,7 @@ class SceneLoader:
             zone_interactables[zone] = interactable_list
 
         enemy_dict_placeholder = {
-            (5, 2): [Stalker_Ghost(500, 500, 100, StalkerBehaviour(player, speed=300, min_wait=5.0, max_wait=15.0, stop_distance=50))],
+            (5, 2): [Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=5.0, max_wait=15.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))],
         }
 
         return Scene(initial_zone, zone_obstacles, zone_interactables, enemy_dict_placeholder, map_level)

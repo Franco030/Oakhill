@@ -53,7 +53,7 @@ class StalkerBehaviour(_Behaviour):
     """
     A behaviour that makes the enemy follow the player
     """
-    def __init__(self, target, speed, min_wait=5.0, max_wait=15.0, stop_distance=50):
+    def __init__(self, target, speed, min_wait=5.0, max_wait=15.0, stop_distance=50, chase_sound=None, flee_sound=None):
         self.target = target
         self.speed = speed
         self.flee_speed = speed * 1.5
@@ -66,6 +66,10 @@ class StalkerBehaviour(_Behaviour):
         self.timer = 0.0
         self.current_wait_time = random.uniform(self.min_wait, self.max_wait)
         self.flee_target = pygame.math.Vector2()
+
+        self.chase_sound = chase_sound
+        self.is_chase_sound_playing = False
+        self.flee_sound = flee_sound
 
     def _start_waiting_offscreen(self, enemy):
         """
@@ -90,12 +94,20 @@ class StalkerBehaviour(_Behaviour):
             enemy.x = -100 # offscreen
             enemy.y = random.randint(0, SCREEN_HEIGHT)
 
+    def _stop_chase_sound(self):
+        """
+        Stops chase sound
+        """
+        if self.chase_sound and self.is_chase_sound_playing:
+            self.chase_sound.stop()
+            self.is_chase_sound_playing = False
+
     def apply(self, enemy, delta_time):
         dt_sec = delta_time / 1000.0
 
         if self.state == "WAITING":
             # Waiting state
-
+            self._stop_chase_sound()
             if self.target.is_defeated:
                 return
 
@@ -105,6 +117,10 @@ class StalkerBehaviour(_Behaviour):
                 self.timer = 0.0
         elif self.state == "PURSUING":
             # Pursuing state
+
+            if self.chase_sound and not self.is_chase_sound_playing:
+                self.chase_sound.play(loops=-1)
+                self.is_chase_sound_playing = True
             direction = pygame.Vector2(self.target.rect.centerx - enemy.x, self.target.rect.centery - enemy.y)
             distance = direction.length()
 
@@ -122,10 +138,9 @@ class StalkerBehaviour(_Behaviour):
                 self.state = "ARRIVED"
         elif self.state == "ARRIVED":
             # Arrived state
-            # Does nothing yet
-            pass
-
+            self._stop_chase_sound()
         elif self.state == "FLEEING":
+            self._stop_chase_sound()
             direction = pygame.math.Vector2(self.flee_target.x - enemy.x, self.flee_target.y - enemy.y)
             distance = direction.length()
             if distance > 10:
@@ -143,6 +158,9 @@ class StalkerBehaviour(_Behaviour):
             return # Already fleeing
         
         self.state = "FLEEING"
+        self._stop_chase_sound()
+        if self.flee_sound:
+            self.flee_sound.play()
 
         dist_top = enemy.y
         dist_bottom = SCREEN_HEIGHT - enemy.y

@@ -35,11 +35,16 @@ OBSTACLE_CONFIG = {
         'indexes': range(len(SchoolBuilding.images)),
         'key': pygame.K_6
     },
-    'Door': {
-        'class': Door,
-        'indexes': range(len(Door.images)),
-        'key': pygame.K_7
+    'Scarecrow': {
+        'class': Scarecrow,
+        'indexes': range(len(Scarecrow.images)),
+        'key': pygame.K_7,
     },
+    # 'Door': {
+    #     'class': Door,
+    #     'indexes': range(len(Door.images)),
+    #     'key': pygame.K_8
+    # },
 }
 
 

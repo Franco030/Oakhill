@@ -62,7 +62,9 @@ class Scene:
         if self.location in self.obstacles_dict:
             self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
         if self.location in self._interactables_dict:
-            self._interactables.add(interactable for interactable in self._interactables_dict[self.location])
+            for interactable_obj in self._interactables_dict[self.location]:
+                if not interactable_obj.interacted_once:
+                    self._interactables.add(interactable_obj)
 
     
     def set_location(self, new_location: tuple):
@@ -78,11 +80,22 @@ class Scene:
         Draws the obstacles and the player in the correct rendering order (depth sorting)
         Since enemies are ghosts they will always be above everything.
         """
-        all_sprites = list(self._obstacles) + list(self._interactables) + [player.sprite]
-        sprites = [s for s in all_sprites if not (hasattr(s, 'interacted_once') and s.interacted_once)]
-        sprites.sort(key=lambda sprite: sprite.collision_rect.bottom)
+        background_sprites = []
+        main_sprites = [player.sprite] + list(self._interactables)
 
-        for sprite in sprites:
+        for sprite in self._obstacles:
+            if sprite.collision_rect.width == 0:
+                background_sprites.append(sprite)
+            else:
+                main_sprites.append(sprite)
+
+        background_sprites.sort(key=lambda sprite: sprite.rect.top)
+        main_sprites.sort(key=lambda sprite: sprite.collision_rect.bottom)
+
+        for sprite in background_sprites:
+            screen.blit(sprite.image, sprite.rect)
+        
+        for sprite in main_sprites:
             screen.blit(sprite.image, sprite.rect)
 
         for enemy in self._enemies:

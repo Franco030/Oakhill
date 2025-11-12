@@ -117,13 +117,48 @@ def main():
     note_being_interacted = None
 
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
     pygame.display.set_caption('Oakhill')
     clock = pygame.time.Clock()
 
 
+    try:
+        chase_sound = pygame.mixer.Sound("assets/sounds/chase_loop.wav")
+    except pygame.error as e:
+        print("Error when loading the file")
+        chase_sound = None
+
+    try:
+        flee_sound = pygame.mixer.Sound("assets/sounds/flee_loop.wav")
+    except pygame.error as e:
+        print("Error when loading the file")
+        flee_sound = None
+
+    try:
+        note_interact_sound = pygame.mixer.Sound("assets/sounds/note_reading_more_vol.wav")
+    except pygame.error as e:
+        print("Error when loading the file")
+        note_interact_sound = None
+
+    try:
+        walking_sound = pygame.mixer.Sound("assets/sounds/steps_cut.wav")
+        walking_sound.set_volume(0.6)
+    except pygame.error as e:
+        print("Error when loading the file")
+        walking_sound = None
+
+    try:
+        pygame.mixer.music.load("assets/sounds/background_sound.wav")
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.5)
+    except pygame.error as e:
+        print(f"Advertencia: No se pudo cargar la música de fondo: {e}")
+
+
+
     player = pygame.sprite.GroupSingle()
-    player_sprite = Player(player_x_pos, player_y_pos)
+    player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
     player.add(player_sprite)
 
 
@@ -131,7 +166,7 @@ def main():
 
 
     # At first the zone is loaded without the enemies, the nemies may be added later, or maybe I'll add them to the editor, but that may never happen.
-    main_scene = SceneLoader.load_from_json("data/scene_output.json", WORLD_MAP_LEVEL, initial_zone, player_sprite)
+    main_scene = SceneLoader.load_from_json("data/scene_output.json", WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
     scene = main_scene
 
     while True:
@@ -142,25 +177,32 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            
 
-            if game_state == "PLAYER_DEAD":
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    default_spawn_pos = (player_x_pos, player_y_pos)
-                    safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
-                    player.sprite.reset(safe_pos[0], safe_pos[1]) 
-                    
-                    for enemy in scene.enemies:
-                        if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
-                            enemy.behaviours.shoo(enemy)
-                    
-                    game_state = "PLAYING"
-            elif game_state == "READING_NOTE":
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN:
+                
+                if event.key == pygame.K_SPACE:
+                    if game_state == "PLAYING":
+                        player.sprite.attack()
+                    elif game_state == "READING_NOTE":
                         note_to_show = None
                         game_state = "PLAYING"
+                
+                elif event.key == pygame.K_ESCAPE:
                     
+                    if game_state == "PLAYER_DEAD":
+                        default_spawn_pos = (player_x_pos, player_y_pos)
+                        safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
+                        player.sprite.reset(safe_pos[0], safe_pos[1]) 
+                        
+                        for enemy in scene.enemies:
+                            if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
+                                enemy.behaviours.shoo(enemy)
+                        
+                        game_state = "PLAYING"
+                        
+                    elif game_state == "READING_NOTE":
+                        note_to_show = None
+                        game_state = "PLAYING"                    
                 
         # --- Game logic ---
         if game_state == "PLAYING":  
@@ -187,6 +229,8 @@ def main():
                     if not note_obj.interacted_once:
                         interaction_status = note_obj.interact()
                         if interaction_status == "interaction_started":
+                            if note_interact_sound:
+                                note_interact_sound.play()
                             note_being_interacted = note_obj
                             player.sprite.cancel_attack()
                 else:
