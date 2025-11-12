@@ -46,21 +46,12 @@ def main():
 
     game_active = True
     note_to_show = None
+    note_being_interacted = None
 
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
     pygame.display.set_caption('Oakhill')
     clock = pygame.time.Clock()
-
-
-    # world_map_level = [
-    #     [0, 0, 1, 1, 1, 1], 
-    #     [0, 1, 1, 0, 0, 0], 
-    #     [0, 1, 0, 0, 0, 0], 
-    #     [0, 1, 1, 0, 0, 0],
-    #     [0, 0, 1, 1, 0, 0],
-    #     [0, 0, 1, 1, 0, 0]  
-    # ]
 
 
     player = pygame.sprite.GroupSingle()
@@ -118,7 +109,7 @@ def main():
                 enemy.update(delta_time)
                 screen.blit(enemy.image, enemy.rect)
             
-            if player.sprite.is_attacking:
+            if player.sprite.is_attacking and not note_being_interacted:
                 collided_interactables = pygame.sprite.spritecollide(
                     player.sprite,
                     scene.interactables,
@@ -128,18 +119,23 @@ def main():
 
                 if collided_interactables:
                     note_obj = collided_interactables[0]
-                    note_content = note_obj.interact()
-
-                    if note_content:
-                        note_to_show = note_content
-                        game_active = False
-                        player.sprite.cancel_attack()
+                    if not note_obj.interacted_once:
+                        interaction_status = note_obj.interact()
+                        if interaction_status == "interaction_started":
+                            note_being_interacted = note_obj
+                            player.sprite.cancel_attack()
                 else:
                     for enemy in scene.enemies:
                         if enemy.collision_rect.colliderect(player.sprite.attack_rect):
                             if hasattr(enemy, 'while_attacked'):
                                 enemy.while_attacked()
 
+            if note_being_interacted:
+                status = note_being_interacted.update()
+                if status == "interaction_finished":
+                    note_to_show = note_being_interacted.read()
+                    game_active = False
+                    note_being_interacted = None
 
             # --- Collisions (this type of collisions do not change the game_active e.g. (an enemy attacking you)) ---
             # ---------- THIS WAS BEFORE UPDATING THE PLAYER CLASS, NOW PLAYER COLLISIONS ARE HANDLED BY THE PLAYER -------------

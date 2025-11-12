@@ -152,8 +152,5 @@ class Stalker_Ghost(_Enemy):
         """
         We override the update method so that we can add custom animations
         """
-        # if self.rect.left > SCREEN_WIDTH + (TRANSITION_BIAS*2) or self.rect.right < 0 - (TRANSITION_BIAS*2):
-        #     self.behaviours.reverse()
-
         self.animation.animate()
         super().update(delta_time)
