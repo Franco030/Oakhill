@@ -16,20 +16,23 @@ def draw_note_ui(screen, note_text_lines):
     ui_height = SCREEN_HEIGHT - padding * 2
 
     sheet_rect = pygame.Rect(padding, padding, ui_width, ui_height)
-    pygame.draw.rect(screen, (240, 240, 220), sheet_rect)
-    pygame.draw.rect(screen, (0, 0, 0), sheet_rect, 3)
+    pygame.draw.rect(screen, (0, 0, 0), sheet_rect)
+    pygame.draw.rect(screen, (255, 255, 0), sheet_rect, 3)
 
-    font = pygame.font.Font(None, 36)
+    font_path = "assets/fonts/scary_font.ttf"
+    font = pygame.font.Font(font_path, 36)
+
+
     line_spacing = 40
     start_x = padding + 20
     start_y = padding + 20
 
     for i, line in enumerate(note_text_lines):
-        text_surface = font.render(line, True, (0, 0, 0))
+        text_surface = font.render(line, True, (255, 255, 0))
         screen.blit(text_surface, (start_x, start_y + i * line_spacing))
 
     close_font = pygame.font.Font(None, 30)
-    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (50, 50, 50))
+    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (255, 255, 0))
     close_rect = close_text.get_rect(centerx = sheet_rect.centerx, bottom = sheet_rect.bottom - 20)
     screen.blit(close_text, close_rect)
 
@@ -81,12 +84,6 @@ def main():
                 pygame.quit()
                 exit()
             
-            # if not game_active:
-            #     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:   
-            #         # player.sprite.rect.center = (0, 0) ----> the player.sprite.pos manages this rectangle
-            #         player.sprite.collision_rect.center = (player_x_pos, player_y_pos)
-            #         player.sprite.pos = pygame.math.Vector2(player.sprite.collision_rect.center)
-            #         game_active = True
 
             if not game_active:
                 if event.type == pygame.KEYDOWN:
@@ -136,6 +133,7 @@ def main():
                     if note_content:
                         note_to_show = note_content
                         game_active = False
+                        player.sprite.cancel_attack()
                 else:
                     for enemy in scene.enemies:
                         if enemy.collision_rect.colliderect(player.sprite.attack_rect):

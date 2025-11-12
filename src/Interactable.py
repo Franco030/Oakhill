@@ -30,7 +30,7 @@ class Note(_Interactable):
         self.note_text_content = [
             "Línea 1: El fantasma blanco es... tímido.",
             "Línea 2: Parece que se asusta cuando le 'hablas'.",
-            "",
+            "~~-.`-.1`.1.-~~",
             "Línea 4: ...pero siempre vuelve."
         ]
 

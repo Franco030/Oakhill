@@ -45,6 +45,16 @@ class Player(pygame.sprite.Sprite):
     def collision_rect(self):
         return self._collision_rect
 
+    def cancel_attack(self):
+        """
+        Interrupts the player's attack
+        """
+        self.is_attacking = False
+        self.attack_timer = 0
+        self.attack_rect.width = 0
+        self.attack_rect.height = 0
+
+
     def _player_input(self):
         """
         Calculates the desired movement direction based on keys pressed
@@ -112,53 +122,6 @@ class Player(pygame.sprite.Sprite):
             self.attack_rect.width = 0
             self.attack_rect.height = 0
             
-
-        # self.direction.x = 0
-        # self.direction.y = 0
-        # if keys[pygame.K_SPACE]:
-        #     if self.facing == "right":
-        #         self.attack_rect = pygame.Rect(
-        #             self.rect.right,
-        #             self.rect.top + 10,
-        #             400,
-        #             self.rect.height - (self.rect.height / 5)
-        #         )
-        #     elif self.facing == "left":
-        #         self.attack_rect.width = 400
-        #         self.attack_rect.height = self.rect.height - (self.rect.height / 5)
-        #         self.attack_rect.right = self.rect.left
-        #         self.attack_rect.top = self.rect.top + 10
-        #     elif self.facing == "up":
-        #         self.attack_rect.width = self.rect.height
-        #         self.attack_rect.height = 400
-        #         self.attack_rect.centerx = self.rect.centerx
-        #         self.attack_rect.bottom = self.rect.top
-        #     elif self.facing == "down":
-        #         self.attack_rect.width = self.rect.height
-        #         self.attack_rect.height = 400
-        #         self.attack_rect.centerx = self.rect.centerx
-        #         self.attack_rect.top = self.rect.bottom
-                
-        # else:
-        #     if keys[pygame.K_w]:
-        #         self.direction.y = -1
-        #         self.facing = "up"
-        #         self.animations['up'].animate()
-        #     if keys[pygame.K_s]:
-        #         self.direction.y = 1
-        #         self.facing = "down"
-        #         self.animations['down'].animate()
-        #     if keys[pygame.K_a]:
-        #         self.direction.x = -1
-        #         self.facing = "left"
-        #         self.animations['left'].animate()
-        #     if keys[pygame.K_d]:
-        #         self.direction.x = 1
-        #         self.facing = "right"
-        #         self.animations['right'].animate()
-        #     self.attack_rect.width = 0
-        #     self.attack_rect.height = 0
-
         if self.direction.length() > 0:
             self.direction.normalize_ip()
 
