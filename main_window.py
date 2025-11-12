@@ -5,6 +5,34 @@ from src.Obstacles import *
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
 
+
+def draw_note_ui(screen, note_text_lines):
+    """
+    Draws the note UI on the screen with the provided text lines.
+    """
+
+    padding = 50
+    ui_width = SCREEN_WIDTH - padding * 2
+    ui_height = SCREEN_HEIGHT - padding * 2
+
+    sheet_rect = pygame.Rect(padding, padding, ui_width, ui_height)
+    pygame.draw.rect(screen, (240, 240, 220), sheet_rect)
+    pygame.draw.rect(screen, (0, 0, 0), sheet_rect, 3)
+
+    font = pygame.font.Font(None, 36)
+    line_spacing = 40
+    start_x = padding + 20
+    start_y = padding + 20
+
+    for i, line in enumerate(note_text_lines):
+        text_surface = font.render(line, True, (0, 0, 0))
+        screen.blit(text_surface, (start_x, start_y + i * line_spacing))
+
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (50, 50, 50))
+    close_rect = close_text.get_rect(centerx = sheet_rect.centerx, bottom = sheet_rect.bottom - 20)
+    screen.blit(close_text, close_rect)
+
 def main():
     player_x_pos = 600
     player_y_pos = 300
@@ -14,6 +42,7 @@ def main():
     current_zone = (y_cord, x_cord)
 
     game_active = True
+    note_to_show = None
 
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
@@ -52,12 +81,26 @@ def main():
                 pygame.quit()
                 exit()
             
+            # if not game_active:
+            #     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:   
+            #         # player.sprite.rect.center = (0, 0) ----> the player.sprite.pos manages this rectangle
+            #         player.sprite.collision_rect.center = (player_x_pos, player_y_pos)
+            #         player.sprite.pos = pygame.math.Vector2(player.sprite.collision_rect.center)
+            #         game_active = True
+
             if not game_active:
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:   
-                    # player.sprite.rect.center = (0, 0) ----> the player.sprite.pos manages this rectangle
-                    player.sprite.collision_rect.center = (player_x_pos, player_y_pos)
-                    player.sprite.pos = pygame.math.Vector2(player.sprite.collision_rect.center)
-                    game_active = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        if note_to_show:
+                            note_to_show = None
+                            game_active = True
+                        else:
+                            player.sprite.collision_rect.center = (player_x_pos, player_y_pos)
+                            player.sprite.pos = pygame.math.Vector2(player.sprite.collision_rect.center)
+                            game_active = True
+                    if event.key == pygame.K_SPACE and note_to_show:
+                        note_to_show = None
+                        game_active = True
                     
                     
 
@@ -73,14 +116,31 @@ def main():
             # print(current_zone)
             scene.draw(screen, player)
             player.update(scene.obstacles)
-            
-
 
             for enemy in scene.enemies:
                 enemy.update(delta_time)
-                if enemy.collision_rect.colliderect(player.sprite.attack_rect):
-                    enemy.while_attacked()
+                screen.blit(enemy.image, enemy.rect)
+            
+            if player.sprite.is_attacking:
+                collided_interactables = pygame.sprite.spritecollide(
+                    player.sprite,
+                    scene.interactables,
+                    False,
+                    lambda sprite_a, sprite_b: sprite_b.collision_rect.colliderect(sprite_a.attack_rect)
+                )
 
+                if collided_interactables:
+                    note_obj = collided_interactables[0]
+                    note_content = note_obj.interact()
+
+                    if note_content:
+                        note_to_show = note_content
+                        game_active = False
+                else:
+                    for enemy in scene.enemies:
+                        if enemy.collision_rect.colliderect(player.sprite.attack_rect):
+                            if hasattr(enemy, 'while_attacked'):
+                                enemy.while_attacked()
 
 
             # --- Collisions (this type of collisions do not change the game_active e.g. (an enemy attacking you)) ---
@@ -159,13 +219,14 @@ def main():
         
 
         else:
-            # What happens if you "lose" - Intro - etcetera
-            screen.fill('orange')
-            font = pygame.font.Font(None, 50)
-            text_surface = font.render('You were hit by an enemy! Press ESC to Restart', True, 'black')
-            text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-            screen.blit(text_surface, text_rect)
-            pass
+            if note_to_show:
+                draw_note_ui(screen, note_to_show)
+            else:
+                screen.fill('orange')
+                font = pygame.font.Font(None, 50)
+                text_surface = font.render('You were hit by an enemy! Press ESC to Restart', True, 'black')
+                text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+                screen.blit(text_surface, text_rect)
 
 
         pygame.display.flip()

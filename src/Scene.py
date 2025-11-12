@@ -6,7 +6,7 @@ class Scene:
     The same Scene object is going to be used to represent the "open world", what diferentiates one scene from another is its location
     You may need to make a new Scene object if you "enter a house", because the house will have a different scenario, different object, different events, etc.
     """
-    def __init__(self, initial_location: tuple, obstacles: dict, enemies: dict, map_level):
+    def __init__(self, initial_location: tuple, obstacles: dict, interactables: dict, enemies: dict, map_level):
         """
         Description: Initializes the scene
         Parameters:
@@ -26,7 +26,10 @@ class Scene:
         self.obstacles_dict = obstacles
         self._obstacles = pygame.sprite.Group()
         self._obstacles.add(obstacle for obstacle in self.obstacles_dict[initial_location])
+        self._interactables_dict = interactables
         self._interactables = pygame.sprite.Group()
+        if initial_location in self._interactables_dict:
+            self._interactables.add(interactable for interactable in self._interactables_dict[initial_location])
 
 
     def check_zone(self, cords: tuple):
@@ -43,6 +46,10 @@ class Scene:
         return self._obstacles
     
     @property
+    def interactables(self):
+        return self._interactables
+    
+    @property
     def enemies(self):
         return self._enemies
         
@@ -51,8 +58,11 @@ class Scene:
         Clears the current obstacles and loads new ones based on the self.location
         """
         self._obstacles.empty()
+        self._interactables.empty()
         if self.location in self.obstacles_dict:
             self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
+        if self.location in self._interactables_dict:
+            self._interactables.add(interactable for interactable in self._interactables_dict[self.location])
 
     
     def set_location(self, new_location: tuple):
@@ -68,7 +78,7 @@ class Scene:
         Draws the obstacles and the player in the correct rendering order (depth sorting)
         Since enemies are ghosts they will always be above everything.
         """
-        sprites = list(self._obstacles) + [player.sprite]
+        sprites = list(self._obstacles) + list(self._interactables) + [player.sprite]
         sprites.sort(key=lambda sprite: sprite.rect.bottom)
 
         for sprite in sprites:

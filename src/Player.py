@@ -24,13 +24,21 @@ class Player(pygame.sprite.Sprite):
             self.rect.height - 80
         )
         self.attack_rect = self.rect.copy()
+        self.is_attacking = False
+        self.attack_duration = 30
+        self.attack_timer = 0
 
         # ---Animations---
         self.animations = {
             'right': Animation(self, ['assets/animations/walking_right_1.png', 'assets/animations/walking_right_2.png'], 0.05),
             'left': Animation(self, ['assets/animations/walking_left_1.png', 'assets/animations/walking_left_2.png'], 0.05),
             'up': Animation(self, ['assets/animations/walking_up_1.png', 'assets/animations/walking_up_2.png'], 0.05),
-            'down': Animation(self, ['assets/animations/walking_down_1.png', 'assets/animations/walking_down_2.png'], 0.05)
+            'down': Animation(self, ['assets/animations/walking_down_1.png', 'assets/animations/walking_down_2.png'], 0.05),
+
+            'attack_down': Animation(self, [f"assets/animations/Detective_Att_Bot/detective_att_bot_{i}.png" for i in range(1, 5)], 0.05),
+            'attack_up': Animation(self, [f"assets/animations/Detective_Att_Top/detective_att_top_{i}.png" for i in range(1, 5)], 0.05),
+            'attack_left': Animation(self, ["assets/animations/Detective_Att_Left/detective_att_left.png"], 0.05),
+            'attack_right': Animation(self, ["assets/animations/Detective_Att_Right/detective_att_right.png"], 0.05),
         }
 
     @property
@@ -43,9 +51,17 @@ class Player(pygame.sprite.Sprite):
         """
         keys = pygame.key.get_pressed()
 
-        self.direction.x = 0
-        self.direction.y = 0
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_SPACE] and not self.is_attacking:
+            self.is_attacking = True
+            self.attack_timer = self.attack_duration
+            self.direction.x = 0
+            self.direction.y = 0
+
+
+        if self.is_attacking:
+            self.attack_timer -= 1
+            self.animations['attack_' + self.facing].animate()
+
             if self.facing == "right":
                 self.attack_rect = pygame.Rect(
                     self.rect.right,
@@ -68,8 +84,15 @@ class Player(pygame.sprite.Sprite):
                 self.attack_rect.height = 400
                 self.attack_rect.centerx = self.rect.centerx
                 self.attack_rect.top = self.rect.bottom
-                
+
+            if self.attack_timer <= 0:
+                self.is_attacking = False
+                self.attack_rect.width = 0
+                self.attack_rect.height = 0
+
         else:
+            self.direction.x = 0
+            self.direction.y = 0
             if keys[pygame.K_w]:
                 self.direction.y = -1
                 self.facing = "up"
@@ -88,6 +111,53 @@ class Player(pygame.sprite.Sprite):
                 self.animations['right'].animate()
             self.attack_rect.width = 0
             self.attack_rect.height = 0
+            
+
+        # self.direction.x = 0
+        # self.direction.y = 0
+        # if keys[pygame.K_SPACE]:
+        #     if self.facing == "right":
+        #         self.attack_rect = pygame.Rect(
+        #             self.rect.right,
+        #             self.rect.top + 10,
+        #             400,
+        #             self.rect.height - (self.rect.height / 5)
+        #         )
+        #     elif self.facing == "left":
+        #         self.attack_rect.width = 400
+        #         self.attack_rect.height = self.rect.height - (self.rect.height / 5)
+        #         self.attack_rect.right = self.rect.left
+        #         self.attack_rect.top = self.rect.top + 10
+        #     elif self.facing == "up":
+        #         self.attack_rect.width = self.rect.height
+        #         self.attack_rect.height = 400
+        #         self.attack_rect.centerx = self.rect.centerx
+        #         self.attack_rect.bottom = self.rect.top
+        #     elif self.facing == "down":
+        #         self.attack_rect.width = self.rect.height
+        #         self.attack_rect.height = 400
+        #         self.attack_rect.centerx = self.rect.centerx
+        #         self.attack_rect.top = self.rect.bottom
+                
+        # else:
+        #     if keys[pygame.K_w]:
+        #         self.direction.y = -1
+        #         self.facing = "up"
+        #         self.animations['up'].animate()
+        #     if keys[pygame.K_s]:
+        #         self.direction.y = 1
+        #         self.facing = "down"
+        #         self.animations['down'].animate()
+        #     if keys[pygame.K_a]:
+        #         self.direction.x = -1
+        #         self.facing = "left"
+        #         self.animations['left'].animate()
+        #     if keys[pygame.K_d]:
+        #         self.direction.x = 1
+        #         self.facing = "right"
+        #         self.animations['right'].animate()
+        #     self.attack_rect.width = 0
+        #     self.attack_rect.height = 0
 
         if self.direction.length() > 0:
             self.direction.normalize_ip()
@@ -132,7 +202,11 @@ class Player(pygame.sprite.Sprite):
 
         self.prev_pos = self.pos.copy()
         self.velocity = self.direction * PLAYER_SPEED
-        self.rect.center = (int(self.pos.x), int(self.pos.y))
+
+
+        # self.rect.center = (int(self.pos.x), int(self.pos.y))
         
         self._move_x(obstacles)
         self._move_y(obstacles)
+
+        self.rect = self.image.get_rect(center = (int(self.pos.x), int(self.pos.y)))

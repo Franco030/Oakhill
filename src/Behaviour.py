@@ -159,7 +159,7 @@ class StalkerBehaviour(_Behaviour):
             self.flee_target.x = -100 
             self.flee_target.y = enemy.y
         else: # dist_right
-            self.flee_target.x = SCREEN_WIDTH + 10
+            self.flee_target.x = SCREEN_WIDTH + 100
             self.flee_target.y = enemy.y
 
 

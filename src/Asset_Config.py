@@ -1,5 +1,6 @@
 import pygame
 from .Obstacles import *
+from .Interactable import *
 
 
 # This is the ground truth for obstacle configuration used both in the level editor and in the game
@@ -23,8 +24,13 @@ OBSTACLE_CONFIG = {
         'class': Deco_Wall,
         'indexes': range(len(Deco_Wall.images)),
         'key': pygame.K_4
-    }
-    # Add more obstacles here
+    },
+    'Note': {
+        'class': Note,
+        'indexes': range(len(Note.images)),
+        'key': pygame.K_5
+    },
+    
 }
 
 
