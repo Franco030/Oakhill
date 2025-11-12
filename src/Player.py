@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.is_attacking = False
         self.attack_duration = 30
         self.attack_timer = 0
+        self.is_defeated = False
 
         # ---Animations---
         self.animations = {
@@ -39,6 +40,8 @@ class Player(pygame.sprite.Sprite):
             'attack_up': Animation(self, [f"assets/animations/Detective_Att_Top/detective_att_top_{i}.png" for i in range(1, 5)], 0.05),
             'attack_left': Animation(self, ["assets/animations/Detective_Att_Left/detective_att_left.png"], 0.05),
             'attack_right': Animation(self, ["assets/animations/Detective_Att_Right/detective_att_right.png"], 0.05),
+
+            'defeated': Animation(self, ["assets/images/detective_dead.png"], 0.05)
         }
 
     @property
@@ -54,11 +57,35 @@ class Player(pygame.sprite.Sprite):
         self.attack_rect.width = 0
         self.attack_rect.height = 0
 
+    def defeat(self):
+        """
+        Handles the player's defeat state
+        """
+        self.is_defeated = True
+        self.direction.x = 0
+        self.direction.y = 0
+        self.animations['defeated'].animate()
+
+    def reset(self, start_x, start_y):
+        """
+        Resets the player's state to initial conditions
+        """
+        self.is_defeated = False
+        self.pos = pygame.math.Vector2(start_x, start_y)
+        self.collision_rect.center = (start_x, start_y)
+        self.facing = "down"
+        self.image = self.animations['down'].images[0]
 
     def _player_input(self):
         """
         Calculates the desired movement direction based on keys pressed
         """
+
+        if self.is_defeated:
+            self.animations['defeated'].animate()
+            return
+
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_SPACE] and not self.is_attacking:
@@ -166,9 +193,6 @@ class Player(pygame.sprite.Sprite):
         self.prev_pos = self.pos.copy()
         self.velocity = self.direction * PLAYER_SPEED
 
-
-        # self.rect.center = (int(self.pos.x), int(self.pos.y))
-        
         self._move_x(obstacles)
         self._move_y(obstacles)
 

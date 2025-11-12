@@ -95,14 +95,32 @@ class Wall(_Obstacle):
         self._collision_rect.top = self._collision_rect.top + 10
         self._collision_rect.height = self._collision_rect.height - 10 - 30
 
-class Deco_Wall(Wall):
-    def __init__(self, start_x, start_y, index_image = 0):
-        super().__init__(start_x, start_y, index_image)
+class Deco_Wall(_Obstacle):
+    images = ['assets/images/fence_0.png', 'assets/images/blood_1.png']
+    def __init__(self, start_x, start_y, index_image: int):
+        if index_image >= len(Deco_Wall.images):
+            index_image = len(Deco_Wall.images) - 1
+        super().__init__(start_x, start_y, Deco_Wall.images[index_image])
 
         # For a decorative wall, the collision rectangle should have no dimension
         self._collision_rect = pygame.Rect(
             self.rect.centerx,
-            self.rect.centery,
+            self.rect.top, # <--- El cambio clave
             0,
             0
+        )
+
+class SchoolBuilding(_Obstacle):
+    """
+    Represents the school building obstacle
+    """
+    images = ['assets/images/school.png']
+
+    def __init__(self, start_x, start_y, index_image: int):
+        super().__init__(start_x, start_y, self.images[0], 15)
+        self._collision_rect = pygame.Rect(
+            self.rect.left + 100,
+            self.rect.top + 100,
+            self.rect.width - 200,
+            self.rect.height - 250
         )

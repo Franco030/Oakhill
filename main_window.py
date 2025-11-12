@@ -36,6 +36,72 @@ def draw_note_ui(screen, note_text_lines):
     close_rect = close_text.get_rect(centerx = sheet_rect.centerx, bottom = sheet_rect.bottom - 20)
     screen.blit(close_text, close_rect)
 
+def draw_defeat_text(screen):
+    """
+    Draws the defeat text on the screen.
+    """
+
+    font = pygame.font.Font(None, 50)
+    text_surface = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
+    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
+
+    s = pygame.Surface((text_rect.width + 20, text_rect.height + 20))
+    s.set_alpha(128)
+    s.fill((0, 0, 0))
+    screen.blit(s, (text_rect.left - 10, text_rect.top - 10))
+    screen.blit(text_surface, text_rect)
+
+def find_safe_spawn(target_pos, player_sprite, obstacles):
+    """
+    Finds a safe spawn position for the player
+    """
+
+    player_w = player_sprite.collision_rect.width
+    player_h = player_sprite.collision_rect.height
+
+    test_rect = pygame.Rect(0, 0, player_w, player_h)
+    test_rect.center = target_pos
+
+    is_safe = True
+    for obs in obstacles:
+        if obs.collision_rect.colliderect(test_rect):
+            is_safe = False
+            break
+
+    if is_safe:
+        return target_pos
+    
+    search_radius = 1
+    max_search_radius = 50
+    step_distance = max(player_w, player_h)
+
+    while search_radius < max_search_radius:
+        distance = search_radius * step_distance
+
+        search_points = [
+            (target_pos[0], target_pos[1] - distance), # N
+            (target_pos[0] + distance, target_pos[1] - distance), # NE
+            (target_pos[0] + distance, target_pos[1]), # E
+            (target_pos[0] + distance, target_pos[1] + distance), # SE
+            (target_pos[0], target_pos[1] + distance), # S
+            (target_pos[0] - distance, target_pos[1] + distance), # SW
+            (target_pos[0] - distance, target_pos[1]), # W
+            (target_pos[0] - distance, target_pos[1] - distance)  # NW
+        ]
+
+        for point in search_points:
+            test_rect.center = point
+            is_safe = True
+            for obs in obstacles:
+                if obs.collision_rect.colliderect(test_rect):
+                    is_safe = False
+                    break
+            if is_safe:
+                return point
+        search_radius += 1
+    return target_pos
+
+
 def main():
     player_x_pos = 600
     player_y_pos = 300
@@ -44,7 +110,9 @@ def main():
     y_cord, x_cord = 5, 2
     current_zone = (y_cord, x_cord)
 
-    game_active = True
+    game_state = "PLAYING" # Other states could be "PLAYER_DEAD", "READING_NOTE"
+
+
     note_to_show = None
     note_being_interacted = None
 
@@ -76,38 +144,35 @@ def main():
                 exit()
             
 
-            if not game_active:
+            if game_state == "PLAYER_DEAD":
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    default_spawn_pos = (player_x_pos, player_y_pos)
+                    safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
+                    player.sprite.reset(safe_pos[0], safe_pos[1]) 
+                    
+                    for enemy in scene.enemies:
+                        if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
+                            enemy.behaviours.shoo(enemy)
+                    
+                    game_state = "PLAYING"
+            elif game_state == "READING_NOTE":
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        if note_to_show:
-                            note_to_show = None
-                            game_active = True
-                        else:
-                            player.sprite.collision_rect.center = (player_x_pos, player_y_pos)
-                            player.sprite.pos = pygame.math.Vector2(player.sprite.collision_rect.center)
-                            game_active = True
-                    if event.key == pygame.K_SPACE and note_to_show:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_SPACE:
                         note_to_show = None
-                        game_active = True
+                        game_state = "PLAYING"
                     
-                    
-
-        # --- Collisions (this type of collisions may change the game_active e.g. (an enemy attacking you))---
-        # if pygame.sprite.spritecollide(player.sprite, scene.enemies, False, lambda sprite_a, sprite_b: sprite_b.collides_with(sprite_a))
-        #     game_active = False
-        for enemy in scene.enemies:
-            if enemy.collides_with(player.sprite):
-                game_active = False
-
+                
         # --- Game logic ---
-        if game_active:  
-            # print(current_zone)
-            scene.draw(screen, player)
+        if game_state == "PLAYING":  
             player.update(scene.obstacles)
+            scene.enemies.update(delta_time)
 
-            for enemy in scene.enemies:
-                enemy.update(delta_time)
-                screen.blit(enemy.image, enemy.rect)
+            if note_being_interacted:
+                status = note_being_interacted.update()
+                if status == "interaction_finished":
+                    note_to_show = note_being_interacted.read()
+                    game_state = "READING_NOTE"
+                    note_being_interacted = None
             
             if player.sprite.is_attacking and not note_being_interacted:
                 collided_interactables = pygame.sprite.spritecollide(
@@ -130,17 +195,20 @@ def main():
                             if hasattr(enemy, 'while_attacked'):
                                 enemy.while_attacked()
 
-            if note_being_interacted:
-                status = note_being_interacted.update()
-                if status == "interaction_finished":
-                    note_to_show = note_being_interacted.read()
-                    game_active = False
-                    note_being_interacted = None
+            for enemy in scene.enemies:
+                if enemy.collides_with(player.sprite):
+                    player.sprite.defeat() 
+                    if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
+                        enemy.behaviours.shoo(enemy)
+                    game_state = "PLAYER_DEAD"
+                    break
+
+            
+            scene.draw(screen, player)
 
             # --- Collisions (this type of collisions do not change the game_active e.g. (an enemy attacking you)) ---
             # ---------- THIS WAS BEFORE UPDATING THE PLAYER CLASS, NOW PLAYER COLLISIONS ARE HANDLED BY THE PLAYER -------------
             # collided_obstacles = pygame.sprite.spritecollide(player.sprite, scene._obstacles, False, lambda sprite_a, sprite_b: sprite_b.collides_with(sprite_a))
-
 
             # --- Debugging Collisions ---s
             pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
@@ -152,15 +220,18 @@ def main():
                 pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
             pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
             pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Wall):
-            #         pygame.draw.rect(screen, 'pink', sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Tree):
-            #         pygame.draw.rect(screen, 'blue', sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Rock):
-            #         pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
+            for sprite in scene.obstacles:
+                if isinstance(sprite, Wall):
+                    pygame.draw.rect(screen, 'pink', sprite.collision_rect, 2)
+            for sprite in scene.obstacles:
+                if isinstance(sprite, Tree):
+                    pygame.draw.rect(screen, 'blue', sprite.collision_rect, 2)
+            for sprite in scene.obstacles:
+                if isinstance(sprite, Rock):
+                    pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
+            for sprite in scene.obstacles:
+                if isinstance(sprite, SchoolBuilding):
+                    pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
 
 
             # Right direction
@@ -212,15 +283,14 @@ def main():
                     player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
         
 
-        else:
-            if note_to_show:
-                draw_note_ui(screen, note_to_show)
-            else:
-                screen.fill('orange')
-                font = pygame.font.Font(None, 50)
-                text_surface = font.render('You were hit by an enemy! Press ESC to Restart', True, 'black')
-                text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-                screen.blit(text_surface, text_rect)
+        elif game_state == "PLAYER_DEAD":
+            player.update(scene.obstacles)
+            scene.enemies.update(delta_time)
+            scene.draw(screen, player)
+            draw_defeat_text(screen)
+
+        elif game_state == "READING_NOTE":
+            draw_note_ui(screen, note_to_show)
 
 
         pygame.display.flip()

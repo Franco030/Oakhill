@@ -78,8 +78,9 @@ class Scene:
         Draws the obstacles and the player in the correct rendering order (depth sorting)
         Since enemies are ghosts they will always be above everything.
         """
-        sprites = list(self._obstacles) + list(self._interactables) + [player.sprite]
-        sprites.sort(key=lambda sprite: sprite.rect.bottom)
+        all_sprites = list(self._obstacles) + list(self._interactables) + [player.sprite]
+        sprites = [s for s in all_sprites if not (hasattr(s, 'interacted_once') and s.interacted_once)]
+        sprites.sort(key=lambda sprite: sprite.collision_rect.bottom)
 
         for sprite in sprites:
             screen.blit(sprite.image, sprite.rect)

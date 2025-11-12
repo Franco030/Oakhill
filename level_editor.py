@@ -3,6 +3,7 @@ import json
 from src.Obstacles import *
 from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WORLD_MAP_LEVEL
 from src.Asset_Config import OBSTACLE_CONFIG
+from src.Note_Content import ALL_NOTE_TEXTS
 
 pygame.init()
 
@@ -63,8 +64,12 @@ while running:
 
     # UI Text
     keybinds = " ".join([f"{i+1}-{name}" for i, name in enumerate(OBSTACLE_CONFIG)])
+    note_text_preview = ""
+    if current_type  == 'Note':
+        if current_index < len(ALL_NOTE_TEXTS):
+            note_text_preview = f" (\"{ALL_NOTE_TEXTS[current_index][0]}\"...)"
     lines = [
-        f"Zone: {current_zone} | Selected: {current_type} (Index {current_index})",
+        f"Zone: {current_zone} | Selected: {current_type} (Index {current_index}){note_text_preview}",
         f"Press {keybinds} | [ and ] to change index | G to toggle grid | S to save | L to load",
         "Arrows to change zone | Right-click to delete"
     ]
@@ -92,10 +97,15 @@ while running:
                 current_index = max(0, current_index - 1)
             elif event.key == pygame.K_RIGHTBRACKET:
                 current_index += 1
-                for key, obstacle in OBSTACLE_CONFIG.items():
-                    if current_type == key:
-                        if current_index >= len(obstacle['class'].images):
-                            current_index = len(obstacle['class'].images) - 1
+
+                if current_type == 'Note':
+                    if current_index >= len(ALL_NOTE_TEXTS):
+                        current_index = len(ALL_NOTE_TEXTS) - 1
+                elif current_type in OBSTACLE_CONFIG:
+                    obstacle = OBSTACLE_CONFIG[current_type]
+                    if current_index >= len(obstacle['indexes']):
+                        current_index = len(obstacle['indexes']) - 1
+
 
             elif event.key == pygame.K_g:
                 grid_visible = not grid_visible
@@ -153,10 +163,15 @@ while running:
             if event.button == 1:
                 config = OBSTACLE_CONFIG[current_type]
                 cls = config['class']
-                indexes = config['indexes']
-                index = current_index % len(indexes)
-                new_obj = cls(grid_x, grid_y, index)
-                new_obj.index = index
+                index_to_use = 0
+
+                if current_type == 'Note':
+                    index_to_use = current_index % len(ALL_NOTE_TEXTS)
+                else:
+                    indexes = config['indexes']
+                    index_to_use = current_index % len(indexes)
+                new_obj = cls(grid_x, grid_y, index_to_use)
+                new_obj.index = index_to_use
                 new_obj.type_name = current_type
                 zones_data.setdefault(current_zone, []).append(new_obj)
 
@@ -173,8 +188,14 @@ while running:
     grid_y = (my // GRID_SIZE) * GRID_SIZE + GRID_SIZE // 2
 
     preview_cls = OBSTACLE_CONFIG[current_type]['class']
-    index = current_index % len(OBSTACLE_CONFIG[current_type]['indexes'])
-    preview_obj = preview_cls(grid_x, grid_y, index)
+    index_preview = 0
+
+    if current_type == 'Note':
+        index_preview = current_index % len(ALL_NOTE_TEXTS)
+    else:
+        index_preview = current_index % len(OBSTACLE_CONFIG[current_type]['indexes'])
+
+    preview_obj = preview_cls(grid_x, grid_y, index_preview)
     preview_obj.image.set_alpha(128)  # Make it semi-transparent
     screen.blit(preview_obj.image, preview_obj.rect)
 

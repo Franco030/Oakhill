@@ -30,7 +30,16 @@ OBSTACLE_CONFIG = {
         'indexes': range(len(Note.images)),
         'key': pygame.K_5
     },
-    
+    'SchoolBuilding': {
+        'class': SchoolBuilding,
+        'indexes': range(len(SchoolBuilding.images)),
+        'key': pygame.K_6
+    },
+    'Door': {
+        'class': Door,
+        'indexes': range(len(Door.images)),
+        'key': pygame.K_7
+    },
 }
 
 

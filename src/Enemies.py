@@ -38,7 +38,7 @@ class _Enemy(pygame.sprite.Sprite):
 
         # Flashing properties
         self.is_flashing = False
-        self.flash_duration = 100
+        self.flash_duration = 500
         self.flash_timer = 0
         self.flash_color = (255, 255, 255)
 
@@ -146,11 +146,15 @@ class Stalker_Ghost(_Enemy):
         self.animation = Animation(self, [f"assets/animations/Stalker/ghost_{i}.png" for i in range (1, 5)], 0.09)
 
     def while_attacked(self):
+        if self.is_flashing:
+            return
+        
+        self.start_flash()
         self.behaviours.shoo(self)
 
     def update(self, delta_time):
         """
         We override the update method so that we can add custom animations
         """
-        self.animation.animate()
         super().update(delta_time)
+        self.animation.animate()

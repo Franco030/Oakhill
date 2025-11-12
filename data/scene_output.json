@@ -2,180 +2,264 @@
     "zones": {
         "(5, 2)": [
             {
-                "type": "Rock",
-                "x": 150,
-                "y": 230,
-                "index": 0
-            },
-            {
                 "type": "Tree",
-                "x": 1050,
-                "y": 190,
+                "x": 90,
+                "y": 330,
                 "index": 1
             },
             {
                 "type": "Tree",
-                "x": 150,
-                "y": 570,
-                "index": 2
+                "x": 170,
+                "y": 650,
+                "index": 1
+            },
+            {
+                "type": "Tree",
+                "x": 1150,
+                "y": 210,
+                "index": 0
             },
             {
                 "type": "Wall",
                 "x": 30,
-                "y": 410,
+                "y": 90,
                 "index": 0
             },
             {
                 "type": "Wall",
                 "x": 110,
-                "y": 410,
+                "y": 90,
                 "index": 0
             },
             {
                 "type": "Wall",
                 "x": 190,
-                "y": 410,
+                "y": 90,
+                "index": 0
+            },
+            {
+                "type": "Wall",
+                "x": 270,
+                "y": 90,
+                "index": 0
+            },
+            {
+                "type": "Wall",
+                "x": 350,
+                "y": 90,
+                "index": 0
+            },
+            {
+                "type": "Wall",
+                "x": 430,
+                "y": 90,
+                "index": 0
+            },
+            {
+                "type": "Tree",
+                "x": 1110,
+                "y": 550,
+                "index": 0
+            },
+            {
+                "type": "Rock",
+                "x": 270,
+                "y": 270,
+                "index": 0
+            },
+            {
+                "type": "Rock",
+                "x": 770,
+                "y": 670,
                 "index": 0
             },
             {
                 "type": "Note",
-                "x": 850,
+                "x": 1030,
+                "y": 170,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 430,
+                "y": 390,
+                "index": 0
+            },
+            {
+                "type": "Wall",
+                "x": 390,
+                "y": 410,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 390,
+                "y": 470,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 390,
+                "y": 530,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 430,
                 "y": 530,
                 "index": 0
-            }
-        ],
-        "(4, 2)": [
+            },
             {
                 "type": "Wall",
-                "x": 10,
-                "y": 150,
+                "x": 510,
+                "y": 530,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 90,
-                "y": 150,
+                "x": 590,
+                "y": 530,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 170,
-                "y": 150,
+                "x": 670,
+                "y": 530,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 250,
-                "y": 150,
+                "x": 750,
+                "y": 530,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 330,
-                "y": 150,
+                "x": 830,
+                "y": 530,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 410,
-                "y": 150,
-                "index": 0
-            },
-            {
-                "type": "Wall",
-                "x": 490,
-                "y": 150,
-                "index": 0
-            },
-            {
-                "type": "Rock",
-                "x": 730,
-                "y": 210,
-                "index": 0
-            },
-            {
-                "type": "Rock",
-                "x": 290,
-                "y": 390,
-                "index": 0
-            },
-            {
-                "type": "Rock",
-                "x": 470,
-                "y": 650,
-                "index": 0
-            },
-            {
-                "type": "Wall",
-                "x": 870,
+                "x": 510,
                 "y": 390,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 1050,
-                "y": 250,
-                "index": 0
-            },
-            {
-                "type": "Wall",
-                "x": 950,
+                "x": 590,
                 "y": 390,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 1030,
+                "x": 670,
                 "y": 390,
                 "index": 0
             },
             {
                 "type": "Wall",
                 "x": 750,
-                "y": 590,
+                "y": 390,
                 "index": 0
             },
             {
                 "type": "Wall",
-                "x": 110,
-                "y": 550,
+                "x": 830,
+                "y": 390,
+                "index": 0
+            },
+            {
+                "type": "Wall",
+                "x": 870,
+                "y": 410,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 870,
+                "y": 490,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 870,
+                "y": 530,
+                "index": 1
+            },
+            {
+                "type": "Wall",
+                "x": 750,
+                "y": 230,
+                "index": 1
+            },
+            {
+                "type": "Deco_Wall",
+                "x": 1070,
+                "y": 390,
+                "index": 1
+            },
+            {
+                "type": "Deco_Wall",
+                "x": 210,
+                "y": 490,
+                "index": 1
+            }
+        ],
+        "(4, 2)": [
+            {
+                "type": "SchoolBuilding",
+                "x": 630,
+                "y": 310,
+                "index": 0
+            },
+            {
+                "type": "Rock",
+                "x": 130,
+                "y": 530,
+                "index": 0
+            },
+            {
+                "type": "Rock",
+                "x": 350,
+                "y": 730,
+                "index": 0
+            },
+            {
+                "type": "Rock",
+                "x": 1190,
+                "y": 90,
                 "index": 0
             },
             {
                 "type": "Tree",
-                "x": 430,
-                "y": 350,
-                "index": 0
-            },
-            {
-                "type": "Tree",
-                "x": 110,
-                "y": 290,
+                "x": 1170,
+                "y": 250,
                 "index": 1
             },
             {
                 "type": "Tree",
-                "x": 230,
+                "x": 810,
                 "y": 690,
-                "index": 2
+                "index": 1
             },
             {
                 "type": "Tree",
-                "x": 930,
-                "y": 90,
+                "x": 70,
+                "y": 210,
                 "index": 2
             },
             {
                 "type": "Tree",
                 "x": 1170,
-                "y": 110,
-                "index": 1
+                "y": 610,
+                "index": 0
             },
             {
-                "type": "Tree",
-                "x": 1010,
-                "y": 610,
-                "index": 1
+                "type": "Note",
+                "x": 470,
+                "y": 590,
+                "index": 0
             }
         ]
     }

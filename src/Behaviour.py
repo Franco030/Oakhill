@@ -95,6 +95,10 @@ class StalkerBehaviour(_Behaviour):
 
         if self.state == "WAITING":
             # Waiting state
+
+            if self.target.is_defeated:
+                return
+
             self.timer += dt_sec
             if self.timer >= self.current_wait_time:
                 self.state = "PURSUING"
