@@ -1,0 +1,32 @@
+import pygame
+from .Obstacles import *
+
+
+# This is the ground truth for obstacle configuration used both in the level editor and in the game
+OBSTACLE_CONFIG = {
+    'Tree': {
+        'class': Tree,
+        'indexes': range(len(Tree.images)),
+        'key': pygame.K_1,
+    },
+    'Rock': {
+        'class': Rock,
+        'indexes': range(len(Rock.images)),
+        'key': pygame.K_2,
+    },
+    'Wall': {
+        'class': Wall,
+        'indexes': range(len(Wall.images)),
+        'key': pygame.K_3,
+    },
+    'Deco_Wall': {
+        'class': Deco_Wall,
+        'indexes': range(len(Deco_Wall.images)),
+        'key': pygame.K_4
+    }
+    # Add more obstacles here
+}
+
+
+# In the future, we may want to have a similar config for enemies
+# ENEMY_CONFIG = {}

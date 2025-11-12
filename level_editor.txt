@@ -1,0 +1,25 @@
+If I want to add one more obstacle I need to edit these things
+
+We would need to have the new class of the new Obstacle already made in the Obstacles script
+The majority of walls will have the type be "Fence" until I fix that problem
+
+
+
+---------- NOT ANYMORE ---------- 
+
+1. Go to Scene_Loader script and add one more check to check te new obstacle
+2. In the level_editor script modify the dictionary "obstacle_types"
+3. Make a list of image indexes of the new obstacle
+4. Modify the UI text so that the it'll be "Press 1-Tree 2-Rock 3-Wall 4-NewObstacle
+5. Make a new event in the event loop inside the main loop, "pygame.K_4 -> NewObstacle"
+6. Modify the save state so that my new object is saved
+7. Modify the event MOUSEBUTTONDOWN (event.button == 1) to add the new object there "obj["type] == NewObstacle"
+
+---------- UPDATES ----------
+
+Now there's a dictionary with the event configuration for each obstacle added
+1. Go to level_editor and edit that dictionary to apply the configuration for the obstacle.
+2. Go to the Scene_Loader and edit the dictionary there to match the one in level_editor.
+
+
+Enemies are not yet added to the level_editor, and may never be added
