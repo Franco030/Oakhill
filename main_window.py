@@ -4,7 +4,7 @@ from src.Game_Constants import *
 from src.Obstacles import *
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
-
+from utils import resource_path
 
 def draw_note_ui(screen, note_text_lines):
     """
@@ -19,7 +19,7 @@ def draw_note_ui(screen, note_text_lines):
     pygame.draw.rect(screen, (0, 0, 0), sheet_rect)
     pygame.draw.rect(screen, (255, 255, 0), sheet_rect, 3)
 
-    font_path = "assets/fonts/scary_font.ttf"
+    font_path = resource_path("assets/fonts/scary_font.ttf")
     font = pygame.font.Font(font_path, 36)
 
 
@@ -50,6 +50,35 @@ def draw_defeat_text(screen):
     s.fill((0, 0, 0))
     screen.blit(s, (text_rect.left - 10, text_rect.top - 10))
     screen.blit(text_surface, text_rect)
+
+def draw_image_ui(screen, image_path):
+    """
+    Loads an image to the screen
+    """
+    try:
+        image = pygame.image.load(image_path).convert_alpha()
+    except pygame.error as e:
+        font = pygame.font.Font(None, 50)
+        text = font.render("Error: No se pudo cargar la imagen.", True, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+        return
+    
+    img_rect = image.get_rect()
+    scale = min(SCREEN_WIDTH / img_rect.width, SCREEN_HEIGHT / img_rect.height)
+    new_width = int(img_rect.width * scale)
+    new_height = int(img_rect.height * scale)
+    
+    scaled_image = pygame.transform.scale(image, (new_width, new_height))
+    scaled_rect = scaled_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    
+    screen.fill((0, 0, 0))
+    screen.blit(scaled_image, scaled_rect)
+
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (200, 200, 200))
+    close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
+    screen.blit(close_text, close_rect)
 
 def find_safe_spawn(target_pos, player_sprite, obstacles):
     """
@@ -124,32 +153,39 @@ def main():
 
 
     try:
-        chase_sound = pygame.mixer.Sound("assets/sounds/chase_loop.wav")
+        chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
     except pygame.error as e:
         print("Error when loading the file")
         chase_sound = None
 
     try:
-        flee_sound = pygame.mixer.Sound("assets/sounds/flee_loop.wav")
+        flee_sound = pygame.mixer.Sound(resource_path("assets/sounds/flee_loop.wav"))
     except pygame.error as e:
         print("Error when loading the file")
         flee_sound = None
 
     try:
-        note_interact_sound = pygame.mixer.Sound("assets/sounds/note_reading_more_vol.wav")
+        note_interact_sound = pygame.mixer.Sound(resource_path("assets/sounds/note_reading_more_vol.wav"))
     except pygame.error as e:
         print("Error when loading the file")
         note_interact_sound = None
 
     try:
-        walking_sound = pygame.mixer.Sound("assets/sounds/steps_cut.wav")
+        screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
+        # screaming_sound.set_volume(0.5)
+    except pygame.error as e:
+        print("Error when loading the file")
+        note_interact_sound = None
+
+    try:
+        walking_sound = pygame.mixer.Sound(resource_path("assets/sounds/steps_cut.wav"))
         walking_sound.set_volume(0.6)
     except pygame.error as e:
         print("Error when loading the file")
         walking_sound = None
 
     try:
-        pygame.mixer.music.load("assets/sounds/background_sound.wav")
+        pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(0.5)
     except pygame.error as e:
@@ -166,7 +202,7 @@ def main():
 
 
     # At first the zone is loaded without the enemies, the nemies may be added later, or maybe I'll add them to the editor, but that may never happen.
-    main_scene = SceneLoader.load_from_json("data/scene_output.json", WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
     scene = main_scene
 
     while True:
@@ -184,6 +220,8 @@ def main():
                     if game_state == "PLAYING":
                         player.sprite.attack()
                     elif game_state == "READING_NOTE":
+                        if isinstance(note_to_show, str):
+                            pygame.mixer.music.unpause()
                         note_to_show = None
                         game_state = "PLAYING"
                 
@@ -195,12 +233,14 @@ def main():
                         player.sprite.reset(safe_pos[0], safe_pos[1]) 
                         
                         for enemy in scene.enemies:
-                            if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
-                                enemy.behaviours.shoo(enemy)
+                            if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, '_start_waiting_offscreen'):
+                                enemy.behaviours._start_waiting_offscreen(enemy)
                         
                         game_state = "PLAYING"
                         
                     elif game_state == "READING_NOTE":
+                        if isinstance(note_to_show, str):
+                            pygame.mixer.music.unpause()
                         note_to_show = None
                         game_state = "PLAYING"                    
                 
@@ -215,6 +255,12 @@ def main():
                     note_to_show = note_being_interacted.read()
                     game_state = "READING_NOTE"
                     note_being_interacted = None
+
+
+                    if isinstance(note_to_show, str):
+                        pygame.mixer.music.pause()
+                        if screaming_sound:
+                            screaming_sound.play()
             
             if player.sprite.is_attacking and not note_being_interacted:
                 collided_interactables = pygame.sprite.spritecollide(
@@ -255,27 +301,27 @@ def main():
             # collided_obstacles = pygame.sprite.spritecollide(player.sprite, scene._obstacles, False, lambda sprite_a, sprite_b: sprite_b.collides_with(sprite_a))
 
             # --- Debugging Collisions ---s
-            pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
-            pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
-            pygame.draw.rect(screen, 'green', player.sprite.attack_rect, 2)
-            for sprite in scene.enemies:
-                if (sprite.collides_with(player.sprite)):
-                    print("collision")
-                pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
-            pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
-            pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
-            for sprite in scene.obstacles:
-                if isinstance(sprite, Wall):
-                    pygame.draw.rect(screen, 'pink', sprite.collision_rect, 2)
-            for sprite in scene.obstacles:
-                if isinstance(sprite, Tree):
-                    pygame.draw.rect(screen, 'blue', sprite.collision_rect, 2)
-            for sprite in scene.obstacles:
-                if isinstance(sprite, Rock):
-                    pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
-            for sprite in scene.obstacles:
-                if isinstance(sprite, SchoolBuilding):
-                    pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
+            # pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
+            # pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
+            # pygame.draw.rect(screen, 'green', player.sprite.attack_rect, 2)
+            # for sprite in scene.enemies:
+            #     if (sprite.collides_with(player.sprite)):
+            #         print("collision")
+            #     pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
+            # pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
+            # pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
+            # for sprite in scene.obstacles:
+            #     if isinstance(sprite, Wall):
+            #         pygame.draw.rect(screen, 'pink', sprite.collision_rect, 2)
+            # for sprite in scene.obstacles:
+            #     if isinstance(sprite, Tree):
+            #         pygame.draw.rect(screen, 'blue', sprite.collision_rect, 2)
+            # for sprite in scene.obstacles:
+            #     if isinstance(sprite, Rock):
+            #         pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
+            # for sprite in scene.obstacles:
+            #     if isinstance(sprite, SchoolBuilding):
+            #         pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
 
 
             # Right direction
@@ -334,7 +380,10 @@ def main():
             draw_defeat_text(screen)
 
         elif game_state == "READING_NOTE":
-            draw_note_ui(screen, note_to_show)
+            if isinstance(note_to_show, list):
+                draw_note_ui(screen, note_to_show)
+            elif isinstance(note_to_show, str):
+                draw_image_ui(screen, note_to_show)
 
 
         pygame.display.flip()

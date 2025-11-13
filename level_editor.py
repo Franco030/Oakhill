@@ -4,6 +4,7 @@ from src.Obstacles import *
 from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WORLD_MAP_LEVEL
 from src.Asset_Config import OBSTACLE_CONFIG
 from src.Note_Content import ALL_NOTE_TEXTS
+from src.Lore_Image_Content import ALL_LORE_IMAGES
 
 pygame.init()
 
@@ -101,6 +102,9 @@ while running:
                 if current_type == 'Note':
                     if current_index >= len(ALL_NOTE_TEXTS):
                         current_index = len(ALL_NOTE_TEXTS) - 1
+                elif current_type == 'Image':
+                    if current_index >= len(ALL_LORE_IMAGES):
+                        current_index = len(ALL_LORE_IMAGES)
                 elif current_type in OBSTACLE_CONFIG:
                     obstacle = OBSTACLE_CONFIG[current_type]
                     if current_index >= len(obstacle['indexes']):
@@ -167,6 +171,8 @@ while running:
 
                 if current_type == 'Note':
                     index_to_use = current_index % len(ALL_NOTE_TEXTS)
+                elif current_type == 'Image':
+                    index_to_use = current_index % len(ALL_LORE_IMAGES)
                 else:
                     indexes = config['indexes']
                     index_to_use = current_index % len(indexes)

@@ -40,6 +40,11 @@ OBSTACLE_CONFIG = {
         'indexes': range(len(Scarecrow.images)),
         'key': pygame.K_7,
     },
+    'LoreImage': {
+        'class': Image,
+        'indexes': range(len(Image.images)),
+        'key': pygame.K_8,
+    }
     # 'Door': {
     #     'class': Door,
     #     'indexes': range(len(Door.images)),

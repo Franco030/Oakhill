@@ -2,6 +2,7 @@ import pygame
 from src.Game_Constants import RESIZE_FACTOR, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS
 from src.Behaviour import *
 from src.Animations import Animation
+from utils import resource_path
 
 class _Enemy(pygame.sprite.Sprite):
     """
@@ -104,7 +105,7 @@ class _Enemy(pygame.sprite.Sprite):
 class Red_Ghost(_Enemy):
     
     def __init__(self, start_x, start_y, health, behaviours):
-        super().__init__(start_x, start_y, "assets/images/enemy.png", health, behaviours, 5)
+        super().__init__(start_x, start_y, resource_path("assets/images/enemy.png"), health, behaviours, 5)
 
         # --- Modify the self._collision_rect to get a better collision system ---
         self._collision_rect = pygame.Rect(
@@ -113,7 +114,7 @@ class Red_Ghost(_Enemy):
             self.rect.width - 50,
             self.rect.height - 50
         )
-        self.animation = Animation(self, [f"assets/animations/Red_Ghost/red_ghost_{i}.png" for i in range (1, 5)], 0.07)
+        self.animation = Animation(self, [resource_path(f"assets/animations/Red_Ghost/red_ghost_{i}.png") for i in range (1, 5)], 0.07)
 
     def while_attacked(self, amount):
         self.health -= amount
@@ -134,7 +135,7 @@ class Red_Ghost(_Enemy):
 
 class Stalker_Ghost(_Enemy):
     def __init__(self, start_x, start_y, health, behaviours):
-        super().__init__(start_x, start_y, "assets/images/ghost.png", health, behaviours, 5)
+        super().__init__(start_x, start_y, resource_path("assets/images/ghost.png"), health, behaviours, 5)
         # --- Modify the self._collision_rect to get a better collision system ---
         self._collision_rect = pygame.Rect(
             self.rect.left,
@@ -143,7 +144,7 @@ class Stalker_Ghost(_Enemy):
             self.rect.height - 20
         )
 
-        self.animation = Animation(self, [f"assets/animations/Stalker/ghost_{i}.png" for i in range (1, 5)], 0.09)
+        self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/ghost_{i}.png") for i in range (1, 5)], 0.09)
 
     def while_attacked(self):
         if self.is_flashing:

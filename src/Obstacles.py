@@ -1,6 +1,7 @@
 import pygame
 import random
 from .Game_Constants import RESIZE_FACTOR
+from utils import resource_path
 
 class _Obstacle(pygame.sprite.Sprite):
     """
@@ -54,7 +55,8 @@ class _Obstacle(pygame.sprite.Sprite):
 
 
 class Tree(_Obstacle):
-    images = ['assets/images/tree_0.png', 'assets/images/tree_1.png', 'assets/images/tree_2.png']
+    images_nr = ['assets/images/tree_0.png', 'assets/images/tree_1.png', 'assets/images/tree_2.png']
+    images = [resource_path(path) for path in images_nr]
     def __init__(self, start_x, start_y, index_image: int):
         
         if index_image >= len(Tree.images):
@@ -72,7 +74,8 @@ class Tree(_Obstacle):
         )
 
 class Rock(_Obstacle):
-    images = ['assets/images/rock_0.png']
+    images_nr = ['assets/images/rock_0.png']
+    images = [resource_path(path) for path in images_nr]
     def __init__(self, start_x, start_y, index_image: int):
         if index_image >= len(Rock.images):
             index_image = len(Rock.images) - 1
@@ -84,7 +87,8 @@ class Rock(_Obstacle):
         self._collision_rect.height = self._collision_rect.height
 
 class Wall(_Obstacle):
-    images = ['assets/images/fence_0.png', 'assets/images/gravestone_0.png', 'assets/images/gravestone_1.png']
+    images_nr = ['assets/images/fence_0.png', 'assets/images/gravestone_0.png', 'assets/images/gravestone_1.png']
+    images = [resource_path(path) for path in images_nr]
     def __init__(self, start_x, start_y, index_image: int):
         if index_image >= len(Wall.images):
             index_image = len(Wall.images) - 1
@@ -96,7 +100,8 @@ class Wall(_Obstacle):
         self._collision_rect.height = self._collision_rect.height - 10 - 30
 
 class Deco_Wall(_Obstacle):
-    images = ['assets/images/water_1.png', 'assets/images/blood_1.png', 'assets/images/cross.png', 'assets/images/grass_0.png', 'assets/images/grass_1.png', 'assets/images/star.png', 'assets/images/corn_0.png', 'assets/images/corn_1.png']
+    images_nr = ['assets/images/water_1.png', 'assets/images/blood_1.png', 'assets/images/cross.png', 'assets/images/grass_0.png', 'assets/images/grass_1.png', 'assets/images/star.png', 'assets/images/corn_0.png', 'assets/images/corn_1.png']
+    images = [resource_path(path) for path in images_nr]
     def __init__(self, start_x, start_y, index_image: int):
         if index_image >= len(Deco_Wall.images):
             index_image = len(Deco_Wall.images) - 1
@@ -114,7 +119,8 @@ class SchoolBuilding(_Obstacle):
     """
     Represents the school building obstacle
     """
-    images = ['assets/images/school.png']
+    images_nr = ['assets/images/school.png']
+    images = [resource_path(path) for path in images_nr]
 
     def __init__(self, start_x, start_y, index_image: int):
         super().__init__(start_x, start_y, self.images[0], 15)

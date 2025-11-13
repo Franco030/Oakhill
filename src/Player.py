@@ -1,6 +1,7 @@
 import pygame
 from .Game_Constants import *
 from .Animations import Animation
+from utils import resource_path
 
 class Player(pygame.sprite.Sprite):
     """
@@ -9,7 +10,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, start_x, start_y, walking_sound=None):
         super().__init__()
 
-        self.image = pygame.image.load('assets/images/detective.png').convert_alpha()
+        self.image = pygame.image.load(resource_path('assets/images/detective.png')).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * RESIZE_FACTOR, self.image.get_height() * RESIZE_FACTOR))
         self.rect = self.image.get_rect(center = (start_x, start_y))
         self.pos = pygame.math.Vector2(self.rect.center)
@@ -34,17 +35,17 @@ class Player(pygame.sprite.Sprite):
 
         # ---Animations---
         self.animations = {
-            'right': Animation(self, ['assets/animations/walking_right_1.png', 'assets/animations/walking_right_2.png'], 0.05),
-            'left': Animation(self, ['assets/animations/walking_left_1.png', 'assets/animations/walking_left_2.png'], 0.05),
-            'up': Animation(self, ['assets/animations/walking_up_1.png', 'assets/animations/walking_up_2.png'], 0.05),
-            'down': Animation(self, ['assets/animations/walking_down_1.png', 'assets/animations/walking_down_2.png'], 0.05),
+            'right': Animation(self, [resource_path('assets/animations/walking_right_1.png'), resource_path('assets/animations/walking_right_2.png')], 0.05),
+            'left': Animation(self, [resource_path('assets/animations/walking_left_1.png'), resource_path('assets/animations/walking_left_2.png')], 0.05),
+            'up': Animation(self, [resource_path('assets/animations/walking_up_1.png'), resource_path('assets/animations/walking_up_2.png')], 0.05),
+            'down': Animation(self, [resource_path('assets/animations/walking_down_1.png'), resource_path('assets/animations/walking_down_2.png')], 0.05),
 
-            'attack_down': Animation(self, [f"assets/animations/Detective_Att_Bot/detective_att_bot_{i}.png" for i in range(1, 5)], 0.05),
-            'attack_up': Animation(self, [f"assets/animations/Detective_Att_Top/detective_att_top_{i}.png" for i in range(1, 5)], 0.05),
-            'attack_left': Animation(self, ["assets/animations/Detective_Att_Left/detective_att_left.png"], 0.05),
-            'attack_right': Animation(self, ["assets/animations/Detective_Att_Right/detective_att_right.png"], 0.05),
+            'attack_down': Animation(self, [resource_path(f"assets/animations/Detective_Att_Bot/detective_att_bot_{i}.png") for i in range(1, 5)], 0.05),
+            'attack_up': Animation(self, [resource_path(f"assets/animations/Detective_Att_Top/detective_att_top_{i}.png") for i in range(1, 5)], 0.05),
+            'attack_left': Animation(self, [resource_path("assets/animations/Detective_Att_Left/detective_att_left.png")], 0.05),
+            'attack_right': Animation(self, [resource_path("assets/animations/Detective_Att_Right/detective_att_right.png")], 0.05),
 
-            'defeated': Animation(self, ["assets/images/detective_dead.png"], 0.05)
+            'defeated': Animation(self, [resource_path("assets/images/detective_dead.png")], 0.05)
         }
 
     @property
