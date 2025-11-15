@@ -81,6 +81,24 @@ def draw_image_ui(screen, image_path):
     close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
     screen.blit(close_text, close_rect)
 
+def draw_game_over_screen(screen, image):
+    """
+    Draws the "Game over" screen
+    """
+    if image:
+        screen.blit(image, (0, 0))
+    else:
+        screen.fill((0, 0, 0))
+        font = pygame.font.Font(None, 70)
+        text = font.render("GAME OVER", True, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+
+    font = pygame.font.Font(None, 40)
+    text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
+    text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
+    screen.blit(text, text_rect)
+
 def find_safe_spawn(target_pos, player_sprite, obstacles):
     """
     Finds a safe spawn position for the player
@@ -131,23 +149,6 @@ def find_safe_spawn(target_pos, player_sprite, obstacles):
         search_radius += 1
     return target_pos
 
-def draw_game_over_screen(screen, image):
-    """
-    Draws the "Game over" screen
-    """
-    if image:
-        screen.blit(image, (0, 0))
-    else:
-        screen.fill((0, 0, 0))
-        font = pygame.font.Font(None, 70)
-        text = font.render("GAME OVER", True, (255, 0, 0))
-        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-        screen.blit(text, text_rect)
-
-    font = pygame.font.Font(None, 40)
-    text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
-    text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
-    screen.blit(text, text_rect)
 
 
 def game_loop():
