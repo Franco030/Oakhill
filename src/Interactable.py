@@ -147,6 +147,23 @@ class Image(_NoteHolder):
         super().__init__(start_x, start_y, self.image_path, self.flash_image_path, None, RESIZE_FACTOR)
         self._collision_rect = self.rect.inflate(20, 20)
 
+        self.is_hidden = True # This will help to make it appear when we want
+
+    def unhide(self):
+        """
+        Makes the object visible in the world
+        """
+        self.is_hidden = False
+
+    def interact(self):
+        """
+        Starts the interaction ONLY if it's not hidden
+        """
+        if self.is_hidden:
+            return None
+        
+        return super().interact()
+
     def read(self):
         """
         Overrides "read" to return an image_path

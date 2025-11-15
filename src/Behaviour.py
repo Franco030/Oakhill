@@ -53,7 +53,7 @@ class StalkerBehaviour(_Behaviour):
     """
     A behaviour that makes the enemy follow the player
     """
-    def __init__(self, target, speed, min_wait=5.0, max_wait=15.0, stop_distance=50, chase_sound=None, flee_sound=None):
+    def __init__(self, target, speed, min_wait=15.0, max_wait=30.0, stop_distance=50, chase_sound=None, flee_sound=None):
         self.target = target
         self.speed = speed
         self.flee_speed = speed * 1.5

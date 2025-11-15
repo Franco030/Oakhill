@@ -22,14 +22,21 @@ class Scene:
         self.map_level = map_level
         self.enemies_dict = enemies
         self._enemies = pygame.sprite.Group()
-        self._enemies.add(enemy for enemy in self.enemies_dict[initial_location])
+        if initial_location in self.enemies_dict:
+            self._enemies.add(enemy for enemy in self.enemies_dict[initial_location])
+        
         self.obstacles_dict = obstacles
         self._obstacles = pygame.sprite.Group()
-        self._obstacles.add(obstacle for obstacle in self.obstacles_dict[initial_location])
+        if initial_location in self.obstacles_dict:
+            self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
+
         self._interactables_dict = interactables
         self._interactables = pygame.sprite.Group()
         if initial_location in self._interactables_dict:
-            self._interactables.add(interactable for interactable in self._interactables_dict[initial_location])
+            for obj in self._interactables_dict[initial_location]:
+                is_hidden = getattr(obj, 'is_hidden', False)
+                if not obj.interacted_once and not is_hidden:
+                    self._interactables.add(obj)
 
 
     def check_zone(self, cords: tuple):
@@ -62,9 +69,10 @@ class Scene:
         if self.location in self.obstacles_dict:
             self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
         if self.location in self._interactables_dict:
-            for interactable_obj in self._interactables_dict[self.location]:
-                if not interactable_obj.interacted_once:
-                    self._interactables.add(interactable_obj)
+            for obj in self._interactables_dict[self.location]:
+                is_hidden = getattr(obj, 'is_hidden', False)
+                if not obj.interacted_once and not is_hidden:
+                    self._interactables.add(obj)
 
     
     def set_location(self, new_location: tuple):
@@ -74,6 +82,23 @@ class Scene:
         if self.location != new_location:
             self.location = new_location
             self._load_obstacles_for_current_location()
+
+    def unhide_object_by_class(self, class_to_unhide):
+        """
+        Searches through the dict to look for hidden classes
+        """
+        if self.location not in self._interactables_dict:
+            return False
+        
+        found_and_unhidden = False
+
+        for obj in self._interactables_dict[self.location]:
+            if isinstance(obj, class_to_unhide) and getattr(obj, 'is_hidden', False):
+                obj.unhide()
+                self._interactables.add(obj)
+                found_and_unhidden = True
+
+        return found_and_unhidden
 
     def draw(self, screen, player):
         """

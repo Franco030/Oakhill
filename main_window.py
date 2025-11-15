@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 from src.Game_Constants import *
 from src.Obstacles import *
+from src.Interactable import Note, Scarecrow, Image
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from utils import resource_path
@@ -145,6 +146,8 @@ def main():
     note_to_show = None
     note_being_interacted = None
 
+    zone_event_triggered = set()
+
     pygame.init()
     pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
@@ -172,10 +175,10 @@ def main():
 
     try:
         screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
-        # screaming_sound.set_volume(0.5)
+        screaming_sound.set_volume(0.5)
     except pygame.error as e:
         print("Error when loading the file")
-        note_interact_sound = None
+        screaming_sound = None
 
     try:
         walking_sound = pygame.mixer.Sound(resource_path("assets/sounds/steps_cut.wav"))
@@ -183,6 +186,12 @@ def main():
     except pygame.error as e:
         print("Error when loading the file")
         walking_sound = None
+
+    try:
+        secret_revealed = pygame.mixer.Sound(resource_path("assets/sounds/item_discovered.wav"))
+    except pygame.error as e:
+        print("Error when loading the file")
+        secret_revealed = None
 
     try:
         pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
@@ -292,6 +301,28 @@ def main():
                         enemy.behaviours.shoo(enemy)
                     game_state = "PLAYER_DEAD"
                     break
+
+
+
+            if current_zone not in zone_event_triggered:
+                all_notes_in_zone = []
+                read_notes_count = 0
+
+                if current_zone in scene._interactables_dict:
+                    for obj in scene._interactables_dict[current_zone]:
+                        if isinstance(obj, Note):
+                            all_notes_in_zone.append(obj)
+                            if obj.interacted_once:
+                                read_notes_count += 1     
+
+                if len(all_notes_in_zone) > 0 and len(all_notes_in_zone) == read_notes_count:
+                    if scene.unhide_object_by_class(Image):
+                        note_interact_sound.set_volume(0.3)
+                        secret_revealed.play()
+                        note_interact_sound.set_volume(1)
+                        pass   
+                    
+                    zone_event_triggered.add(current_zone)
 
             
             scene.draw(screen, player)
