@@ -171,7 +171,8 @@ def game_loop():
     current_zone = (y_cord, x_cord)
 
     game_state = "PLAYING" # Other states could be "PLAYER_DEAD", "READING_NOTE"
-
+    death_screen_delay = DEATH_DELAY
+    game_over_sound_played = False
 
     note_to_show = None
     note_being_interacted = None
@@ -224,10 +225,10 @@ def game_loop():
         secret_revealed = None
 
     try:
-        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound_final.wav"))
+        game_over_sound = pygame.mixer.Sound(resource_path("assets/sounds/game_over_sound.wav"))
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
-        death_sound = None
+        game_over_sound = None
 
     try:
         game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
@@ -235,6 +236,12 @@ def game_loop():
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
         game_over_image = None
+
+    try:
+        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound.wav"))
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        death_sound = None
 
     try:
         pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
@@ -250,11 +257,11 @@ def game_loop():
     player.add(player_sprite)
 
 
-    initial_zone = (5, 2)
+    initial_zone = INITIAL_ZONE
 
 
     # At first the zone is loaded without the enemies, the nemies may be added later, or maybe I'll add them to the editor, but that may never happen.
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
     scene = main_scene
 
     while True:
@@ -280,6 +287,17 @@ def game_loop():
                 elif event.key == pygame.K_ESCAPE:
                     
                     if game_state == "PLAYER_DEAD":
+
+                        if death_sound:
+                            death_sound.stop()
+
+                        # player.sprite.reset(player_x_pos, player_y_pos)
+                        # scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
+                        # game_state = "PLAYING"
+
+                        # death_screen_delay = DEATH_DELAY
+                        # game_over_sound_played = False
+                        # pygame.mixer.music.play(loops=-1)
                         return
                         
                     elif game_state == "READING_NOTE":
@@ -330,14 +348,16 @@ def game_loop():
                                 enemy.while_attacked()
 
             for enemy in scene.enemies:
-                if enemy.collides_with(player.sprite):
+                if enemy.collides_with(player.sprite) and not player.sprite.is_defeated:
                     player.sprite.defeat() 
                     pygame.mixer.music.stop()
-                    chase_sound.set_volume(0)
+                    
+                    if chase_sound:
+                        chase_sound.stop()
+
                     if death_sound:
                         death_sound.play()
 
-                    game_state = "PLAYER_DEAD"
                     break
 
 
@@ -440,6 +460,16 @@ def game_loop():
                 else:
                     player.sprite.rect.bottom = SCREEN_HEIGHT + TRANSITION_BIAS
                     player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+
+            if player.sprite.is_defeated:
+                death_screen_delay -= delta_time
+                if death_screen_delay <= 0:
+                    game_state = "PLAYER_DEAD"
+
+                    if not game_over_sound_played:
+                        if game_over_sound:
+                            game_over_sound.play()
+                        game_over_sound_played = True
         
 
         elif game_state == "PLAYER_DEAD":
@@ -462,7 +492,6 @@ def main():
     """
     The master loop calls game_loop() repeatedly
     """
-    print("hola")
     while True:
         game_loop()
 
