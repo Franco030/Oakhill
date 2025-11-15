@@ -94,11 +94,6 @@ def draw_game_over_screen(screen, image):
         text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         screen.blit(text, text_rect)
 
-    # font = pygame.font.Font(None, 40)
-    # text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
-    # text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
-    # screen.blit(text, text_rect)
-
     img_rect = image.get_rect()
     scale = min(SCREEN_WIDTH / img_rect.width, SCREEN_HEIGHT / img_rect.height)
     new_width = int(img_rect.width * scale)
@@ -111,7 +106,7 @@ def draw_game_over_screen(screen, image):
     screen.blit(scaled_image, scaled_rect)
 
     close_font = pygame.font.Font(None, 30)
-    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (200, 200, 200))
+    close_text = close_font.render("Presiona 'ESC' para reiniciar", True, (200, 200, 200))
     close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
     screen.blit(close_text, close_rect)
 
@@ -285,16 +280,6 @@ def game_loop():
                 elif event.key == pygame.K_ESCAPE:
                     
                     if game_state == "PLAYER_DEAD":
-                        # default_spawn_pos = (player_x_pos, player_y_pos)
-                        # safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
-                        # player.sprite.reset(safe_pos[0], safe_pos[1]) 
-                        
-                        # for enemy in scene.enemies:
-                        #     if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, '_start_waiting_offscreen'):
-                        #         enemy.behaviours._start_waiting_offscreen(enemy)
-                        
-                        # game_state = "PLAYING"
-
                         return
                         
                     elif game_state == "READING_NOTE":
