@@ -42,7 +42,7 @@ class SceneLoader:
             zone_interactables[zone] = interactable_list
 
         enemy_dict_placeholder = {
-            (5, 2): [Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=5.0, max_wait=15.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))],
+            (5, 2): [Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=20.0, max_wait=60.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))],
         }
 
         return Scene(initial_zone, zone_obstacles, zone_interactables, enemy_dict_placeholder, map_level)

@@ -162,6 +162,75 @@ def find_safe_spawn(target_pos, player_sprite, obstacles):
 
 
 
+def menu_loop(screen, clock):
+    """
+    Main menu loop
+    """
+    try:
+        font_path = resource_path("assets/fonts/scary_font.ttf")
+        title_font = pygame.font.Font(font_path, 90)
+        button_font = pygame.font.Font(font_path, 60)
+    except Exception:
+        title_font = pygame.font.Font(None, 100)
+        button_font = pygame.font.Font(None, 70)
+
+    try:
+        
+        pygame.mixer.music.load(resource_path("assets/sounds/main_menu_song.wav")) 
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.7)
+    except pygame.error as e:
+        print(f"Error while loading the file: {e}")
+
+
+    title_text = title_font.render("OAKHILL", True, (255, 255, 0))
+    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3))
+
+    play_text = button_font.render("Jugar", True, (200, 200, 200))
+    play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
+
+    quit_text = button_font.render("Salir", True, (200, 200, 200))
+    quit_rect = quit_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 150))
+
+    pygame.mixer.music.stop()
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                return "QUIT"
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if play_rect.collidepoint(event.pos):
+                        pygame.mixer.music.stop()
+                        return "GAMEPLAY" 
+                    if quit_rect.collidepoint(event.pos):
+                        pygame.mixer.music.stop()
+                        return "QUIT"
+
+        screen.fill('black')
+
+        mouse_pos = pygame.mouse.get_pos()
+        
+        if play_rect.collidepoint(mouse_pos):
+            play_text = button_font.render("Jugar", True, (255, 255, 255))
+        else:
+            play_text = button_font.render("Jugar", True, (200, 200, 200))
+
+        if quit_rect.collidepoint(mouse_pos):
+            quit_text = button_font.render("Salir", True, (255, 255, 255))
+        else:
+            quit_text = button_font.render("Salir", True, (200, 200, 200))
+
+        screen.blit(title_text, title_rect)
+        screen.blit(play_text, play_rect)
+        screen.blit(quit_text, quit_rect)
+
+        pygame.display.flip()
+        clock.tick(FPS) 
+
+
 def game_loop(screen, clock):
     player_x_pos = 600
     player_y_pos = 300
@@ -258,7 +327,8 @@ def game_loop(screen, clock):
         # --- Event handling ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
+                pygame.mixer.music.stop()
+                return "QUIT"
 
             if event.type == pygame.KEYDOWN:
                 
@@ -280,7 +350,8 @@ def game_loop(screen, clock):
                         if game_over_sound:
                             game_over_sound.stop()
 
-                        return True
+                        pygame.mixer.music.stop()
+                        return "MAIN_MENU"
                         
                     elif game_state == "READING_NOTE":
                         if isinstance(note_to_show, str):
@@ -480,9 +551,13 @@ def main():
     pygame.display.set_caption('Oakhill')
     clock = pygame.time.Clock()
 
-    running = True
-    while running:
-        running = game_loop(screen, clock)
+    master_game_state = "MAIN_MENU"
+
+    while master_game_state != "QUIT":
+        if master_game_state == "MAIN_MENU":
+            master_game_state = menu_loop(screen, clock)
+        elif master_game_state == "GAMEPLAY":
+            master_game_state = game_loop(screen, clock)
 
     pygame.quit()
     exit()
