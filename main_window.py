@@ -175,7 +175,6 @@ def menu_loop(screen, clock):
         button_font = pygame.font.Font(None, 70)
 
     try:
-        
         pygame.mixer.music.load(resource_path("assets/sounds/main_menu_song.wav")) 
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(0.7)
@@ -192,7 +191,6 @@ def menu_loop(screen, clock):
     quit_text = button_font.render("Salir", True, (200, 200, 200))
     quit_rect = quit_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 150))
 
-    pygame.mixer.music.stop()
     
     while True:
         for event in pygame.event.get():
@@ -309,7 +307,7 @@ def game_loop(screen, clock):
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(0.5)
     except pygame.error as e:
-        print(f"Advertencia: No se pudo cargar la música de fondo: {e}")
+        print(f"Error when loading the file: {e}")
 
 
 
@@ -549,6 +547,14 @@ def main():
     pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
     pygame.display.set_caption('Oakhill')
+
+    try:
+        logo_image = pygame.image.load(resource_path("assets/images/logo.png"))
+        pygame.display.set_icon(logo_image)
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+
+
     clock = pygame.time.Clock()
 
     master_game_state = "MAIN_MENU"
