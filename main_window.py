@@ -212,7 +212,7 @@ def game_loop():
         secret_revealed = None
 
     try:
-        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound.wav"))
+        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound_final.wav"))
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
         death_sound = None
