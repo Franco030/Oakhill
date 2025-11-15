@@ -1,7 +1,7 @@
 import random
 import pygame
 import math
-from src.Game_Constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from src.Game_Constants import SCREEN_HEIGHT, SCREEN_WIDTH, TRANSITION_BIAS
 from abc import ABC, abstractmethod
 
 class _Behaviour(ABC):
@@ -83,15 +83,15 @@ class StalkerBehaviour(_Behaviour):
 
         if side == 0: # Top
             enemy.x = random.randint(0, SCREEN_WIDTH)
-            enemy.y = -100 # offscreen
+            enemy.y = -100 - TRANSITION_BIAS # offscreen
         elif side == 1: # Right
-            enemy.x = SCREEN_WIDTH + 100 # offscreen
+            enemy.x = SCREEN_WIDTH + 100 + TRANSITION_BIAS # offscreen
             enemy.y = random.randint(0, SCREEN_HEIGHT)
         elif side == 2: # Bottom
             enemy.x = random.randint(0, SCREEN_WIDTH)
-            enemy.y = SCREEN_HEIGHT + 100 # offscreen
+            enemy.y = SCREEN_HEIGHT + 100 + TRANSITION_BIAS # offscreen
         else: # Left
-            enemy.x = -100 # offscreen
+            enemy.x = -100 - TRANSITION_BIAS # offscreen
             enemy.y = random.randint(0, SCREEN_HEIGHT)
 
     def _stop_chase_sound(self):

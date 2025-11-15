@@ -162,7 +162,7 @@ def find_safe_spawn(target_pos, player_sprite, obstacles):
 
 
 
-def game_loop():
+def game_loop(screen, clock):
     player_x_pos = 600
     player_y_pos = 300
     
@@ -170,7 +170,7 @@ def game_loop():
     y_cord, x_cord = 5, 2
     current_zone = (y_cord, x_cord)
 
-    game_state = "PLAYING" # Other states could be "PLAYER_DEAD", "READING_NOTE"
+    game_state = "PLAYING"
     death_screen_delay = DEATH_DELAY
     game_over_sound_played = False
 
@@ -178,13 +178,6 @@ def game_loop():
     note_being_interacted = None
 
     zone_event_triggered = set()
-
-    pygame.init()
-    pygame.mixer.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
-    pygame.display.set_caption('Oakhill')
-    clock = pygame.time.Clock()
-
 
     try:
         chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
@@ -232,7 +225,6 @@ def game_loop():
 
     try:
         game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
-        # game_over_image = pygame.transform.scale(game_over_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
         game_over_image = None
@@ -256,10 +248,6 @@ def game_loop():
     player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
     player.add(player_sprite)
 
-
-    initial_zone = INITIAL_ZONE
-
-
     # At first the zone is loaded without the enemies, the nemies may be added later, or maybe I'll add them to the editor, but that may never happen.
     main_scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
     scene = main_scene
@@ -270,8 +258,7 @@ def game_loop():
         # --- Event handling ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
+                return False
 
             if event.type == pygame.KEYDOWN:
                 
@@ -286,19 +273,14 @@ def game_loop():
                 
                 elif event.key == pygame.K_ESCAPE:
                     
-                    if game_state == "PLAYER_DEAD":
+                    if game_state == "PLAYER_DEAD" or player.sprite.is_defeated:
 
                         if death_sound:
                             death_sound.stop()
+                        if game_over_sound:
+                            game_over_sound.stop()
 
-                        # player.sprite.reset(player_x_pos, player_y_pos)
-                        # scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, initial_zone, player_sprite, chase_sound, flee_sound)
-                        # game_state = "PLAYING"
-
-                        # death_screen_delay = DEATH_DELAY
-                        # game_over_sound_played = False
-                        # pygame.mixer.music.play(loops=-1)
-                        return
+                        return True
                         
                     elif game_state == "READING_NOTE":
                         if isinstance(note_to_show, str):
@@ -325,6 +307,10 @@ def game_loop():
                             screaming_sound.play()
             
             if player.sprite.is_attacking and not note_being_interacted:
+                for enemy in scene.enemies:
+                        if enemy.collision_rect.colliderect(player.sprite.attack_rect):
+                            if hasattr(enemy, 'while_attacked'):
+                                enemy.while_attacked()
                 collided_interactables = pygame.sprite.spritecollide(
                     player.sprite,
                     scene.interactables,
@@ -341,11 +327,7 @@ def game_loop():
                                 note_interact_sound.play()
                             note_being_interacted = note_obj
                             player.sprite.cancel_attack()
-                else:
-                    for enemy in scene.enemies:
-                        if enemy.collision_rect.colliderect(player.sprite.attack_rect):
-                            if hasattr(enemy, 'while_attacked'):
-                                enemy.while_attacked()
+                    
 
             for enemy in scene.enemies:
                 if enemy.collides_with(player.sprite) and not player.sprite.is_defeated:
@@ -492,8 +474,18 @@ def main():
     """
     The master loop calls game_loop() repeatedly
     """
-    while True:
-        game_loop()
+    pygame.init()
+    pygame.mixer.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
+    pygame.display.set_caption('Oakhill')
+    clock = pygame.time.Clock()
+
+    running = True
+    while running:
+        running = game_loop(screen, clock)
+
+    pygame.quit()
+    exit()
 
 if __name__ == "__main__":
     main()
