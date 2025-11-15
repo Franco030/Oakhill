@@ -94,10 +94,26 @@ def draw_game_over_screen(screen, image):
         text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         screen.blit(text, text_rect)
 
-    font = pygame.font.Font(None, 40)
-    text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
-    text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
-    screen.blit(text, text_rect)
+    # font = pygame.font.Font(None, 40)
+    # text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
+    # text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
+    # screen.blit(text, text_rect)
+
+    img_rect = image.get_rect()
+    scale = min(SCREEN_WIDTH / img_rect.width, SCREEN_HEIGHT / img_rect.height)
+    new_width = int(img_rect.width * scale)
+    new_height = int(img_rect.height * scale)
+    
+    scaled_image = pygame.transform.scale(image, (new_width, new_height))
+    scaled_rect = scaled_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    
+    screen.fill((0, 0, 0))
+    screen.blit(scaled_image, scaled_rect)
+
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (200, 200, 200))
+    close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
+    screen.blit(close_text, close_rect)
 
 def find_safe_spawn(target_pos, player_sprite, obstacles):
     """
@@ -220,7 +236,7 @@ def game_loop():
 
     try:
         game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
-        game_over_image = pygame.transform.scale(game_over_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # game_over_image = pygame.transform.scale(game_over_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
         game_over_image = None
@@ -466,6 +482,7 @@ def main():
     """
     The master loop calls game_loop() repeatedly
     """
+    print("hola")
     while True:
         game_loop()
 
