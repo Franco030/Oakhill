@@ -332,9 +332,6 @@ def game_loop():
             for enemy in scene.enemies:
                 if enemy.collides_with(player.sprite):
                     player.sprite.defeat() 
-                    # if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
-                    #     enemy.behaviours.shoo(enemy)
-
                     pygame.mixer.music.stop()
                     chase_sound.set_volume(0)
                     if death_sound:
@@ -446,10 +443,8 @@ def game_loop():
         
 
         elif game_state == "PLAYER_DEAD":
-            # player.update(scene.obstacles)
-            # scene.enemies.update(delta_time)
-            # scene.draw(screen, player)
-            # draw_defeat_text(screen)
+            player.update(scene.obstacles)
+            scene.enemies.update(delta_time)
             scene.draw(screen, player)
             draw_game_over_screen(screen, game_over_image)
 
