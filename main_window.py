@@ -131,8 +131,26 @@ def find_safe_spawn(target_pos, player_sprite, obstacles):
         search_radius += 1
     return target_pos
 
+def draw_game_over_screen(screen, image):
+    """
+    Draws the "Game over" screen
+    """
+    if image:
+        screen.blit(image, (0, 0))
+    else:
+        screen.fill((0, 0, 0))
+        font = pygame.font.Font(None, 70)
+        text = font.render("GAME OVER", True, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
 
-def main():
+    font = pygame.font.Font(None, 40)
+    text = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
+    text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
+    screen.blit(text, text_rect)
+
+
+def game_loop():
     player_x_pos = 600
     player_y_pos = 300
     
@@ -194,6 +212,19 @@ def main():
         secret_revealed = None
 
     try:
+        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound.wav"))
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        death_sound = None
+
+    try:
+        game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
+        game_over_image = pygame.transform.scale(game_over_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        game_over_image = None
+
+    try:
         pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(0.5)
@@ -237,15 +268,17 @@ def main():
                 elif event.key == pygame.K_ESCAPE:
                     
                     if game_state == "PLAYER_DEAD":
-                        default_spawn_pos = (player_x_pos, player_y_pos)
-                        safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
-                        player.sprite.reset(safe_pos[0], safe_pos[1]) 
+                        # default_spawn_pos = (player_x_pos, player_y_pos)
+                        # safe_pos = find_safe_spawn(default_spawn_pos, player.sprite, scene.obstacles)
+                        # player.sprite.reset(safe_pos[0], safe_pos[1]) 
                         
-                        for enemy in scene.enemies:
-                            if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, '_start_waiting_offscreen'):
-                                enemy.behaviours._start_waiting_offscreen(enemy)
+                        # for enemy in scene.enemies:
+                        #     if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, '_start_waiting_offscreen'):
+                        #         enemy.behaviours._start_waiting_offscreen(enemy)
                         
-                        game_state = "PLAYING"
+                        # game_state = "PLAYING"
+
+                        return
                         
                     elif game_state == "READING_NOTE":
                         if isinstance(note_to_show, str):
@@ -297,8 +330,14 @@ def main():
             for enemy in scene.enemies:
                 if enemy.collides_with(player.sprite):
                     player.sprite.defeat() 
-                    if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
-                        enemy.behaviours.shoo(enemy)
+                    # if hasattr(enemy, 'behaviours') and hasattr(enemy.behaviours, 'shoo'):
+                    #     enemy.behaviours.shoo(enemy)
+
+                    pygame.mixer.music.stop()
+                    chase_sound.set_volume(0)
+                    if death_sound:
+                        death_sound.play()
+
                     game_state = "PLAYER_DEAD"
                     break
 
@@ -405,10 +444,12 @@ def main():
         
 
         elif game_state == "PLAYER_DEAD":
-            player.update(scene.obstacles)
-            scene.enemies.update(delta_time)
+            # player.update(scene.obstacles)
+            # scene.enemies.update(delta_time)
+            # scene.draw(screen, player)
+            # draw_defeat_text(screen)
             scene.draw(screen, player)
-            draw_defeat_text(screen)
+            draw_game_over_screen(screen, game_over_image)
 
         elif game_state == "READING_NOTE":
             if isinstance(note_to_show, list):
@@ -420,6 +461,12 @@ def main():
         pygame.display.flip()
         clock.tick(FPS)
 
+def main():
+    """
+    The master loop calls game_loop() repeatedly
+    """
+    while True:
+        game_loop()
 
 if __name__ == "__main__":
     main()
