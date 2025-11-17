@@ -172,25 +172,3 @@ class Image(_NoteHolder):
         self.kill()
         return self.lore_image_path
         
-class Door(_Interactable):
-    """
-    Teleports the player to another scene when interacted with.
-    """
-
-    image_path = resource_path('assets/images/rock_0.png')  # Placeholder image
-    images = [image_path]  # Requirement for Asset_Config
-
-    def __init__(self, start_x, start_y, target_scene, target_x, target_y, index_image=0):
-        super().__init__(start_x, start_y, self.image_path, RESIZE_FACTOR)
-
-        self._collision_rect = self.rect.inflate(10, 10)  # Slightly larger collision area
-
-        self.target_scene = "school_interior"  # Placeholder target scene
-        self.target_start_pos = (300, 600) # The player will be teleported here
-
-    def interact(self):
-        """
-        Returns a command to teleport the player to the target scene and position.
-        """
-
-        return None # Placeholder for future implementation

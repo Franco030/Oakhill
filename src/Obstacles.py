@@ -36,6 +36,9 @@ class _Obstacle(pygame.sprite.Sprite):
         self._collision_rect = self.rect.copy()
         
     def update(self):
+        """
+        This will help if we need to animate an object, like a gif.
+        """
         pass
 
     @property
