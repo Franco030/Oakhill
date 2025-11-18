@@ -1,11 +1,9 @@
 import json
-from .Obstacles import *
+from .Obstacles import _Obstacle
 from .Scene import Scene
 from .Enemies import *
 from .Behaviour import *
 from .Interactable import _Interactable
-from .Asset_Config import OBSTACLE_CONFIG
-
 
 class SceneLoader:
     @staticmethod
@@ -17,27 +15,21 @@ class SceneLoader:
         zone_obstacles = {}
         zone_interactables = {}
 
-        for zone_str, objects in zone_data.items():
+        for zone_str, objects_data_list in zone_data.items():
             zone = eval(zone_str)
             obstacle_list = []
             interactable_list = []
 
-            for obj in objects:
-                obstacle_type = obj["type"]
-                config_entry = OBSTACLE_CONFIG.get(obstacle_type)
-                if config_entry:
-                    cls = config_entry['class']
-                    x, y = obj["x"], obj["y"]
-                    index = obj.get("index", 0)
-                    obstacle = cls(x, y, index)
-                    obstacle.index = index
+            for obj_data in objects_data_list:
+                obj_type = obj_data.get("type")
 
-                    if isinstance(obstacle, _Interactable):
-                        interactable_list.append(obstacle)
-                    else:
-                        obstacle_list.append(obstacle)
+                if obj_type == "Obstacle":
+                    obstacle = _Obstacle(obj_data)
+                    obstacle_list.append(obstacle)
+                elif obj_type == "Interactable":
+                    interactable = _Interactable(obj_data)
+                    interactable_list.append(interactable)
                 
-
             zone_obstacles[zone] = obstacle_list
             zone_interactables[zone] = interactable_list
 

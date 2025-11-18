@@ -83,7 +83,7 @@ class Scene:
             self.location = new_location
             self._load_obstacles_for_current_location()
 
-    def unhide_object_by_class(self, class_to_unhide):
+    def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
         """
         Searches through the dict to look for hidden classes
         """
@@ -93,7 +93,7 @@ class Scene:
         found_and_unhidden = False
 
         for obj in self._interactables_dict[self.location]:
-            if isinstance(obj, class_to_unhide) and getattr(obj, 'is_hidden', False):
+            if obj.interaction_type == interaction_type_to_unhide and getattr(obj, 'is_hidden', False):
                 obj.unhide()
                 self._interactables.add(obj)
                 found_and_unhidden = True

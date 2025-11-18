@@ -1,8 +1,8 @@
 import pygame
 from sys import exit
 from src.Game_Constants import *
-from src.Obstacles import *
-from src.Interactable import Note, Scarecrow, Image
+from src.Obstacles import _Obstacle
+from src.Interactable import _Interactable 
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from utils import resource_path
@@ -11,7 +11,7 @@ def draw_note_ui(screen, note_text_lines):
     """
     Draws the note UI on the screen with the provided text lines.
     """
-
+    # ... (Esta función no necesita cambios)
     padding = 50
     ui_width = SCREEN_WIDTH - padding * 2
     ui_height = SCREEN_HEIGHT - padding * 2
@@ -41,7 +41,7 @@ def draw_defeat_text(screen):
     """
     Draws the defeat text on the screen.
     """
-
+    # ... (Esta función no necesita cambios)
     font = pygame.font.Font(None, 50)
     text_surface = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
     text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
@@ -56,6 +56,7 @@ def draw_image_ui(screen, image_path):
     """
     Loads an image to the screen
     """
+    # ... (Esta función no necesita cambios)
     try:
         image = pygame.image.load(image_path).convert_alpha()
     except pygame.error as e:
@@ -85,6 +86,7 @@ def draw_game_over_screen(screen, image):
     """
     Draws the "Game over" screen
     """
+    # ... (Esta función no necesita cambios)
     if image:
         screen.blit(image, (0, 0))
     else:
@@ -114,7 +116,7 @@ def find_safe_spawn(target_pos, player_sprite, obstacles):
     """
     Finds a safe spawn position for the player
     """
-
+    # ... (Esta función no necesita cambios)
     player_w = player_sprite.collision_rect.width
     player_h = player_sprite.collision_rect.height
 
@@ -166,6 +168,7 @@ def menu_loop(screen, clock):
     """
     Main menu loop
     """
+    # ... (Esta función no necesita cambios)
     try:
         font_path = resource_path("assets/fonts/scary_font.ttf")
         title_font = pygame.font.Font(font_path, 90)
@@ -237,7 +240,10 @@ def game_loop(screen, clock):
     y_cord, x_cord = 5, 2
     current_zone = (y_cord, x_cord)
 
+    # MODIFICADO: Añadimos un nuevo estado y una variable para la imagen
     game_state = "PLAYING"
+    image_to_show = None # <-- NUEVO
+    
     death_screen_delay = DEATH_DELAY
     game_over_sound_played = False
 
@@ -246,6 +252,7 @@ def game_loop(screen, clock):
 
     zone_event_triggered = set()
 
+    # ... (Toda la carga de sonidos permanece igual) ...
     try:
         chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
     except pygame.error as e:
@@ -309,15 +316,14 @@ def game_loop(screen, clock):
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
 
-
-
+    # ... (La creación del jugador y la carga de la escena permanecen igual) ...
     player = pygame.sprite.GroupSingle()
     player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
     player.add(player_sprite)
-
-    # At first the zone is loaded without the enemies, the nemies may be added later, or maybe I'll add them to the editor, but that may never happen.
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
+    
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
     scene = main_scene
+
 
     while True:
         screen.fill('black')
@@ -330,19 +336,21 @@ def game_loop(screen, clock):
 
             if event.type == pygame.KEYDOWN:
                 
+                # MODIFICADO: K_SPACE ahora también cierra READING_IMAGE
                 if event.key == pygame.K_SPACE:
                     if game_state == "PLAYING":
                         player.sprite.attack()
-                    elif game_state == "READING_NOTE":
-                        if isinstance(note_to_show, str):
-                            pygame.mixer.music.unpause()
+                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                        pygame.mixer.music.unpause()
                         note_to_show = None
+                        image_to_show = None # <-- NUEVO
                         game_state = "PLAYING"
                 
+                # MODIFICADO: K_ESCAPE ahora también cierra READING_IMAGE
                 elif event.key == pygame.K_ESCAPE:
                     
                     if game_state == "PLAYER_DEAD" or player.sprite.is_defeated:
-
+                        # ... (sin cambios) ...
                         if death_sound:
                             death_sound.stop()
                         if game_over_sound:
@@ -351,10 +359,10 @@ def game_loop(screen, clock):
                         pygame.mixer.music.stop()
                         return "MAIN_MENU"
                         
-                    elif game_state == "READING_NOTE":
-                        if isinstance(note_to_show, str):
-                            pygame.mixer.music.unpause()
+                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                        pygame.mixer.music.unpause()
                         note_to_show = None
+                        image_to_show = None # <-- NUEVO
                         game_state = "PLAYING"                    
                 
         # --- Game logic ---
@@ -362,19 +370,30 @@ def game_loop(screen, clock):
             player.update(scene.obstacles)
             scene.enemies.update(delta_time)
 
+            # MODIFICADO: Lógica de interacción
             if note_being_interacted:
                 status = note_being_interacted.update()
                 if status == "interaction_finished":
-                    note_to_show = note_being_interacted.read()
-                    game_state = "READING_NOTE"
-                    note_being_interacted = None
-
-
-                    if isinstance(note_to_show, str):
+                    # 1. Obtenemos los datos genéricos
+                    interaction_data = note_being_interacted.read() 
+                    
+                    # 2. Revisamos el tipo de interacción
+                    if note_being_interacted.interaction_type == "Note":
+                        note_to_show = interaction_data
+                        game_state = "READING_NOTE"
+                        
+                    
+                    elif note_being_interacted.interaction_type == "Image":
+                        image_to_show = interaction_data
+                        game_state = "READING_IMAGE"
                         pygame.mixer.music.pause()
+
                         if screaming_sound:
                             screaming_sound.play()
+                    
+                    note_being_interacted = None
             
+            # ... (Lógica de ataque del jugador permanece igual) ...
             if player.sprite.is_attacking and not note_being_interacted:
                 for enemy in scene.enemies:
                         if enemy.collision_rect.colliderect(player.sprite.attack_rect):
@@ -397,7 +416,7 @@ def game_loop(screen, clock):
                             note_being_interacted = note_obj
                             player.sprite.cancel_attack()
                     
-
+            # ... (Lógica de muerte del jugador permanece igual) ...
             for enemy in scene.enemies:
                 if enemy.collides_with(player.sprite) and not player.sprite.is_defeated:
                     player.sprite.defeat() 
@@ -412,20 +431,22 @@ def game_loop(screen, clock):
                     break
 
 
-
+            # MODIFICADO: Lógica de evento de zona
             if current_zone not in zone_event_triggered:
                 all_notes_in_zone = []
                 read_notes_count = 0
 
                 if current_zone in scene._interactables_dict:
                     for obj in scene._interactables_dict[current_zone]:
-                        if isinstance(obj, Note):
+                        # Revisamos el tipo de interacción, no la clase
+                        if obj.interaction_type == "Note":
                             all_notes_in_zone.append(obj)
                             if obj.interacted_once:
                                 read_notes_count += 1     
 
                 if len(all_notes_in_zone) > 0 and len(all_notes_in_zone) == read_notes_count:
-                    if scene.unhide_object_by_class(Image):
+                    # MODIFICADO: Usamos la nueva función en Scene.py
+                    if scene.unhide_object_by_interaction_type("Image"): 
                         note_interact_sound.set_volume(0.3)
                         secret_revealed.play()
                         note_interact_sound.set_volume(1)
@@ -436,35 +457,6 @@ def game_loop(screen, clock):
             
             scene.draw(screen, player)
 
-            # --- Collisions (this type of collisions do not change the game_active e.g. (an enemy attacking you)) ---
-            # ---------- THIS WAS BEFORE UPDATING THE PLAYER CLASS, NOW PLAYER COLLISIONS ARE HANDLED BY THE PLAYER -------------
-            # collided_obstacles = pygame.sprite.spritecollide(player.sprite, scene._obstacles, False, lambda sprite_a, sprite_b: sprite_b.collides_with(sprite_a))
-
-            # --- Debugging Collisions ---s
-            # pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
-            # pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
-            # pygame.draw.rect(screen, 'green', player.sprite.attack_rect, 2)
-            # for sprite in scene.enemies:
-            #     if (sprite.collides_with(player.sprite)):
-            #         print("collision")
-            #     pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
-            # pygame.draw.rect(screen, 'red', player.sprite.rect, 2)
-            # pygame.draw.rect(screen, 'yellow', player.sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Wall):
-            #         pygame.draw.rect(screen, 'pink', sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Tree):
-            #         pygame.draw.rect(screen, 'blue', sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, Rock):
-            #         pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
-            # for sprite in scene.obstacles:
-            #     if isinstance(sprite, SchoolBuilding):
-            #         pygame.draw.rect(screen, 'green', sprite.collision_rect, 2)
-
-
-            # Right direction
             if (player.sprite.rect.left > SCREEN_WIDTH + TRANSITION_BIAS):
                 if scene.check_zone((y_cord, x_cord + 1)):
                     x_cord += 1
@@ -511,7 +503,8 @@ def game_loop(screen, clock):
                 else:
                     player.sprite.rect.bottom = SCREEN_HEIGHT + TRANSITION_BIAS
                     player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
-
+            
+            # ... (Lógica de temporizador de muerte permanece igual) ...
             if player.sprite.is_defeated:
                 death_screen_delay -= delta_time
                 if death_screen_delay <= 0:
@@ -522,18 +515,21 @@ def game_loop(screen, clock):
                             game_over_sound.play()
                         game_over_sound_played = True
         
-
+        # ... (Estado PLAYER_DEAD permanece igual) ...
         elif game_state == "PLAYER_DEAD":
             player.update(scene.obstacles)
             scene.enemies.update(delta_time)
             scene.draw(screen, player)
             draw_game_over_screen(screen, game_over_image)
 
+        # MODIFICADO: Estados de lectura
         elif game_state == "READING_NOTE":
-            if isinstance(note_to_show, list):
-                draw_note_ui(screen, note_to_show)
-            elif isinstance(note_to_show, str):
-                draw_image_ui(screen, note_to_show)
+            # Este estado ahora solo maneja notas
+            draw_note_ui(screen, note_to_show)
+        
+        elif game_state == "READING_IMAGE": # <-- NUEVO
+            # Este estado ahora solo maneja imágenes
+            draw_image_ui(screen, image_to_show)
 
 
         pygame.display.flip()
@@ -543,6 +539,7 @@ def main():
     """
     The master loop calls game_loop() repeatedly
     """
+    # ... (Esta función no necesita cambios)
     pygame.init()
     pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
