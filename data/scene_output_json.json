@@ -11476,12 +11476,12 @@
                 "interaction_data": "Dia ~3=-3=-14~!@,El señor Ki`12~!@- me atacó~@!@$~@$!@~#~)39`4-`,.,./''`~!@3402-3=4"
             },
             {
-                "id": "obj_1763448034",
+                "id": "obj_1763445988",
                 "type": "Obstacle",
                 "x": 640,
                 "y": 390,
-                "image_path": "assets/images/cross.png",
-                "resize_factor": 7.49999999999999,
+                "image_path": "",
+                "resize_factor": 1.0,
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [

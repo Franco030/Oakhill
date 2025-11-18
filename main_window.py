@@ -309,7 +309,7 @@ def game_loop(screen, clock):
         print(f"Error when loading the file: {e}")
         death_sound = None
 
-    try:
+    try:  
         pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
         pygame.mixer.music.play(loops=-1)
         pygame.mixer.music.set_volume(0.5)
