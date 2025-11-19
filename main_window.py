@@ -363,6 +363,7 @@ def game_loop(screen, clock):
         if game_state == "PLAYING":  
             player.update(scene.obstacles)
             scene.enemies.update(delta_time)
+            scene.obstacles.update()
 
             if note_being_interacted:
                 status = note_being_interacted.update()

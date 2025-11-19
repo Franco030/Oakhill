@@ -33,6 +33,8 @@ class SceneLoader:
             zone_obstacles[zone] = obstacle_list
             zone_interactables[zone] = interactable_list
 
+
+        # --- Hardcoded enemies ---
         enemy_dict_placeholder = {
             (5, 2): [Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=20.0, max_wait=60.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))],
         }

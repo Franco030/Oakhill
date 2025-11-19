@@ -5,9 +5,10 @@ import time
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QFileDialog,
     QListWidgetItem, QGraphicsScene, QGraphicsPixmapItem,
-    QGraphicsRectItem, QGraphicsItem,
+    QGraphicsRectItem, QGraphicsItem, QLabel,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
-    QDoubleSpinBox, QCheckBox, QListWidget
+    QDoubleSpinBox, QCheckBox, QListWidget, QFormLayout,
+    QWidget, QHBoxLayout, QSizePolicy
 )
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut
 from PySide6.QtCore import Qt, QRectF, QPointF
@@ -18,7 +19,7 @@ GAME_WIDTH = 1280
 GAME_HEIGHT = 780
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 
-# --- Visual Classes ---
+# --- CLASES VISUALES ---
 
 class ResizeHandle(QGraphicsRectItem):
     def __init__(self, parent_hitbox, editor_ref):
@@ -132,7 +133,7 @@ class LevelObjectItem(QGraphicsPixmapItem):
         return super().itemChange(change, value)
 
 
-# --- Main Editor ---
+# --- EDITOR PRINCIPAL ---
 
 class LevelEditor(QMainWindow, Ui_LevelEditor):
     def __init__(self):
@@ -143,6 +144,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_is_ground.setObjectName("prop_is_ground")
         self.prop_is_ground.setText("Es Suelo (Fondo)")
         self.horizontalLayout_7.addWidget(self.prop_is_ground)
+
+        self.label_z = QLabel("Z-Order (Prioridad):", self.properties_box)
+        self.prop_z_index = QSpinBox(self.properties_box)
+        self.prop_z_index.setRange(-100, 100) 
+        self.prop_z_index.setValue(0)
+        self.prop_z_index.setToolTip("Mayor número = Más al frente. 0 = Automático por Y.")
+        
+        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.label_z)
+        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.prop_z_index)
 
         self.base_path = os.path.abspath(os.path.dirname(__file__))
         self.current_data = {"zones": {}}
@@ -162,6 +172,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_image_path_combo, self.prop_flash_image_path_combo, self.data_image_path_combo
         ]
 
+        # --- MEJORA: Inyectar botones de "Examinar..." ---
+        self.setup_browse_button(self.formLayout, 3, self.prop_image_path_combo)
+        self.setup_browse_button(self.formLayout_2, 1, self.prop_flash_image_path_combo)
+        
+        # Para el data_image_path_combo (que ya está en un HBox), solo añadimos el botón
+        self.btn_browse_data = QPushButton("...")
+        self.btn_browse_data.setFixedWidth(30)
+        self.btn_browse_data.clicked.connect(lambda: self.browse_file_for_combo(self.data_image_path_combo))
+        self.horizontalLayout_2.addWidget(self.btn_browse_data)
+        # -------------------------------------------------
+
         self.action_load_json.triggered.connect(self.load_json)
         self.action_save_json.triggered.connect(self.save_json)
         self.btn_add_object.clicked.connect(self.add_new_object)
@@ -171,6 +192,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.prop_x.valueChanged.connect(self.on_property_changed)
         self.prop_y.valueChanged.connect(self.on_property_changed)
+        self.prop_z_index.valueChanged.connect(self.on_property_changed)
         self.prop_resize_factor.valueChanged.connect(self.on_property_changed)
         self.prop_hitbox_dx.valueChanged.connect(self.on_property_changed)
         self.prop_hitbox_dy.valueChanged.connect(self.on_property_changed)
@@ -195,20 +217,71 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
         self.shortcut_up.activated.connect(lambda: self.navigate_zone(0, -1))
-
         self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
         self.shortcut_down.activated.connect(lambda: self.navigate_zone(0, 1))
-
         self.shortcut_left = QShortcut(QKeySequence(Qt.Key_Left), self)
         self.shortcut_left.activated.connect(lambda: self.navigate_zone(-1, 0))
-
         self.shortcut_right = QShortcut(QKeySequence(Qt.Key_Right), self)
         self.shortcut_right.activated.connect(lambda: self.navigate_zone(1, 0))
 
         self.populate_image_combos()
         self.disable_property_panel()
 
-    # --- Navigation ---
+    # --- SISTEMA DE SELECCIÓN DE ARCHIVOS ---
+    
+    def setup_browse_button(self, form_layout, row, combo_widget):
+        """
+        Reemplaza un combobox en un FormLayout con un contenedor que tiene [ComboBox] + [Botón]
+        """
+        # 1. Crear contenedor y layout horizontal
+        container = QWidget()
+        h_layout = QHBoxLayout(container)
+        h_layout.setContentsMargins(0, 0, 0, 0)
+        h_layout.setSpacing(5)
+        
+        # 2. Crear el botón de examinar
+        btn_browse = QPushButton("...")
+        btn_browse.setFixedWidth(30)
+        btn_browse.setToolTip("Examinar archivos...")
+        btn_browse.clicked.connect(lambda: self.browse_file_for_combo(combo_widget))
+
+        # 3. Sacar el combo del layout original y ponerlo en el nuestro
+        # (Qt a veces es quisquilloso al mover widgets, pero esto suele funcionar)
+        form_layout.removeWidget(combo_widget)
+        
+        h_layout.addWidget(combo_widget)
+        h_layout.addWidget(btn_browse)
+        
+        # 4. Poner el contenedor en el FormLayout original
+        form_layout.setWidget(row, QFormLayout.FieldRole, container)
+
+    def browse_file_for_combo(self, combo_widget):
+        """Abre el explorador, obtiene la ruta relativa y la pone en el combo."""
+        start_dir = os.path.join(self.base_path, "assets")
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, "Seleccionar Imagen", start_dir, "Images (*.png *.jpg *.jpeg)"
+        )
+        
+        if filepath:
+            try:
+                # Intentar obtener ruta relativa a la carpeta del proyecto
+                rel_path = os.path.relpath(filepath, self.base_path)
+                # Normalizar slashes para que sea compatible con Windows/Mac/Linux
+                clean_path = rel_path.replace("\\", "/")
+                
+                # Añadir al combo si no existe y seleccionarlo
+                if clean_path not in [combo_widget.itemText(i) for i in range(combo_widget.count())]:
+                    combo_widget.addItem(clean_path)
+                
+                combo_widget.setCurrentText(clean_path)
+                
+                # IMPORTANTE: Forzar actualización de propiedades
+                self.on_property_changed()
+                
+            except ValueError:
+                print("Error: El archivo seleccionado debe estar dentro de la carpeta del proyecto.")
+
+    # --- NAVEGACIÓN ---
     def navigate_zone(self, dx, dy):
         focus_widget = QApplication.focusWidget()
         if isinstance(focus_widget, (QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox)):
@@ -222,22 +295,19 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             parts = content.split(",")
             current_y = int(parts[0])
             current_x = int(parts[1])
-        except:
-            return
+        except: return
 
         new_y = current_y + dy
         new_x = current_x + dx
         
         if new_y < 0 or new_y >= len(WORLD_MAP_LEVEL) or new_x < 0 or new_x >= len(WORLD_MAP_LEVEL[0]):
-            print(f"Bloqueado: Fuera de límites del mapa ({new_y}, {new_x})")
+            print(f"Bloqueado: Fuera de límites ({new_y}, {new_x})")
             return
-
         if WORLD_MAP_LEVEL[new_y][new_x] == 0:
-            print(f"Bloqueado: La zona ({new_y}, {new_x}) es inválida (0) en el mapa.")
+            print(f"Bloqueado: Zona inválida (0) en el mapa.")
             return
 
         target_zone_key = f"({new_y}, {new_x})"
-
         index = self.combo_zone_selector.findText(target_zone_key)
         if index != -1:
             self.combo_zone_selector.setCurrentIndex(index)
@@ -248,7 +318,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.combo_zone_selector.setCurrentText(target_zone_key)
 
 
-    # --- Visual Sincronization ---
+    # --- SINCRONIZACIÓN ---
 
     def on_scene_selection_changed(self):
         if self.list_objects.signalsBlocked(): return
@@ -310,7 +380,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.current_hitbox_item.setPos(sprite_pos.x() + offset[0], sprite_pos.y() + offset[1])
         self.current_hitbox_item.ignore_movement = False
 
-    # --- UI Methods ---
+    # --- MÉTODOS UI ---
 
     def _block_all_property_signals(self, block: bool):
         parent_widget = self.scrollAreaWidgetContents
@@ -344,7 +414,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         elif combo_text == "Door": idx = 2
         self.prop_interaction_data_stack.setCurrentIndex(idx)
 
-    # --- Load and Save ---
+    # --- CARGA Y GUARDADO ---
 
     def load_json(self):
         filepath, _ = QFileDialog.getOpenFileName(self, "Cargar JSON", self.base_path, "JSON (*.json)")
@@ -369,6 +439,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                     if obj.get(k) in (None, "None"): obj[k] = ""
                 try: obj["resize_factor"] = float(obj.get("resize_factor", 1))
                 except: obj["resize_factor"] = 1.0
+                try: obj["z_index"] = int(obj.get("z_index", 0))
+                except: obj["z_index"] = 0
+                
                 itype = obj.get("interaction_type", "None")
                 if itype == "Note":
                     d = obj.get("interaction_data")
@@ -394,7 +467,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             print("Guardado exitoso.")
         except Exception as e: print(f"Error al guardar: {e}")
 
-    # --- Views ---
+    # --- VISTAS ---
 
     def populate_image_combos(self):
         self.image_paths = ["None"]
@@ -443,6 +516,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         item.ignore_movement = True
         item.setPos(obj.get("x", 0) - scaled.width()/2, obj.get("y", 0) - scaled.height()/2)
         item.ignore_movement = False
+        
+        z_val = int(obj.get("z_index", 0))
+        if obj.get("is_ground"): z_val -= 1000
+        item.setZValue(z_val)
+        
         self.current_scene.addItem(item)
         return item
 
@@ -471,9 +549,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         y = data.get("y", 0)
         w = scaled.width()
         h = scaled.height()
+        
         pixmap_item.ignore_movement = True
         pixmap_item.setPos(x - (w / 2), y - (h / 2))
         pixmap_item.ignore_movement = False
+        
+        z_val = int(data.get("z_index", 0))
+        if data.get("is_ground"): z_val -= 1000
+        pixmap_item.setZValue(z_val)
         
         if self.current_hitbox_item:
             self.current_scene.removeItem(self.current_hitbox_item)
@@ -489,6 +572,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.current_hitbox_item.ignore_movement = True
             self.current_hitbox_item.setPos(sprite_x + offset[0], sprite_y + offset[1])
             self.current_hitbox_item.ignore_movement = False
+            self.current_hitbox_item.setZValue(9999) 
             self.current_scene.addItem(self.current_hitbox_item)
             self.current_hitbox_item.add_resize_handle()
             if self.list_objects.currentItem() and self.list_objects.currentItem().data(Qt.UserRole) is data:
@@ -536,6 +620,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_type.setCurrentText(data.get("type", "Obstacle"))
         self.prop_x.setValue(data.get("x", 0))
         self.prop_y.setValue(data.get("y", 0))
+        self.prop_z_index.setValue(int(data.get("z_index", 0))) 
         self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
         try: rz = float(data.get("resize_factor", 1))
         except: rz = 1.0
@@ -585,6 +670,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         data['type'] = self.prop_type.currentText()
         data['x'] = self.prop_x.value()
         data['y'] = self.prop_y.value()
+        data['z_index'] = self.prop_z_index.value() 
         data['image_path'] = self.prop_image_path_combo.currentText()
         data['resize_factor'] = self.prop_resize_factor.value()
         data['is_passable'] = self.prop_is_passable.isChecked()
@@ -632,7 +718,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         if not current_zone_key: return
         new_id = f"obj_{int(time.time())}"
         new_obj_data = {
-            "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2,
+            "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
             "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
             "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
             "flash_image_path": "None", "interaction_type": "None", "interaction_data": ""

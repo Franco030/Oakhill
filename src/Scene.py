@@ -107,42 +107,37 @@ class Scene:
     def draw(self, screen, player):
         """
         Draws the obstacles and the player in the correct rendering order.
-        Layer 1: Ground items (is_ground=True) - Always below
-        Layer 2: Background items (width=0, like passable walls) - Sorted by Y
-        Layer 3: Main items (Solid objects + Player + Interactables) - Sorted by Y
+        Sorting Key: (IsGround, Z-Index, Y-Position)
         """
-        ground_sprites = []
-        background_sprites = []
-        main_sprites = [player.sprite]
-
-        def categorize_sprite(sprite):
-            if getattr(sprite, 'is_ground', False):
-                ground_sprites.append(sprite)
-            elif sprite.collision_rect.width == 0:
-                background_sprites.append(sprite)
-            else:
-                main_sprites.append(sprite)
+        render_list = []
 
         for sprite in self._obstacles:
-            categorize_sprite(sprite)
+            render_list.append(sprite)
         
         for sprite in self._interactables:
             if sprite not in self._obstacles:
-                categorize_sprite(sprite)
+                render_list.append(sprite)
 
-        ground_sprites.sort(key=lambda sprite: sprite.rect.top)
-        background_sprites.sort(key=lambda sprite: sprite.rect.top)
-        main_sprites.sort(key=lambda sprite: sprite.collision_rect.bottom)
+        render_list.append(player.sprite)
 
-        for sprite in ground_sprites:
-            screen.blit(sprite.image, sprite.rect)
-            
-        for sprite in background_sprites:
-            screen.blit(sprite.image, sprite.rect)
-        
-        for sprite in main_sprites:
-            screen.blit(sprite.image, sprite.rect)
-
+        # 4. Añadir enemigos
         for enemy in self._enemies:
-            screen.blit(enemy.image, enemy.rect)
+            render_list.append(enemy)
+   
+        def sort_key(sprite):
+            is_ground = getattr(sprite, 'is_ground', False)
+            layer_priority = 0 if is_ground else 1
+            
+            z = getattr(sprite, 'z_index', 0)
+
+            y_depth = getattr(sprite, 'rect', None).bottom if hasattr(sprite, 'rect') else 0
+            if hasattr(sprite, 'collision_rect'):
+                 y_depth = sprite.collision_rect.bottom
+            
+            return (layer_priority, z, y_depth)
+
+        render_list.sort(key=sort_key)
+
+        for sprite in render_list:
+            screen.blit(sprite.image, sprite.rect)
                 
