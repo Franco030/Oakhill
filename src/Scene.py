@@ -37,6 +37,7 @@ class Scene:
                 is_hidden = getattr(obj, 'is_hidden', False)
                 if not obj.interacted_once and not is_hidden:
                     self._interactables.add(obj)
+                    self._obstacles.add(obj)
 
 
     def check_zone(self, cords: tuple):
@@ -73,6 +74,8 @@ class Scene:
                 is_hidden = getattr(obj, 'is_hidden', False)
                 if not obj.interacted_once and not is_hidden:
                     self._interactables.add(obj)
+                    self._obstacles.add(obj)
+
 
     
     def set_location(self, new_location: tuple):
@@ -96,6 +99,7 @@ class Scene:
             if obj.interaction_type == interaction_type_to_unhide and getattr(obj, 'is_hidden', False):
                 obj.unhide()
                 self._interactables.add(obj)
+                self._obstacles.add(obj)
                 found_and_unhidden = True
 
         return found_and_unhidden

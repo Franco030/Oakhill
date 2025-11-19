@@ -7,11 +7,10 @@ from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from utils import resource_path
 
-def draw_note_ui(screen, note_text_lines):
+def draw_note_ui(screen, note_data):
     """
     Draws the note UI on the screen with the provided text lines.
     """
-    # ... (Esta función no necesita cambios)
     padding = 50
     ui_width = SCREEN_WIDTH - padding * 2
     ui_height = SCREEN_HEIGHT - padding * 2
@@ -23,14 +22,29 @@ def draw_note_ui(screen, note_text_lines):
     font_path = resource_path("assets/fonts/scary_font.ttf")
     font = pygame.font.Font(font_path, 36)
 
-
     line_spacing = 40
     start_x = padding + 20
     start_y = padding + 20
 
-    for i, line in enumerate(note_text_lines):
-        text_surface = font.render(line, True, (255, 255, 0))
+    # --- INICIO DE LA CORRECCIÓN ---
+    
+    lines_to_render = []
+    if isinstance(note_data, list):
+        # Maneja el formato JSON ANTIGUO (lista de strings)
+        lines_to_render = note_data
+    elif isinstance(note_data, str):
+        # Maneja el formato JSON NUEVO (un solo string)
+        lines_to_render = note_data.split('\n')
+
+    for i, line in enumerate(lines_to_render):
+        # Si la línea está vacía (""), usa un espacio (" ") en su lugar
+        # para evitar el error de "zero width".
+        render_line = line if line else " "
+        
+        text_surface = font.render(render_line, True, (255, 255, 0))
         screen.blit(text_surface, (start_x, start_y + i * line_spacing))
+
+    # --- FIN DE LA CORRECCIÓN ---
 
     close_font = pygame.font.Font(None, 30)
     close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (255, 255, 0))
@@ -403,7 +417,7 @@ def game_loop(screen, clock):
                     player.sprite,
                     scene.interactables,
                     False,
-                    lambda sprite_a, sprite_b: sprite_b.collision_rect.colliderect(sprite_a.attack_rect)
+                    lambda sprite_a, sprite_b: sprite_b.rect.colliderect(sprite_a.attack_rect)
                 )
 
                 if collided_interactables:
@@ -431,26 +445,28 @@ def game_loop(screen, clock):
                     break
 
 
-            # MODIFICADO: Lógica de evento de zona
             if current_zone not in zone_event_triggered:
                 all_notes_in_zone = []
                 read_notes_count = 0
 
                 if current_zone in scene._interactables_dict:
                     for obj in scene._interactables_dict[current_zone]:
-                        # Revisamos el tipo de interacción, no la clase
-                        if obj.interaction_type == "Note":
+                        if obj.interaction_type == "Note" and (not obj.is_hidden or obj.interacted_once):
                             all_notes_in_zone.append(obj)
                             if obj.interacted_once:
-                                read_notes_count += 1     
+                                read_notes_count += 1
 
                 if len(all_notes_in_zone) > 0 and len(all_notes_in_zone) == read_notes_count:
-                    # MODIFICADO: Usamos la nueva función en Scene.py
-                    if scene.unhide_object_by_interaction_type("Image"): 
-                        note_interact_sound.set_volume(0.3)
-                        secret_revealed.play()
-                        note_interact_sound.set_volume(1)
-                        pass   
+                    revealed_image = scene.unhide_object_by_interaction_type("Image")
+                    revealed_note = scene.unhide_object_by_interaction_type("Note")
+                    revealed_door = scene.unhide_object_by_interaction_type("Door")
+                    revealed_obj = scene.unhide_object_by_interaction_type("None")
+
+                    if revealed_image or revealed_note or revealed_door or revealed_obj: 
+                        if secret_revealed:
+                            if note_interact_sound: note_interact_sound.set_volume(0.3)
+                            secret_revealed.play()
+                            if note_interact_sound: note_interact_sound.set_volume(1)
                     
                     zone_event_triggered.add(current_zone)
 

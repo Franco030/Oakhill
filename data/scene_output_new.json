@@ -11465,7 +11465,7 @@
                 "type": "Interactable",
                 "image_path": "assets/images/note.png",
                 "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
+                "resize_factor": 3.6,
                 "collision_rect_offset": [
                     -20,
                     -20,
@@ -11473,17 +11473,21 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Dia ~3=-3=-14~!@,El señor Ki`12~!@- me atacó~@!@$~@$!@~#~)39`4-`,.,./''`~!@3402-3=4"
+                "interaction_data": "Dia ~3=-3=-14~!@,El señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4",
+                "is_passable": true,
+                "starts_hidden": false,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
-                "id": "obj_1763448034",
-                "type": "Obstacle",
+                "id": "obj_1763448581",
+                "type": "Interactable",
                 "x": 640,
                 "y": 390,
-                "image_path": "assets/images/cross.png",
-                "resize_factor": 7.49999999999999,
+                "image_path": "assets/images/fence_0.png",
+                "resize_factor": 3.8,
                 "is_passable": false,
-                "starts_hidden": false,
+                "starts_hidden": true,
                 "collision_rect_offset": [
                     0,
                     0,
@@ -11492,9 +11496,9 @@
                 ],
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "",
-                "interaction_type": "None",
-                "interaction_data": ""
+                "flash_image_path": "assets/images/corn_1.png",
+                "interaction_type": "Note",
+                "interaction_data": "Esta es una valla jajaja"
             }
         ],
         "(4, 2)": [
