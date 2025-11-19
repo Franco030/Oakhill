@@ -37,13 +37,19 @@ class Ui_LevelEditor(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        
+        # Configuración del Splitter (Divisor)
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
+        
+        # --- PANEL IZQUIERDO (TOOLBOX) ---
         self.toolbox_container = QWidget(self.splitter)
         self.toolbox_container.setObjectName(u"toolbox_container")
-        self.toolbox_container.setMinimumSize(QSize(400, 0))
-        self.toolbox_container.setMaximumSize(QSize(400, 16777215))
+        # CAMBIO: Mínimo más flexible y SIN MÁXIMO FIJO para permitir redimensionar
+        self.toolbox_container.setMinimumSize(QSize(320, 0))
+        self.toolbox_container.setMaximumSize(QSize(16777215, 16777215)) 
+        
         self.verticalLayout = QVBoxLayout(self.toolbox_container)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.groupBox = QGroupBox(self.toolbox_container)
@@ -95,13 +101,17 @@ class Ui_LevelEditor(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -190, 378, 705))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 378, 705))
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.properties_box = QGroupBox(self.scrollAreaWidgetContents)
         self.properties_box.setObjectName(u"properties_box")
         self.formLayout = QFormLayout(self.properties_box)
         self.formLayout.setObjectName(u"formLayout")
+        
+        # Ajuste de campos para que usen mejor el espacio
+        self.formLayout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow) 
+
         self.label = QLabel(self.properties_box)
         self.label.setObjectName(u"label")
 
@@ -135,12 +145,14 @@ class Ui_LevelEditor(object):
         self.prop_x = QSpinBox(self.properties_box)
         self.prop_x.setObjectName(u"prop_x")
         self.prop_x.setMaximum(9999)
+        self.prop_x.setMinimum(-9999) # Permitir coordenadas negativas si es necesario
 
         self.horizontalLayout_4.addWidget(self.prop_x)
 
         self.prop_y = QSpinBox(self.properties_box)
         self.prop_y.setObjectName(u"prop_y")
         self.prop_y.setMaximum(9999)
+        self.prop_y.setMinimum(-9999)
 
         self.horizontalLayout_4.addWidget(self.prop_y)
 
@@ -155,6 +167,7 @@ class Ui_LevelEditor(object):
         self.prop_image_path_combo = QComboBox(self.properties_box)
         self.prop_image_path_combo.setObjectName(u"prop_image_path_combo")
         self.prop_image_path_combo.setEditable(True)
+        self.prop_image_path_combo.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)) # Expandir
 
         self.formLayout.setWidget(3, QFormLayout.ItemRole.FieldRole, self.prop_image_path_combo)
 
@@ -316,6 +329,7 @@ class Ui_LevelEditor(object):
         self.prop_flash_image_path_combo = QComboBox(self.group_interaction)
         self.prop_flash_image_path_combo.setObjectName(u"prop_flash_image_path_combo")
         self.prop_flash_image_path_combo.setEditable(True)
+        self.prop_flash_image_path_combo.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed))
 
         self.formLayout_2.setWidget(1, QFormLayout.ItemRole.FieldRole, self.prop_flash_image_path_combo)
 
@@ -343,6 +357,7 @@ class Ui_LevelEditor(object):
         self.data_image_path_combo = QComboBox(self.stack_page_image)
         self.data_image_path_combo.setObjectName(u"data_image_path_combo")
         self.data_image_path_combo.setEditable(True)
+        self.data_image_path_combo.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed))
 
         self.horizontalLayout_2.addWidget(self.data_image_path_combo)
 
@@ -360,10 +375,15 @@ class Ui_LevelEditor(object):
 
         self.verticalLayout.addWidget(self.scrollArea)
 
+        # Añadir Toolbox y Canvas al Splitter
         self.splitter.addWidget(self.toolbox_container)
         self.canvas_view = QGraphicsView(self.splitter)
         self.canvas_view.setObjectName(u"canvas_view")
         self.splitter.addWidget(self.canvas_view)
+        
+        # CAMBIO: Dar prioridad de expansión al Canvas
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(1, 1)
 
         self.horizontalLayout.addWidget(self.splitter)
 
@@ -428,4 +448,3 @@ class Ui_LevelEditor(object):
         self.label_4.setText(QCoreApplication.translate("LevelEditor", u"Datos Interacci\u00f3n:", None))
         self.menuArchivo.setTitle(QCoreApplication.translate("LevelEditor", u"Archivo", None))
     # retranslateUi
-

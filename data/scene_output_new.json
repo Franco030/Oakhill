@@ -5366,7 +5366,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "¡CUIDADO!No dejes que te toquen.Tu luz... los debilita, pero...no los detiene para siempre."
+                "interaction_data": "¡CUIDADO!No dejes que te toquen.Tu luz... los debilita, pero...no los detiene para siempre.",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(0, 2)": [
@@ -5406,8 +5411,8 @@
             },
             {
                 "id": "(0, 2)_obj_2",
-                "x": 450,
-                "y": 690,
+                "x": 449,
+                "y": 713,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -5525,8 +5530,8 @@
             },
             {
                 "id": "(0, 2)_obj_9",
-                "x": 630,
-                "y": 630,
+                "x": 634,
+                "y": 647,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -5610,8 +5615,8 @@
             },
             {
                 "id": "(0, 2)_obj_14",
-                "x": 150,
-                "y": 210,
+                "x": 186,
+                "y": 157,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -5623,7 +5628,12 @@
                     0
                 ],
                 "flash_image_path": "",
-                "interaction_data": ""
+                "interaction_data": "",
+                "starts_hidden": false,
+                "is_ground": false,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "interaction_type": "None"
             },
             {
                 "id": "(0, 2)_obj_15",
@@ -7650,8 +7660,8 @@
             },
             {
                 "id": "(0, 2)_obj_135",
-                "x": 70,
-                "y": 170,
+                "x": 103,
+                "y": 85,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -7667,8 +7677,8 @@
             },
             {
                 "id": "(0, 2)_obj_136",
-                "x": 310,
-                "y": 150,
+                "x": 343,
+                "y": 129,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -7684,8 +7694,8 @@
             },
             {
                 "id": "(0, 2)_obj_137",
-                "x": 630,
-                "y": 170,
+                "x": 627,
+                "y": 138,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
                 "resize_factor": 4.0,
@@ -7718,7 +7728,7 @@
             },
             {
                 "id": "(0, 2)_obj_139",
-                "x": 450,
+                "x": 460,
                 "y": 110,
                 "type": "Obstacle",
                 "image_path": "assets/images/corn_0.png",
@@ -7731,7 +7741,12 @@
                     0
                 ],
                 "flash_image_path": "",
-                "interaction_data": ""
+                "interaction_data": "",
+                "starts_hidden": false,
+                "is_ground": false,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "interaction_type": "None"
             },
             {
                 "id": "(0, 2)_obj_140",
@@ -11477,7 +11492,8 @@
                 "is_passable": true,
                 "starts_hidden": false,
                 "animation_speed": 0.1,
-                "animation_images": []
+                "animation_images": [],
+                "is_ground": true
             },
             {
                 "id": "obj_1763448581",
@@ -11843,7 +11859,7 @@
             {
                 "id": "(4, 2)_obj_21",
                 "x": 570,
-                "y": 410,
+                "y": 411,
                 "type": "Obstacle",
                 "image_path": "assets/images/cross.png",
                 "resize_factor": 4.0,
@@ -13083,8 +13099,8 @@
             },
             {
                 "id": "(4, 2)_obj_94",
-                "x": 690,
-                "y": 670,
+                "x": 692,
+                "y": 685,
                 "type": "Obstacle",
                 "image_path": "assets/images/water_1.png",
                 "resize_factor": 4.0,
@@ -13165,8 +13181,8 @@
             },
             {
                 "id": "(4, 2)_obj_99",
-                "x": 690,
-                "y": 630,
+                "x": 693,
+                "y": 643,
                 "type": "Obstacle",
                 "image_path": "assets/images/tree_1.png",
                 "resize_factor": 6.0,
@@ -13181,8 +13197,8 @@
             },
             {
                 "id": "(4, 2)_obj_100",
-                "x": 510,
-                "y": 610,
+                "x": 501,
+                "y": 609,
                 "type": "Obstacle",
                 "image_path": "assets/images/tree_0.png",
                 "resize_factor": 6.0,
@@ -13242,7 +13258,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Se conmemora la muerte de Ki`12~!@-94Que su regreso nos traiga la paz"
+                "interaction_data": "Se conmemora la muerte de Ki`12~!@-94\nQue su regreso nos traiga la paz",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(4, 2)_obj_104",
@@ -13259,7 +13280,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "--El suicidio de Mary Krismas----Se conmemora aqui----Por mas dias felices--Atte. El señor 3`39~!@N`23to"
+                "interaction_data": "--El suicidio de Mary Krismas----\nSe conmemora aqui----\nPor mas dias felices--\nAtte. El señor 3`39~!@N`23to",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(3, 2)": [
@@ -15929,7 +15955,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "El fantasma blanco es... tímido.Parece que se asusta cuando le 'hablas'.~~-.`-.1`.1.-~~...pero siempre vuelve."
+                "interaction_data": "El fantasma blanco es... tímido.Parece que se asusta cuando le 'hablas'.~~-.`-.1`.1.-~~...pero siempre vuelve.",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(3, 1)": [
@@ -16164,7 +16195,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Día ~!2,`12: El edificio de la escuelaparece ser el epicentro de todo.La puerta principal está atascada."
+                "interaction_data": "Día ~!2,`12: El edificio de la escuelaparece ser el epicentro de todo.La puerta principal está atascada.",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(2, 1)": [
@@ -17574,7 +17610,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Quien es el fantasma blanco?Por que me ataca?"
+                "interaction_data": "Quien es el fantasma blanco?Por que me ataca?",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(1, 1)": [
@@ -18290,7 +18331,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_42",
@@ -18307,7 +18353,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_43",
@@ -18324,7 +18375,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_44",
@@ -18341,7 +18397,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_45",
@@ -18358,7 +18419,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_46",
@@ -18375,7 +18441,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_47",
@@ -18392,7 +18463,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_48",
@@ -18409,7 +18485,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_49",
@@ -18426,7 +18507,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN"
+                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             },
             {
                 "id": "(1, 1)_obj_50",
@@ -18444,7 +18530,11 @@
                 ],
                 "interaction_type": "Image",
                 "interaction_data": "assets/images/picture.png",
-                "starts_hidden": true
+                "starts_hidden": true,
+                "is_passable": true,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ],
         "(1, 2)": [
@@ -18655,7 +18745,12 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "...............A~D~E~N~T~R~O"
+                "interaction_data": "...............A~D~E~N~T~R~O",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": []
             }
         ]
     }

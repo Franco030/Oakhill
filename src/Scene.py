@@ -106,21 +106,37 @@ class Scene:
 
     def draw(self, screen, player):
         """
-        Draws the obstacles and the player in the correct rendering order (depth sorting)
-        Since enemies are ghosts they will always be above everything.
+        Draws the obstacles and the player in the correct rendering order.
+        Layer 1: Ground items (is_ground=True) - Always below
+        Layer 2: Background items (width=0, like passable walls) - Sorted by Y
+        Layer 3: Main items (Solid objects + Player + Interactables) - Sorted by Y
         """
+        ground_sprites = []
         background_sprites = []
-        main_sprites = [player.sprite] + list(self._interactables)
+        main_sprites = [player.sprite]
 
-        for sprite in self._obstacles:
-            if sprite.collision_rect.width == 0:
+        def categorize_sprite(sprite):
+            if getattr(sprite, 'is_ground', False):
+                ground_sprites.append(sprite)
+            elif sprite.collision_rect.width == 0:
                 background_sprites.append(sprite)
             else:
                 main_sprites.append(sprite)
 
+        for sprite in self._obstacles:
+            categorize_sprite(sprite)
+        
+        for sprite in self._interactables:
+            if sprite not in self._obstacles:
+                categorize_sprite(sprite)
+
+        ground_sprites.sort(key=lambda sprite: sprite.rect.top)
         background_sprites.sort(key=lambda sprite: sprite.rect.top)
         main_sprites.sort(key=lambda sprite: sprite.collision_rect.bottom)
 
+        for sprite in ground_sprites:
+            screen.blit(sprite.image, sprite.rect)
+            
         for sprite in background_sprites:
             screen.blit(sprite.image, sprite.rect)
         
