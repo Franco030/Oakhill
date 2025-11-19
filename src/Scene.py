@@ -6,7 +6,7 @@ class Scene:
     The same Scene object is going to be used to represent the "open world", what diferentiates one scene from another is its location
     You may need to make a new Scene object if you "enter a house", because the house will have a different scenario, different object, different events, etc.
     """
-    def __init__(self, initial_location: tuple, obstacles: dict, interactables: dict, enemies: dict, map_level):
+    def __init__(self, initial_location: tuple, obstacles: dict, interactables: dict, triggers: dict, enemies: dict, map_level, global_enemies=None):
         """
         Description: Initializes the scene
         Parameters:
@@ -19,26 +19,22 @@ class Scene:
             Initializes _interactables which is a kind of obstacles that is interactable e.g. (a door, a tree that has apples in it, a trapdoor, etc.)
         """
         self.location = initial_location
-        self.map_level = map_level
-        self.enemies_dict = enemies
-        self._enemies = pygame.sprite.Group()
-        if initial_location in self.enemies_dict:
-            self._enemies.add(enemy for enemy in self.enemies_dict[initial_location])
         
         self.obstacles_dict = obstacles
-        self._obstacles = pygame.sprite.Group()
-        if initial_location in self.obstacles_dict:
-            self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
-
         self._interactables_dict = interactables
-        self._interactables = pygame.sprite.Group()
-        if initial_location in self._interactables_dict:
-            for obj in self._interactables_dict[initial_location]:
-                is_hidden = getattr(obj, 'is_hidden', False)
-                if not obj.interacted_once and not is_hidden:
-                    self._interactables.add(obj)
-                    self._obstacles.add(obj)
+        self._triggers_dict = triggers
+        self.enemies_dict = enemies
+        self.global_enemies = global_enemies if global_enemies else []
+        
+        self.map_level = map_level
 
+        self._obstacles = pygame.sprite.Group()
+        self._interactables = pygame.sprite.Group()
+        self._triggers = pygame.sprite.Group()
+        self._enemies = pygame.sprite.Group()
+
+        self._load_obstacles_for_current_location()
+        self._load_enemies_for_current_location()
 
     def check_zone(self, cords: tuple):
         """
@@ -63,20 +59,35 @@ class Scene:
         
     def _load_obstacles_for_current_location(self):
         """
-        Clears the current obstacles and loads new ones based on the self.location
+        Limpia y recarga los grupos de sprites basados en self.location.
         """
         self._obstacles.empty()
         self._interactables.empty()
+        self._triggers.empty()
+
         if self.location in self.obstacles_dict:
-            self._obstacles.add(obstacle for obstacle in self.obstacles_dict[self.location])
+            self._obstacles.add(self.obstacles_dict[self.location])
+
         if self.location in self._interactables_dict:
             for obj in self._interactables_dict[self.location]:
                 is_hidden = getattr(obj, 'is_hidden', False)
+                
                 if not obj.interacted_once and not is_hidden:
                     self._interactables.add(obj)
                     self._obstacles.add(obj)
 
+        if self.location in self._triggers_dict:
+            self._triggers.add(self._triggers_dict[self.location])
 
+    def _load_enemies_for_current_location(self):
+        self._enemies.empty()
+
+        if self.location in self.enemies_dict:
+            for enemy in self.enemies_dict[self.location]:
+                self._enemies.add(enemy)
+        
+        for genemy in self.global_enemies:
+            self._enemies.add(genemy)
     
     def set_location(self, new_location: tuple):
         """
@@ -86,29 +97,20 @@ class Scene:
             self.location = new_location
             self._load_obstacles_for_current_location()
 
-    def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
-        """
-        Searches through the dict to look for hidden classes
-        """
-        if self.location not in self._interactables_dict:
-            return False
+    def unhide_object_by_id(self, target_id):
+        if self.location not in self._interactables_dict: 
+            return
         
-        found_and_unhidden = False
-
         for obj in self._interactables_dict[self.location]:
-            if obj.interaction_type == interaction_type_to_unhide and getattr(obj, 'is_hidden', False):
+            if getattr(obj, 'id', None) == target_id:
                 obj.unhide()
+                
                 self._interactables.add(obj)
                 self._obstacles.add(obj)
-                found_and_unhidden = True
-
-        return found_and_unhidden
+                print(f"Objeto {target_id} revelado.")
+                return
 
     def draw(self, screen, player):
-        """
-        Draws the obstacles and the player in the correct rendering order.
-        Sorting Key: (IsGround, Z-Index, Y-Position)
-        """
         render_list = []
 
         for sprite in self._obstacles:
@@ -118,21 +120,22 @@ class Scene:
             if sprite not in self._obstacles:
                 render_list.append(sprite)
 
-        render_list.append(player.sprite)
 
-        # 4. Añadir enemigos
+        render_list.append(player)
+
         for enemy in self._enemies:
             render_list.append(enemy)
-   
+
         def sort_key(sprite):
             is_ground = getattr(sprite, 'is_ground', False)
             layer_priority = 0 if is_ground else 1
-            
             z = getattr(sprite, 'z_index', 0)
-
-            y_depth = getattr(sprite, 'rect', None).bottom if hasattr(sprite, 'rect') else 0
+            
+            y_depth = 0
             if hasattr(sprite, 'collision_rect'):
                  y_depth = sprite.collision_rect.bottom
+            elif hasattr(sprite, 'rect'):
+                 y_depth = sprite.rect.bottom
             
             return (layer_priority, z, y_depth)
 
@@ -141,3 +144,16 @@ class Scene:
         for sprite in render_list:
             screen.blit(sprite.image, sprite.rect)
                 
+    def change_zone(self, new_zone_tuple):
+        self.location = new_zone_tuple
+        self._load_obstacles_for_current_location()
+        self._load_enemies_for_current_location()
+
+    def change_zone_by_string(self, zone_str):
+        try:
+            clean = zone_str.replace("(", "").replace(")", "")
+            parts = clean.split(",")
+            new_loc = (int(parts[0]), int(parts[1]))
+            self.change_zone(new_loc)
+        except Exception as e:
+            print(f"Error cambiando zona a {zone_str}: {e}")
