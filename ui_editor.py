@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'editor.ui'
+## (Modified to make Trigger Logic SHARED between Triggers and Interactables)
+################################################################################
+
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -107,12 +113,11 @@ class Ui_LevelEditor(object):
         self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.prop_id)
         self.label_6 = QLabel(self.properties_box)
         self.label_6.setObjectName(u"label_6")
-        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.label_6)
         
         self.prop_type = QComboBox(self.properties_box)
-        self.prop_type.addItem("") 
-        self.prop_type.addItem("") 
-        self.prop_type.addItem("") 
+        self.prop_type.addItem("") # Obstacle
+        self.prop_type.addItem("") # Interactable
+        self.prop_type.addItem("") # Trigger
         self.prop_type.setObjectName(u"prop_type")
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.prop_type)
 
@@ -255,18 +260,22 @@ class Ui_LevelEditor(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
         self.verticalLayout_4.addWidget(self.group_animation)
 
+        # --- GRUPO INTERACCIÓN (Lógica Avanzada) ---
         self.group_interaction = QGroupBox(self.scrollAreaWidgetContents)
         self.group_interaction.setObjectName(u"group_interaction")
-        self.group_interaction.setTitle("Configuración Específica")
+        self.group_interaction.setTitle("Lógica e Interacción")
         self.formLayout_2 = QFormLayout(self.group_interaction)
         self.formLayout_2.setObjectName(u"formLayout_2")
 
+        # Stack para detalles visuales (Nota, Imagen) - Solo para Interactables
         self.prop_main_stack = QStackedWidget(self.group_interaction)
         self.prop_main_stack.setObjectName(u"prop_main_stack")
         
+        # PAGINA 0: Interactable (Detalles Visuales)
         self.page_interactable = QWidget()
         self.layout_interactable = QFormLayout(self.page_interactable)
-        self.lbl_int_type = QLabel("Tipo Interacción:")
+        
+        self.lbl_int_type = QLabel("Tipo Visual:")
         self.prop_interaction_type = QComboBox()
         self.prop_interaction_type.addItems(["None", "Note", "Image", "Door"])
         self.layout_interactable.addRow(self.lbl_int_type, self.prop_interaction_type)
@@ -282,15 +291,17 @@ class Ui_LevelEditor(object):
         self.layout_flash.addWidget(self.btn_browse_flash)
         self.layout_interactable.addRow(self.lbl_flash, self.layout_flash)
         
-        self.lbl_data = QLabel("Datos:")
+        self.lbl_data = QLabel("Datos Visuales:")
         self.prop_interaction_data_stack = QStackedWidget()
         
+        # Sub-Stack Nota
         self.stack_page_note = QWidget()
         self.v_note = QVBoxLayout(self.stack_page_note)
         self.data_note_text = QTextEdit()
         self.v_note.addWidget(self.data_note_text)
         self.prop_interaction_data_stack.addWidget(self.stack_page_note)
         
+        # Sub-Stack Imagen
         self.stack_page_image = QWidget()
         self.h_image = QHBoxLayout(self.stack_page_image)
         self.data_image_path_combo = QComboBox()
@@ -302,33 +313,49 @@ class Ui_LevelEditor(object):
         self.h_image.addWidget(self.btn_browse_data)
         self.prop_interaction_data_stack.addWidget(self.stack_page_image)
         
+        # Sub-Stack Puerta
         self.stack_page_door = QWidget()
         self.prop_interaction_data_stack.addWidget(self.stack_page_door)
         
         self.layout_interactable.addRow(self.lbl_data, self.prop_interaction_data_stack)
         self.prop_main_stack.addWidget(self.page_interactable)
 
+        # PAGINA 1: Trigger Puro (Vacía, ya que los controles ahora son compartidos abajo)
         self.page_trigger = QWidget()
-        self.layout_trigger = QFormLayout(self.page_trigger)
+        self.prop_main_stack.addWidget(self.page_trigger)
+
+        # Añadir el stack al layout principal del grupo
+        self.formLayout_2.setWidget(0, QFormLayout.SpanningRole, self.prop_main_stack)
         
-        self.lbl_trig_cond = QLabel("Condición (Cuándo):")
+        # --- SECCIÓN COMPARTIDA: LÓGICA DE EVENTOS ---
+        # Estos controles ahora aparecen tanto para Triggers como para Interactuables
+        
+        self.line_logic = QFrame()
+        self.line_logic.setFrameShape(QFrame.HLine)
+        self.line_logic.setFrameShadow(QFrame.Sunken)
+        self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
+
+        self.lbl_trig_cond = QLabel("Condición (Trigger):")
         self.prop_trigger_condition = QComboBox()
-        self.prop_trigger_condition.addItems(["OnEnter (Colisión)", "OnInteract (Acción)", "AutoStart (Al cargar)", "IfFlag (Condicional)"])
-        self.layout_trigger.addRow(self.lbl_trig_cond, self.prop_trigger_condition)
+        self.prop_trigger_condition.addItems(["OnEnter", "OnInteract", "AutoStart", "IfFlag"])
+        self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.lbl_trig_cond)
+        self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.prop_trigger_condition)
         
-        self.lbl_trig_act = QLabel("Acción (Qué):")
+        self.lbl_trig_act = QLabel("Acción (Evento):")
         self.prop_trigger_action = QComboBox()
-        self.prop_trigger_action.addItems(["SetFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue"])
-        self.layout_trigger.addRow(self.lbl_trig_act, self.prop_trigger_action)
+        self.prop_trigger_action.addItems(["SetFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue", "IncrementFlag"])
+        self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
+        self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
         
         self.lbl_trig_params = QLabel("Parámetros:\n(clave=valor)")
         self.prop_trigger_params = QTextEdit()
-        self.prop_trigger_params.setPlaceholderText("ej: flag=door_open; value=true\nej: zone=(0,5); x=100; y=200")
-        self.layout_trigger.addRow(self.lbl_trig_params, self.prop_trigger_params)
+        self.prop_trigger_params.setPlaceholderText("ej: flag=puerta_abierta; value=true")
+        self.prop_trigger_params.setMaximumHeight(80)
+        self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
+        self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
         
-        self.prop_main_stack.addWidget(self.page_trigger)
+        # -------------------------------------------
 
-        self.formLayout_2.setWidget(0, QFormLayout.SpanningRole, self.prop_main_stack)
         self.verticalLayout_4.addWidget(self.group_interaction)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)

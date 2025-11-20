@@ -7,10 +7,9 @@ from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from utils import resource_path
 
-# --- NUEVOS IMPORTS ---
 from src.ActionManager import ActionManager
 from src.GameState import game_state
-# ----------------------
+
 
 def draw_note_ui(screen, note_data):
     """
@@ -31,7 +30,6 @@ def draw_note_ui(screen, note_data):
     start_x = padding + 20
     start_y = padding + 20
 
-    
     lines_to_render = []
     if isinstance(note_data, list):
         lines_to_render = note_data
@@ -121,57 +119,6 @@ def draw_game_over_screen(screen, image):
     close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
     screen.blit(close_text, close_rect)
 
-def find_safe_spawn(target_pos, player_sprite, obstacles):
-    """
-    Finds a safe spawn position for the player
-    """
-    player_w = player_sprite.collision_rect.width
-    player_h = player_sprite.collision_rect.height
-
-    test_rect = pygame.Rect(0, 0, player_w, player_h)
-    test_rect.center = target_pos
-
-    is_safe = True
-    for obs in obstacles:
-        if obs.collision_rect.colliderect(test_rect):
-            is_safe = False
-            break
-
-    if is_safe:
-        return target_pos
-    
-    search_radius = 1
-    max_search_radius = 50
-    step_distance = max(player_w, player_h)
-
-    while search_radius < max_search_radius:
-        distance = search_radius * step_distance
-
-        search_points = [
-            (target_pos[0], target_pos[1] - distance), # N
-            (target_pos[0] + distance, target_pos[1] - distance), # NE
-            (target_pos[0] + distance, target_pos[1]), # E
-            (target_pos[0] + distance, target_pos[1] + distance), # SE
-            (target_pos[0], target_pos[1] + distance), # S
-            (target_pos[0] - distance, target_pos[1] + distance), # SW
-            (target_pos[0] - distance, target_pos[1]), # W
-            (target_pos[0] - distance, target_pos[1] - distance)  # NW
-        ]
-
-        for point in search_points:
-            test_rect.center = point
-            is_safe = True
-            for obs in obstacles:
-                if obs.collision_rect.colliderect(test_rect):
-                    is_safe = False
-                    break
-            if is_safe:
-                return point
-        search_radius += 1
-    return target_pos
-
-
-
 def menu_loop(screen, clock):
     """
     Main menu loop
@@ -240,14 +187,16 @@ def menu_loop(screen, clock):
 
 
 def game_loop(screen, clock):
+    game_state.reset()
+
     player_x_pos = 600
     player_y_pos = 300
     
-
     y_cord, x_cord = 5, 2
     current_zone = (y_cord, x_cord)
 
-    game_state = "PLAYING"
+    game_status = "PLAYING"
+
     image_to_show = None
     
     death_screen_delay = DEATH_DELAY
@@ -255,8 +204,6 @@ def game_loop(screen, clock):
 
     note_to_show = None
     note_being_interacted = None
-
-    zone_event_triggered = set()
 
     try:
         chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
@@ -278,7 +225,7 @@ def game_loop(screen, clock):
 
     try:
         screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
-        screaming_sound.set_volume(0.5)
+        screaming_sound.set_volume(0.8)
     except pygame.error as e:
         print("Error when loading the file")
         screaming_sound = None
@@ -321,6 +268,14 @@ def game_loop(screen, clock):
     except pygame.error as e:
         print(f"Error when loading the file: {e}")
 
+    sound_lib = {
+        "scream": screaming_sound,
+        "chase": chase_sound,
+        "flee": flee_sound,
+        "note": note_interact_sound,
+        "secret": secret_revealed
+    }
+
     player = pygame.sprite.GroupSingle()
     player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
     player.add(player_sprite)
@@ -328,9 +283,7 @@ def game_loop(screen, clock):
     main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
     scene = main_scene
 
-    # --- INICIALIZAR ACTION MANAGER ---
-    action_manager = ActionManager()
-    # ----------------------------------
+    action_manager = ActionManager(sound_library=sound_lib)
 
     while True:
         screen.fill('black')
@@ -342,17 +295,17 @@ def game_loop(screen, clock):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    if game_state == "PLAYING":
+                    if game_status == "PLAYING":
                         player.sprite.attack()
-                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                    elif game_status == "READING_NOTE" or game_status == "READING_IMAGE":
                         pygame.mixer.music.unpause()
                         note_to_show = None
                         image_to_show = None
-                        game_state = "PLAYING"
+                        game_status = "PLAYING"
                 
                 elif event.key == pygame.K_ESCAPE:
                     
-                    if game_state == "PLAYER_DEAD" or player.sprite.is_defeated:
+                    if game_status == "PLAYER_DEAD" or player.sprite.is_defeated:
                         if death_sound:
                             death_sound.stop()
                         if game_over_sound:
@@ -361,55 +314,64 @@ def game_loop(screen, clock):
                         pygame.mixer.music.stop()
                         return "MAIN_MENU"
                         
-                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                    elif game_status == "READING_NOTE" or game_status == "READING_IMAGE":
                         pygame.mixer.music.unpause()
                         note_to_show = None
                         image_to_show = None
-                        game_state = "PLAYING"                    
+                        game_status = "PLAYING"                    
                 
         # --- Game logic ---
-        if game_state == "PLAYING":  
+        if game_status == "PLAYING":  
             player.update(scene.obstacles)
             scene.enemies.update(delta_time)
             scene.obstacles.update()
 
-            # --- LÓGICA DE TRIGGERS (OnEnter) ---
-            # Usamos 'player_sprite' directamente para evitar el error de atributo
+            # --- Trigger Logic (OnEnter) ---
+            # Basically if there's a collision with a trigger check if it has a condition to execute, if it does -> check the condition and then execute
+            # if it doesn't just execute it
             hit_triggers = pygame.sprite.spritecollide(player_sprite, scene._triggers, False)
             for trig in hit_triggers:
-                # Verificar triggers condicionales (IfFlag)
+                # Check conditional triggers (IfFlag)
                 if trig.condition == "IfFlag":
-                    # Parsear params para ver qué flag revisar
                     params = action_manager.parse_params(trig.params)
                     flag_name = params.get("flag")
                     needed_val = params.get("value")
-                    
+
                     if game_state.check_flag(flag_name, needed_val):
                          action_manager.execute(trig.action, trig.params, player, scene)
+                         trig.kill()
 
-                # Verificar triggers normales de entrada
                 elif trig.condition == "OnEnter":
                     action_manager.execute(trig.action, trig.params, player, scene)
             # ----------------------------------
 
             if note_being_interacted:
                 status = note_being_interacted.update()
+                # --- Interaction triggers (OnInteract) ---
+                # This type of triggers execute when you interact with them
+                # In order to interact with them, they have to be an Interactable object
+                # It's here because it interacts when the interaction FINISHED rather than starting
                 if status == "interaction_finished":
+                    if hasattr(obj, "data") and obj.data.get("trigger_action"):
+                        trig_action = obj.data.get("trigger_action")
+                        trig_params = obj.data.get("trigger_params")
+                        cond = obj.data.get("trigger_condition", "OnInteract")
+                        
+                        if cond == "OnInteract" and trig_action and trig_action != "None":
+                             action_manager.execute(trig_action, trig_params, player, scene)
+
                     interaction_data = note_being_interacted.read() 
                     
                     if note_being_interacted.interaction_type == "Note":
                         note_to_show = interaction_data
-                        game_state = "READING_NOTE"
+                        game_status = "READING_NOTE"
                         
                     
                     elif note_being_interacted.interaction_type == "Image":
                         image_to_show = interaction_data
-                        game_state = "READING_IMAGE"
+                        game_status = "READING_IMAGE"
                         pygame.mixer.music.pause()
-
-                        if screaming_sound:
-                            screaming_sound.play()
-                    
+              
                     note_being_interacted = None
             
             if player.sprite.is_attacking and not note_being_interacted:
@@ -418,7 +380,7 @@ def game_loop(screen, clock):
                             if hasattr(enemy, 'while_attacked'):
                                 enemy.while_attacked()
                 collided_interactables = pygame.sprite.spritecollide(
-                    player.sprite,
+                    player_sprite,
                     scene.interactables,
                     False,
                     lambda sprite_a, sprite_b: sprite_b.rect.colliderect(sprite_a.attack_rect)
@@ -427,17 +389,20 @@ def game_loop(screen, clock):
                 if collided_interactables:
                     obj = collided_interactables[0]
                     
-                    # --- ACCIONES GENÉRICAS EN INTERACCIÓN ---
-                    # Si el objeto tiene una acción configurada en el editor
-                    if hasattr(obj, "data") and obj.data.get("trigger_action"):
-                        trig_action = obj.data.get("trigger_action")
-                        trig_params = obj.data.get("trigger_params")
-                        # Por defecto es OnInteract si no se especifica
-                        cond = obj.data.get("trigger_condition", "OnInteract")
+                    # --- Interaction triggers (OnInteract) ---
+                    # This type of triggers execute when you interact with them
+                    # In order to interact with them, they have to be an Interactable object
+                    # It's not working because of a sync issue, we want the action to occur AFTER the timer we have in _Interactable.update()
+                    # that means we execute the command after status == "interaction_finished"
+                    # if hasattr(obj, "data") and obj.data.get("trigger_action"):
+                    #     trig_action = obj.data.get("trigger_action")
+                    #     trig_params = obj.data.get("trigger_params")
+                    #     cond = obj.data.get("trigger_condition", "OnInteract")
                         
-                        if cond == "OnInteract" and trig_action and trig_action != "None":
-                             action_manager.execute(trig_action, trig_params, player, scene)
-                    # -----------------------------------------
+                    #     if cond == "OnInteract" and trig_action and trig_action != "None":
+                    #          action_manager.execute(trig_action, trig_params, player, scene)
+                    # --------------------------------------------
+                    # --- Normal interaction ---
 
                     if not obj.interacted_once:
                         interaction_status = obj.interact()
@@ -446,6 +411,7 @@ def game_loop(screen, clock):
                                 note_interact_sound.play()
                             note_being_interacted = obj
                             player.sprite.cancel_attack()
+                    # ---------------------------------------------
                     
             for enemy in scene.enemies:
                 if enemy.collides_with(player.sprite) and not player.sprite.is_defeated:
@@ -459,32 +425,6 @@ def game_loop(screen, clock):
                         death_sound.play()
 
                     break
-
-
-            if current_zone not in zone_event_triggered:
-                all_notes_in_zone = []
-                read_notes_count = 0
-
-                if current_zone in scene._interactables_dict:
-                    for obj in scene._interactables_dict[current_zone]:
-                        if obj.interaction_type == "Note" and (not obj.is_hidden or obj.interacted_once):
-                            all_notes_in_zone.append(obj)
-                            if obj.interacted_once:
-                                read_notes_count += 1
-
-                if len(all_notes_in_zone) > 0 and len(all_notes_in_zone) == read_notes_count:
-                    revealed_image = scene.unhide_object_by_interaction_type("Image")
-                    revealed_note = scene.unhide_object_by_interaction_type("Note")
-                    revealed_door = scene.unhide_object_by_interaction_type("Door")
-                    revealed_obj = scene.unhide_object_by_interaction_type("None")
-
-                    if revealed_image or revealed_note or revealed_door or revealed_obj: 
-                        if secret_revealed:
-                            if note_interact_sound: note_interact_sound.set_volume(0.3)
-                            secret_revealed.play()
-                            if note_interact_sound: note_interact_sound.set_volume(1)
-                    
-                    zone_event_triggered.add(current_zone)
 
             
             scene.draw(screen, player_sprite)
@@ -540,23 +480,23 @@ def game_loop(screen, clock):
             if player.sprite.is_defeated:
                 death_screen_delay -= delta_time
                 if death_screen_delay <= 0:
-                    game_state = "PLAYER_DEAD"
+                    game_status = "PLAYER_DEAD"
 
                     if not game_over_sound_played:
                         if game_over_sound:
                             game_over_sound.play()
                         game_over_sound_played = True
         
-        elif game_state == "PLAYER_DEAD":
+        elif game_status == "PLAYER_DEAD":
             player.update(scene.obstacles)
             scene.enemies.update(delta_time)
-            scene.draw(screen, player)
+            scene.draw(screen, player_sprite)
             draw_game_over_screen(screen, game_over_image)
 
-        elif game_state == "READING_NOTE":
+        elif game_status == "READING_NOTE":
             draw_note_ui(screen, note_to_show)
         
-        elif game_state == "READING_IMAGE":
+        elif game_status == "READING_IMAGE":
             draw_image_ui(screen, image_to_show)
 
 
@@ -581,7 +521,7 @@ def main():
 
     clock = pygame.time.Clock()
 
-    master_game_state = "MAIN_MENU"   
+    master_game_state = "MAIN_MENU"
 
     while master_game_state != "QUIT":
         if master_game_state == "MAIN_MENU":

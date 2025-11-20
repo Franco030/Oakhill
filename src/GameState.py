@@ -37,4 +37,11 @@ class GameState:
         """
         return self.get_flag(key) == expected_value
     
+    def reset(self):
+        """
+        Deletes all memory to initiate another game
+        """
+        self.flags = {}
+        print("[GameState] Memory restarted (Reset)")
+    
 game_state = GameState()

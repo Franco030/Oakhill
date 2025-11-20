@@ -5,23 +5,24 @@ from utils import resource_path
 
 class _Obstacle(pygame.sprite.Sprite):
     """
-    Clase única para todos los obstáculos estáticos (no interactuables).
-    Toda la configuración (imagen, hitbox, animación) se carga 
-    desde el diccionario 'data' en el __init__.
+    Unique class for every static obstacles (can't interact with them)
+    All settings are loaded through the dictionary 'data' in __init__
     """
     def __init__(self, data: dict):
         """
-        Inicializa el obstáculo desde un diccionario de datos (del JSON).
+        Initialized the obstacles throught the JSON dict
         """
         super().__init__()
 
-        
+        self.data = data
+        self.id = data.get("id")
+
         image_path = data.get("image_path")
         resize_factor = data.get("resize_factor", RESIZE_FACTOR)
 
         try:
             if not image_path or image_path == "None":
-                raise ValueError("Ruta de imagen es 'None' o está vacía.")
+                raise ValueError("Image path is none or is empty")
                 
             self.image = pygame.image.load(resource_path(image_path)).convert_alpha()
             
@@ -30,7 +31,6 @@ class _Obstacle(pygame.sprite.Sprite):
             )
             
         except Exception as e:
-            print(f"INFO: No se pudo cargar la imagen '{image_path}': {e}. Creando placeholder.")
             self.image = pygame.Surface((int(20 * resize_factor), int(20 * resize_factor)))
             self.image.fill((255, 0, 255))
             self.image.set_alpha(150) 
@@ -61,12 +61,12 @@ class _Obstacle(pygame.sprite.Sprite):
                 if images:
                     self.animation = Animation(self, images, data.get("animation_speed", 0.1))
             except Exception as e:
-                print(f"ERROR: No se pudo cargar la animación para {data.get('id')}: {e}")
+                print(f"ERROR: Can't load animation for {data.get('id')}: {e}")
 
     def update(self):
         """
-        Este método es llamado por el grupo de sprites en main_window.
-        Es crucial para las animaciones.
+        This method is called for the sprites group in main_window
+        IMPORTANT for animations
         """
         if self.animation:
             self.animation.animate()
@@ -74,12 +74,12 @@ class _Obstacle(pygame.sprite.Sprite):
     @property
     def collision_rect(self):
         """
-        Devuelve el hitbox personalizado.
+        Returns the custom hitbox
         """
         return self._collision_rect
 
     def collides_with(self, other_sprite):
         """
-        Comprueba la colisión usando el hitbox personalizado.
+        Checks collision with the custom hitbox
         """
         return self._collision_rect.colliderect(other_sprite.collision_rect)

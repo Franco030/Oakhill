@@ -19,7 +19,7 @@ GAME_WIDTH = 1280
 GAME_HEIGHT = 780
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 
-# --- SISTEMA DE COMANDOS (UNDO/REDO) ---
+# --- Command system (UNDO/REDO) ---
 
 class Command:
     def execute(self): pass
@@ -116,7 +116,7 @@ class CmdTransform(Command):
         self.obj_data['collision_rect_offset'] = self.old_offset
         self.editor.refresh_ui_for_object(self.obj_data)
 
-# --- VISUALES ---
+# --- VISUALS ---
 class ResizeHandle(QGraphicsRectItem):
     def __init__(self, parent_hitbox, editor_ref):
         super().__init__(0, 0, 10, 10, parent_hitbox)
@@ -405,7 +405,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         cmd = CmdDeleteObject(self, zone, obj_data, index)
         self.undo_manager.push(cmd, execute_now=True)
     def get_real_object_data(self):
-        """Busca el diccionario real en self.current_data usando el ID del item seleccionado."""
         current_item = self.list_objects.currentItem()
         if not current_item: return None
         
@@ -681,13 +680,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         imgpath = obj.get("image_path", "None")
         pixmap = None
         
-        # Intentar cargar imagen
         if imgpath not in (None, "None", ""):
             full = os.path.join(self.base_path, imgpath)
             if os.path.exists(full):
                 pixmap = QPixmap(full)
 
-        # Usar PLACEHOLDER si no hay imagen
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
             if obj.get("type") == "Trigger":
@@ -726,7 +723,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             if os.path.exists(full):
                 pixmap = QPixmap(full)
         
-        # Usar PLACEHOLDER si no hay imagen
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
             if data.get("type") == "Trigger":

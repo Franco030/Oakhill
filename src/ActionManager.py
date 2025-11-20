@@ -2,11 +2,14 @@ import pygame
 from src.GameState import game_state
 
 class ActionManager:
-    def __init__(self, scene_manager=None):
+    def __init__(self, scene_manager=None, sound_library=None):
         self.scene_manager = scene_manager
+        self.sound_library = sound_library if sound_library else {}
 
     def parse_params(self, param_string):
-        """Convierte 'flag=test; value=true' en un diccionario."""
+        """
+        Turns 'flag=text; value=true' into a set
+        """
         params = {}
         if not param_string:
             return params
@@ -57,15 +60,32 @@ class ActionManager:
                 except Exception as e:
                     print(f"Error Teleport: {e}")
 
+        elif action_type == "IncrementFlag":
+            key = params.get("flag")
+            amount = params.get("value", 1) # By default it adds up one
+            if key:
+                game_state.increment_flag(key, amount)
+                print(f"Flag {key} incremented. New value: {game_state.get_flag(key)}")
+
         elif action_type == "PlaySound":
             sound_name = params.get("sound")
-            print(f"Reproduciendo sonido: {sound_name}")
+            if sound_name in self.sound_library:
+                self.sound_library[sound_name].play()
+                print(f"Playing sound: {sound_name}")
+            else:
+                print(f"Error: Sound '{sound_name}' not found in library")
 
         elif action_type == "UnhideObject":
             target_id = params.get("id")
+            sound_name = params.get("sound", "secret")
             if target_id:
                 scene.unhide_object_by_id(target_id)
 
+                if sound_name != "silent" and sound_name in self.sound_library:
+                    self.sound_library[sound_name].play()
+                    print(f"Playing sound: {sound_name} because of UnhideObject")
+                
+
         elif action_type == "ShowDialogue":
             msg = params.get("msg", "...")
-            print(f"Diálogo: {msg}")
+            print(f"Dialogue: {msg}")

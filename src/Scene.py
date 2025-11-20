@@ -59,7 +59,7 @@ class Scene:
         
     def _load_obstacles_for_current_location(self):
         """
-        Limpia y recarga los grupos de sprites basados en self.location.
+        Cleans and reloads the group of sprites in every self.location
         """
         self._obstacles.empty()
         self._interactables.empty()
@@ -98,19 +98,42 @@ class Scene:
             self._load_obstacles_for_current_location()
 
     def unhide_object_by_id(self, target_id):
-        if self.location not in self._interactables_dict: 
-            return
-        
-        for obj in self._interactables_dict[self.location]:
-            if getattr(obj, 'id', None) == target_id:
-                obj.unhide()
+        """
+        Searches for an object by id, ignoring spaces and checking all lists
+        """
+        print(f"[SCENE] Searching hidden object with id: '{target_id}'")
+        clean_target = str(target_id).replace(" ", "")
+
+        def search_and_reveal(object_list, destination_group):
+            for obj in object_list:
+                obj_id = getattr(obj, 'id', "")
+                clean_obj_id = str(obj_id).replace(" ", "")
                 
-                self._interactables.add(obj)
-                self._obstacles.add(obj)
-                print(f"Objeto {target_id} revelado.")
+                if clean_obj_id == clean_target:
+                    obj.unhide()
+                    destination_group.add(obj)
+                    
+                    if not getattr(obj, 'is_passable', False):
+                        self._obstacles.add(obj)
+                        
+                    print(f"[SCENE] Object '{obj_id}' revealed.")
+                    return True
+            return False
+
+        if self.location in self._interactables_dict:
+            if search_and_reveal(self._interactables_dict[self.location], self._interactables):
+                return
+
+        if self.location in self.obstacles_dict:
+            if search_and_reveal(self.obstacles_dict[self.location], self._obstacles):
                 return
             
+        print(f"[SCENE] ERROR: No object id found similiar to '{target_id}' in {self.location}")
+            
     def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
+        """
+        DEPRECATED NO LONGER IN USE
+        """
         if self.location not in self._interactables_dict:
             return False
         
@@ -124,7 +147,7 @@ class Scene:
                 self._obstacles.add(obj)
                 
                 found_and_unhidden = True
-                print(f"¡Secreto revelado! Objeto tipo {interaction_type_to_unhide} apareció.")
+                print(f"Secret revealed. type {interaction_type_to_unhide} appeared")
 
         return found_and_unhidden
 
@@ -145,8 +168,13 @@ class Scene:
             render_list.append(enemy)
 
         def sort_key(sprite):
-            is_ground = getattr(sprite, 'is_ground', False)
-            layer_priority = 0 if is_ground else 1
+            if sprite in self._enemies:
+                layer_priority = 2
+            elif getattr(sprite, 'is_ground', False):
+                layer_priority = 0
+            else:
+                layer_priority = 1
+
             z = getattr(sprite, 'z_index', 0)
             
             y_depth = 0
@@ -158,6 +186,7 @@ class Scene:
             return (layer_priority, z, y_depth)
 
         render_list.sort(key=sort_key)
+
 
         for sprite in render_list:
             screen.blit(sprite.image, sprite.rect)
@@ -174,4 +203,4 @@ class Scene:
             new_loc = (int(parts[0]), int(parts[1]))
             self.change_zone(new_loc)
         except Exception as e:
-            print(f"Error cambiando zona a {zone_str}: {e}")
+            print(f"Error changing zone to {zone_str}: {e}")

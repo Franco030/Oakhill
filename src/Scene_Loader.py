@@ -40,7 +40,7 @@ class SceneLoader:
             zone_interactables[zone] = interactable_list
             zone_triggers[zone] = trigger_list
 
-            stalker = Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=10.0, max_wait=15.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))
+            stalker = Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=20.0, max_wait=60.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))
 
             enemy_dict_placeholder = {}
 

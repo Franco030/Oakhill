@@ -5,15 +5,13 @@ from utils import resource_path
 
 class _Interactable(_Obstacle):
     """
-    Clase única para todos los objetos interactuables.
-    Hereda de _Obstacle (que también es data-driven).
-    Toda la lógica (parpadeo, ocultar, tipo de interacción) 
-    está contenida aquí y se configura a través del 
-    diccionario 'data' en el __init__.
+    Unique class for every interactable object
+    Inherits from _Obstacle
+    All logic is here and it's setted through the 'data' dictionary in __init__
     """
     def __init__(self, data: dict):
         """
-        Inicializa el objeto interactuable desde un diccionario de datos (del JSON).
+        Initialices the interactable object 
         """
         super().__init__(data) 
         
@@ -44,15 +42,13 @@ class _Interactable(_Obstacle):
 
     def unhide(self):
         """
-        Hace que el objeto sea visible y, por lo tanto, interactuable.
-        (Migrado de la clase Image).
+        Makes the object visibe, therefore, interactable.
         """
         self.is_hidden = False
 
     def interact(self):
         """
-        Inicia la interacción.
-        (Migrado de _NoteHolder e Image).
+        Starts the interaction
         """
         if self.is_hidden:
             return None
@@ -66,8 +62,8 @@ class _Interactable(_Obstacle):
     
     def read(self):
         """
-        Finaliza la interacción, se auto-destruye (del grupo de sprites)
-        y devuelve los datos de la interacción.
+        Finishes the interaction, auto-destroys (from the sprites group)
+        and returns the data of the interaction
         """
         self.interacted_once = True
         self.kill()
@@ -76,7 +72,7 @@ class _Interactable(_Obstacle):
     
     def update(self):
         """
-        Actualiza el estado del objeto cada frame.
+        Updates the state of the object every frame (for animation purposes)
         """
         super().update() 
         
