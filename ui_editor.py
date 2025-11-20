@@ -26,6 +26,8 @@ class Ui_LevelEditor(object):
         if not LevelEditor.objectName():
             LevelEditor.setObjectName(u"LevelEditor")
         LevelEditor.resize(1280, 850)
+        self.action_new_map = QAction(LevelEditor)
+        self.action_new_map.setObjectName(u"action_new_map")
         self.action_load_json = QAction(LevelEditor)
         self.action_load_json.setObjectName(u"action_load_json")
         self.action_save_json = QAction(LevelEditor)
@@ -48,6 +50,14 @@ class Ui_LevelEditor(object):
         self.group_tools.setObjectName(u"group_tools")
         self.horizontalLayout_grid = QHBoxLayout(self.group_tools)
         self.horizontalLayout_grid.setObjectName(u"horizontalLayout_grid")
+        self.label_map = QLabel("Mapa Ref:", self.group_tools)
+        self.horizontalLayout_grid.addWidget(self.label_map)
+        self.combo_map_select = QComboBox(self.group_tools)
+        self.horizontalLayout_grid.addWidget(self.combo_map_select)
+        line = QFrame()
+        line.setFrameShape(QFrame.VLine)
+        line.setFrameShadow(QFrame.Sunken)
+        self.horizontalLayout_grid.addWidget(line)
         self.chk_grid_snap = QCheckBox(self.group_tools)
         self.chk_grid_snap.setObjectName(u"chk_grid_snap")
         self.horizontalLayout_grid.addWidget(self.chk_grid_snap)
@@ -343,7 +353,7 @@ class Ui_LevelEditor(object):
         
         self.lbl_trig_act = QLabel("Acción (Evento):")
         self.prop_trigger_action = QComboBox()
-        self.prop_trigger_action.addItems(["SetFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue", "IncrementFlag"])
+        self.prop_trigger_action.addItems(["SetFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue", "IncrementFlag", "ChangeLevel"])
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
         
@@ -380,6 +390,7 @@ class Ui_LevelEditor(object):
         self.statusbar.setObjectName(u"statusbar")
         LevelEditor.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuArchivo.menuAction())
+        self.menuArchivo.addAction(self.action_new_map)
         self.menuArchivo.addAction(self.action_load_json)
         self.menuArchivo.addAction(self.action_save_json)
 
@@ -391,6 +402,7 @@ class Ui_LevelEditor(object):
 
     def retranslateUi(self, LevelEditor):
         LevelEditor.setWindowTitle(QCoreApplication.translate("LevelEditor", u"Editor de Niveles de Oakhill", None))
+        self.action_new_map.setText(QCoreApplication.translate("LevelEditor", u"Nuevo JSON (desde Mapa)", None))
         self.action_load_json.setText(QCoreApplication.translate("LevelEditor", u"Cargar JSON", None))
         self.action_save_json.setText(QCoreApplication.translate("LevelEditor", u"Guardar JSON", None))
         

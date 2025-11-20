@@ -8,12 +8,12 @@ from PySide6.QtWidgets import (
     QListWidgetItem, QGraphicsScene, QGraphicsPixmapItem,
     QGraphicsRectItem, QGraphicsItem,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
-    QDoubleSpinBox, QCheckBox, QListWidget
+    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox
 )
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
-from src.Game_Constants import WORLD_MAP_LEVEL
+from src.Game_Constants import MAPS
 
 GAME_WIDTH = 1280
 GAME_HEIGHT = 780
@@ -263,6 +263,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self._updating_selection_from_canvas = False 
         self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.data_image_path_combo]
 
+        self.action_new_map.triggered.connect(self.create_new_json_from_map)
         self.action_load_json.triggered.connect(self.load_json)
         self.action_save_json.triggered.connect(self.save_json)
         self.btn_add_object.clicked.connect(self.add_new_object)
@@ -316,6 +317,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_undo.activated.connect(self.perform_undo)
         self.shortcut_redo = QShortcut(QKeySequence("Ctrl+Y"), self)
         self.shortcut_redo.activated.connect(self.perform_redo)
+        self.combo_map_select.addItems(list(MAPS.keys()))
         self.populate_image_combos()
         self.disable_property_panel()
 
@@ -488,20 +490,35 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def navigate_zone(self, dx, dy):
         focus_widget = QApplication.focusWidget()
         if isinstance(focus_widget, (QLineEdit, QTextEdit, QSpinBox, QDoubleSpinBox)): return
+        
         current_text = self.combo_zone_selector.currentText()
         if not current_text: return
+
         try:
             content = current_text.replace("(", "").replace(")", "")
             parts = content.split(",")
             cy, cx = int(parts[0]), int(parts[1])
         except: return
+
         ny, nx = cy + dy, cx + dx
-        if ny < 0 or ny >= len(WORLD_MAP_LEVEL) or nx < 0 or nx >= len(WORLD_MAP_LEVEL[0]): return
-        if WORLD_MAP_LEVEL[ny][nx] == 0: return
+
+        current_map_name = self.combo_map_select.currentText() 
+        current_map_matrix = MAPS.get(current_map_name, [])
+        
+        if ny < 0 or ny >= len(current_map_matrix) or nx < 0 or nx >= len(current_map_matrix[0]): 
+            print(f"Map limit reached {current_map_name}")
+            return
+            
+        if current_map_matrix[ny][nx] == 0: 
+            print(f"Invalid zone (0) in map: {current_map_name}")
+            return
+
         target = f"({ny}, {nx})"
         idx = self.combo_zone_selector.findText(target)
-        if idx != -1: self.combo_zone_selector.setCurrentIndex(idx)
+        if idx != -1: 
+            self.combo_zone_selector.setCurrentIndex(idx)
         else:
+            # Crear nueva zona vacía si es válida en el mapa pero no existe en el JSON
             self.current_data["zones"][target] = []
             self.combo_zone_selector.addItem(target)
             self.combo_zone_selector.setCurrentText(target)
@@ -596,6 +613,69 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         elif combo_text == "Image": idx = 1
         elif combo_text == "Door": idx = 2
         self.prop_interaction_data_stack.setCurrentIndex(idx)
+
+    def create_new_json_from_map(self):
+        """Crea un archivo JSON con las zonas vacías basándose en una matriz de mapa."""
+        """
+        Creates a new JSON file with every zone empty, based on the matrix of the map
+        """
+        if not MAPS:
+            QMessageBox.warning(self, "Error", "No maps in Game_Constants.py (MAPS)")
+            return
+
+        map_names = list(MAPS.keys())
+        name, ok = QInputDialog.getItem(self, "Nuevo Nivel", "Selecciona el Mapa Base:", map_names, 0, False)
+        
+        if not ok or not name:
+            return
+        
+        filename, _ = QFileDialog.getSaveFileName(self, "Crear Nuevo Archivo JSON", self.base_path, "JSON (*.json)")
+        if not filename:
+            return
+        
+        matrix = MAPS[name]
+        new_data = {"zones": {}}
+        count = 0
+        
+        for y in range(len(matrix)):
+            for x in range(len(matrix[0])):
+                if matrix[y][x] == 1:
+                    zone_key = f"({y}, {x})"
+                    new_data["zones"][zone_key] = []
+                    count += 1
+        
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(new_data, f, indent=4)
+            
+            QMessageBox.information(self, "Éxito", f"Se creó '{os.path.basename(filename)}' con {count} zonas.")
+            
+            self.load_json_from_path(filename) 
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"No se pudo crear el archivo:\n{e}")
+
+    def load_json_from_path(self, filepath):
+        """
+        Loads a specific JSON file without the selection dialogue
+        """
+        if not filepath: return
+        
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                self.current_data = json.load(f)
+        except Exception as e:
+            print(f"Error loading JSON: {e}")
+            self.current_data = {"zones": {}}
+
+        self.undo_manager = UndoManager()
+        
+        self.combo_zone_selector.blockSignals(True)
+        self.combo_zone_selector.clear()
+        self.combo_zone_selector.addItems(list(self.current_data.get("zones", {}).keys()))
+        self.combo_zone_selector.blockSignals(False)
+        
+        self.populate_views_for_current_zone()
 
     def load_json(self):
         filepath, _ = QFileDialog.getOpenFileName(self, "Cargar JSON", self.base_path, "JSON (*.json)")

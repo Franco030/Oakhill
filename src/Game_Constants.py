@@ -1,4 +1,5 @@
 # This script stores global constants used throughout the game.
+from utils import resource_path
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 780
@@ -18,7 +19,23 @@ WORLD_MAP_LEVEL = [
         [0, 0, 1, 0, 0, 0]  
     ]
 
+SCHOOL_MAP_LEVEL = [
+    [0, 1, 0, 0, 0],
+    [1, 1, 1, 0, 1],
+    [0, 0, 1, 1, 1],
+    [0, 1, 1, 0, 1],
+    [0, 1, 0, 0, 1]
+]
 
+MAPS = {
+    "forest": WORLD_MAP_LEVEL,
+    "school": SCHOOL_MAP_LEVEL
+}
+
+LEVEL_MUSIC = {
+    "forest": resource_path("assets/sounds/background_sound.wav"),
+    "school": resource_path("assets/sounds/inside_schoolbuilding.wav")
+}
 
 # player sprite is 8 x 25
 # most resizes must be around 4 times the original size

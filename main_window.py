@@ -261,12 +261,7 @@ def game_loop(screen, clock):
         print(f"Error when loading the file: {e}")
         death_sound = None
 
-    try:  
-        pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
-        pygame.mixer.music.play(loops=-1)
-        pygame.mixer.music.set_volume(0.5)
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
+    
 
     sound_lib = {
         "scream": screaming_sound,
@@ -279,9 +274,19 @@ def game_loop(screen, clock):
     player = pygame.sprite.GroupSingle()
     player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
     player.add(player_sprite)
+
+    current_music_path = LEVEL_MUSIC["forest"]
     
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound, music_path=current_music_path)
     scene = main_scene
+
+    try:  
+        pygame.mixer.music.load(current_music_path)
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.5)
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+
 
     action_manager = ActionManager(sound_library=sound_lib)
 
@@ -500,6 +505,46 @@ def game_loop(screen, clock):
             draw_image_ui(screen, image_to_show)
 
 
+        # --- Change level management ---
+        level_request = game_state.consume_level_change()
+        if level_request:
+            screen.fill((0, 0, 0))
+            pygame.display.flip()
+
+            new_scene = SceneLoader.load_from_json(
+                level_request["json_path"],
+                level_request["map_matrix"],
+                level_request["entry_zone"],
+                player_sprite,
+                chase_sound,
+                flee_sound,
+                level_request["music_path"]
+            )
+
+            new_music = level_request["music_path"]
+
+            if new_music and new_music != current_music_path:
+                    print(f"Cambiando música a: {new_music}")
+                    pygame.mixer.music.fadeout(500)
+                    try:
+                        pygame.mixer.music.load(resource_path(new_music))
+                        pygame.mixer.music.play(-1)
+                        pygame.mixer.music.set_volume(0.5)
+                    except Exception as e:
+                        print(f"Error when loading the file: {e}")
+                    current_music_path = new_music
+
+            scene = new_scene
+            current_zone = level_request["entry_zone"]
+            y_cord, x_cord = current_zone
+
+            pos = level_request["player_pos"]
+            player_sprite.rect.topleft = pos
+            player_sprite.pos = pygame.math.Vector2(pos)
+
+            print("Level changed")
+            continue
+        
         pygame.display.flip()
         clock.tick(FPS)
 

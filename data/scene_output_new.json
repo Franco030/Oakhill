@@ -12840,8 +12840,8 @@
                 "interaction_type": "None",
                 "interaction_data": "",
                 "trigger_condition": "IfFlag",
-                "trigger_action": "Teleport",
-                "trigger_params": "flag=have_key; value=true; zone=(0, 5); x=500; y=500"
+                "trigger_action": "ChangeLevel",
+                "trigger_params": "level=school; json=data/school_interior.json; zone=(4, 1); x=100; y=500"
             }
         ],
         "(4, 2)": [
