@@ -34,7 +34,7 @@ MAPS = {
 
 LEVEL_MUSIC = {
     "forest": resource_path("assets/sounds/background_sound.wav"),
-    "school": resource_path("assets/sounds/inside_schoolbuilding.wav")
+    "school": resource_path("assets/sounds/inside_schoolbuilding_loop.wav")
 }
 
 # player sprite is 8 x 25

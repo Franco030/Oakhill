@@ -529,7 +529,7 @@ def game_loop(screen, clock):
                     try:
                         pygame.mixer.music.load(resource_path(new_music))
                         pygame.mixer.music.play(-1)
-                        pygame.mixer.music.set_volume(0.5)
+                        pygame.mixer.music.set_volume(0.75)
                     except Exception as e:
                         print(f"Error when loading the file: {e}")
                     current_music_path = new_music
