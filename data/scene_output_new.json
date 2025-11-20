@@ -12182,6 +12182,58 @@
                 "animation_images": [],
                 "is_ground": true,
                 "z_index": 0
+            },
+            {
+                "id": "obj_1763613130",
+                "type": "Trigger",
+                "x": 944,
+                "y": 112,
+                "z_index": 4,
+                "image_path": "assets/images/note.png",
+                "resize_factor": 3.9999999999999996,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "animation_images": [],
+                "animation_speed": 0.06000000000000002,
+                "flash_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "OnEnter (Colisión)",
+                "trigger_action": "SetFlag",
+                "trigger_params": "flag=have_key; value=true"
+            },
+            {
+                "id": "obj_1763613395",
+                "type": "Trigger",
+                "x": 350,
+                "y": 250,
+                "z_index": 0,
+                "image_path": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "IfFlag (Condicional)",
+                "trigger_action": "Teleport",
+                "trigger_params": "flag=have_key; value=true; zone=(0, 5); x=500; y=500"
             }
         ],
         "(4, 2)": [

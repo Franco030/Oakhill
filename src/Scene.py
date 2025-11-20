@@ -109,6 +109,24 @@ class Scene:
                 self._obstacles.add(obj)
                 print(f"Objeto {target_id} revelado.")
                 return
+            
+    def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
+        if self.location not in self._interactables_dict:
+            return False
+        
+        found_and_unhidden = False
+
+        for obj in self._interactables_dict[self.location]:
+            if getattr(obj, 'interaction_type', None) == interaction_type_to_unhide and getattr(obj, 'is_hidden', False):
+                obj.unhide()
+                
+                self._interactables.add(obj)
+                self._obstacles.add(obj)
+                
+                found_and_unhidden = True
+                print(f"¡Secreto revelado! Objeto tipo {interaction_type_to_unhide} apareció.")
+
+        return found_and_unhidden
 
     def draw(self, screen, player):
         render_list = []

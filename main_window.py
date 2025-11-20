@@ -1,189 +1,381 @@
 import pygame
-import sys
-import os
+from sys import exit
 from src.Game_Constants import *
+from src.Obstacles import _Obstacle
+from src.Interactable import _Interactable 
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
-from src.ActionManager import ActionManager # <--- NUEVO: El cerebro de eventos
-from src.GameState import game_state        # <--- NUEVO: La memoria global
+from utils import resource_path
 
-# --- Configuración de Rutas ---
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
-
-# --- Configuración Inicial ---
-pygame.init()
-pygame.mixer.init()
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Oakhill")
-
-# Cargar Recursos Globales (Fuentes, Sonidos)
-try:
-    font_path = resource_path("assets/fonts/scary_font.ttf")
-    # Sonidos
-    chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
-    flee_sound = pygame.mixer.Sound(resource_path("assets/sounds/flee_loop.wav"))
-    note_sound = pygame.mixer.Sound(resource_path("assets/sounds/note_reading.wav"))
-    steps_sound = pygame.mixer.Sound(resource_path("assets/sounds/steps_cut.wav"))
-    # Ajustar volúmenes
-    chase_sound.set_volume(0.4)
-    flee_sound.set_volume(0.4)
-    note_sound.set_volume(1.0)
-    steps_sound.set_volume(0.3)
-except Exception as e:
-    print(f"Error cargando recursos: {e}")
-    # Crear objetos dummy si fallan los sonidos para no crashear
-    class DummySound:
-        def play(self, loops=0): pass
-        def stop(self): pass
-        def set_volume(self, v): pass
-    chase_sound = flee_sound = note_sound = steps_sound = DummySound()
-
-# --- Funciones de UI ---
+# --- NUEVOS IMPORTS ---
+from src.ActionManager import ActionManager
+from src.GameState import game_state
+# ----------------------
 
 def draw_note_ui(screen, note_data):
-    """Dibuja la interfaz de lectura de notas."""
+    """
+    Draws the note UI on the screen with the provided text lines.
+    """
     padding = 50
     ui_width = SCREEN_WIDTH - padding * 2
     ui_height = SCREEN_HEIGHT - padding * 2
 
-    # Fondo semitransparente
-    s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-    s.set_alpha(180)
-    s.fill((0, 0, 0))
-    screen.blit(s, (0, 0))
-
-    # Hoja de papel
     sheet_rect = pygame.Rect(padding, padding, ui_width, ui_height)
-    pygame.draw.rect(screen, (20, 20, 20), sheet_rect) # Fondo oscuro
-    pygame.draw.rect(screen, (200, 200, 200), sheet_rect, 2) # Borde claro
+    pygame.draw.rect(screen, (0, 0, 0), sheet_rect)
+    pygame.draw.rect(screen, (255, 255, 0), sheet_rect, 3)
 
-    try:
-        font = pygame.font.Font(font_path, 32)
-    except:
-        font = pygame.font.SysFont("Arial", 32)
+    font_path = resource_path("assets/fonts/scary_font.ttf")
+    font = pygame.font.Font(font_path, 36)
 
-    # Manejar texto (Lista o String)
+    line_spacing = 40
+    start_x = padding + 20
+    start_y = padding + 20
+
+    
     lines_to_render = []
     if isinstance(note_data, list):
         lines_to_render = note_data
     elif isinstance(note_data, str):
         lines_to_render = note_data.split('\n')
-    
-    # Renderizar texto
-    line_spacing = 40
-    start_x = padding + 40
-    start_y = padding + 40
 
     for i, line in enumerate(lines_to_render):
         render_line = line if line else " "
-        text_surface = font.render(render_line, True, (220, 220, 220))
+        
+        text_surface = font.render(render_line, True, (255, 255, 0))
         screen.blit(text_surface, (start_x, start_y + i * line_spacing))
 
-    # Instrucción de cerrar
-    try:
-        close_font = pygame.font.Font(None, 24)
-    except:
-        close_font = pygame.font.SysFont("Arial", 24)
-        
-    close_text = close_font.render("Presiona 'ESPACIO' para cerrar", True, (150, 150, 150))
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESPACIO' para cerrar", True, (255, 255, 0))
     close_rect = close_text.get_rect(centerx = sheet_rect.centerx, bottom = sheet_rect.bottom - 20)
     screen.blit(close_text, close_rect)
 
+def draw_defeat_text(screen):
+    """
+    Draws the defeat text on the screen.
+    """
+    font = pygame.font.Font(None, 50)
+    text_surface = font.render('Presiona ESC para reiniciar', True, (255, 255, 255))
+    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100))
+
+    s = pygame.Surface((text_rect.width + 20, text_rect.height + 20))
+    s.set_alpha(128)
+    s.fill((0, 0, 0))
+    screen.blit(s, (text_rect.left - 10, text_rect.top - 10))
+    screen.blit(text_surface, text_rect)
+
 def draw_image_ui(screen, image_path):
-    """Muestra una imagen en pantalla completa (ej: foto encontrada)."""
-    if not image_path or image_path == "None": return
+    """
+    Loads an image to the screen
+    """
+    try:
+        image = pygame.image.load(image_path).convert_alpha()
+    except pygame.error as e:
+        font = pygame.font.Font(None, 50)
+        text = font.render("Error: No se pudo cargar la imagen.", True, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+        return
+    
+    img_rect = image.get_rect()
+    scale = min(SCREEN_WIDTH / img_rect.width, SCREEN_HEIGHT / img_rect.height)
+    new_width = int(img_rect.width * scale)
+    new_height = int(img_rect.height * scale)
+    
+    scaled_image = pygame.transform.scale(image, (new_width, new_height))
+    scaled_rect = scaled_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    
+    screen.fill((0, 0, 0))
+    screen.blit(scaled_image, scaled_rect)
+
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESC' o 'ESPACIO' para cerrar", True, (200, 200, 200))
+    close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
+    screen.blit(close_text, close_rect)
+
+def draw_game_over_screen(screen, image):
+    """
+    Draws the "Game over" screen
+    """
+    if image:
+        screen.blit(image, (0, 0))
+    else:
+        screen.fill((0, 0, 0))
+        font = pygame.font.Font(None, 70)
+        text = font.render("GAME OVER", True, (255, 0, 0))
+        text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(text, text_rect)
+
+    img_rect = image.get_rect()
+    scale = min(SCREEN_WIDTH / img_rect.width, SCREEN_HEIGHT / img_rect.height)
+    new_width = int(img_rect.width * scale)
+    new_height = int(img_rect.height * scale)
+    
+    scaled_image = pygame.transform.scale(image, (new_width, new_height))
+    scaled_rect = scaled_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    
+    screen.fill((0, 0, 0))
+    screen.blit(scaled_image, scaled_rect)
+
+    close_font = pygame.font.Font(None, 30)
+    close_text = close_font.render("Presiona 'ESC' para reiniciar", True, (200, 200, 200))
+    close_rect = close_text.get_rect(centerx = SCREEN_WIDTH // 2, bottom = SCREEN_HEIGHT - 20)
+    screen.blit(close_text, close_rect)
+
+def find_safe_spawn(target_pos, player_sprite, obstacles):
+    """
+    Finds a safe spawn position for the player
+    """
+    player_w = player_sprite.collision_rect.width
+    player_h = player_sprite.collision_rect.height
+
+    test_rect = pygame.Rect(0, 0, player_w, player_h)
+    test_rect.center = target_pos
+
+    is_safe = True
+    for obs in obstacles:
+        if obs.collision_rect.colliderect(test_rect):
+            is_safe = False
+            break
+
+    if is_safe:
+        return target_pos
+    
+    search_radius = 1
+    max_search_radius = 50
+    step_distance = max(player_w, player_h)
+
+    while search_radius < max_search_radius:
+        distance = search_radius * step_distance
+
+        search_points = [
+            (target_pos[0], target_pos[1] - distance), # N
+            (target_pos[0] + distance, target_pos[1] - distance), # NE
+            (target_pos[0] + distance, target_pos[1]), # E
+            (target_pos[0] + distance, target_pos[1] + distance), # SE
+            (target_pos[0], target_pos[1] + distance), # S
+            (target_pos[0] - distance, target_pos[1] + distance), # SW
+            (target_pos[0] - distance, target_pos[1]), # W
+            (target_pos[0] - distance, target_pos[1] - distance)  # NW
+        ]
+
+        for point in search_points:
+            test_rect.center = point
+            is_safe = True
+            for obs in obstacles:
+                if obs.collision_rect.colliderect(test_rect):
+                    is_safe = False
+                    break
+            if is_safe:
+                return point
+        search_radius += 1
+    return target_pos
+
+
+
+def menu_loop(screen, clock):
+    """
+    Main menu loop
+    """
+    try:
+        font_path = resource_path("assets/fonts/scary_font.ttf")
+        title_font = pygame.font.Font(font_path, 90)
+        button_font = pygame.font.Font(font_path, 60)
+    except Exception:
+        title_font = pygame.font.Font(None, 100)
+        button_font = pygame.font.Font(None, 70)
 
     try:
-        full_path = resource_path(image_path)
-        if not os.path.exists(full_path): return
-        
-        img = pygame.image.load(full_path).convert_alpha()
-        
-        # Fondo oscuro
-        s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        s.set_alpha(200)
-        s.fill((0, 0, 0))
-        screen.blit(s, (0, 0))
-        
-        # Centrar imagen
-        img_rect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
-        
-        # Escalar si es muy grande
-        if img_rect.width > SCREEN_WIDTH - 100 or img_rect.height > SCREEN_HEIGHT - 100:
-            # Lógica simple de escalado (se puede mejorar)
-            scale = min((SCREEN_WIDTH - 100)/img_rect.width, (SCREEN_HEIGHT - 100)/img_rect.height)
-            new_size = (int(img_rect.width * scale), int(img_rect.height * scale))
-            img = pygame.transform.scale(img, new_size)
-            img_rect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
-            
-        screen.blit(img, img_rect)
-        
-    except Exception as e:
-        print(f"Error mostrando imagen UI: {e}")
+        pygame.mixer.music.load(resource_path("assets/sounds/main_menu_song.wav")) 
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.7)
+    except pygame.error as e:
+        print(f"Error while loading the file: {e}")
 
-# --- Bucle Principal ---
 
-def game_loop(screen, clock):
-    # 1. Inicializar Jugador
-    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    title_text = title_font.render("OAKHILL", True, (255, 255, 0))
+    title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3))
+
+    play_text = button_font.render("Jugar", True, (200, 200, 200))
+    play_rect = play_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
+
+    quit_text = button_font.render("Salir", True, (200, 200, 200))
+    quit_rect = quit_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 150))
+
     
-    # 2. Cargar Escena Inicial
-    # Asegúrate de que tu JSON tenga esta estructura o ajusta la ruta
-    json_path = resource_path("data/scene_output_new.json") 
-    map_level_placeholder = [[1]*10 for _ in range(10)] # Mapa dummy si no tienes uno real aun
-    
-    scene = SceneLoader.load_from_json(
-        json_path, 
-        map_level_placeholder, 
-        (5, 2), # Zona inicial
-        player, 
-        chase_sound, 
-        flee_sound
-    )
-
-    # 3. Inicializar ActionManager (El sistema de eventos)
-    action_manager = ActionManager()
-
-    # Variables de Estado del Bucle
-    running = True
-    game_state_status = "PLAYING" # PLAYING, READING_NOTE, VIEWING_IMAGE
-    note_content = []
-    image_content = ""
-    
-    key_pressed_space = False # Debounce para tecla espacio
-
-    while running:
-        delta_time = clock.tick(60) / 1000.0
-        keys = pygame.key.get_pressed()
-
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.mixer.music.stop()
+                return "QUIT"
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if play_rect.collidepoint(event.pos):
+                        pygame.mixer.music.stop()
+                        return "GAMEPLAY" 
+                    if quit_rect.collidepoint(event.pos):
+                        pygame.mixer.music.stop()
+                        return "QUIT"
+
+        screen.fill('black')
+
+        mouse_pos = pygame.mouse.get_pos()
+        
+        if play_rect.collidepoint(mouse_pos):
+            play_text = button_font.render("Jugar", True, (255, 255, 255))
+        else:
+            play_text = button_font.render("Jugar", True, (200, 200, 200))
+
+        if quit_rect.collidepoint(mouse_pos):
+            quit_text = button_font.render("Salir", True, (255, 255, 255))
+        else:
+            quit_text = button_font.render("Salir", True, (200, 200, 200))
+
+        screen.blit(title_text, title_rect)
+        screen.blit(play_text, play_rect)
+        screen.blit(quit_text, quit_rect)
+
+        pygame.display.flip()
+        clock.tick(FPS) 
+
+
+def game_loop(screen, clock):
+    player_x_pos = 600
+    player_y_pos = 300
+    
+
+    y_cord, x_cord = 5, 2
+    current_zone = (y_cord, x_cord)
+
+    game_state = "PLAYING"
+    image_to_show = None
+    
+    death_screen_delay = DEATH_DELAY
+    game_over_sound_played = False
+
+    note_to_show = None
+    note_being_interacted = None
+
+    zone_event_triggered = set()
+
+    try:
+        chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
+    except pygame.error as e:
+        print("Error when loading the file")
+        chase_sound = None
+
+    try:
+        flee_sound = pygame.mixer.Sound(resource_path("assets/sounds/flee_loop.wav"))
+    except pygame.error as e:
+        print("Error when loading the file")
+        flee_sound = None
+
+    try:
+        note_interact_sound = pygame.mixer.Sound(resource_path("assets/sounds/note_reading_more_vol.wav"))
+    except pygame.error as e:
+        print("Error when loading the file")
+        note_interact_sound = None
+
+    try:
+        screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
+        screaming_sound.set_volume(0.5)
+    except pygame.error as e:
+        print("Error when loading the file")
+        screaming_sound = None
+
+    try:
+        walking_sound = pygame.mixer.Sound(resource_path("assets/sounds/steps_cut.wav"))
+        walking_sound.set_volume(0.6)
+    except pygame.error as e:
+        print("Error when loading the file")
+        walking_sound = None
+
+    try:
+        secret_revealed = pygame.mixer.Sound(resource_path("assets/sounds/item_discovered.wav"))
+    except pygame.error as e:
+        print("Error when loading the file")
+        secret_revealed = None
+
+    try:
+        game_over_sound = pygame.mixer.Sound(resource_path("assets/sounds/game_over_sound.wav"))
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        game_over_sound = None
+
+    try:
+        game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        game_over_image = None
+
+    try:
+        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound.wav"))
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+        death_sound = None
+
+    try:  
+        pygame.mixer.music.load(resource_path("assets/sounds/background_sound.wav"))
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.5)
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+
+    player = pygame.sprite.GroupSingle()
+    player_sprite = Player(player_x_pos, player_y_pos, walking_sound)
+    player.add(player_sprite)
+    
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound)
+    scene = main_scene
+
+    # --- INICIALIZAR ACTION MANAGER ---
+    action_manager = ActionManager()
+    # ----------------------------------
+
+    while True:
+        screen.fill('black')
+        delta_time = clock.get_time()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
                 return "QUIT"
 
-        # --- ESTADO: JUGANDO ---
-        if game_state_status == "PLAYING":
-            
-            # 1. Movimiento Jugador
-            # Pasamos _obstacles para colisiones físicas
-            player.update(scene._obstacles) 
-            
-            # 2. IA Enemigos
-            scene._enemies.update(delta_time)
-            
-            # 3. Animaciones de Entorno
-            scene._obstacles.update()     # Animar árboles, agua, etc.
-            scene._interactables.update() # Animar notas brillantes, etc.
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if game_state == "PLAYING":
+                        player.sprite.attack()
+                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                        pygame.mixer.music.unpause()
+                        note_to_show = None
+                        image_to_show = None
+                        game_state = "PLAYING"
+                
+                elif event.key == pygame.K_ESCAPE:
+                    
+                    if game_state == "PLAYER_DEAD" or player.sprite.is_defeated:
+                        if death_sound:
+                            death_sound.stop()
+                        if game_over_sound:
+                            game_over_sound.stop()
 
-            # --- LÓGICA DE TRIGGERS (Invisible) ---
-            # Detectar si el jugador pisa un Trigger (OnEnter)
-            hit_triggers = pygame.sprite.spritecollide(player.sprite, scene._triggers, False)
+                        pygame.mixer.music.stop()
+                        return "MAIN_MENU"
+                        
+                    elif game_state == "READING_NOTE" or game_state == "READING_IMAGE":
+                        pygame.mixer.music.unpause()
+                        note_to_show = None
+                        image_to_show = None
+                        game_state = "PLAYING"                    
+                
+        # --- Game logic ---
+        if game_state == "PLAYING":  
+            player.update(scene.obstacles)
+            scene.enemies.update(delta_time)
+            scene.obstacles.update()
+
+            # --- LÓGICA DE TRIGGERS (OnEnter) ---
+            # Usamos 'player_sprite' directamente para evitar el error de atributo
+            hit_triggers = pygame.sprite.spritecollide(player_sprite, scene._triggers, False)
             for trig in hit_triggers:
                 # Verificar triggers condicionales (IfFlag)
                 if trig.condition == "IfFlag":
@@ -194,110 +386,211 @@ def game_loop(screen, clock):
                     
                     if game_state.check_flag(flag_name, needed_val):
                          action_manager.execute(trig.action, trig.params, player, scene)
-                         # Opcional: trig.kill() si es de un solo uso
 
                 # Verificar triggers normales de entrada
                 elif trig.condition == "OnEnter":
                     action_manager.execute(trig.action, trig.params, player, scene)
+            # ----------------------------------
 
+            if note_being_interacted:
+                status = note_being_interacted.update()
+                if status == "interaction_finished":
+                    interaction_data = note_being_interacted.read() 
+                    
+                    if note_being_interacted.interaction_type == "Note":
+                        note_to_show = interaction_data
+                        game_state = "READING_NOTE"
+                        
+                    
+                    elif note_being_interacted.interaction_type == "Image":
+                        image_to_show = interaction_data
+                        game_state = "READING_IMAGE"
+                        pygame.mixer.music.pause()
 
-            # --- LÓGICA DE INTERACCIÓN (Espacio) ---
-            if keys[pygame.K_SPACE] and not key_pressed_space:
-                key_pressed_space = True
-                
-                # Detectar interactuables cercanos (usando attack_rect del jugador)
-                # Nota: Usamos .rect para interacción, no collision_rect
-                collided_int = pygame.sprite.spritecollide(
-                    player.sprite, 
-                    scene._interactables, 
-                    False, 
-                    lambda spr, obj: spr.attack_rect.colliderect(obj.rect)
+                        if screaming_sound:
+                            screaming_sound.play()
+                    
+                    note_being_interacted = None
+            
+            if player.sprite.is_attacking and not note_being_interacted:
+                for enemy in scene.enemies:
+                        if enemy.collision_rect.colliderect(player.sprite.attack_rect):
+                            if hasattr(enemy, 'while_attacked'):
+                                enemy.while_attacked()
+                collided_interactables = pygame.sprite.spritecollide(
+                    player.sprite,
+                    scene.interactables,
+                    False,
+                    lambda sprite_a, sprite_b: sprite_b.rect.colliderect(sprite_a.attack_rect)
                 )
 
-                if collided_int:
-                    obj = collided_int[0] # Tomar el primero
+                if collided_interactables:
+                    obj = collided_interactables[0]
                     
-                    # A. Ejecutar Acción Genérica (ActionManager)
-                    # Si el objeto tiene configurada una acción en el editor (ej: SetFlag)
-                    if hasattr(obj, "data"): # Asegurarnos que tiene datos
+                    # --- ACCIONES GENÉRICAS EN INTERACCIÓN ---
+                    # Si el objeto tiene una acción configurada en el editor
+                    if hasattr(obj, "data") and obj.data.get("trigger_action"):
                         trig_action = obj.data.get("trigger_action")
                         trig_params = obj.data.get("trigger_params")
-                        
-                        # Solo ejecutar si la condición es OnInteract o no tiene condición (default)
+                        # Por defecto es OnInteract si no se especifica
                         cond = obj.data.get("trigger_condition", "OnInteract")
+                        
                         if cond == "OnInteract" and trig_action and trig_action != "None":
                              action_manager.execute(trig_action, trig_params, player, scene)
+                    # -----------------------------------------
 
-                    # B. Lógica Específica (Notas / Imágenes / Puertas)
-                    # 1. NOTAS
-                    if obj.interaction_type == "Note":
-                        note_content = obj.interaction_data
-                        game_state_status = "READING_NOTE"
-                        note_sound.play()
-                        obj.interact() # Marcar como leído
+                    if not obj.interacted_once:
+                        interaction_status = obj.interact()
+                        if interaction_status == "interaction_started":
+                            if note_interact_sound:
+                                note_interact_sound.play()
+                            note_being_interacted = obj
+                            player.sprite.cancel_attack()
+                    
+            for enemy in scene.enemies:
+                if enemy.collides_with(player.sprite) and not player.sprite.is_defeated:
+                    player.sprite.defeat() 
+                    pygame.mixer.music.stop()
+                    
+                    if chase_sound:
+                        chase_sound.stop()
 
-                    # 2. IMÁGENES
-                    elif obj.interaction_type == "Image":
-                        image_content = obj.interaction_data
-                        game_state_status = "VIEWING_IMAGE"
-                        note_sound.play() # Reusar sonido o poner otro
-                        obj.interact()
+                    if death_sound:
+                        death_sound.play()
 
-                    # 3. PUERTAS (Ejemplo simple)
-                    elif obj.interaction_type == "Door":
-                        # Aquí podrías checar una flag antes de abrir
-                        # if game_state.get_flag("has_key"): ...
-                        print("Es una puerta.")
+                    break
 
-            if not keys[pygame.K_SPACE]:
-                key_pressed_space = False
 
-            # --- DIBUJADO ---
-            screen.fill((0, 0, 0)) # Limpiar pantalla
+            if current_zone not in zone_event_triggered:
+                all_notes_in_zone = []
+                read_notes_count = 0
+
+                if current_zone in scene._interactables_dict:
+                    for obj in scene._interactables_dict[current_zone]:
+                        if obj.interaction_type == "Note" and (not obj.is_hidden or obj.interacted_once):
+                            all_notes_in_zone.append(obj)
+                            if obj.interacted_once:
+                                read_notes_count += 1
+
+                if len(all_notes_in_zone) > 0 and len(all_notes_in_zone) == read_notes_count:
+                    revealed_image = scene.unhide_object_by_interaction_type("Image")
+                    revealed_note = scene.unhide_object_by_interaction_type("Note")
+                    revealed_door = scene.unhide_object_by_interaction_type("Door")
+                    revealed_obj = scene.unhide_object_by_interaction_type("None")
+
+                    if revealed_image or revealed_note or revealed_door or revealed_obj: 
+                        if secret_revealed:
+                            if note_interact_sound: note_interact_sound.set_volume(0.3)
+                            secret_revealed.play()
+                            if note_interact_sound: note_interact_sound.set_volume(1)
+                    
+                    zone_event_triggered.add(current_zone)
+
             
-            # La escena se encarga de dibujar en orden (Suelo -> Z -> Y)
+            scene.draw(screen, player_sprite)
+
+            # Right direction
+            if (player.sprite.rect.left > SCREEN_WIDTH + TRANSITION_BIAS):
+                if scene.check_zone((y_cord, x_cord + 1)):
+                    x_cord += 1
+                    current_zone = (y_cord, x_cord)
+                    scene.set_location(current_zone)
+                    player.sprite.rect.left = 0 - (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
+                else:
+                    player.sprite.rect.left = 0 - (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
+            
+            # Left direction
+            if (player.sprite.rect.right < 0 - TRANSITION_BIAS):
+                if scene.check_zone((y_cord, x_cord - 1)):
+                    x_cord -= 1
+                    current_zone = (y_cord, x_cord)
+                    scene.set_location(current_zone)
+                    player.sprite.rect.right = SCREEN_WIDTH + (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
+                else:
+                    player.sprite.rect.right = SCREEN_WIDTH + (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+
+            # Bottom direction
+            if (player.sprite.rect.top > SCREEN_HEIGHT + TRANSITION_BIAS):
+                if scene.check_zone((y_cord + 1, x_cord)):
+                    y_cord += 1
+                    current_zone = (y_cord, x_cord)
+                    scene.set_location(current_zone)
+                    player.sprite.rect.top = 0 - (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+                else:
+                    player.sprite.rect.top = 0 - TRANSITION_BIAS
+                    player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+
+            # Top direction 
+            if (player.sprite.rect.bottom < 0):
+                if scene.check_zone((y_cord - 1, x_cord)):
+                    y_cord -= 1
+                    current_zone = (y_cord, x_cord)
+                    scene.set_location(current_zone)
+                    player.sprite.rect.bottom = SCREEN_HEIGHT + (TRANSITION_BIAS / 2)
+                    player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+                else:
+                    player.sprite.rect.bottom = SCREEN_HEIGHT + TRANSITION_BIAS
+                    player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+            
+            if player.sprite.is_defeated:
+                death_screen_delay -= delta_time
+                if death_screen_delay <= 0:
+                    game_state = "PLAYER_DEAD"
+
+                    if not game_over_sound_played:
+                        if game_over_sound:
+                            game_over_sound.play()
+                        game_over_sound_played = True
+        
+        elif game_state == "PLAYER_DEAD":
+            player.update(scene.obstacles)
+            scene.enemies.update(delta_time)
             scene.draw(screen, player)
-            
-            # Dibujar HUD o efectos globales aquí si los hubiera
+            draw_game_over_screen(screen, game_over_image)
 
-        # --- ESTADO: LEYENDO NOTA ---
-        elif game_state_status == "READING_NOTE":
-            # Dibujar el juego de fondo congelado
-            scene.draw(screen, player)
-            
-            # Dibujar UI
-            draw_note_ui(screen, note_content)
+        elif game_state == "READING_NOTE":
+            draw_note_ui(screen, note_to_show)
+        
+        elif game_state == "READING_IMAGE":
+            draw_image_ui(screen, image_to_show)
 
-            # Salir al presionar espacio
-            if keys[pygame.K_SPACE] and not key_pressed_space:
-                key_pressed_space = True
-                game_state_status = "PLAYING"
-            
-            if not keys[pygame.K_SPACE]:
-                key_pressed_space = False
 
-        # --- ESTADO: VIENDO IMAGEN ---
-        elif game_state_status == "VIEWING_IMAGE":
-            scene.draw(screen, player)
-            draw_image_ui(screen, image_content)
-
-            if keys[pygame.K_SPACE] and not key_pressed_space:
-                key_pressed_space = True
-                game_state_status = "PLAYING"
-            
-            if not keys[pygame.K_SPACE]:
-                key_pressed_space = False
-
-        # Actualizar pantalla
         pygame.display.flip()
-
-    return "QUIT"
+        clock.tick(FPS)
 
 def main():
+    """
+    The master loop calls game_loop() repeatedly
+    """
+    pygame.init()
+    pygame.mixer.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
+    pygame.display.set_caption('Oakhill')
+
+    try:
+        logo_image = pygame.image.load(resource_path("assets/images/logo.png"))
+        pygame.display.set_icon(logo_image)
+    except pygame.error as e:
+        print(f"Error when loading the file: {e}")
+
+
     clock = pygame.time.Clock()
-    game_loop(screen, clock)
+
+    master_game_state = "MAIN_MENU"   
+
+    while master_game_state != "QUIT":
+        if master_game_state == "MAIN_MENU":
+            master_game_state = menu_loop(screen, clock)
+        elif master_game_state == "GAMEPLAY":
+            master_game_state = game_loop(screen, clock)
+
     pygame.quit()
-    sys.exit()
+    exit()
 
 if __name__ == "__main__":
     main()
