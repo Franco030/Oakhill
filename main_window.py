@@ -192,7 +192,7 @@ def game_loop(screen, clock):
     player_x_pos = 600
     player_y_pos = 300
     
-    y_cord, x_cord = 5, 2
+    y_cord, x_cord = Y_CORD, X_CORD
     current_zone = (y_cord, x_cord)
 
     game_status = "PLAYING"
@@ -261,7 +261,16 @@ def game_loop(screen, clock):
         print(f"Error when loading the file: {e}")
         death_sound = None
 
+
+    # Ilumination setup
+    light_mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)) 
     
+    light_radius = 250
+    flashlight_texture = pygame.Surface((light_radius * 2, light_radius * 2))
+    
+    for r in range(light_radius, 0, -2):
+        intensity = int(255 * (1 - (r / light_radius)))
+        pygame.draw.circle(flashlight_texture, (intensity, intensity, intensity), (light_radius, light_radius), r)
 
     sound_lib = {
         "scream": screaming_sound,
@@ -276,8 +285,9 @@ def game_loop(screen, clock):
     player.add(player_sprite)
 
     current_music_path = LEVEL_MUSIC["forest"]
+    initial_darkness = LEVEL_DARKNESS["forest"]
     
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound, music_path=current_music_path)
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound, music_path=current_music_path, has_darkness=initial_darkness)
     scene = main_scene
 
     try:  
@@ -434,6 +444,18 @@ def game_loop(screen, clock):
             
             scene.draw(screen, player_sprite)
 
+
+            if scene.darkness:
+                light_mask.fill((50, 50, 50)) 
+                
+                light_x = player_sprite.rect.centerx - light_radius
+                light_y = player_sprite.rect.centery - light_radius
+                
+                light_mask.blit(flashlight_texture, (light_x, light_y), special_flags=pygame.BLEND_ADD)
+                
+                screen.blit(light_mask, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+
+
             # Right direction
             if (player.sprite.rect.left > SCREEN_WIDTH + TRANSITION_BIAS):
                 if scene.check_zone((y_cord, x_cord + 1)):
@@ -518,7 +540,8 @@ def game_loop(screen, clock):
                 player_sprite,
                 chase_sound,
                 flee_sound,
-                level_request["music_path"]
+                level_request["music_path"],
+                level_request["darkness"]
             )
 
             new_music = level_request["music_path"]

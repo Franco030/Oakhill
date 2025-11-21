@@ -2557,6 +2557,33 @@
                 "interaction_data": "",
                 "z_index": 0,
                 "is_ground": true
+            },
+            {
+                "id": "obj_1763764789",
+                "type": "Trigger",
+                "x": 640,
+                "y": 390,
+                "z_index": 0,
+                "image_path": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    -53,
+                    3,
+                    83,
+                    -25
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "used_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "IfFlag",
+                "trigger_action": "ChangeLevel",
+                "trigger_params": "flag=have_key; value=true; level=school; json=data/school_interior.json; zone=(4, 2); x=640; y=500"
             }
         ],
         "(0, 4)": [
@@ -8050,7 +8077,7 @@
             },
             {
                 "id": "(0, 2)_obj_109",
-                "x": 250,
+                "x": 251,
                 "y": 250,
                 "type": "Obstacle",
                 "image_path": "assets/images/grass_1.png",
@@ -8638,6 +8665,33 @@
                 "flash_image_path": "",
                 "interaction_data": "",
                 "z_index": 0
+            },
+            {
+                "id": "obj_1763764840",
+                "type": "Interactable",
+                "x": 249,
+                "y": 257,
+                "z_index": -1,
+                "image_path": "assets/images/key.png",
+                "resize_factor": 2.0,
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "collision_rect_offset": [
+                    3,
+                    -2,
+                    0,
+                    0
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "used_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "OnInteract",
+                "trigger_action": "SetFlag",
+                "trigger_params": "flag=have_key; value=true"
             }
         ],
         "(5, 2)": [
@@ -12841,7 +12895,7 @@
                 "interaction_data": "",
                 "trigger_condition": "IfFlag",
                 "trigger_action": "ChangeLevel",
-                "trigger_params": "level=school; json=data/school_interior.json; zone=(4, 1); x=100; y=500"
+                "trigger_params": "flag=have_key; value=true; level=school; json=data/school_interior.json; zone=(4, 2); x=100; y=500"
             }
         ],
         "(4, 2)": [

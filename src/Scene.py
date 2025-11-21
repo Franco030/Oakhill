@@ -6,7 +6,7 @@ class Scene:
     The same Scene object is going to be used to represent the "open world", what diferentiates one scene from another is its location
     You may need to make a new Scene object if you "enter a house", because the house will have a different scenario, different object, different events, etc.
     """
-    def __init__(self, initial_location: tuple, obstacles: dict, interactables: dict, triggers: dict, enemies: dict, map_level, global_enemies=None, music_path=None):
+    def __init__(self, initial_location: tuple, obstacles: dict, interactables: dict, triggers: dict, enemies: dict, map_level, global_enemies=None, music_path=None, has_darkness=False):
         """
         Description: Initializes the scene
         Parameters:
@@ -27,6 +27,7 @@ class Scene:
         self.global_enemies = global_enemies if global_enemies else []
         
         self.music_path = music_path
+        self.darkness = has_darkness
         self.map_level = map_level
 
         self._obstacles = pygame.sprite.Group()

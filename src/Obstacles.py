@@ -15,7 +15,21 @@ class _Obstacle(pygame.sprite.Sprite):
         super().__init__()
 
         self.data = data
-        self.id = data.get("id")
+        
+        # Identity
+        self.id = data.get("id", "NO_ID")
+        self.type = data.get("type", "Obstacle")
+        
+        # Properties physics/render
+        self.z_index = int(data.get("z_index", 0))
+        self.is_ground = data.get("is_ground", False)
+        self.is_passable = data.get("is_passable", False)
+        self.resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
+        
+        # Trigger logic / Events (default values)
+        self.trigger_condition = data.get("trigger_condition", "None")
+        self.trigger_action = data.get("trigger_action", "None")
+        self.trigger_params = data.get("trigger_params", "")
 
         image_path = data.get("image_path")
         resize_factor = data.get("resize_factor", RESIZE_FACTOR)

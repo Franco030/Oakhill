@@ -42,7 +42,7 @@ class GameState:
     # --------------------------------------------------
 
     # --- Change level logic ---
-    def request_level_change(self, json_path, map_matrix, entry_zone, player_pos, music_path):
+    def request_level_change(self, json_path, map_matrix, entry_zone, player_pos, music_path, darkness):
         """
         Requests main_window to change level in the next frame
         """
@@ -51,7 +51,8 @@ class GameState:
             "map_matrix": map_matrix,
             "entry_zone": entry_zone,
             "player_pos": player_pos,
-            "music_path": music_path
+            "music_path": music_path,
+            "darkness": darkness
         }
 
     def consume_level_change(self):

@@ -1,6 +1,6 @@
 import pygame
 from src.GameState import game_state
-from src.Game_Constants import MAPS, LEVEL_MUSIC
+from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from utils import resource_path
 
 class ActionManager:
@@ -119,13 +119,15 @@ class ActionManager:
                 new_zone = (int(parts[0]), int(parts[1]))
 
                 music = LEVEL_MUSIC.get(level_name)
+                is_dark = LEVEL_DARKNESS.get(level_name, False)
 
                 game_state.request_level_change(
                     json_path=resource_path(json_file),
                     map_matrix=MAPS[level_name],
                     entry_zone=new_zone,
                     player_pos=(x, y),
-                    music_path=music
+                    music_path=music,
+                    darkness=is_dark
                 )
                 print(f"Requesting travel to level: {level_name}")
                 

@@ -25,6 +25,19 @@ class _Interactable(_Obstacle):
         self.interaction_duration = 30
         self.interaction_timer = 0
         self.original_image = self.image.copy()
+
+        self.used_image = None
+        used_path = data.get("used_image_path", "None")
+        
+        if used_path and used_path != "None":
+            try:
+                loaded_used = pygame.image.load(resource_path(used_path)).convert_alpha()
+                self.used_image = pygame.transform.scale(
+                    loaded_used, 
+                    (int(loaded_used.get_width() * self.resize_factor), int(loaded_used.get_height() * self.resize_factor))
+                )
+            except Exception as e:
+                print(f"Error while loading used image: {e}")
         
         flash_path = data.get("flash_image_path")
         try:
@@ -36,9 +49,9 @@ class _Interactable(_Obstacle):
                 self.flash_image, (self.image.get_width(), self.image.get_height())
             )
         except pygame.error as e:
-            print(f"ADVERTENCIA: No se pudo cargar '{flash_path}' ({e}). Usando destello blanco.")
-            self.flash_image = self.original_image.copy()
-            self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
+            print("Can't load image, there's no flash")
+            # self.flash_image = self.original_image.copy()
+            # self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
 
     def unhide(self):
         """
@@ -65,8 +78,12 @@ class _Interactable(_Obstacle):
         Finishes the interaction, auto-destroys (from the sprites group)
         and returns the data of the interaction
         """
-        self.interacted_once = True
-        self.kill()
+        self.interacted_once=True
+        if self.used_image:
+            self.image = self.used_image
+            self.original_image = self.used_image
+        else:
+            self.kill()
         
         return self.interaction_data
     

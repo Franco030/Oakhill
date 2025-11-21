@@ -8,7 +8,7 @@ from .Trigger import Trigger
 
 class SceneLoader:
     @staticmethod
-    def load_from_json(path: str, map_level: list, initial_zone: tuple, player, chase_sound, flee_sound, music_path=None) -> Scene:
+    def load_from_json(path: str, map_level: list, initial_zone: tuple, player, chase_sound, flee_sound, music_path=None, has_darkness=False) -> Scene:
         with open(path, 'r') as f:
             data = json.load(f)
 
@@ -45,4 +45,14 @@ class SceneLoader:
             enemy_dict_placeholder = {}
 
 
-        return Scene(initial_zone, zone_obstacles, zone_interactables, zone_triggers, enemy_dict_placeholder, map_level, global_enemies=[stalker], music_path=music_path)
+        return Scene(
+            initial_zone, 
+            zone_obstacles, 
+            zone_interactables, 
+            zone_triggers, 
+            enemy_dict_placeholder, 
+            map_level, 
+            global_enemies=[stalker], 
+            music_path=music_path, 
+            has_darkness=has_darkness
+        )

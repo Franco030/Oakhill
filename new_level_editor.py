@@ -258,10 +258,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.canvas_view.setScene(self.current_scene)
         self.current_scene.setSceneRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
         self.current_scene.setBackgroundBrush(QBrush(QColor(50, 50, 50)))
+        self.draw_game_border()
         self.current_scene.selectionChanged.connect(self.on_scene_selection_changed)
         self.current_hitbox_item = None
         self._updating_selection_from_canvas = False 
-        self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.data_image_path_combo]
+        self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.data_image_path_combo, self.prop_used_image_path_combo]
 
         self.action_new_map.triggered.connect(self.create_new_json_from_map)
         self.action_load_json.triggered.connect(self.load_json)
@@ -284,6 +285,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_type.currentTextChanged.connect(lambda v: self.on_property_changed('type', v))
         self.prop_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('image_path', v))
         self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_path', v))
+        self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
         self.prop_interaction_type.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_type', v))
         self.data_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_data', v))
         self.prop_is_passable.stateChanged.connect(lambda v: self.on_property_changed('is_passable', bool(v)))
@@ -300,6 +302,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_interaction_type.currentTextChanged.connect(self.on_interaction_type_changed)
         self.btn_browse_image.clicked.connect(lambda: self.browse_file_for_combo(self.prop_image_path_combo))
         self.btn_browse_flash.clicked.connect(lambda: self.browse_file_for_combo(self.prop_flash_image_path_combo))
+        self.btn_browse_used.clicked.connect(lambda: self.browse_file_for_combo(self.prop_used_image_path_combo))
         self.btn_browse_data.clicked.connect(lambda: self.browse_file_for_combo(self.data_image_path_combo))
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
         self.shortcut_up.activated.connect(lambda: self.navigate_zone(0, -1))
@@ -389,7 +392,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
             "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
             "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
-            "flash_image_path": "None", "interaction_type": "None", "interaction_data": "",
+            "flash_image_path": "None", "used_image_path": "None", "interaction_type": "None", "interaction_data": "",
             "trigger_condition": "OnEnter", "trigger_action": "SetFlag", "trigger_params": ""
         }
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
@@ -615,7 +618,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_interaction_data_stack.setCurrentIndex(idx)
 
     def create_new_json_from_map(self):
-        """Crea un archivo JSON con las zonas vacías basándose en una matriz de mapa."""
         """
         Creates a new JSON file with every zone empty, based on the matrix of the map
         """
@@ -696,6 +698,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             for obj in objects:
                 if obj.get("image_path") == "None": obj["image_path"] = ""
                 if obj.get("flash_image_path") == "None": obj["flash_image_path"] = ""
+                if obj.get("used_image_path") == "None": obj["used_image_path"] = ""
                 try: obj["resize_factor"] = float(obj.get("resize_factor", 1))
                 except: obj["resize_factor"] = 1.0
                 try: obj["z_index"] = int(obj.get("z_index", 0))
@@ -743,6 +746,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def populate_views_for_current_zone(self):
         self.list_objects.clear()
         self.current_scene.clear()
+        self.draw_game_border()
         self.current_hitbox_item = None
         self.disable_property_panel()
         zone = self.combo_zone_selector.currentText()
@@ -755,6 +759,18 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.list_objects.addItem(item)
             pix_item = self.draw_object_on_canvas(obj)
             if pix_item: item.setData(Qt.UserRole + 1, pix_item)
+
+    def draw_game_border(self):
+        border = QGraphicsRectItem(0, 0, GAME_WIDTH, GAME_HEIGHT)
+        
+        pen = QPen(QColor(0, 255, 255)) 
+        pen.setWidth(3)
+        pen.setStyle(Qt.DashLine)
+        
+        border.setPen(pen)
+        border.setZValue(20000)
+        
+        self.current_scene.addItem(border)
 
     def draw_object_on_canvas(self, obj):
         imgpath = obj.get("image_path", "None")
@@ -902,6 +918,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_anim_speed.setValue(data.get("animation_speed", 0.1))
         
         self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_path", "None"))
+        self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
         self.prop_interaction_type.setCurrentText(data.get("interaction_type", "None"))
         itype = data.get("interaction_type", "None")
         idata = data.get("interaction_data", "")

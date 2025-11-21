@@ -16,7 +16,7 @@ class _Behaviour(ABC):
         Applies this behaviour to the given enemy
         Subclasses must implement this method
         Parameterers:
-            enemy: The Enemy instance to apply this behaviour to
+            enemy: The Enemy instance to apply this behaviour to (no longer in use)
             delta_time: Time elapsed since the last update (for frame-rate independence)
         """
         pass
