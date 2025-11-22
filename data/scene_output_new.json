@@ -16,7 +16,7 @@
                 ],
                 "flash_image_path": "",
                 "interaction_data": "",
-                "z_index": 1,
+                "z_index": 0,
                 "is_passable": false,
                 "starts_hidden": false,
                 "is_ground": false,
@@ -2562,7 +2562,7 @@
                 "id": "obj_1763764789",
                 "type": "Trigger",
                 "x": 640,
-                "y": 390,
+                "y": 391,
                 "z_index": 0,
                 "image_path": "",
                 "resize_factor": 1.0,
@@ -2571,7 +2571,7 @@
                 "is_ground": false,
                 "collision_rect_offset": [
                     -53,
-                    3,
+                    24,
                     83,
                     -25
                 ],
@@ -2584,6 +2584,33 @@
                 "trigger_condition": "IfFlag",
                 "trigger_action": "ChangeLevel",
                 "trigger_params": "flag=have_key; value=true; level=school; json=data/school_interior.json; zone=(4, 2); x=640; y=500"
+            },
+            {
+                "id": "obj_1763795776",
+                "type": "Trigger",
+                "x": 372,
+                "y": 385,
+                "z_index": 0,
+                "image_path": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    1,
+                    21,
+                    0,
+                    0
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "used_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "OnEnter",
+                "trigger_action": "ChangeLevel",
+                "trigger_params": "level=school; json=data/school_interior.json; zone=(4, 0); x=640; y=500"
             }
         ],
         "(0, 4)": [
@@ -6001,11 +6028,11 @@
                 "collision_rect_offset": [
                     -20,
                     -20,
-                    40,
+                    39,
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "¡CUIDADO!No dejes que te toquen.Tu luz... los debilita, pero...no los detiene para siempre.",
+                "interaction_data": "-----\n1. Gasolina\n2. Encendedor\n3. Mary Kay\n4. Kr`1233j`23\n\nQue la paz inunde Oakhill.",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -6305,8 +6332,9 @@
                     -90
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "El espantapajarosSentí una presencia terribleen la vieja escuela.Sera K`3`1093`~!@?",
-                "z_index": 0
+                "interaction_data": "Sentí una presencia terribleen la vieja escuela.\nSera K`3`1093`~!@?",
+                "z_index": 0,
+                "used_image_path": ""
             },
             {
                 "id": "(0, 2)_obj_16",
@@ -12824,7 +12852,7 @@
             },
             {
                 "id": "(5, 2)_obj_217",
-                "x": 436,
+                "x": 435,
                 "y": 116,
                 "type": "Interactable",
                 "image_path": "assets/images/note.png",
@@ -12837,7 +12865,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Dia ~3=-3=-14~!@,El señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4",
+                "interaction_data": "Dia ~3=-3=-14~!@,\nEl señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4",
                 "is_passable": true,
                 "starts_hidden": false,
                 "animation_speed": 0.1,
@@ -18108,7 +18136,7 @@
             },
             {
                 "id": "(3, 1)_obj_13",
-                "x": 650,
+                "x": 649,
                 "y": 190,
                 "type": "Interactable",
                 "image_path": "assets/images/note.png",
@@ -18121,7 +18149,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Día ~!2,`12: El edificio de la escuelaparece ser el epicentro de todo.La puerta principal está atascada.",
+                "interaction_data": "Día ~!2,`12: \nEl edificio de la escuela\nparece ser el epicentro de todo.\nLa puerta principal tiene llave.",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -19680,7 +19708,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "Quien es el fantasma blanco?Por que me ataca?",
+                "interaction_data": "Quien es el fantasma blanco?\nPor que me ataca?",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -20510,7 +20538,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -20562,7 +20590,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -20588,7 +20616,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -20614,7 +20642,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "HuHUyHUwefyHUADHUYAN",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,
@@ -20976,7 +21004,7 @@
                     40
                 ],
                 "interaction_type": "Note",
-                "interaction_data": "...............A~D~E~N~T~R~O",
+                "interaction_data": "...............\nA~D~E~N~T~R~O",
                 "is_passable": true,
                 "starts_hidden": false,
                 "is_ground": true,

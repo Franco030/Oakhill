@@ -22,7 +22,7 @@ class _Interactable(_Obstacle):
         self.is_hidden = data.get("starts_hidden", False)
         
         self.is_interacting = False
-        self.interaction_duration = 30
+        self.interaction_duration = 60
         self.interaction_timer = 0
         self.original_image = self.image.copy()
 
@@ -50,7 +50,7 @@ class _Interactable(_Obstacle):
             )
         except pygame.error as e:
             print("Can't load image, there's no flash")
-            # self.flash_image = self.original_image.copy()
+            self.flash_image = self.original_image.copy()
             # self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
 
     def unhide(self):

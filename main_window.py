@@ -344,7 +344,13 @@ def game_loop(screen, clock):
             # --- Trigger Logic (OnEnter) ---
             # Basically if there's a collision with a trigger check if it has a condition to execute, if it does -> check the condition and then execute
             # if it doesn't just execute it
-            hit_triggers = pygame.sprite.spritecollide(player_sprite, scene._triggers, False)
+            hit_triggers = pygame.sprite.spritecollide(
+                player_sprite, 
+                scene._triggers, 
+                False,
+                lambda p, t: p.collision_rect.colliderect(t.rect)
+            )
+
             for trig in hit_triggers:
                 # Check conditional triggers (IfFlag)
                 if trig.condition == "IfFlag":
