@@ -3,7 +3,7 @@ from utils import resource_path
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 780
-PLAYER_SPEED = 4
+PLAYER_SPEED = 3
 RESIZE_FACTOR = 4
 TRANSITION_BIAS = 20
 FPS = 60
@@ -41,7 +41,7 @@ LEVEL_MUSIC = {
 
 LEVEL_DARKNESS = {
     "forest": False,
-    "school": True
+    "school": False
 }
 
 # player sprite is 8 x 25

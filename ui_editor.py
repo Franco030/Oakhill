@@ -126,6 +126,7 @@ class Ui_LevelEditor(object):
         
         self.prop_type = QComboBox(self.properties_box)
         self.prop_type.addItem("") # Obstacle
+        self.prop_type.addItem("") # Mirror
         self.prop_type.addItem("") # Interactable
         self.prop_type.addItem("") # Trigger
         self.prop_type.setObjectName(u"prop_type")
@@ -229,7 +230,7 @@ class Ui_LevelEditor(object):
         self.prop_hitbox_dh.setMaximum(999)
         self.horizontalLayout_6.addWidget(self.prop_hitbox_dh)
         self.formLayout.setLayout(7, QFormLayout.ItemRole.FieldRole, self.horizontalLayout_6)
-        
+
         self.label_z = QLabel(self.properties_box)
         self.label_z.setObjectName(u"label_z")
         self.formLayout.setWidget(8, QFormLayout.ItemRole.LabelRole, self.label_z)
@@ -239,6 +240,13 @@ class Ui_LevelEditor(object):
         self.prop_z_index.setMaximum(100)
         self.formLayout.setWidget(8, QFormLayout.ItemRole.FieldRole, self.prop_z_index)
         self.verticalLayout_4.addWidget(self.properties_box)
+
+        self.label_mirror_y = QLabel("Reflejo Y (Mirror):", self.properties_box)
+        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_mirror_y)
+        self.prop_reflection_offset = QSpinBox(self.properties_box)
+        self.prop_reflection_offset.setMinimum(-999)
+        self.prop_reflection_offset.setMaximum(999)
+        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.prop_reflection_offset)
 
         self.group_animation = QGroupBox(self.scrollAreaWidgetContents)
         self.group_animation.setObjectName(u"group_animation")
@@ -430,8 +438,9 @@ class Ui_LevelEditor(object):
         self.label.setText(QCoreApplication.translate("LevelEditor", u"ID:", None))
         self.label_6.setText(QCoreApplication.translate("LevelEditor", u"Tipo Objeto:", None))
         self.prop_type.setItemText(0, QCoreApplication.translate("LevelEditor", u"Obstacle", None))
-        self.prop_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Interactable", None))
-        self.prop_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Trigger", None))
+        self.prop_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Mirror", None))
+        self.prop_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Interactable", None))
+        self.prop_type.setItemText(3, QCoreApplication.translate("LevelEditor", u"Trigger", None))
 
         self.label_7.setText(QCoreApplication.translate("LevelEditor", u"Posición:", None))
         self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image Path:", None))

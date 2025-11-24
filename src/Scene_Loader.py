@@ -1,8 +1,9 @@
 import json
-from .Obstacles import _Obstacle
 from .Scene import Scene
 from .Enemies import *
 from .Behaviour import *
+from .Obstacles import _Obstacle
+from .Mirror import Mirror
 from .Interactable import _Interactable
 from .Trigger import Trigger
 
@@ -29,6 +30,9 @@ class SceneLoader:
                 if obj_type == "Obstacle":
                     obstacle = _Obstacle(obj_data)
                     obstacle_list.append(obstacle)
+                elif obj_type == "Mirror":
+                    mirror = Mirror(obj_data, player)
+                    obstacle_list.append(mirror)
                 elif obj_type == "Interactable":
                     interactable = _Interactable(obj_data)
                     interactable_list.append(interactable)

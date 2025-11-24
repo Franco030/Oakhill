@@ -276,6 +276,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_x.valueChanged.connect(lambda v: self.on_property_changed('x', v))
         self.prop_y.valueChanged.connect(lambda v: self.on_property_changed('y', v))
         self.prop_z_index.valueChanged.connect(lambda v: self.on_property_changed('z_index', v))
+        self.prop_reflection_offset.valueChanged.connect(lambda v: self.on_property_changed('reflection_offset_y', v))
         self.prop_resize_factor.valueChanged.connect(lambda v: self.on_property_changed('resize_factor', v))
         self.prop_hitbox_dx.valueChanged.connect(self.on_hitbox_changed)
         self.prop_hitbox_dy.valueChanged.connect(self.on_hitbox_changed)
@@ -340,6 +341,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_x.setValue(obj_data.get('x', 0))
             self.prop_y.setValue(obj_data.get('y', 0))
             self.prop_z_index.setValue(int(obj_data.get('z_index', 0)))
+            self.prop_reflection_offset.setValue(int(obj_data.get('reflection_offset_y', 0)))
             hb = obj_data.get('collision_rect_offset', [0,0,0,0])
             self.prop_hitbox_dx.setValue(hb[0])
             self.prop_hitbox_dy.setValue(hb[1])
@@ -703,6 +705,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 except: obj["resize_factor"] = 1.0
                 try: obj["z_index"] = int(obj.get("z_index", 0))
                 except: obj["z_index"] = 0
+                try: obj["reflection_offset_y"] = int(obj.get("reflection_offset_y", 0))
+                except: obj["reflection_offset_y"] = 0
                 itype = obj.get("interaction_type", "None")
                 if itype == "Note":
                     d = obj.get("interaction_data")
@@ -900,6 +904,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_x.setValue(data.get("x", 0))
         self.prop_y.setValue(data.get("y", 0))
         self.prop_z_index.setValue(int(data.get("z_index", 0)))
+        self.prop_reflection_offset.setValue(int(data.get("reflection_offset_y", 0)))
         self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
         try: rz = float(data.get("resize_factor", 1))
         except: rz = 1.0

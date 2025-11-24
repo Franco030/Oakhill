@@ -40,8 +40,8 @@ class Player(pygame.sprite.Sprite):
             'up': Animation(self, [resource_path('assets/animations/walking_up_1.png'), resource_path('assets/animations/walking_up_2.png')], 0.05),
             'down': Animation(self, [resource_path('assets/animations/walking_down_1.png'), resource_path('assets/animations/walking_down_2.png')], 0.05),
 
-            'attack_down': Animation(self, [resource_path(f"assets/animations/Detective_Att_Bot/detective_att_bot_{i}.png") for i in range(1, 5)], 0.05),
-            'attack_up': Animation(self, [resource_path(f"assets/animations/Detective_Att_Top/detective_att_top_{i}.png") for i in range(1, 5)], 0.05),
+            'attack_down': Animation(self, [resource_path(f"assets/animations/Detective_Att_Bot/detective_att_bot.png")], 0.05),
+            'attack_up': Animation(self, [resource_path(f"assets/animations/Detective_Att_Top/detective_att_top.png")], 0.05),
             'attack_left': Animation(self, [resource_path("assets/animations/Detective_Att_Left/detective_att_left.png")], 0.05),
             'attack_right': Animation(self, [resource_path("assets/animations/Detective_Att_Right/detective_att_right.png")], 0.05),
 
@@ -157,6 +157,7 @@ class Player(pygame.sprite.Sprite):
                 self.is_attacking = False
                 self.attack_rect.width = 0
                 self.attack_rect.height = 0
+                self.image = self.animations[self.facing].images[0]
 
         else:
             self.direction.x = 0
