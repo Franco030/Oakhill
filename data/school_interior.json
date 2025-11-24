@@ -71377,7 +71377,9 @@
                 "trigger_condition": "OnInteract",
                 "trigger_action": "SetFlag",
                 "trigger_params": "",
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "charge_sound_path": "assets/sounds/interacting.wav",
+                "used_image_path": "assets/images/wall_deco/blood_canvas_used.png"
             },
             {
                 "id": "obj_1763761394",

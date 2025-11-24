@@ -18,6 +18,7 @@ from src.Game_Constants import MAPS
 GAME_WIDTH = 1280
 GAME_HEIGHT = 780
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
+AUDIO_EXTENSIONS = ('.wav', '.mp3', '.ogg')
 
 # --- Command system (UNDO/REDO) ---
 
@@ -286,6 +287,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_type.currentTextChanged.connect(lambda v: self.on_property_changed('type', v))
         self.prop_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('image_path', v))
         self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_path', v))
+        self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_path', v))
         self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
         self.prop_interaction_type.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_type', v))
         self.data_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_data', v))
@@ -303,6 +305,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_interaction_type.currentTextChanged.connect(self.on_interaction_type_changed)
         self.btn_browse_image.clicked.connect(lambda: self.browse_file_for_combo(self.prop_image_path_combo))
         self.btn_browse_flash.clicked.connect(lambda: self.browse_file_for_combo(self.prop_flash_image_path_combo))
+        self.btn_browse_charge.clicked.connect(lambda: self.browse_audio_for_combo(self.prop_charge_sound_combo))
         self.btn_browse_used.clicked.connect(lambda: self.browse_file_for_combo(self.prop_used_image_path_combo))
         self.btn_browse_data.clicked.connect(lambda: self.browse_file_for_combo(self.data_image_path_combo))
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
@@ -323,6 +326,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_redo.activated.connect(self.perform_redo)
         self.combo_map_select.addItems(list(MAPS.keys()))
         self.populate_image_combos()
+        self.populate_sound_combos()
         self.disable_property_panel()
 
     def perform_undo(self): self.undo_manager.undo()
@@ -338,21 +342,55 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         current = self.list_objects.currentItem()
         if current and current.data(Qt.UserRole) is obj_data:
             self.is_programmatic_change = True
+            
             self.prop_x.setValue(obj_data.get('x', 0))
             self.prop_y.setValue(obj_data.get('y', 0))
             self.prop_z_index.setValue(int(obj_data.get('z_index', 0)))
             self.prop_reflection_offset.setValue(int(obj_data.get('reflection_offset_y', 0)))
+            
+
+            self.prop_image_path_combo.setCurrentText(obj_data.get('image_path', 'None'))
+            self.prop_resize_factor.setValue(float(obj_data.get('resize_factor', 4.0)))
+            
+            self.prop_is_passable.setChecked(obj_data.get('is_passable', False))
+            self.prop_starts_hidden.setChecked(obj_data.get('starts_hidden', False))
+            self.prop_is_ground.setChecked(obj_data.get('is_ground', False))
+
             hb = obj_data.get('collision_rect_offset', [0,0,0,0])
             self.prop_hitbox_dx.setValue(hb[0])
             self.prop_hitbox_dy.setValue(hb[1])
             self.prop_hitbox_dw.setValue(hb[2])
             self.prop_hitbox_dh.setValue(hb[3])
+
+            self.prop_anim_list.clear()
+            self.prop_anim_list.addItems(obj_data.get('animation_images', []))
+            self.prop_anim_speed.setValue(float(obj_data.get('animation_speed', 0.1)))
+
+            self.prop_flash_image_path_combo.setCurrentText(obj_data.get('flash_image_path', 'None'))
+            self.prop_charge_sound_combo.setCurrentText(obj_data.get('charge_sound_path', 'None'))
+            self.prop_used_image_path_combo.setCurrentText(obj_data.get('used_image_path', 'None'))
+
+            self.prop_interaction_type.setCurrentText(obj_data.get('interaction_type', 'None'))
+            
+            itype = obj_data.get('interaction_type', 'None')
+            idata = obj_data.get('interaction_data', "")
+            
+            if itype == "Note":
+                if isinstance(idata, list):
+                    self.data_note_text.setText("\n".join(idata))
+                else:
+                    self.data_note_text.setText(str(idata))
+            elif itype == "Image":
+                self.data_image_path_combo.setCurrentText(str(idata))
+
             self.prop_trigger_condition.setCurrentText(obj_data.get("trigger_condition", "OnEnter"))
             self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", "SetFlag"))
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
+            
             current.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
             pixmap_item = current.data(Qt.UserRole + 1)
             if pixmap_item: self.update_canvas_item(obj_data, pixmap_item)
+            
             self.is_programmatic_change = False
 
     def browse_file_for_combo(self, combo_widget):
@@ -394,7 +432,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
             "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
             "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
-            "flash_image_path": "None", "used_image_path": "None", "interaction_type": "None", "interaction_data": "",
+            "flash_image_path": "None", "charge_sound_path": "None", "used_image_path": "None", "interaction_type": "None", "interaction_data": "",
             "trigger_condition": "OnEnter", "trigger_action": "SetFlag", "trigger_params": ""
         }
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
@@ -700,6 +738,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             for obj in objects:
                 if obj.get("image_path") == "None": obj["image_path"] = ""
                 if obj.get("flash_image_path") == "None": obj["flash_image_path"] = ""
+                if obj.get("charge_sound_path") == "None": obj["charge_sound_path"] = ""
                 if obj.get("used_image_path") == "None": obj["used_image_path"] = ""
                 try: obj["resize_factor"] = float(obj.get("resize_factor", 1))
                 except: obj["resize_factor"] = 1.0
@@ -923,6 +962,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_anim_speed.setValue(data.get("animation_speed", 0.1))
         
         self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_path", "None"))
+        self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))
         self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
         self.prop_interaction_type.setCurrentText(data.get("interaction_type", "None"))
         itype = data.get("interaction_type", "None")
@@ -990,6 +1030,35 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             cmd = CmdPropertyChange(self, obj_data, 'animation_images', obj_data.get('animation_images', []), anim_list)
             self.undo_manager.push(cmd, execute_now=False)
             obj_data['animation_images'] = anim_list
+
+    def populate_sound_combos(self):
+        sounds_path = os.path.join(self.base_path, "assets/sounds")
+        sound_files = ["None"]
+        
+        if os.path.exists(sounds_path):
+            for root, _, files in os.walk(sounds_path):
+                for f in files:
+                    if f.lower().endswith(AUDIO_EXTENSIONS):
+                        rel = os.path.relpath(os.path.join(root, f), self.base_path)
+                        sound_files.append(rel.replace("\\", "/"))
+        
+        self.prop_charge_sound_combo.blockSignals(True)
+        self.prop_charge_sound_combo.clear()
+        self.prop_charge_sound_combo.addItems(sound_files)
+        self.prop_charge_sound_combo.blockSignals(False)
+
+    def browse_audio_for_combo(self, combo_widget):
+        start_dir = os.path.join(self.base_path, "assets/sounds")
+        filepath, _ = QFileDialog.getOpenFileName(self, "Seleccionar Audio", start_dir, "Audio (*.wav *.mp3 *.ogg)")
+        
+        if filepath:
+            try:
+                rel_path = os.path.relpath(filepath, self.base_path).replace("\\", "/")
+                if self.prop_charge_sound_combo.findText(rel_path) == -1:
+                    self.prop_charge_sound_combo.addItem(rel_path)
+                self.prop_charge_sound_combo.setCurrentText(rel_path)
+            except: pass
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

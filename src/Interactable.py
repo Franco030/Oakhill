@@ -27,6 +27,17 @@ class _Interactable(_Obstacle):
         # self.interaction_timer = 0
         self.original_image = self.image.copy()
 
+        self.charge_sound = None
+        self.is_playing_charge = False
+        charge_path = data.get("charge_sound_path", "None")
+
+        if charge_path and charge_path != "None":
+            try:
+                self.charge_sound = pygame.mixer.Sound(resource_path(charge_path))
+                self.charge_sound.set_volume(0.7)
+            except Exception as e:
+                print(f"Error when loading the sound: {e}")
+
         self.used_image = None
         used_path = data.get("used_image_path", "None")
         
@@ -59,12 +70,21 @@ class _Interactable(_Obstacle):
         """
         self.is_hidden = False
 
+    def _stop_sound(self):
+        if self.charge_sound and self.is_playing_charge:
+            self.charge_sound.stop()
+            self.is_playing_charge = False
+
     def progress_interaction(self):
         """
         Called every frame the player holds contact/attack
         """
         if self.is_hidden or self.interacted_once:
             return None
+        
+        if self.charge_sound and not self.is_playing_charge:
+            self.charge_sound.play(-1)
+            self.is_playing_charge = True
         
         self.current_progress += 1
         
@@ -75,6 +95,7 @@ class _Interactable(_Obstacle):
             
         if self.current_progress >= self.interaction_duration:
             self.image = self.original_image
+            self._stop_sound()
             return "finished"
             
         return "progressing"
@@ -83,6 +104,7 @@ class _Interactable(_Obstacle):
         """
         Called when the player stops interacting and did not finish
         """
+        self._stop_sound()
         if self.current_progress > 0 and not self.interacted_once:
             self.current_progress = 0
             self.image = self.original_image

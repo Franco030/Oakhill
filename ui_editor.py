@@ -309,6 +309,17 @@ class Ui_LevelEditor(object):
         self.layout_flash.addWidget(self.btn_browse_flash)
         self.layout_interactable.addRow(self.lbl_flash, self.layout_flash)
 
+        self.lbl_charge = QLabel("Sonido Carga (Loop):")
+        self.layout_charge = QHBoxLayout()
+        self.prop_charge_sound_combo = QComboBox()
+        self.prop_charge_sound_combo.setEditable(True)
+        self.prop_charge_sound_combo.setSizePolicy(sizePolicy)
+        self.btn_browse_charge = QPushButton("...")
+        self.btn_browse_charge.setMaximumWidth(30)
+        self.layout_charge.addWidget(self.prop_charge_sound_combo)
+        self.layout_charge.addWidget(self.btn_browse_charge)
+        self.layout_interactable.addRow(self.lbl_charge, self.layout_charge)
+
         self.lbl_used = QLabel("Used Image (Opcional):")
         self.layout_used = QHBoxLayout()
         self.prop_used_image_path_combo = QComboBox()
@@ -343,23 +354,20 @@ class Ui_LevelEditor(object):
         self.h_image.addWidget(self.btn_browse_data)
         self.prop_interaction_data_stack.addWidget(self.stack_page_image)
         
-        # Sub-Stack Puerta
+
         self.stack_page_door = QWidget()
         self.prop_interaction_data_stack.addWidget(self.stack_page_door)
         
         self.layout_interactable.addRow(self.lbl_data, self.prop_interaction_data_stack)
         self.prop_main_stack.addWidget(self.page_interactable)
 
-        # PAGINA 1: Trigger Puro (Vacía, ya que los controles ahora son compartidos abajo)
         self.page_trigger = QWidget()
         self.prop_main_stack.addWidget(self.page_trigger)
 
-        # Añadir el stack al layout principal del grupo
+
         self.formLayout_2.setWidget(0, QFormLayout.SpanningRole, self.prop_main_stack)
         
-        # --- SECCIÓN COMPARTIDA: LÓGICA DE EVENTOS ---
-        # Estos controles ahora aparecen tanto para Triggers como para Interactuables
-        
+
         self.line_logic = QFrame()
         self.line_logic.setFrameShape(QFrame.HLine)
         self.line_logic.setFrameShadow(QFrame.Sunken)
@@ -384,7 +392,6 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
         
-        # -------------------------------------------
 
         self.verticalLayout_4.addWidget(self.group_interaction)
 
