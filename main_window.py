@@ -333,7 +333,13 @@ def game_loop(screen, clock):
                         pygame.mixer.music.unpause()
                         note_to_show = None
                         image_to_show = None
-                        game_status = "PLAYING"                    
+                        game_status = "PLAYING"       
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    if game_status == "PLAYING":
+                        player.sprite.stop_attack()
+
                 
         # --- Game logic ---
         if game_status == "PLAYING":  

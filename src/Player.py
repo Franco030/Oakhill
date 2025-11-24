@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         """
         if not self.is_attacking and not hasattr(self, 'is_defeated') or not self.is_defeated:
             self.is_attacking = True
-            self.attack_timer = self.attack_duration
+            # self.attack_timer = self.attack_duration
             self.direction.x = 0
             self.direction.y = 0
 
@@ -113,6 +113,11 @@ class Player(pygame.sprite.Sprite):
                 self.walking_sound.stop()
                 self.is_walking_sound_playing = False
 
+    def stop_attack(self):
+        if self.is_attacking:
+            self.is_attacking = False
+            self.image = self.animations[self.facing].images[0]
+
     def _player_input(self):
         """
         Calculates the desired movement direction based on keys pressed
@@ -127,7 +132,7 @@ class Player(pygame.sprite.Sprite):
 
 
         if self.is_attacking:
-            self.attack_timer -= 1
+            # self.attack_timer -= 1
             self.animations['attack_' + self.facing].animate()
 
             if self.facing == "right":
@@ -153,11 +158,11 @@ class Player(pygame.sprite.Sprite):
                 self.attack_rect.centerx = self.rect.centerx
                 self.attack_rect.top = self.rect.bottom
 
-            if self.attack_timer <= 0:
-                self.is_attacking = False
-                self.attack_rect.width = 0
-                self.attack_rect.height = 0
-                self.image = self.animations[self.facing].images[0]
+            # if self.attack_timer <= 0:
+            #     self.is_attacking = False
+            #     self.attack_rect.width = 0
+            #     self.attack_rect.height = 0
+            #     self.image = self.animations[self.facing].images[0]
 
         else:
             self.direction.x = 0
