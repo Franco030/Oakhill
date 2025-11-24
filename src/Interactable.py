@@ -21,9 +21,10 @@ class _Interactable(_Obstacle):
         self.interacted_once = False
         self.is_hidden = data.get("starts_hidden", False)
         
-        self.is_interacting = False
+        # self.is_interacting = False
         self.interaction_duration = 60
-        self.interaction_timer = 0
+        self.current_progress = 0
+        # self.interaction_timer = 0
         self.original_image = self.image.copy()
 
         self.used_image = None
@@ -51,13 +52,40 @@ class _Interactable(_Obstacle):
         except pygame.error as e:
             print("Can't load image, there's no flash")
             self.flash_image = self.original_image.copy()
-            # self.flash_image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_ADD)
 
     def unhide(self):
         """
         Makes the object visibe, therefore, interactable.
         """
         self.is_hidden = False
+
+    def progress_interaction(self):
+        """
+        Called every frame the player holds contact/attack
+        """
+        if self.is_hidden or self.interacted_once:
+            return None
+        
+        self.current_progress += 1
+        
+        if (self.current_progress // 5) % 2 == 0: 
+            self.image = self.flash_image
+        else:
+            self.image = self.original_image
+            
+        if self.current_progress >= self.interaction_duration:
+            self.image = self.original_image
+            return "finished"
+            
+        return "progressing"
+
+    def reset_interaction(self):
+        """
+        Called when the player stops interacting and did not finish
+        """
+        if self.current_progress > 0 and not self.interacted_once:
+            self.current_progress = 0
+            self.image = self.original_image
 
     def interact(self):
         """
@@ -93,18 +121,18 @@ class _Interactable(_Obstacle):
         """
         super().update() 
         
-        if not self.is_interacting:
-            return None
+        # if not self.is_interacting:
+        #     return None
 
-        self.interaction_timer -= 1
-        if self.interaction_timer > 0:
-            if (self.interaction_timer // 10) % 2 == 0: 
-                self.image = self.flash_image
-            else:
-                self.image = self.original_image
-        else:
-            self.is_interacting = False
-            self.image = self.original_image
-            return "interaction_finished"
+        # self.interaction_timer -= 1
+        # if self.interaction_timer > 0:
+        #     if (self.interaction_timer // 10) % 2 == 0: 
+        #         self.image = self.flash_image
+        #     else:
+        #         self.image = self.original_image
+        # else:
+        #     self.is_interacting = False
+        #     self.image = self.original_image
+        #     return "interaction_finished"
         
-        return None
+        # return None

@@ -38,6 +38,16 @@ class ActionManager:
         print(f"[ACTION] Executing {action_type} with {param_string}")
         params = self.parse_params(param_string)
 
+        # --- Universal Sound System
+        # This allows that EVERY actions (SetFlag, Teleport, etc.) has a Sound parameter
+        # We just add "sound=sound_name" in the editor parameters
+        sound_name = params.get("sound")
+        if sound_name and sound_name != "silent":
+            if sound_name in self.sound_library:
+                self.sound_library[sound_name].play()
+            else:
+                print(f"Advertencia: Sonido '{sound_name}' no encontrado en librería.")
+
         # Sets a flag (variable) to a value (number, string, float, etc)
         # flag=variable; value=12 -> variable=12
         if action_type == "SetFlag":
@@ -76,7 +86,7 @@ class ActionManager:
                 game_state.increment_flag(key, amount)
                 print(f"Flag {key} incremented. New value: {game_state.get_flag(key)}")
 
-        # Plays a sound (we may make this a function to use it in every other action_type, I don't know)
+        # Plays a sound
         # The value of the sound should be in the sound library
         # sound library is setted in main_window
         # sound=scream -> scream.play()
@@ -93,13 +103,13 @@ class ActionManager:
         # id=object_id; sound=secret -> scene.unhide_object_by_id(object_id) secret.play()
         elif action_type == "UnhideObject":
             target_id = params.get("id")
-            sound_name = params.get("sound", "secret")
+            # sound_name = params.get("sound", "secret")
             if target_id:
                 scene.unhide_object_by_id(target_id)
 
-                if sound_name != "silent" and sound_name in self.sound_library:
-                    self.sound_library[sound_name].play()
-                    print(f"Playing sound: {sound_name} because of UnhideObject")
+                # if sound_name != "silent" and sound_name in self.sound_library:
+                #     self.sound_library[sound_name].play()
+                #     print(f"Playing sound: {sound_name} because of UnhideObject")
 
 
         # Changes the level (the map of the game)

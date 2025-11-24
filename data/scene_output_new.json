@@ -2706,9 +2706,9 @@
                 "is_ground": false,
                 "collision_rect_offset": [
                     -53,
-                    16,
+                    4,
                     83,
-                    -25
+                    -7
                 ],
                 "animation_images": [],
                 "animation_speed": 0.1,
@@ -6357,7 +6357,8 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             }
         ],
         "(0, 2)": [
@@ -6669,7 +6670,8 @@
                 "interaction_data": "Sentí una presencia terribleen la vieja escuela.\nSera K`3`1093`~!@?",
                 "z_index": 0,
                 "used_image_path": "",
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnInteract"
             },
             {
                 "id": "(0, 2)_obj_16",
@@ -13531,7 +13533,7 @@
             },
             {
                 "id": "(5, 2)_obj_217",
-                "x": 435,
+                "x": 436,
                 "y": 116,
                 "type": "Interactable",
                 "image_path": "assets/images/note.png",
@@ -13551,7 +13553,8 @@
                 "animation_images": [],
                 "is_ground": true,
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             },
             {
                 "id": "obj_1763613130",
@@ -13605,6 +13608,34 @@
                 "trigger_condition": "IfFlag",
                 "trigger_action": "ChangeLevel",
                 "trigger_params": "flag=have_key; value=true; level=school; json=data/school_interior.json; zone=(4, 2); x=100; y=500",
+                "reflection_offset_y": 0
+            },
+            {
+                "id": "obj_1764017891",
+                "type": "Obstacle",
+                "x": 951,
+                "y": 471,
+                "z_index": 0,
+                "image_path": "assets/images/nature/new_tree_1.png",
+                "resize_factor": 3.5,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    86,
+                    98,
+                    -188,
+                    -143
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "used_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "OnEnter",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
                 "reflection_offset_y": 0
             }
         ],
@@ -15411,26 +15442,6 @@
                 "reflection_offset_y": 0
             },
             {
-                "id": "(4, 2)_obj_92",
-                "x": 490,
-                "y": 650,
-                "type": "Obstacle",
-                "image_path": "assets/images/water_1.png",
-                "resize_factor": 4.0,
-                "is_passable": true,
-                "collision_rect_offset": [
-                    0,
-                    0,
-                    0,
-                    0
-                ],
-                "flash_image_path": "",
-                "interaction_data": "",
-                "z_index": 0,
-                "is_ground": true,
-                "reflection_offset_y": 0
-            },
-            {
                 "id": "(4, 2)_obj_93",
                 "x": 1010,
                 "y": 670,
@@ -15563,24 +15574,6 @@
                 "reflection_offset_y": 0
             },
             {
-                "id": "(4, 2)_obj_100",
-                "x": 501,
-                "y": 609,
-                "type": "Obstacle",
-                "image_path": "assets/images/tree_0.png",
-                "resize_factor": 6.0,
-                "collision_rect_offset": [
-                    16,
-                    60,
-                    -30,
-                    -90
-                ],
-                "flash_image_path": "",
-                "interaction_data": "",
-                "z_index": 0,
-                "reflection_offset_y": 0
-            },
-            {
                 "id": "(4, 2)_obj_101",
                 "x": 1190,
                 "y": 350,
@@ -15638,7 +15631,8 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             },
             {
                 "id": "(4, 2)_obj_104",
@@ -15662,7 +15656,8 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             },
             {
                 "id": "obj_1763526564",
@@ -15710,6 +15705,34 @@
                 "interaction_type": "None",
                 "interaction_data": "",
                 "z_index": 0,
+                "reflection_offset_y": 0
+            },
+            {
+                "id": "obj_1764017737",
+                "type": "Obstacle",
+                "x": 532,
+                "y": 580,
+                "z_index": 0,
+                "image_path": "assets/images/nature/new_tree_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "is_ground": false,
+                "collision_rect_offset": [
+                    105,
+                    0,
+                    -227,
+                    -58
+                ],
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "used_image_path": "",
+                "interaction_type": "None",
+                "interaction_data": "",
+                "trigger_condition": "OnEnter",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
                 "reflection_offset_y": 0
             }
         ],
@@ -18840,7 +18863,8 @@
                 "x": 190,
                 "y": 690,
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             }
         ],
         "(3, 1)": [
@@ -19116,7 +19140,9 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_action": "SetFlag",
+                "trigger_condition": "OnEnter"
             }
         ],
         "(2, 1)": [
@@ -20759,7 +20785,8 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             }
         ],
         "(1, 1)": [
@@ -21605,7 +21632,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21632,7 +21659,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21659,7 +21686,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21686,7 +21713,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21713,7 +21740,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21740,7 +21767,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21767,7 +21794,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21794,7 +21821,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21821,7 +21848,7 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "trigger_condition": "OnInteract",
+                "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
                 "trigger_params": "flag=read_notes",
                 "reflection_offset_y": 0
@@ -21877,7 +21904,7 @@
                 "interaction_data": "",
                 "trigger_condition": "IfFlag",
                 "trigger_action": "UnhideObject",
-                "trigger_params": "flag=read_notes; value=9; id=(1, 1)_obj_50",
+                "trigger_params": "flag=read_notes; value=9; id=(1, 1)_obj_50; sound=secret",
                 "reflection_offset_y": 0
             }
         ],
@@ -22120,7 +22147,8 @@
                 "animation_speed": 0.1,
                 "animation_images": [],
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "trigger_condition": "OnEnter"
             }
         ]
     }
