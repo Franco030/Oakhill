@@ -14,6 +14,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
+from src.editor_systems.EditorCommands import *
+from src.editor_systems.EditorGraphics import *
 from src.Game_Constants import MAPS
 
 GAME_WIDTH = 1280
@@ -21,337 +23,25 @@ GAME_HEIGHT = 780
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 AUDIO_EXTENSIONS = ('.wav', '.mp3', '.ogg')
 
-# --- Command system (UNDO/REDO) ---
-
-class Command:
-    def execute(self): pass
-    def undo(self): pass
-
-class UndoManager:
-    def __init__(self):
-        self.undo_stack = []
-        self.redo_stack = []
-
-    def push(self, command, execute_now=True):
-        self.undo_stack.append(command)
-        self.redo_stack.clear()
-        if execute_now: command.execute()
-
-    def undo(self):
-        if not self.undo_stack: return
-        cmd = self.undo_stack.pop()
-        cmd.undo()
-        self.redo_stack.append(cmd)
-
-    def redo(self):
-        if not self.redo_stack: return
-        cmd = self.redo_stack.pop()
-        cmd.execute()
-        self.undo_stack.append(cmd)
-
-class CmdAddObject(Command):
-    def __init__(self, editor, zone_key, obj_data):
-        self.editor = editor
-        self.zone_key = zone_key
-        self.obj_data = obj_data
-    def execute(self):
-        if self.zone_key not in self.editor.current_data["zones"]:
-            self.editor.current_data["zones"][self.zone_key] = []
-        self.editor.current_data["zones"][self.zone_key].append(self.obj_data)
-        self.editor.populate_views_for_current_zone()
-        self.editor.select_object_by_id(self.obj_data["id"])
-    def undo(self):
-        zones = self.editor.current_data.get("zones", {})
-        if self.zone_key in zones and self.obj_data in zones[self.zone_key]:
-            zones[self.zone_key].remove(self.obj_data)
-        self.editor.populate_views_for_current_zone()
-
-class CmdDeleteObject(Command):
-    def __init__(self, editor, zone_key, obj_data, index):
-        self.editor = editor
-        self.zone_key = zone_key
-        self.obj_data = obj_data
-        self.index = index
-    def execute(self):
-        zones = self.editor.current_data.get("zones", {})
-        if self.zone_key in zones:
-            if self.obj_data in zones[self.zone_key]:
-                zones[self.zone_key].remove(self.obj_data)
-        self.editor.populate_views_for_current_zone()
-    def undo(self):
-        if self.zone_key not in self.editor.current_data["zones"]:
-            self.editor.current_data["zones"][self.zone_key] = []
-        self.editor.current_data["zones"][self.zone_key].insert(self.index, self.obj_data)
-        self.editor.populate_views_for_current_zone()
-        self.editor.select_object_by_id(self.obj_data["id"])
-
-class CmdPropertyChange(Command):
-    def __init__(self, editor, obj_data, key, old_val, new_val):
-        self.editor = editor
-        self.obj_data = obj_data
-        self.key = key
-        self.old_val = old_val
-        self.new_val = new_val
-    def execute(self):
-        self.obj_data[self.key] = self.new_val
-        self.editor.refresh_ui_for_object(self.obj_data)
-    def undo(self):
-        self.obj_data[self.key] = self.old_val
-        self.editor.refresh_ui_for_object(self.obj_data)
-
-class CmdTransform(Command):
-    def __init__(self, editor, obj_data, old_pos, new_pos, old_offset, new_offset):
-        self.editor = editor
-        self.obj_data = obj_data
-        self.old_pos = old_pos
-        self.new_pos = new_pos
-        self.old_offset = old_offset
-        self.new_offset = new_offset
-    def execute(self):
-        self.obj_data['x'] = self.new_pos[0]
-        self.obj_data['y'] = self.new_pos[1]
-        self.obj_data['collision_rect_offset'] = self.new_offset
-        self.editor.refresh_ui_for_object(self.obj_data)
-    def undo(self):
-        self.obj_data['x'] = self.old_pos[0]
-        self.obj_data['y'] = self.old_pos[1]
-        self.obj_data['collision_rect_offset'] = self.old_offset
-        self.editor.refresh_ui_for_object(self.obj_data)
-
-class CmdBulkDelete(Command):
-    """Borra múltiples objetos de una sola vez y actualiza la UI al final."""
-    def __init__(self, editor, zone_key, items_list):
-        self.editor = editor
-        self.zone_key = zone_key
-        self.items_list = sorted(items_list, key=lambda x: x[0], reverse=True)
-
-    def execute(self):
-        zones = self.editor.current_data.get("zones", {})
-        if self.zone_key in zones:
-            target_list = zones[self.zone_key]
-
-            for _, obj_data in self.items_list:
-                if obj_data in target_list:
-                    target_list.remove(obj_data)
-
-        self.editor.populate_views_for_current_zone()
-
-    def undo(self):
-        if self.zone_key not in self.editor.current_data["zones"]:
-            self.editor.current_data["zones"][self.zone_key] = []
-            
-        target_list = self.editor.current_data["zones"][self.zone_key]
-        
-        # Re-insertamos los objetos en sus posiciones originales
-        # Como la lista está ordenada descendente (ej: 5, 3, 1), 
-        # podemos insertar sin alterar los índices de los anteriores.
-        # Pero para UNDO, necesitamos insertar del menor al mayor para reconstruir?
-        # No, si insertamos el 5, luego el 3... funciona bien porque el 5 está "más allá".
-        
-        # Espera, para INSERTAR correctamente necesitamos ir de MENOR A MAYOR si los índices son absolutos?
-        # Si tengo [A, B, C, D, E] y borro 1(B) y 3(D).
-        # Undo: Inserto 1(B) -> [A, B, C, E]. Inserto 3(D) -> [A, B, C, D, E].
-        # Sí, el orden de self.items_list (Descendente) es correcto para borrar.
-        # Para insertar, necesitamos ir de MENOR a MAYOR (Ascendente) para no empujar índices erróneamente?
-        # Probemos insertando en orden inverso a como borramos.
-        
-        for index, obj_data in reversed(self.items_list):
-            target_list.insert(index, obj_data)
-            
-        self.editor.populate_views_for_current_zone()
-
-# --- VISUALS ---
-class ResizeHandle(QGraphicsRectItem):
-    def __init__(self, parent_hitbox, editor_ref):
-        super().__init__(0, 0, 10, 10, parent_hitbox)
-        self.parent_hitbox = parent_hitbox
-        self.editor = editor_ref
-        self.setBrush(QBrush(QColor(0, 0, 255, 200)))
-        self.setPen(QPen(Qt.NoPen))
-        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges | QGraphicsItem.ItemIsSelectable)
-        self.update_position_from_parent()
-    def update_position_from_parent(self):
-        rect = self.parent_hitbox.rect()
-        self.setPos(rect.width() - 5, rect.height() - 5)
-    def mousePressEvent(self, event):
-        data = self.parent_hitbox.obj_data
-        self.start_offset = copy.deepcopy(data.get('collision_rect_offset', [0,0,0,0]))
-        super().mousePressEvent(event)
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        data = self.parent_hitbox.obj_data
-        end_offset = data.get('collision_rect_offset', [0,0,0,0])
-        if self.start_offset != end_offset and self.editor:
-            cmd = CmdTransform(self.editor, data, (data['x'], data['y']), (data['x'], data['y']), self.start_offset, end_offset)
-            self.editor.undo_manager.push(cmd, execute_now=False)
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange and self.scene():
-            if self.parent_hitbox.ignore_movement: return super().itemChange(change, value)
-            new_pos = value
-            new_width = max(5, new_pos.x() + 5)
-            new_height = max(5, new_pos.y() + 5)
-            self.parent_hitbox.setRect(0, 0, new_width, new_height)
-            data = self.parent_hitbox.obj_data
-            current_offset = data.get('collision_rect_offset', [0,0,0,0])
-            pixmap_item = self.parent_hitbox.parent_sprite
-            if not pixmap_item.pixmap() or pixmap_item.pixmap().isNull(): return super().itemChange(change, value)
-            scale = pixmap_item.scale()
-            orig_w = pixmap_item.pixmap().width() * scale
-            orig_h = pixmap_item.pixmap().height() * scale
-            new_dw = int(new_width - orig_w)
-            new_dh = int(new_height - orig_h)
-            data['collision_rect_offset'] = [current_offset[0], current_offset[1], new_dw, new_dh]
-            if self.editor: self.editor.sync_hitbox_size_ui(new_dw, new_dh)
-        return super().itemChange(change, value)
-
-class HitboxItem(QGraphicsRectItem):
-    def __init__(self, rect, obj_data, parent_sprite_item, editor_ref):
-        super().__init__(rect)
-        self.obj_data = obj_data
-        self.parent_sprite = parent_sprite_item
-        self.editor = editor_ref
-        self.resize_handle = None
-        self.ignore_movement = False
-        self.setBrush(QBrush(QColor(255, 0, 0, 80)))
-        self.setPen(QPen(QColor(255, 0, 0), 2))
-        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemSendsGeometryChanges)
-    def add_resize_handle(self):
-        self.resize_handle = ResizeHandle(self, self.editor)
-    def mousePressEvent(self, event):
-        self.start_pos_offset = copy.deepcopy(self.obj_data.get('collision_rect_offset', [0,0,0,0]))
-        super().mousePressEvent(event)
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        end_offset = self.obj_data.get('collision_rect_offset', [0,0,0,0])
-        if self.start_pos_offset != end_offset and self.editor:
-            cmd = CmdTransform(self.editor, self.obj_data, (self.obj_data['x'], self.obj_data['y']), (self.obj_data['x'], self.obj_data['y']), self.start_pos_offset, end_offset)
-            self.editor.undo_manager.push(cmd, execute_now=False)
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange and self.scene() and self.parent_sprite:
-            if self.ignore_movement: return super().itemChange(change, value)
-            sprite_pos = self.parent_sprite.pos()
-            new_hitbox_pos = value
-            dx = int(new_hitbox_pos.x() - sprite_pos.x())
-            dy = int(new_hitbox_pos.y() - sprite_pos.y())
-            current_offset = self.obj_data.get('collision_rect_offset', [0,0,0,0])
-            self.obj_data['collision_rect_offset'] = [dx, dy, current_offset[2], current_offset[3]]
-            if self.editor: self.editor.sync_hitbox_pos_ui(dx, dy)
-        return super().itemChange(change, value)
-
-class LevelObjectItem(QGraphicsPixmapItem):
-    def __init__(self, pixmap, obj_data, editor_ref):
-        super().__init__(pixmap)
-        self.obj_data = obj_data
-        self.editor = editor_ref
-        self.ignore_movement = False
-        self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges)
-        self.resize_handle = None
-    def mousePressEvent(self, event):
-        self.start_x = self.obj_data.get('x', 0)
-        self.start_y = self.obj_data.get('y', 0)
-        super().mousePressEvent(event)
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        end_x = self.obj_data.get('x', 0)
-        end_y = self.obj_data.get('y', 0)
-        if (self.start_x != end_x or self.start_y != end_y) and self.editor:
-            offset = self.obj_data.get('collision_rect_offset', [0,0,0,0])
-            cmd = CmdTransform(self.editor, self.obj_data, (self.start_x, self.start_y), (end_x, end_y), offset, offset)
-            self.editor.undo_manager.push(cmd, execute_now=False)
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange and self.scene():
-            if self.ignore_movement: return super().itemChange(change, value)
-            new_pos = value
-            if self.editor and self.editor.chk_grid_snap.isChecked():
-                grid_size = self.editor.spin_grid_size.value()
-                if grid_size > 0:
-                    snapped_x = round(new_pos.x() / grid_size) * grid_size
-                    snapped_y = round(new_pos.y() / grid_size) * grid_size
-                    new_pos = QPointF(snapped_x, snapped_y)
-                    if change == QGraphicsItem.ItemPositionChange:
-                        scale = self.scale()
-                        w = self.pixmap().width() * scale
-                        h = self.pixmap().height() * scale
-                        new_center_x = int(new_pos.x() + w / 2)
-                        new_center_y = int(new_pos.y() + h / 2)
-                        self.obj_data['x'] = new_center_x
-                        self.obj_data['y'] = new_center_y
-                        if self.editor: self.editor.sync_obj_pos_ui(new_center_x, new_center_y)
-                        return new_pos 
-            scale = self.scale()
-            w = self.pixmap().width() * scale
-            h = self.pixmap().height() * scale
-            new_center_x = int(new_pos.x() + w / 2)
-            new_center_y = int(new_pos.y() + h / 2)
-            self.obj_data['x'] = new_center_x
-            self.obj_data['y'] = new_center_y
-            if self.editor: self.editor.sync_obj_pos_ui(new_center_x, new_center_y)
-        return super().itemChange(change, value)
-    def create_primitive_handle(self):
-        if self.obj_data.get("type") == "Primitive" and not self.resize_handle:
-            self.resize_handle = PrimitiveHandle(self, self.editor)
-            self.resize_handle.update_position()
-            
-    def remove_handle(self):
-        if self.resize_handle:
-            self.scene().removeItem(self.resize_handle)
-            self.resize_handle = None
-    
-
-class PrimitiveHandle(QGraphicsRectItem):
-    def __init__(self, parent_item, editor_ref):
-        # Cuadradito azul de 10x10
-        super().__init__(0, 0, 10, 10, parent_item)
-        self.parent_item = parent_item
-        self.editor = editor_ref
-        self.setBrush(QBrush(QColor(0, 0, 255, 255))) # Azul sólido
-        self.setPen(QPen(Qt.white))
-        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges | QGraphicsItem.ItemIsSelectable)
-        self.setZValue(99999) # Siempre arriba
-        self.start_size = (50, 50)
-
-    def update_position(self):
-        """Se coloca en la esquina inferior derecha del padre"""
-        rect = self.parent_item.pixmap().rect()
-        # Restamos 5 para centrar el handle en la esquina
-        self.setPos(rect.width() - 5, rect.height() - 5)
-
-    def mousePressEvent(self, event):
-        # Guardar tamaño inicial para el Undo
-        data = self.parent_item.obj_data
-        self.start_size = (data.get('width', 50), data.get('height', 50))
-        super().mousePressEvent(event)
-
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        data = self.parent_item.obj_data
-        end_w = data.get('width', 50)
-        end_h = data.get('height', 50)
-        
-        if self.start_size != (end_w, end_h):
-            self.editor.refresh_ui_for_object(data)
-            print(f"Resize terminado: {end_w}x{end_h}")
-
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange and self.scene():
-            new_pos = value
-            
-            new_w = max(10, int(new_pos.x() + 5))
-            new_h = max(10, int(new_pos.y() + 5))
-            
-            obj_data = self.parent_item.obj_data
-            obj_data['width'] = new_w
-            obj_data['height'] = new_h
-
-            self.editor.update_canvas_from_resize(obj_data, self.parent_item)
-
-            return new_pos
-            
-        return super().itemChange(change, value)
-
-# --- EDITOR ---
 class LevelEditor(QMainWindow, Ui_LevelEditor):
+    """
+    Main controller for the LevelEditor
+    Manages the GUI, handles user input, renders the visual representation of the level,
+    and orchestrates the synchronization between the raw JSON data and the visual elements.
+    It acts as the "Director" in the MVC pattern, connecting the Data (JSON) with the View (Qt Widgets / Canvas)
+    """
     def __init__(self):
+        """
+        :Description: Initializes the main editor window and subsystems.
+
+        Functionality:
+            - Sets up the UI from Ui_LevelEditor.
+            - Initializes the UndoManager for history tracking.
+            - Configures the QGraphicsScene (the visual canvas).
+            - Connects all Qt signals (buttons, spinboxes, combos) to their respective slot methods.
+            - Sets up keyboard shortcuts for navigation and editing.
+            - Populates initial data for combo boxes (images, sounds, maps).
+        """
         super().__init__()
         self.setupUi(self)
         self.undo_manager = UndoManager()
@@ -452,6 +142,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 break
 
     def refresh_ui_for_object(self, obj_data):
+        """
+        Description: Populates the property panel (left sidebar) with the data of the selected object.
+        Parameters:
+            obj_data (dict): The data dictionary of the object to display.
+        Functionality:
+            - Sets a flag 'is_programmatic_change' to True to prevent triggering 'on_property_changed' loops.
+            - Updates every widget (SpinBox, ComboBox, CheckBox) with values from obj_data.
+            - Handles logic for specific types (e.g., showing specific stacks for 'Interactable' vs 'Trigger').
+            - Updates the list item text and the canvas visual representation to ensure sync.
+            - Resets 'is_programmatic_change' to False.
+        """
         current = self.list_objects.currentItem()
         if current and current.data(Qt.UserRole) is obj_data:
             self.is_programmatic_change = True
@@ -464,14 +165,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_width.setValue(int(obj_data.get('width', 50)))
             self.prop_height.setValue(int(obj_data.get('height', 50)))
             self.prop_border_width.setValue(int(obj_data.get('border_width', 0)))
-
-            color = obj_data.get('color', [255, 255, 255]) # Blanco por defecto
+            
+            color = obj_data.get('color', [255, 255, 255])
             if isinstance(color, list) and len(color) >= 3:
                 self.prop_color_r.setValue(color[0])
                 self.prop_color_g.setValue(color[1])
                 self.prop_color_b.setValue(color[2])
             
-
             self.prop_image_path_combo.setCurrentText(obj_data.get('image_path', 'None'))
             self.prop_resize_factor.setValue(float(obj_data.get('resize_factor', 4.0)))
             
@@ -549,16 +249,18 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.undo_manager.push(cmd, execute_now=True)
 
     def add_new_object(self):
+        """
+        ## Description: 
+            Creates a new object entity in the current zone.
+        ## Functionality:
+            - Generates a unique ID using timestamp and random entropy to prevent collisions.
+            - Creates a default dictionary structure for a 'Primitive' type object.
+            - Pushes a CmdAddObject command to the UndoManager (allowing Ctrl+Z to remove it).
+            - Updates the view to show the new object immediately.
+        """
         current_zone_key = self.combo_zone_selector.currentText()
         if not current_zone_key: return
         new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
-        # new_obj_data = {
-        #     "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
-        #     "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
-        #     "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
-        #     "flash_image_path": "None", "charge_sound_path": "None", "used_image_path": "None", "interaction_duration": 60, "interaction_type": "None", "interaction_data": "",
-        #     "trigger_condition": "OnEnter", "trigger_action": "SetFlag", "trigger_params": ""
-        # }
         new_obj_data = {
             "id": new_id,
             
@@ -594,6 +296,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.undo_manager.push(cmd, execute_now=True)
 
     def delete_selected_object(self):
+        """
+        ## Description: 
+            Removes currently selected objects from the level.
+        ## Functionality:
+            - Identifies all selected items in the list.
+            - Retrieves their real data references using IDs.
+            - Wraps the deletion of multiple items into a single CmdBulkDelete command (atomic undo).
+            - Executes the command to remove data and refresh the view.
+        """
         selected_items = self.list_objects.selectedItems()
         if not selected_items:
             return
@@ -627,6 +338,18 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 self.current_hitbox_item = None
 
     def get_real_object_data(self):
+        """
+        ## Description: 
+            Retrieves the actual reference to the object's data dictionary
+        ## Returns: 
+            - dict: The mutable dictionary representing the object in self.current_data
+            - None: If no object is selected or found.
+        ## Functionality:
+            - Crucial for the Data-Driven architecture. Instead of relying on potentially stale data 
+            - stored in the QListWidgetItem, this method uses the object's unique ID to linear search 
+            - the 'self.current_data' source of truth. This ensures all edits (Undo/Redo, Properties) 
+            - modify the persistent state directly.
+        """
         current_item = self.list_objects.currentItem()
         if not current_item: return None
         
@@ -645,6 +368,19 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     # --- PROPERTY CHANGED ---
     
     def on_property_changed(self, key, new_value):
+        """
+        ## Description: 
+            Slot called when a property widget value is modified by the user.
+        ## Parameters:
+            - key (str): The key in the data dictionary to update (e.g., 'x', 'image_path').
+            - new_value (any): The new value to assign.
+        ## Functionality:
+            - Checks 'is_programmatic_change' to ignore internal updates.
+            - Compares old vs new value to avoid unnecessary commands.
+            - Pushes a CmdPropertyChange to UndoManager (execute_now=False because the UI already changed).
+            - Updates the 'obj_data' dictionary directly.
+            - Triggers a visual update on the canvas if necessary (e.g. changing color or position).
+        """
         if self.is_programmatic_change: return
         obj_data = self.get_real_object_data()
         if not obj_data: return
@@ -751,6 +487,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.combo_zone_selector.setCurrentText(target)
 
     def on_scene_selection_changed(self):
+        """
+        ## Description: 
+            Synchronizes selection from the Canvas to the List.
+        ## Functionality:
+            - Triggered when user clicks items in the visual scene.
+            - Sets a flag '_updating_selection_from_canvas' to prevent feedback loops.
+            - Finds the corresponding items in the QListWidget and selects them.
+            - Updates the property panel to show the data of the primary selected item.
+        """
         if self.list_objects.signalsBlocked(): return
         
         self._updating_selection_from_canvas = True 
@@ -892,7 +637,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def create_new_json_from_map(self):
         """
-        Creates a new JSON file with every zone empty, based on the matrix of the map
+        ## Description: 
+            Generates a scaffold JSON file based on a game map matrix.
+        ## Functionality:
+            - Prompts the user to select a Map layout (defined in Game_Constants).
+            - Iterates through the 2D matrix of the selected map.
+            - For every '1' found in the matrix, creates an empty zone entry in the JSON (e.g., "(0, 0)").
+            - Saves the file and immediately loads it into the editor.
         """
         if not MAPS:
             QMessageBox.warning(self, "Error", "No maps in Game_Constants.py (MAPS)")
@@ -1052,24 +803,58 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         self.current_scene.addItem(border)
 
+    def generate_primitive_pixmap(self, data):
+        w = int(data.get("width", 50))
+        h = int(data.get("height", 50))
+        c = data.get("color", [255, 255, 255])
+        border = int(data.get("border_width", 0))
+        
+        pixmap = QPixmap(w, h)
+        
+        if border == 0:
+            pixmap.fill(QColor(c[0], c[1], c[2]))
+        else:
+            pixmap.fill(Qt.transparent)
+            painter = QPainter(pixmap)
+            col = QColor(c[0], c[1], c[2])
+            pen = QPen(col)
+            pen.setWidth(border)
+            pen.setJoinStyle(Qt.MiterJoin)
+            painter.setPen(pen)
+            painter.setBrush(Qt.NoBrush)
+            
+            offset = border / 2
+            painter.drawRect(QRectF(offset, offset, w - border, h - border))
+            painter.end()
+            
+        return pixmap
+
     def draw_object_on_canvas(self, obj):
+        """
+        ## Description: 
+            Creates the visual QGraphicsItem for an object based on its data.
+        ## Parameters:
+            - obj (dict): The data dictionary defining the object.
+        ## Functionality:
+            - Determines if the object is a 'Primitive' (draws a generated QPixmap) or a Sprite (loads an image).
+            - Applies fallback colors (pink, cyan) if images are missing.
+            - Sets Z-Index and position.
+            - Wraps the graphic in a LevelObjectItem class (which handles drag & drop logic).
+            - Adds the item to the current QGraphicsScene.
+        """
         imgpath = obj.get("image_path", "None")
         pixmap = None
         obj_type = obj.get("type")
         if obj_type == "Primitive":
-            w = int(obj.get("width", 50))
-            h = int(obj.get("height", 50))
-            c = obj.get("color", [255, 255, 255])
-            
-            pixmap = QPixmap(w, h)
-            pixmap.fill(QColor(c[0], c[1], c[2]))
+            pixmap = self.generate_primitive_pixmap(obj)
             
             item = LevelObjectItem(pixmap, obj, self)
             
             x = obj.get("x", 0)
             y = obj.get("y", 0)
-            item.setPos(x - w/2, y - h/2)
-
+            
+            item.setPos(x - pixmap.width()/2, y - pixmap.height()/2)
+            
             z = int(obj.get("z_index", 0))
             item.setZValue(z)
             self.current_scene.addItem(item)
@@ -1108,6 +893,18 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         return item
 
     def update_canvas_item(self, data, pixmap_item):
+        """
+        ## Description: 
+            Refreshes the visuals of an existing item without destroying it.
+        ## Parameters:
+            - data (dict): The updated data source.
+            - pixmap_item (LevelObjectItem): The graphical item to update.
+        ## Functionality:
+            - Re-generates the pixmap if color/size/image changed.
+            - Updates position and Z-Index.
+            - Re-calculates and redraws the Hitbox overlay (red rectangle).
+            - Manages the visibility of the ResizeHandle (blue square) if the object is a Primitive.
+        """
         if not pixmap_item: return
         
         imgpath = data.get("image_path", "None")
@@ -1115,34 +912,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         obj_type = data.get("type")
         if obj_type == "Primitive":
-            w = int(data.get("width", 50))
-            h = int(data.get("height", 50))
-            c = data.get("color", [255, 255, 255])
-            
-            border = int(data.get("border_width", 0))
-            
-            pixmap = QPixmap(w, h)
-            pixmap.fill(Qt.transparent)
-            
-            painter = QPainter(pixmap)
-
-            col = QColor(c[0], c[1], c[2])
-            
-            if border == 0:
-                painter.fillRect(0, 0, w, h, col)
-            else:
-
-                pen = QPen(col)
-                pen.setWidth(border)
-
-                pen.setJoinStyle(Qt.MiterJoin)
-                painter.setPen(pen)
-                painter.setBrush(Qt.NoBrush)
-                
-                offset = border / 2
-                painter.drawRect(QRectF(offset, offset, w - border, h - border))
-                
-            painter.end()
+            pixmap = self.generate_primitive_pixmap(data)
         
         if imgpath not in (None, "None", ""):
             full = os.path.join(self.base_path, imgpath)
@@ -1216,40 +986,19 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def update_canvas_from_resize(self, data, item):
         if data.get("type") != "Primitive": return
         
-        w = int(data.get("width", 50))
-        h = int(data.get("height", 50))
-        c = data.get("color", [255, 255, 255])
-        border = int(data.get("border_width", 0))
-        
-        pixmap = QPixmap(w, h)
-        if border == 0:
-            pixmap.fill(QColor(c[0], c[1], c[2]))
-        else:
-            pixmap.fill(Qt.transparent)
-            painter = QPainter(pixmap)
-            pen = QPen(QColor(c[0], c[1], c[2]))
-            pen.setWidth(border)
-            pen.setJoinStyle(Qt.MiterJoin)
-            painter.setPen(pen)
-            painter.setBrush(Qt.NoBrush)
-            offset = border / 2
-            painter.drawRect(QRectF(offset, offset, w - border, h - border))
-            painter.end()
-            
+        pixmap = self.generate_primitive_pixmap(data)
         item.setPixmap(pixmap)
         
-        x = data.get("x", 0)
-        y = data.get("y", 0)
+        w, h = pixmap.width(), pixmap.height()
+        x, y = data.get("x", 0), data.get("y", 0)
+        
         item.ignore_movement = True
         item.setPos(x - w/2, y - h/2)
         item.ignore_movement = False
         
-        self.prop_width.blockSignals(True)
-        self.prop_height.blockSignals(True)
-        self.prop_width.setValue(w)
-        self.prop_height.setValue(h)
-        self.prop_width.blockSignals(False)
-        self.prop_height.blockSignals(False)
+        self.prop_width.blockSignals(True); self.prop_height.blockSignals(True)
+        self.prop_width.setValue(w); self.prop_height.setValue(h)
+        self.prop_width.blockSignals(False); self.prop_height.blockSignals(False)
 
     def on_object_selected(self, current, previous):
         if not current:
@@ -1265,15 +1014,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 if self.current_hitbox_item: self.current_hitbox_item.setSelected(True)
                 self.current_scene.blockSignals(False)
 
-        if previous:
-             prev_item = previous.data(Qt.UserRole + 1)
-             if prev_item and isinstance(prev_item, LevelObjectItem):
-                 prev_item.remove_handle()
-
-        if len(self.list_objects.selectedItems()) > 1:
-            self.disable_property_panel()
-            return
-
+        # 1. Obtener datos reales
         data = self.get_real_object_data()
         
         if data is None:
@@ -1283,19 +1024,36 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.enable_property_panel()
         self.is_programmatic_change = True
 
+        # 2. Cargar Propiedades Básicas
         self.prop_id.setText(data.get("id", ""))
         self.prop_type.setCurrentText(data.get("type", "Obstacle"))
         self.prop_x.setValue(data.get("x", 0))
         self.prop_y.setValue(data.get("y", 0))
         self.prop_z_index.setValue(int(data.get("z_index", 0)))
         self.prop_reflection_offset.setValue(int(data.get("reflection_offset_y", 0)))
+        
+        # --- LO QUE FALTABA: PRIMITIVAS (Color y Tamaño) ---
+        self.prop_width.setValue(int(data.get("width", 50)))
+        self.prop_height.setValue(int(data.get("height", 50)))
+        self.prop_border_width.setValue(int(data.get("border_width", 0)))
+        
+        color = data.get("color", [255, 255, 255])
+        if isinstance(color, list) and len(color) >= 3:
+            self.prop_color_r.setValue(color[0])
+            self.prop_color_g.setValue(color[1])
+            self.prop_color_b.setValue(color[2])
+        # ---------------------------------------------------
+
+        # 3. Cargar resto de propiedades
         self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
         try: rz = float(data.get("resize_factor", 1))
         except: rz = 1.0
         self.prop_resize_factor.setValue(rz)
+        
         self.prop_is_passable.setChecked(data.get("is_passable", False))
         self.prop_starts_hidden.setChecked(data.get("starts_hidden", False))
         self.prop_is_ground.setChecked(data.get("is_ground", False))
+        
         hb = data.get("collision_rect_offset", [0, 0, 0, 0])
         self.prop_hitbox_dx.setValue(hb[0])
         self.prop_hitbox_dy.setValue(hb[1])
@@ -1309,11 +1067,16 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_path", "None"))
         self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))
         self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
+        self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
+        
         self.prop_interaction_type.setCurrentText(data.get("interaction_type", "None"))
         itype = data.get("interaction_type", "None")
         idata = data.get("interaction_data", "")
-        if itype == "Note": self.data_note_text.setText(str(idata))
-        elif itype == "Image": self.data_image_path_combo.setCurrentText(str(idata))
+        if itype == "Note": 
+            if isinstance(idata, list): self.data_note_text.setText("\n".join(idata))
+            else: self.data_note_text.setText(str(idata))
+        elif itype == "Image": 
+            self.data_image_path_combo.setCurrentText(str(idata))
         
         self.prop_trigger_condition.setCurrentText(data.get("trigger_condition", "OnEnter"))
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", "SetFlag"))
@@ -1324,16 +1087,16 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.update_image_preview()
         
         pixmap_item = current.data(Qt.UserRole + 1)
-        if pixmap_item:
-            self.update_canvas_item(data, pixmap_item)
-        else:
-            new_pix = self.draw_object_on_canvas(data)
-            if new_pix:
-                current.setData(Qt.UserRole + 1, new_pix)
-                self.update_canvas_item(data, new_pix)
         
-        pixmap_item = current.data(Qt.UserRole + 1)
-
+        if pixmap_item:
+             self.update_canvas_item(data, pixmap_item)
+        else:
+             new_pix = self.draw_object_on_canvas(data)
+             if new_pix:
+                 current.setData(Qt.UserRole + 1, new_pix)
+                 self.update_canvas_item(data, new_pix)
+                 pixmap_item = new_pix
+        
         if pixmap_item and data.get("type") == "Primitive":
             pixmap_item.create_primitive_handle()
         elif pixmap_item:

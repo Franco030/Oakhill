@@ -224,7 +224,7 @@ def game_loop(screen, clock):
 
     try:
         screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
-        screaming_sound.set_volume(0.8)
+        screaming_sound.set_volume(0.7)
     except pygame.error as e:
         print("Error when loading the file")
         screaming_sound = None
@@ -312,15 +312,14 @@ def game_loop(screen, clock):
         nonlocal game_status, note_to_show, image_to_show
         
         raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
+        parsed_params = action_manager.parse_params(raw_params)
 
         # 1. Trigger (IfFlag)
         if hasattr(obj, "condition") and obj.condition == "IfFlag":
-            params = action_manager.parse_params(raw_params)
-            if not game_state.check_flag(params.get("flag"), params.get("value")):
+            if not game_state.check_flag(parsed_params.get("flag"), parsed_params.get("value")):
                 return # No cumple condición, salir
         
         # Sound detection
-        parsed_params = action_manager.parse_params(raw_params)
         has_custom_sound = "sound" in parsed_params and parsed_params["sound"] != "silent"
 
         # 2. Execution of ActionManager
@@ -330,9 +329,17 @@ def game_loop(screen, clock):
             # ActionManager reproduces the custom sound if it exists
             action_manager.execute(act, raw_params, player, scene)
             
-            # Cleanup one-shot triggers
+
             if hasattr(obj, "condition") and obj.condition in ["OnEnter", "IfFlag"] and not hasattr(obj, "interaction_type"):
-                 if act not in ["Teleport", "ChangeLevel"]:
+
+                 should_kill = True
+                 if act in ["Teleport", "ChangeLevel"]:
+                     should_kill = False
+                 
+                 if "kill" in parsed_params:
+                     should_kill = parsed_params["kill"]
+                 
+                 if should_kill:
                      obj.kill()
 
         # 3. Visual Logic (Notes / Images) - ONLY Interactables
@@ -351,7 +358,6 @@ def game_loop(screen, clock):
                 image_to_show = interaction_data
                 game_status = "READING_IMAGE"
                 pygame.mixer.music.pause()
-
 
 
     while True:
@@ -576,12 +582,12 @@ def game_loop(screen, clock):
             new_music = level_request["music_path"]
 
             if new_music and new_music != current_music_path:
-                    print(f"Cambiando música a: {new_music}")
+                    print(f"Changing music: {new_music}")
                     pygame.mixer.music.fadeout(500)
                     try:
                         pygame.mixer.music.load(resource_path(new_music))
                         pygame.mixer.music.play(-1)
-                        pygame.mixer.music.set_volume(0.75)
+                        pygame.mixer.music.set_volume(0.60)
                     except Exception as e:
                         print(f"Error when loading the file: {e}")
                     current_music_path = new_music

@@ -18,7 +18,7 @@ class Primitive(_Obstacle):
         self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
         if self.border_width == 0:
-            self.image_fill(self.color)
+            self.image.fill(self.color)
         else:
             pygame.draw.rect(self.image, self.color, (0, 0, self.width, self.height), self.border_width)
         
