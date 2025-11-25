@@ -273,7 +273,7 @@ class Ui_LevelEditor(object):
         self.lbl_border = QLabel("Grosor Borde (0=Sólido):", self.properties_box)
         self.formLayout.setWidget(11, QFormLayout.LabelRole, self.lbl_border)
         self.prop_border_width = QSpinBox(self.properties_box)
-        self.prop_border_width.setMinimum(0) # 0 es sólido
+        self.prop_border_width.setMinimum(0)
         self.prop_border_width.setMaximum(100)
         self.prop_border_width.setValue(0)
         self.formLayout.setWidget(11, QFormLayout.FieldRole, self.prop_border_width)
@@ -374,14 +374,12 @@ class Ui_LevelEditor(object):
         self.lbl_data = QLabel("Datos Visuales:")
         self.prop_interaction_data_stack = QStackedWidget()
         
-        # Sub-Stack Nota
         self.stack_page_note = QWidget()
         self.v_note = QVBoxLayout(self.stack_page_note)
         self.data_note_text = QTextEdit()
         self.v_note.addWidget(self.data_note_text)
         self.prop_interaction_data_stack.addWidget(self.stack_page_note)
         
-        # Sub-Stack Imagen
         self.stack_page_image = QWidget()
         self.h_image = QHBoxLayout(self.stack_page_image)
         self.data_image_path_combo = QComboBox()

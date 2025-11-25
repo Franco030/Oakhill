@@ -3,12 +3,13 @@ import json
 import os
 import time
 import copy
+import random
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QFileDialog,
     QListWidgetItem, QGraphicsScene, QGraphicsPixmapItem,
     QGraphicsRectItem, QGraphicsItem,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
-    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox
+    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView
 )
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
 from PySide6.QtCore import Qt, QRectF, QPointF
@@ -116,6 +117,48 @@ class CmdTransform(Command):
         self.obj_data['y'] = self.old_pos[1]
         self.obj_data['collision_rect_offset'] = self.old_offset
         self.editor.refresh_ui_for_object(self.obj_data)
+
+class CmdBulkDelete(Command):
+    """Borra múltiples objetos de una sola vez y actualiza la UI al final."""
+    def __init__(self, editor, zone_key, items_list):
+        self.editor = editor
+        self.zone_key = zone_key
+        self.items_list = sorted(items_list, key=lambda x: x[0], reverse=True)
+
+    def execute(self):
+        zones = self.editor.current_data.get("zones", {})
+        if self.zone_key in zones:
+            target_list = zones[self.zone_key]
+
+            for _, obj_data in self.items_list:
+                if obj_data in target_list:
+                    target_list.remove(obj_data)
+
+        self.editor.populate_views_for_current_zone()
+
+    def undo(self):
+        if self.zone_key not in self.editor.current_data["zones"]:
+            self.editor.current_data["zones"][self.zone_key] = []
+            
+        target_list = self.editor.current_data["zones"][self.zone_key]
+        
+        # Re-insertamos los objetos en sus posiciones originales
+        # Como la lista está ordenada descendente (ej: 5, 3, 1), 
+        # podemos insertar sin alterar los índices de los anteriores.
+        # Pero para UNDO, necesitamos insertar del menor al mayor para reconstruir?
+        # No, si insertamos el 5, luego el 3... funciona bien porque el 5 está "más allá".
+        
+        # Espera, para INSERTAR correctamente necesitamos ir de MENOR A MAYOR si los índices son absolutos?
+        # Si tengo [A, B, C, D, E] y borro 1(B) y 3(D).
+        # Undo: Inserto 1(B) -> [A, B, C, E]. Inserto 3(D) -> [A, B, C, D, E].
+        # Sí, el orden de self.items_list (Descendente) es correcto para borrar.
+        # Para insertar, necesitamos ir de MENOR a MAYOR (Ascendente) para no empujar índices erróneamente?
+        # Probemos insertando en orden inverso a como borramos.
+        
+        for index, obj_data in reversed(self.items_list):
+            target_list.insert(index, obj_data)
+            
+        self.editor.populate_views_for_current_zone()
 
 # --- VISUALS ---
 class ResizeHandle(QGraphicsRectItem):
@@ -333,7 +376,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.btn_add_object.clicked.connect(self.add_new_object)
         self.btn_delete_object.clicked.connect(self.delete_selected_object)
         self.combo_zone_selector.currentIndexChanged.connect(self.populate_views_for_current_zone)
-        
+
+        self.list_objects.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.list_objects.currentItemChanged.connect(self.on_object_selected)
 
         self.prop_x.valueChanged.connect(lambda v: self.on_property_changed('x', v))
@@ -507,7 +551,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def add_new_object(self):
         current_zone_key = self.combo_zone_selector.currentText()
         if not current_zone_key: return
-        new_id = f"obj_{int(time.time())}"
+        new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
         # new_obj_data = {
         #     "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
         #     "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
@@ -550,16 +594,38 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.undo_manager.push(cmd, execute_now=True)
 
     def delete_selected_object(self):
-        obj_data = self.get_real_object_data()
-        if not obj_data:
+        selected_items = self.list_objects.selectedItems()
+        if not selected_items:
             return
 
-        current_item = self.list_objects.currentItem()
-        zone = self.combo_zone_selector.currentText()
-        index = self.list_objects.row(current_item)
+        current_zone_key = self.combo_zone_selector.currentText()
+        zone_objects_list = self.current_data.get("zones", {}).get(current_zone_key, [])
         
-        cmd = CmdDeleteObject(self, zone, obj_data, index)
-        self.undo_manager.push(cmd, execute_now=True)
+        items_to_process = []
+        
+        for item in selected_items:
+            row = self.list_objects.row(item)
+            item_data = item.data(Qt.UserRole)
+            obj_id = item_data.get("id")
+            
+            real_obj_data = next((obj for obj in zone_objects_list if obj.get("id") == obj_id), None)
+            
+            if real_obj_data:
+                items_to_process.append((row, real_obj_data))
+            else:
+                print(f"Advertencia: Objeto {obj_id} visual pero no en datos.")
+        
+        if items_to_process:
+            cmd = CmdBulkDelete(self, current_zone_key, items_to_process)
+            self.undo_manager.push(cmd, execute_now=True)
+            
+            self.statusbar.showMessage(f"Se eliminaron {len(items_to_process)} objetos.", 3000)
+            
+            self.disable_property_panel()
+            if self.current_hitbox_item:
+                self.current_scene.removeItem(self.current_hitbox_item)
+                self.current_hitbox_item = None
+
     def get_real_object_data(self):
         current_item = self.list_objects.currentItem()
         if not current_item: return None
@@ -686,24 +752,52 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def on_scene_selection_changed(self):
         if self.list_objects.signalsBlocked(): return
-        selected_items = self.current_scene.selectedItems()
-        if not selected_items: return
-        item = selected_items[0]
-        target_data = None
-        if isinstance(item, LevelObjectItem): target_data = item.obj_data
-        elif isinstance(item, HitboxItem): target_data = item.obj_data
-        elif isinstance(item, ResizeHandle): target_data = item.parent_hitbox.obj_data
-        if target_data:
-            tid = target_data.get("id")
+        
+        self._updating_selection_from_canvas = True 
+        
+        try:
+            selected_graphics_items = self.current_scene.selectedItems()
+            
+            if not selected_graphics_items:
+                self.list_objects.blockSignals(True)
+                self.list_objects.clearSelection()
+                self.list_objects.blockSignals(False)
+                self.disable_property_panel()
+                return
+
+            selected_ids = []
+            for item in selected_graphics_items:
+                if isinstance(item, LevelObjectItem):
+                    obj_id = item.obj_data.get("id")
+                    if obj_id: selected_ids.append(obj_id)
+                elif hasattr(item, "parent_item") and isinstance(item.parent_item, LevelObjectItem):
+                     obj_id = item.parent_item.obj_data.get("id")
+                     if obj_id: selected_ids.append(obj_id)
+
+            self.list_objects.blockSignals(True)
+            self.list_objects.clearSelection()
+            
+            first_match_item = None
+            
             for i in range(self.list_objects.count()):
-                li = self.list_objects.item(i)
-                if li.data(Qt.UserRole).get("id") == tid:
-                    self._updating_selection_from_canvas = True 
-                    self.list_objects.setCurrentItem(li)
-                    self.list_objects.scrollToItem(li)
-                    self._updating_selection_from_canvas = False
-                    self.enable_property_panel()
-                    break
+                list_item = self.list_objects.item(i)
+                data = list_item.data(Qt.UserRole)
+                
+                if data.get("id") in selected_ids:
+                    list_item.setSelected(True)
+                    if not first_match_item: first_match_item = list_item
+            
+            self.list_objects.blockSignals(False)
+
+            if len(selected_ids) == 1 and first_match_item:
+                self.list_objects.setCurrentItem(first_match_item)
+                self.on_object_selected(first_match_item, None)
+                
+            elif len(selected_ids) > 1:
+                self.disable_property_panel()
+                
+        finally:
+            self._updating_selection_from_canvas = False
 
     def sync_obj_pos_ui(self, x, y):
         self.is_programmatic_change = True
@@ -1175,6 +1269,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
              prev_item = previous.data(Qt.UserRole + 1)
              if prev_item and isinstance(prev_item, LevelObjectItem):
                  prev_item.remove_handle()
+
+        if len(self.list_objects.selectedItems()) > 1:
+            self.disable_property_panel()
+            return
 
         data = self.get_real_object_data()
         
