@@ -1,7 +1,7 @@
 import pygame
-from .Obstacles import _Obstacle
+from .Obstacles import Obstacle
 
-class Mirror(_Obstacle):
+class Mirror(Obstacle):
     """
     A special obstacle that reflects the player
     Requires a png transparent or semitransparent

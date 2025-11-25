@@ -1,10 +1,10 @@
 import pygame
-from .Obstacles import _Obstacle
+from .Obstacles import Obstacle
 from .Game_Constants import RESIZE_FACTOR
 from .GameState import game_state
 from utils import resource_path
 
-class _Interactable(_Obstacle):
+class Interactable(Obstacle):
     """
     Unique class for every interactable object
     Inherits from _Obstacle

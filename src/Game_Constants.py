@@ -41,7 +41,7 @@ LEVEL_MUSIC = {
 
 LEVEL_DARKNESS = {
     "forest": False,
-    "school": False
+    "school": True
 }
 
 # player sprite is 8 x 25

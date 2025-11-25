@@ -361,6 +361,9 @@ class Ui_LevelEditor(object):
         self.prop_used_image_path_combo.setSizePolicy(sizePolicy)
         self.btn_browse_used = QPushButton("...")
         self.btn_browse_used.setMaximumWidth(30)
+        self.layout_used.addWidget(self.prop_used_image_path_combo)
+        self.layout_used.addWidget(self.btn_browse_used)
+        self.layout_interactable.addRow(self.lbl_used, self.layout_used)
 
         self.lbl_duration = QLabel("Duración (Frames):")
         self.layout_duration = QHBoxLayout()

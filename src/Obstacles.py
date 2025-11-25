@@ -3,7 +3,7 @@ from .Game_Constants import RESIZE_FACTOR
 from .Animations import Animation
 from utils import resource_path
 
-class _Obstacle(pygame.sprite.Sprite):
+class Obstacle(pygame.sprite.Sprite):
     """
     Unique class for every static obstacles (can't interact with them)
     All settings are loaded through the dictionary 'data' in __init__

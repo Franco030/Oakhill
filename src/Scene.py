@@ -1,5 +1,5 @@
 import pygame
-from .Interactable import _Interactable
+from .Interactable import Interactable
 
 class Scene:
     """
@@ -77,7 +77,7 @@ class Scene:
                 
                 should_show = not is_hidden and (not obj.interacted_once or obj.used_image)
                 if should_show:
-                    if isinstance(obj, _Interactable):
+                    if isinstance(obj, Interactable):
                          self._interactables.add(obj)
                     
                     self._obstacles.add(obj)

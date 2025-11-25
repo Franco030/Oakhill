@@ -1,8 +1,8 @@
 import pygame
 from sys import exit
 from src.Game_Constants import *
-from src.Obstacles import _Obstacle
-from src.Interactable import _Interactable 
+from src.Obstacles import Obstacle
+from src.Interactable import Interactable 
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from utils import resource_path

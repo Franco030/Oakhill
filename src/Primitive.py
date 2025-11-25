@@ -1,8 +1,8 @@
 import pygame
-from .Obstacles import _Obstacle
+from .Obstacles import Obstacle
 
 
-class Primitive(_Obstacle):
+class Primitive(Obstacle):
     """
     A basic object (rectangle) defined via code, not via image.
     Unlike Obstacle, Primitive doesn't use an image, it creates one.
