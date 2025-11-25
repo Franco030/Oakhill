@@ -1,4 +1,5 @@
 import pygame
+from .Interactable import _Interactable
 
 class Scene:
     """
@@ -74,8 +75,11 @@ class Scene:
             for obj in self._interactables_dict[self.location]:
                 is_hidden = getattr(obj, 'is_hidden', False)
                 
-                if not obj.interacted_once and not is_hidden:
-                    self._interactables.add(obj)
+                should_show = not is_hidden and (not obj.interacted_once or obj.used_image)
+                if should_show:
+                    if isinstance(obj, _Interactable):
+                         self._interactables.add(obj)
+                    
                     self._obstacles.add(obj)
 
         if self.location in self._triggers_dict:

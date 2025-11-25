@@ -293,3 +293,24 @@ class CmdBulkDelete(Command):
             target_list.insert(index, obj_data)
             
         self.editor.populate_views_for_current_zone()
+
+class CmdResize(Command):
+    """
+    Specific command to change size in Primitives.
+    Saves the new width and height.
+    """
+    def __init__(self, editor, obj_data, old_size, new_size):
+        self.editor = editor
+        self.obj_data = obj_data
+        self.old_w, self.old_h = old_size
+        self.new_w, self.new_h = new_size
+
+    def execute(self):
+        self.obj_data['width'] = self.new_w
+        self.obj_data['height'] = self.new_h
+        self.editor.refresh_ui_for_object(self.obj_data)
+
+    def undo(self):
+        self.obj_data['width'] = self.old_w
+        self.obj_data['height'] = self.old_h
+        self.editor.refresh_ui_for_object(self.obj_data)

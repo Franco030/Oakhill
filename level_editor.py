@@ -324,13 +324,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             if real_obj_data:
                 items_to_process.append((row, real_obj_data))
             else:
-                print(f"Advertencia: Objeto {obj_id} visual pero no en datos.")
+                print(f"Object {obj_id} visual but not in data.")
         
         if items_to_process:
             cmd = CmdBulkDelete(self, current_zone_key, items_to_process)
             self.undo_manager.push(cmd, execute_now=True)
             
-            self.statusbar.showMessage(f"Se eliminaron {len(items_to_process)} objetos.", 3000)
+            self.statusbar.showMessage(f"{len(items_to_process)} objects were deleted.", 3000)
             
             self.disable_property_panel()
             if self.current_hitbox_item:
@@ -982,7 +982,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 else:
                     pixmap_item.remove_handle()
 
-
     def update_canvas_from_resize(self, data, item):
         if data.get("type") != "Primitive": return
         
@@ -992,8 +991,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         w, h = pixmap.width(), pixmap.height()
         x, y = data.get("x", 0), data.get("y", 0)
         
-        item.ignore_movement = True
-        item.setPos(x - w/2, y - h/2)
         item.ignore_movement = False
         
         self.prop_width.blockSignals(True); self.prop_height.blockSignals(True)
@@ -1005,6 +1002,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.disable_property_panel()
             return
         
+        
+        
         if not self._updating_selection_from_canvas:
             pixmap_item = current.data(Qt.UserRole + 1)
             if pixmap_item:
@@ -1014,11 +1013,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 if self.current_hitbox_item: self.current_hitbox_item.setSelected(True)
                 self.current_scene.blockSignals(False)
 
+
         data = self.get_real_object_data()
         
         if data is None:
             self.disable_property_panel()
             return
+        
+        
 
         self.enable_property_panel()
         self.is_programmatic_change = True

@@ -1,6 +1,7 @@
 import pygame
 from .Obstacles import _Obstacle
 from .Game_Constants import RESIZE_FACTOR
+from .GameState import game_state
 from utils import resource_path
 
 class _Interactable(_Obstacle):
@@ -63,6 +64,12 @@ class _Interactable(_Obstacle):
         except pygame.error as e:
             print("Can't load image, there's no flash")
             self.flash_image = self.original_image.copy()
+
+        if game_state.has_interacted(self.id):
+            self.interacted_once = True
+            if self.used_image:
+                self.image = self.used_image
+                self.original_image = self.used_image
 
     def unhide(self):
         """
@@ -129,6 +136,7 @@ class _Interactable(_Obstacle):
         and returns the data of the interaction
         """
         self.interacted_once=True
+        game_state.register_interaction(self.id)
         if self.used_image:
             self.image = self.used_image
             self.original_image = self.used_image

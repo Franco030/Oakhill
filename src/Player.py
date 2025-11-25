@@ -135,26 +135,28 @@ class Player(pygame.sprite.Sprite):
             # self.attack_timer -= 1
             self.animations['attack_' + self.facing].animate()
 
+            RANGE = 250
+
             if self.facing == "right":
                 self.attack_rect = pygame.Rect(
                     self.rect.right,
                     self.rect.top + 10,
-                    400,
+                    RANGE,
                     self.rect.height - (self.rect.height / 5)
                 )
             elif self.facing == "left":
-                self.attack_rect.width = 400
+                self.attack_rect.width = RANGE
                 self.attack_rect.height = self.rect.height - (self.rect.height / 5)
                 self.attack_rect.right = self.rect.left
                 self.attack_rect.top = self.rect.top + 10
             elif self.facing == "up":
                 self.attack_rect.width = self.rect.height
-                self.attack_rect.height = 400
+                self.attack_rect.height = RANGE - 100
                 self.attack_rect.centerx = self.rect.centerx
                 self.attack_rect.bottom = self.rect.top
             elif self.facing == "down":
                 self.attack_rect.width = self.rect.height
-                self.attack_rect.height = 400
+                self.attack_rect.height = RANGE - 100
                 self.attack_rect.centerx = self.rect.centerx
                 self.attack_rect.top = self.rect.bottom
 
@@ -220,6 +222,18 @@ class Player(pygame.sprite.Sprite):
                     self._collision_rect.top = obstacle.collision_rect.bottom
 
                 self.pos.y = self._collision_rect.centery
+
+    def teleport(self, x, y):
+        self.pos = pygame.math.Vector2(x, y)
+        
+        self.rect.center = (int(x), int(y))
+        
+        self._collision_rect.centerx = self.rect.centerx
+        
+        self._collision_rect.centery = int(self.pos.y)
+        
+        self.velocity = pygame.math.Vector2(0, 0)
+        self.direction = pygame.math.Vector2(0, 0)
 
     def update(self, obstacles):
         """

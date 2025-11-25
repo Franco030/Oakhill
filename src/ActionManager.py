@@ -71,7 +71,7 @@ class ActionManager:
                     scene.change_zone(new_zone)
                     
                     if x is not None and y is not None:
-                        player.sprite.rect.topleft = (x, y)
+                        player.sprite.teleport(x, y)
                         
                 except Exception as e:
                     print(f"Error Teleport: {e}")

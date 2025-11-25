@@ -369,6 +369,9 @@ def game_loop(screen, clock):
                 return "QUIT"
 
             if event.type == pygame.KEYDOWN:
+                # Debug options
+                if event.key == pygame.K_p:
+                    print(f"Player Position: {player.sprite.pos}")
                 if event.key == pygame.K_SPACE:
                     if game_status == "PLAYING":
                         player.sprite.attack()

@@ -8,6 +8,7 @@ class GameState:
         if cls._instance is None:
             cls._instance  = super(GameState, cls).__new__(cls)
             cls._instance.flags = {}
+            cls._instance.interacted_objects = set()
             cls._instance.pending_level_change = None
         return cls._instance
     
@@ -39,6 +40,23 @@ class GameState:
         """
         return self.get_flag(key) == expected_value
     
+    # --- Interactions memory ---
+    def register_interaction(self, obj_id):
+        """
+        Marks an object as permanently used
+        
+        :param obj_id: Object ID
+        """
+        self.interacted_objects.add(obj_id)
+
+    def has_interacted(self, obj_id):
+        """
+        Searchs if the object has already interacted
+        
+        :param obj_id: Objects ID
+        """
+        return obj_id in self.interacted_objects
+    
     # --------------------------------------------------
 
     # --- Change level logic ---
@@ -62,6 +80,7 @@ class GameState:
         data = self.pending_level_change
         self.pending_level_change = None
         return data
+    # ----------------------------------
     
     def reset(self):
         """
