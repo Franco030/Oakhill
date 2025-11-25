@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
     QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox
 )
-from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut
+from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.Game_Constants import MAPS
@@ -202,6 +202,7 @@ class LevelObjectItem(QGraphicsPixmapItem):
         self.editor = editor_ref
         self.ignore_movement = False
         self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges)
+        self.resize_handle = None
     def mousePressEvent(self, event):
         self.start_x = self.obj_data.get('x', 0)
         self.start_y = self.obj_data.get('y', 0)
@@ -243,6 +244,67 @@ class LevelObjectItem(QGraphicsPixmapItem):
             self.obj_data['y'] = new_center_y
             if self.editor: self.editor.sync_obj_pos_ui(new_center_x, new_center_y)
         return super().itemChange(change, value)
+    def create_primitive_handle(self):
+        if self.obj_data.get("type") == "Primitive" and not self.resize_handle:
+            self.resize_handle = PrimitiveHandle(self, self.editor)
+            self.resize_handle.update_position()
+            
+    def remove_handle(self):
+        if self.resize_handle:
+            self.scene().removeItem(self.resize_handle)
+            self.resize_handle = None
+    
+
+class PrimitiveHandle(QGraphicsRectItem):
+    def __init__(self, parent_item, editor_ref):
+        # Cuadradito azul de 10x10
+        super().__init__(0, 0, 10, 10, parent_item)
+        self.parent_item = parent_item
+        self.editor = editor_ref
+        self.setBrush(QBrush(QColor(0, 0, 255, 255))) # Azul sólido
+        self.setPen(QPen(Qt.white))
+        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemSendsGeometryChanges | QGraphicsItem.ItemIsSelectable)
+        self.setZValue(99999) # Siempre arriba
+        self.start_size = (50, 50)
+
+    def update_position(self):
+        """Se coloca en la esquina inferior derecha del padre"""
+        rect = self.parent_item.pixmap().rect()
+        # Restamos 5 para centrar el handle en la esquina
+        self.setPos(rect.width() - 5, rect.height() - 5)
+
+    def mousePressEvent(self, event):
+        # Guardar tamaño inicial para el Undo
+        data = self.parent_item.obj_data
+        self.start_size = (data.get('width', 50), data.get('height', 50))
+        super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        data = self.parent_item.obj_data
+        end_w = data.get('width', 50)
+        end_h = data.get('height', 50)
+        
+        if self.start_size != (end_w, end_h):
+            self.editor.refresh_ui_for_object(data)
+            print(f"Resize terminado: {end_w}x{end_h}")
+
+    def itemChange(self, change, value):
+        if change == QGraphicsItem.ItemPositionChange and self.scene():
+            new_pos = value
+            
+            new_w = max(10, int(new_pos.x() + 5))
+            new_h = max(10, int(new_pos.y() + 5))
+            
+            obj_data = self.parent_item.obj_data
+            obj_data['width'] = new_w
+            obj_data['height'] = new_h
+
+            self.editor.update_canvas_from_resize(obj_data, self.parent_item)
+
+            return new_pos
+            
+        return super().itemChange(change, value)
 
 # --- EDITOR ---
 class LevelEditor(QMainWindow, Ui_LevelEditor):
@@ -279,6 +341,12 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_z_index.valueChanged.connect(lambda v: self.on_property_changed('z_index', v))
         self.prop_reflection_offset.valueChanged.connect(lambda v: self.on_property_changed('reflection_offset_y', v))
         self.prop_resize_factor.valueChanged.connect(lambda v: self.on_property_changed('resize_factor', v))
+        self.prop_width.valueChanged.connect(lambda v: self.on_property_changed('width', v))
+        self.prop_height.valueChanged.connect(lambda v: self.on_property_changed('height', v))
+        self.prop_color_r.valueChanged.connect(lambda: self.on_property_changed('color', None))
+        self.prop_color_g.valueChanged.connect(lambda: self.on_property_changed('color', None))
+        self.prop_color_b.valueChanged.connect(lambda: self.on_property_changed('color', None))
+        self.prop_border_width.valueChanged.connect(lambda v: self.on_property_changed('border_width', v))
         self.prop_hitbox_dx.valueChanged.connect(self.on_hitbox_changed)
         self.prop_hitbox_dy.valueChanged.connect(self.on_hitbox_changed)
         self.prop_hitbox_dw.valueChanged.connect(self.on_hitbox_changed)
@@ -289,6 +357,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_path', v))
         self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_path', v))
         self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
+        self.prop_interaction_duration.valueChanged.connect(lambda v: self.on_property_changed('interaction_duration', v))
         self.prop_interaction_type.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_type', v))
         self.data_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_data', v))
         self.prop_is_passable.stateChanged.connect(lambda v: self.on_property_changed('is_passable', bool(v)))
@@ -347,6 +416,16 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_y.setValue(obj_data.get('y', 0))
             self.prop_z_index.setValue(int(obj_data.get('z_index', 0)))
             self.prop_reflection_offset.setValue(int(obj_data.get('reflection_offset_y', 0)))
+
+            self.prop_width.setValue(int(obj_data.get('width', 50)))
+            self.prop_height.setValue(int(obj_data.get('height', 50)))
+            self.prop_border_width.setValue(int(obj_data.get('border_width', 0)))
+
+            color = obj_data.get('color', [255, 255, 255]) # Blanco por defecto
+            if isinstance(color, list) and len(color) >= 3:
+                self.prop_color_r.setValue(color[0])
+                self.prop_color_g.setValue(color[1])
+                self.prop_color_b.setValue(color[2])
             
 
             self.prop_image_path_combo.setCurrentText(obj_data.get('image_path', 'None'))
@@ -369,6 +448,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_flash_image_path_combo.setCurrentText(obj_data.get('flash_image_path', 'None'))
             self.prop_charge_sound_combo.setCurrentText(obj_data.get('charge_sound_path', 'None'))
             self.prop_used_image_path_combo.setCurrentText(obj_data.get('used_image_path', 'None'))
+            self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))
 
             self.prop_interaction_type.setCurrentText(obj_data.get('interaction_type', 'None'))
             
@@ -428,12 +508,43 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         current_zone_key = self.combo_zone_selector.currentText()
         if not current_zone_key: return
         new_id = f"obj_{int(time.time())}"
+        # new_obj_data = {
+        #     "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
+        #     "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
+        #     "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
+        #     "flash_image_path": "None", "charge_sound_path": "None", "used_image_path": "None", "interaction_duration": 60, "interaction_type": "None", "interaction_data": "",
+        #     "trigger_condition": "OnEnter", "trigger_action": "SetFlag", "trigger_params": ""
+        # }
         new_obj_data = {
-            "id": new_id, "type": "Obstacle", "x": GAME_WIDTH // 2, "y": GAME_HEIGHT // 2, "z_index": 0,
-            "image_path": "None", "resize_factor": 1.0, "is_passable": False, "starts_hidden": False, "is_ground": False,
-            "collision_rect_offset": [0, 0, 0, 0], "animation_images": [], "animation_speed": 0.1,
-            "flash_image_path": "None", "charge_sound_path": "None", "used_image_path": "None", "interaction_type": "None", "interaction_data": "",
-            "trigger_condition": "OnEnter", "trigger_action": "SetFlag", "trigger_params": ""
+            "id": new_id,
+            
+            "type": "Primitive", 
+            
+            "x": GAME_WIDTH // 2, 
+            "y": GAME_HEIGHT // 2,
+            "image_path": "None",
+            "resize_factor": 1,
+            "is_passable": False,
+            "starts_hidden": False,
+            "collision_rect_offset": [0, 0, 0, 0],
+            
+
+            "width": 100,
+            "height": 100,
+            "color": [255, 255, 255],
+            "border_width": 0, 
+            
+            "animation_images": [],
+            "animation_speed": 0.1,
+            "flash_image_path": "None",
+            "charge_sound_path": "None",
+            "used_image_path": "None", 
+            "interaction_duration": 60, 
+            "interaction_type": "None",
+            "interaction_data": None,
+            "trigger_condition": "OnEnter", 
+            "trigger_action": "SetFlag", 
+            "trigger_params": ""
         }
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
         self.undo_manager.push(cmd, execute_now=True)
@@ -474,13 +585,21 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         current_item = self.list_objects.currentItem()
         
-        old_value = obj_data.get(key)
-        if old_value == new_value: return
+        if key == "color":
+            r = self.prop_color_r.value()
+            g = self.prop_color_g.value()
+            b = self.prop_color_b.value()
+            final_value = [r, g, b]
+        else:
+            final_value = new_value
 
-        cmd = CmdPropertyChange(self, obj_data, key, old_value, new_value)
+        old_value = obj_data.get(key)
+        if old_value == final_value: return
+
+        cmd = CmdPropertyChange(self, obj_data, key, old_value, final_value)
         self.undo_manager.push(cmd, execute_now=False)
         
-        obj_data[key] = new_value
+        obj_data[key] = final_value
         
         if key == 'type' or key == 'id':
             current_item.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
@@ -561,7 +680,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         if idx != -1: 
             self.combo_zone_selector.setCurrentIndex(idx)
         else:
-            # Crear nueva zona vacía si es válida en el mapa pero no existe en el JSON
             self.current_data["zones"][target] = []
             self.combo_zone_selector.addItem(target)
             self.combo_zone_selector.setCurrentText(target)
@@ -643,6 +761,27 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def on_main_type_changed(self):
         current_type = self.prop_type.currentText()
+        is_primitive = (current_type == "Primitive")
+
+        self.label_2.setVisible(not is_primitive)
+        self.prop_image_path_combo.setVisible(not is_primitive)
+        self.btn_browse_image.setVisible(not is_primitive)
+        self.label_12.setVisible(not is_primitive)
+        self.prop_image_preview.setVisible(not is_primitive)
+        self.label_8.setVisible(not is_primitive)
+        self.prop_resize_factor.setVisible(not is_primitive)
+        self.lbl_border.setVisible(is_primitive)
+        self.prop_border_width.setVisible(is_primitive)
+        
+        self.lbl_size.setVisible(is_primitive)
+        self.prop_width.setVisible(is_primitive)
+        self.prop_height.setVisible(is_primitive)
+        
+        self.lbl_color.setVisible(is_primitive)
+        self.prop_color_r.setVisible(is_primitive)
+        self.prop_color_g.setVisible(is_primitive)
+        self.prop_color_b.setVisible(is_primitive)
+
         self.group_interaction.setEnabled(current_type in ["Interactable", "Trigger"])
         self.group_animation.setEnabled(True)
         if current_type == "Interactable": self.prop_main_stack.setCurrentIndex(0)
@@ -740,10 +879,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 if obj.get("flash_image_path") == "None": obj["flash_image_path"] = ""
                 if obj.get("charge_sound_path") == "None": obj["charge_sound_path"] = ""
                 if obj.get("used_image_path") == "None": obj["used_image_path"] = ""
+                try: obj["interaction_duration"] = int(obj.get("interaction_duration", 60))
+                except: obj["interaction_duration"] = 60
                 try: obj["resize_factor"] = float(obj.get("resize_factor", 1))
                 except: obj["resize_factor"] = 1.0
                 try: obj["z_index"] = int(obj.get("z_index", 0))
                 except: obj["z_index"] = 0
+                try: obj["border_width"] = int(obj.get("border_width", 0))
+                except: obj["border_width"] = 0
                 try: obj["reflection_offset_y"] = int(obj.get("reflection_offset_y", 0))
                 except: obj["reflection_offset_y"] = 0
                 itype = obj.get("interaction_type", "None")
@@ -818,6 +961,25 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def draw_object_on_canvas(self, obj):
         imgpath = obj.get("image_path", "None")
         pixmap = None
+        obj_type = obj.get("type")
+        if obj_type == "Primitive":
+            w = int(obj.get("width", 50))
+            h = int(obj.get("height", 50))
+            c = obj.get("color", [255, 255, 255])
+            
+            pixmap = QPixmap(w, h)
+            pixmap.fill(QColor(c[0], c[1], c[2]))
+            
+            item = LevelObjectItem(pixmap, obj, self)
+            
+            x = obj.get("x", 0)
+            y = obj.get("y", 0)
+            item.setPos(x - w/2, y - h/2)
+
+            z = int(obj.get("z_index", 0))
+            item.setZValue(z)
+            self.current_scene.addItem(item)
+            return item
         
         if imgpath not in (None, "None", ""):
             full = os.path.join(self.base_path, imgpath)
@@ -856,6 +1018,37 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         imgpath = data.get("image_path", "None")
         pixmap = None
+
+        obj_type = data.get("type")
+        if obj_type == "Primitive":
+            w = int(data.get("width", 50))
+            h = int(data.get("height", 50))
+            c = data.get("color", [255, 255, 255])
+            
+            border = int(data.get("border_width", 0))
+            
+            pixmap = QPixmap(w, h)
+            pixmap.fill(Qt.transparent)
+            
+            painter = QPainter(pixmap)
+
+            col = QColor(c[0], c[1], c[2])
+            
+            if border == 0:
+                painter.fillRect(0, 0, w, h, col)
+            else:
+
+                pen = QPen(col)
+                pen.setWidth(border)
+
+                pen.setJoinStyle(Qt.MiterJoin)
+                painter.setPen(pen)
+                painter.setBrush(Qt.NoBrush)
+                
+                offset = border / 2
+                painter.drawRect(QRectF(offset, offset, w - border, h - border))
+                
+            painter.end()
         
         if imgpath not in (None, "None", ""):
             full = os.path.join(self.base_path, imgpath)
@@ -915,6 +1108,55 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             if self.list_objects.currentItem() and self.list_objects.currentItem().data(Qt.UserRole) is data:
                 self.current_hitbox_item.setSelected(True)
 
+            if pixmap_item.isSelected():
+                if data.get("type") == "Primitive":
+                    if not hasattr(pixmap_item, 'resize_handle') or not pixmap_item.resize_handle:
+                        pixmap_item.create_primitive_handle()
+                
+                    if pixmap_item.resize_handle:
+                        pixmap_item.resize_handle.update_position()
+                else:
+                    pixmap_item.remove_handle()
+
+
+    def update_canvas_from_resize(self, data, item):
+        if data.get("type") != "Primitive": return
+        
+        w = int(data.get("width", 50))
+        h = int(data.get("height", 50))
+        c = data.get("color", [255, 255, 255])
+        border = int(data.get("border_width", 0))
+        
+        pixmap = QPixmap(w, h)
+        if border == 0:
+            pixmap.fill(QColor(c[0], c[1], c[2]))
+        else:
+            pixmap.fill(Qt.transparent)
+            painter = QPainter(pixmap)
+            pen = QPen(QColor(c[0], c[1], c[2]))
+            pen.setWidth(border)
+            pen.setJoinStyle(Qt.MiterJoin)
+            painter.setPen(pen)
+            painter.setBrush(Qt.NoBrush)
+            offset = border / 2
+            painter.drawRect(QRectF(offset, offset, w - border, h - border))
+            painter.end()
+            
+        item.setPixmap(pixmap)
+        
+        x = data.get("x", 0)
+        y = data.get("y", 0)
+        item.ignore_movement = True
+        item.setPos(x - w/2, y - h/2)
+        item.ignore_movement = False
+        
+        self.prop_width.blockSignals(True)
+        self.prop_height.blockSignals(True)
+        self.prop_width.setValue(w)
+        self.prop_height.setValue(h)
+        self.prop_width.blockSignals(False)
+        self.prop_height.blockSignals(False)
+
     def on_object_selected(self, current, previous):
         if not current:
             self.disable_property_panel()
@@ -928,6 +1170,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 pixmap_item.setSelected(True)
                 if self.current_hitbox_item: self.current_hitbox_item.setSelected(True)
                 self.current_scene.blockSignals(False)
+
+        if previous:
+             prev_item = previous.data(Qt.UserRole + 1)
+             if prev_item and isinstance(prev_item, LevelObjectItem):
+                 prev_item.remove_handle()
 
         data = self.get_real_object_data()
         
@@ -987,6 +1234,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 current.setData(Qt.UserRole + 1, new_pix)
                 self.update_canvas_item(data, new_pix)
         
+        pixmap_item = current.data(Qt.UserRole + 1)
+
+        if pixmap_item and data.get("type") == "Primitive":
+            pixmap_item.create_primitive_handle()
+        elif pixmap_item:
+            pixmap_item.remove_handle()
+
         self.is_programmatic_change = False
 
     def update_image_preview(self):

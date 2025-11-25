@@ -22,7 +22,7 @@ class _Interactable(_Obstacle):
         self.is_hidden = data.get("starts_hidden", False)
         
         # self.is_interacting = False
-        self.interaction_duration = 60
+        self.interaction_duration = data.get("interaction_duration", 60)
         self.current_progress = 0
         # self.interaction_timer = 0
         self.original_image = self.image.copy()

@@ -152,6 +152,10 @@ class Scene:
                 print(f"Secret revealed. type {interaction_type_to_unhide} appeared")
 
         return found_and_unhidden
+    
+    def cleanup(self):
+        for enemy in self._enemies:
+            enemy.reset_state()
 
     def draw(self, screen, player):
         render_list = []

@@ -129,6 +129,7 @@ class Ui_LevelEditor(object):
         self.prop_type.addItem("") # Mirror
         self.prop_type.addItem("") # Interactable
         self.prop_type.addItem("") # Trigger
+        self.prop_type.addItem("") # Primitive
         self.prop_type.setObjectName(u"prop_type")
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.prop_type)
 
@@ -241,12 +242,48 @@ class Ui_LevelEditor(object):
         self.formLayout.setWidget(8, QFormLayout.ItemRole.FieldRole, self.prop_z_index)
         self.verticalLayout_4.addWidget(self.properties_box)
 
+        self.lbl_size = QLabel("Tamaño (W x H):", self.properties_box)
+        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.lbl_size)
+        self.layout_size = QHBoxLayout()
+        self.prop_width = QSpinBox(self.properties_box)
+        self.prop_width.setMinimum(1)
+        self.prop_width.setMaximum(9999)
+        self.prop_width.setValue(50)
+        self.prop_height = QSpinBox(self.properties_box)
+        self.prop_height.setMinimum(1)
+        self.prop_height.setMaximum(9999)
+        self.prop_height.setValue(50)
+        self.layout_size.addWidget(self.prop_width)
+        self.layout_size.addWidget(self.prop_height)
+        self.formLayout.setLayout(9, QFormLayout.FieldRole, self.layout_size)
+        self.lbl_color = QLabel("Color (R, G, B):", self.properties_box)
+        self.formLayout.setWidget(10, QFormLayout.LabelRole, self.lbl_color)
+        self.layout_color = QHBoxLayout()
+        self.prop_color_r = QSpinBox(self.properties_box)
+        self.prop_color_r.setRange(0, 255)
+        self.prop_color_g = QSpinBox(self.properties_box)
+        self.prop_color_g.setRange(0, 255)
+        self.prop_color_b = QSpinBox(self.properties_box)
+        self.prop_color_b.setRange(0, 255)
+        self.layout_color.addWidget(self.prop_color_r)
+        self.layout_color.addWidget(self.prop_color_g)
+        self.layout_color.addWidget(self.prop_color_b)
+        self.formLayout.setLayout(10, QFormLayout.FieldRole, self.layout_color)
+
+        self.lbl_border = QLabel("Grosor Borde (0=Sólido):", self.properties_box)
+        self.formLayout.setWidget(11, QFormLayout.LabelRole, self.lbl_border)
+        self.prop_border_width = QSpinBox(self.properties_box)
+        self.prop_border_width.setMinimum(0) # 0 es sólido
+        self.prop_border_width.setMaximum(100)
+        self.prop_border_width.setValue(0)
+        self.formLayout.setWidget(11, QFormLayout.FieldRole, self.prop_border_width)
+
         self.label_mirror_y = QLabel("Reflejo Y (Mirror):", self.properties_box)
-        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_mirror_y)
+        self.formLayout.setWidget(12, QFormLayout.LabelRole, self.label_mirror_y)
         self.prop_reflection_offset = QSpinBox(self.properties_box)
         self.prop_reflection_offset.setMinimum(-999)
         self.prop_reflection_offset.setMaximum(999)
-        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.prop_reflection_offset)
+        self.formLayout.setWidget(12, QFormLayout.FieldRole, self.prop_reflection_offset)
 
         self.group_animation = QGroupBox(self.scrollAreaWidgetContents)
         self.group_animation.setObjectName(u"group_animation")
@@ -278,18 +315,15 @@ class Ui_LevelEditor(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
         self.verticalLayout_4.addWidget(self.group_animation)
 
-        # --- GRUPO INTERACCIÓN (Lógica Avanzada) ---
         self.group_interaction = QGroupBox(self.scrollAreaWidgetContents)
         self.group_interaction.setObjectName(u"group_interaction")
         self.group_interaction.setTitle("Lógica e Interacción")
         self.formLayout_2 = QFormLayout(self.group_interaction)
         self.formLayout_2.setObjectName(u"formLayout_2")
 
-        # Stack para detalles visuales (Nota, Imagen) - Solo para Interactables
         self.prop_main_stack = QStackedWidget(self.group_interaction)
         self.prop_main_stack.setObjectName(u"prop_main_stack")
         
-        # PAGINA 0: Interactable (Detalles Visuales)
         self.page_interactable = QWidget()
         self.layout_interactable = QFormLayout(self.page_interactable)
         
@@ -327,10 +361,15 @@ class Ui_LevelEditor(object):
         self.prop_used_image_path_combo.setSizePolicy(sizePolicy)
         self.btn_browse_used = QPushButton("...")
         self.btn_browse_used.setMaximumWidth(30)
-        
-        self.layout_used.addWidget(self.prop_used_image_path_combo)
-        self.layout_used.addWidget(self.btn_browse_used)
-        self.layout_interactable.addRow(self.lbl_used, self.layout_used)
+
+        self.lbl_duration = QLabel("Duración (Frames):")
+        self.layout_duration = QHBoxLayout()
+        self.prop_interaction_duration = QSpinBox()
+        self.prop_interaction_duration.setMinimum(1)
+        self.prop_interaction_duration.setMaximum(9999)
+        self.prop_interaction_duration.setValue(60)
+        self.layout_duration.addWidget(self.prop_interaction_duration)
+        self.layout_interactable.addRow(self.lbl_duration, self.layout_duration)
         
         self.lbl_data = QLabel("Datos Visuales:")
         self.prop_interaction_data_stack = QStackedWidget()
@@ -448,6 +487,7 @@ class Ui_LevelEditor(object):
         self.prop_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Mirror", None))
         self.prop_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Interactable", None))
         self.prop_type.setItemText(3, QCoreApplication.translate("LevelEditor", u"Trigger", None))
+        self.prop_type.setItemText(4, QCoreApplication.translate("LevelEditor", u"Primitive", None))
 
         self.label_7.setText(QCoreApplication.translate("LevelEditor", u"Posición:", None))
         self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image Path:", None))

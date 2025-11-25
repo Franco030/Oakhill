@@ -203,7 +203,6 @@ def game_loop(screen, clock):
     game_over_sound_played = False
 
     note_to_show = None
-    note_being_interacted = None
 
     try:
         chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
@@ -559,6 +558,7 @@ def game_loop(screen, clock):
         # --- Change level management ---
         level_request = game_state.consume_level_change()
         if level_request:
+            scene.cleanup()
             screen.fill((0, 0, 0))
             pygame.display.flip()
 

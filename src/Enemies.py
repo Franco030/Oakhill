@@ -70,6 +70,13 @@ class _Enemy(pygame.sprite.Sprite):
     def while_attacked(self):
         pass
 
+    def reset_state(self):
+        if hasattr(self.behaviours, "reset"):
+            self.behaviours.reset()
+
+        # We don't need this now, we may need it later
+        # self.is_flashing = False
+        # self.image = self.original_image
 
     def update_behaviour(self, behaviour):
         self.behaviours.append(behaviour)
@@ -135,7 +142,9 @@ class Red_Ghost(_Enemy):
 
 class Stalker_Ghost(_Enemy):
     def __init__(self, start_x, start_y, health, behaviours):
-        super().__init__(start_x, start_y, resource_path("assets/images/ghost.png"), health, behaviours, 5)
+        # We changed the sprite for another one
+        # super().__init__(start_x, start_y, resource_path("assets/images/ghost.png"), health, behaviours, 5)
+        super().__init__(start_x, start_y, resource_path("assets/animations/Soul/soul_1.png"), health, behaviours, 3)
         # --- Modify the self._collision_rect to get a better collision system ---
         self._collision_rect = pygame.Rect(
             self.rect.left,
@@ -144,7 +153,8 @@ class Stalker_Ghost(_Enemy):
             self.rect.height - 20
         )
 
-        self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/ghost_{i}.png") for i in range (1, 5)], 0.09)
+        # self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/ghost_{i}.png") for i in range (1, 5)], 0.09)
+        self.animation = Animation(self, [resource_path(f"assets/animations/Soul/soul_{i}.png") for i in range (1, 5)], 0.160)
 
     def while_attacked(self):
         if self.is_flashing:
@@ -152,6 +162,7 @@ class Stalker_Ghost(_Enemy):
         
         self.start_flash()
         self.behaviours.shoo(self)
+
 
     def update(self, delta_time):
         """

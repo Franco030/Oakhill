@@ -3,6 +3,7 @@ from .Scene import Scene
 from .Enemies import *
 from .Behaviour import *
 from .Obstacles import _Obstacle
+from .Primitive import Primitive
 from .Mirror import Mirror
 from .Interactable import _Interactable
 from .Trigger import Trigger
@@ -30,6 +31,9 @@ class SceneLoader:
                 if obj_type == "Obstacle":
                     obstacle = _Obstacle(obj_data)
                     obstacle_list.append(obstacle)
+                elif obj_type == "Primitive":
+                    primitive = Primitive(obj_data)
+                    obstacle_list.append(primitive)
                 elif obj_type == "Mirror":
                     mirror = Mirror(obj_data, player)
                     obstacle_list.append(mirror)
