@@ -208,12 +208,6 @@ class LevelObjectItem(QGraphicsPixmapItem):
             - Syncs the UI SpinBoxes.
             - Updates the position of the ResizeHandle if it exists.
         """
-        if change == QGraphicsItem.ItemSelectedHasChanged:
-            if value:
-                self.create_primitive_handle()
-            else:
-                self.remove_handle()
-
         if change == QGraphicsItem.ItemPositionChange and self.scene():
             if self.ignore_movement: return super().itemChange(change, value)
             new_pos = value

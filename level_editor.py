@@ -1014,7 +1014,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 if self.current_hitbox_item: self.current_hitbox_item.setSelected(True)
                 self.current_scene.blockSignals(False)
 
-        # 1. Obtener datos reales
         data = self.get_real_object_data()
         
         if data is None:
@@ -1024,7 +1023,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.enable_property_panel()
         self.is_programmatic_change = True
 
-        # 2. Cargar Propiedades Básicas
         self.prop_id.setText(data.get("id", ""))
         self.prop_type.setCurrentText(data.get("type", "Obstacle"))
         self.prop_x.setValue(data.get("x", 0))
@@ -1032,7 +1030,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_z_index.setValue(int(data.get("z_index", 0)))
         self.prop_reflection_offset.setValue(int(data.get("reflection_offset_y", 0)))
         
-        # --- LO QUE FALTABA: PRIMITIVAS (Color y Tamaño) ---
         self.prop_width.setValue(int(data.get("width", 50)))
         self.prop_height.setValue(int(data.get("height", 50)))
         self.prop_border_width.setValue(int(data.get("border_width", 0)))
@@ -1042,7 +1039,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_color_r.setValue(color[0])
             self.prop_color_g.setValue(color[1])
             self.prop_color_b.setValue(color[2])
-        # ---------------------------------------------------
 
         # 3. Cargar resto de propiedades
         self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
