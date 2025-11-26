@@ -101,6 +101,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_trigger_condition.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_condition', v))
         self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
         self.prop_trigger_params.textChanged.connect(self.on_trigger_params_changed)
+        self.prop_step_action.currentTextChanged.connect(self.update_selected_step_data)
+        self.prop_step_params.textChanged.connect(self.update_selected_step_data)
         self.btn_anim_add.clicked.connect(self.add_animation_frame)
         self.btn_anim_remove.clicked.connect(self.remove_animation_frame)
         self.prop_image_path_combo.currentTextChanged.connect(self.update_image_preview)
@@ -210,6 +212,22 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_trigger_condition.setCurrentText(obj_data.get("trigger_condition", "OnEnter"))
             self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", "SetFlag"))
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
+            
+            self.list_trigger_sequence.clear()
+            
+            sequence = obj_data.get("scripted_events", [])
+            
+            for step in sequence:
+                action = step.get("action", "Wait")
+                params = step.get("params", "")
+                item_text = f"{action} ({params})"
+                
+                list_item = QListWidgetItem(item_text)
+                list_item.setData(Qt.UserRole, step) 
+                self.list_trigger_sequence.addItem(list_item)
+            
+            if self.list_trigger_sequence.count() > 0:
+                self.list_trigger_sequence.setCurrentRow(0)
             
             current.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
             pixmap_item = current.data(Qt.UserRole + 1)
@@ -1002,8 +1020,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.disable_property_panel()
             return
         
-        
-        
         if not self._updating_selection_from_canvas:
             pixmap_item = current.data(Qt.UserRole + 1)
             if pixmap_item:
@@ -1020,8 +1036,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.disable_property_panel()
             return
         
-        
-
         self.enable_property_panel()
         self.is_programmatic_change = True
 
@@ -1042,7 +1056,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_color_g.setValue(color[1])
             self.prop_color_b.setValue(color[2])
 
-        # 3. Cargar resto de propiedades
         self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
         try: rz = float(data.get("resize_factor", 1))
         except: rz = 1.0
@@ -1075,10 +1088,24 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             else: self.data_note_text.setText(str(idata))
         elif itype == "Image": 
             self.data_image_path_combo.setCurrentText(str(idata))
-        
+            
         self.prop_trigger_condition.setCurrentText(data.get("trigger_condition", "OnEnter"))
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", "SetFlag"))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
+
+        self.list_trigger_sequence.clear()
+        sequence = data.get("scripted_events", [])
+        
+        for step in sequence:
+            action = step.get("action", "Wait")
+            params = step.get("params", "")
+            item_text = f"{action} ({params})"
+            
+            list_item = QListWidgetItem(item_text)
+            list_item.setData(Qt.UserRole, step)
+            self.list_trigger_sequence.addItem(list_item)
+            
+        self.group_step_detail.setEnabled(False)
 
         self.on_main_type_changed()
         self.on_interaction_type_changed()
@@ -1171,6 +1198,80 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                     self.prop_charge_sound_combo.addItem(rel_path)
                 self.prop_charge_sound_combo.setCurrentText(rel_path)
             except: pass
+
+    def save_sequence_changes(self):
+        if self.is_programmatic_change: return
+        
+        obj_data = self.get_real_object_data()
+        if not obj_data: return
+
+        new_sequence = []
+        for i in range(self.list_trigger_sequence.count()):
+            item = self.list_trigger_sequence.item(i)
+            new_sequence.append(item.data(Qt.UserRole))
+
+        old_sequence = obj_data.get("scripted_events", [])
+        if new_sequence != old_sequence:
+            cmd = CmdPropertyChange(self, obj_data, "scripted_events", old_sequence, new_sequence)
+            self.undo_manager.push(cmd, execute_now=False)
+            obj_data["scripted_events"] = new_sequence
+
+    def add_sequence_step(self):
+        new_step = {"action": "Wait", "params": "time=1.0"}
+        
+        item = QListWidgetItem(f"Wait (time=1.0)")
+        item.setData(Qt.UserRole, new_step)
+        self.list_trigger_sequence.addItem(item)
+        self.list_trigger_sequence.setCurrentItem(item)
+        
+        self.save_sequence_changes()
+
+    def remove_sequence_step(self):
+        row = self.list_trigger_sequence.currentRow()
+        if row >= 0:
+            self.list_trigger_sequence.takeItem(row)
+            self.save_sequence_changes()
+
+    def move_sequence_step(self, direction):
+        row = self.list_trigger_sequence.currentRow()
+        new_row = row + direction
+        
+        if 0 <= new_row < self.list_trigger_sequence.count():
+            item = self.list_trigger_sequence.takeItem(row)
+            self.list_trigger_sequence.insertItem(new_row, item)
+            self.list_trigger_sequence.setCurrentRow(new_row)
+            self.save_sequence_changes()
+
+    def load_selected_step_to_ui(self):
+        item = self.list_trigger_sequence.currentItem()
+        self.group_step_detail.setEnabled(item is not None)
+        
+        if not item: return
+        
+        step_data = item.data(Qt.UserRole)
+        
+        self.is_programmatic_change = True
+        self.prop_step_action.setCurrentText(step_data.get("action", "Wait"))
+        self.prop_step_params.setText(step_data.get("params", ""))
+        self.is_programmatic_change = False
+
+    def update_selected_step_data(self):
+        if self.is_programmatic_change: return
+        
+        item = self.list_trigger_sequence.currentItem()
+        if not item: return
+        
+        new_action = self.prop_step_action.currentText()
+        new_params = self.prop_step_params.toPlainText()
+        
+        step_data = item.data(Qt.UserRole)
+        step_data["action"] = new_action
+        step_data["params"] = new_params
+
+        item.setData(Qt.UserRole, step_data)
+        item.setText(f"{new_action} ({new_params})")
+        
+        self.save_sequence_changes()
 
 
 if __name__ == "__main__":

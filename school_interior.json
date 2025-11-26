@@ -69692,57 +69692,6 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0
-            },
-            {
-                "id": "obj_1764141670117_633",
-                "type": "Trigger",
-                "x": 899,
-                "y": 341,
-                "image_path": "",
-                "resize_factor": 1.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    -1,
-                    -3,
-                    0,
-                    0
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "interaction_type": "None",
-                "interaction_data": "",
-                "trigger_condition": "OnEnter",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "scripted_events": [
-                    {
-                        "action": "PlaySound",
-                        "params": "sound=blow"
-                    },
-                    {
-                        "action": "Wait",
-                        "params": "time=2.0"
-                    },
-                    {
-                        "action": "PlaySound",
-                        "params": "sound=note"
-                    }
-                ],
-                "z_index": 0,
-                "reflection_offset_y": 0
             }
         ],
         "(4, 4)": [

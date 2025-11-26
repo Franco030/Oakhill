@@ -8,6 +8,7 @@ from src.Scene_Loader import SceneLoader
 from utils import resource_path
 
 from src.ActionManager import ActionManager
+from src.EventManager import EventManager
 from src.GameState import game_state
 
 
@@ -306,59 +307,7 @@ def game_loop(screen, clock):
 
 
     action_manager = ActionManager(sound_library=sound_lib)
-
-    # Helper function to process events
-    def process_object_event(obj):
-        nonlocal game_status, note_to_show, image_to_show
-        
-        raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
-        parsed_params = action_manager.parse_params(raw_params)
-
-        # 1. Trigger (IfFlag)
-        if hasattr(obj, "condition") and obj.condition == "IfFlag":
-            if not game_state.check_flag(parsed_params.get("flag"), parsed_params.get("value")):
-                return # No cumple condición, salir
-        
-        # Sound detection
-        has_custom_sound = "sound" in parsed_params and parsed_params["sound"] != "silent"
-
-        # 2. Execution of ActionManager
-        act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
-        
-        if act and act != "None":
-            # ActionManager reproduces the custom sound if it exists
-            action_manager.execute(act, raw_params, player, scene)
-            
-
-            if hasattr(obj, "condition") and obj.condition in ["OnEnter", "IfFlag"] and not hasattr(obj, "interaction_type"):
-
-                 should_kill = True
-                 if act in ["Teleport", "ChangeLevel"]:
-                     should_kill = False
-                 
-                 if "kill" in parsed_params:
-                     should_kill = parsed_params["kill"]
-                 
-                 if should_kill:
-                     obj.kill()
-
-        # 3. Visual Logic (Notes / Images) - ONLY Interactables
-        if hasattr(obj, "read"):
-            interaction_data = obj.read()
-            
-            if obj.interaction_type == "Note":
-                note_to_show = interaction_data
-                game_status = "READING_NOTE"
-                
-                # Only if there's no custom sound or "silent"
-                if not has_custom_sound and sound_lib["note"]: 
-                    sound_lib["note"].play()
-                
-            elif obj.interaction_type == "Image":
-                image_to_show = interaction_data
-                game_status = "READING_IMAGE"
-                pygame.mixer.music.pause()
-
+    event_manager = EventManager(action_manager)
 
     while True:
         screen.fill('black')
@@ -406,58 +355,74 @@ def game_loop(screen, clock):
                 
         # --- Game logic ---
         if game_status == "PLAYING":  
-            player.update(scene.obstacles)
+            event_manager.update(delta_time, player_sprite, scene)
+
+            if not event_manager.is_blocking:
+                player.update(scene.obstacles)
+            else:
+                player_sprite.stop_attack()
+
+
             scene.enemies.update(delta_time)
             scene.obstacles.update()
-            # scene.interactables.update()
+            scene.interactables.update()
 
-            # New event management
-            # 1. List A. Objects activated by COLISION (walking over them)
-            # Includes invisible triggers (OnEnter/IfFlag) and Floor Notes (OnEnter)
+            def handle_event_result(result):
+                nonlocal game_status, note_to_show, image_to_show
+                if not result: return
+                
+                if result["type"] == "Note":
+                    note_to_show = result["data"]
+                    game_status = "READING_NOTE"
+                    if result["play_default_sound"] and sound_lib["note"]: 
+                        sound_lib["note"].play()
+                    
+                elif result["type"] == "Image":
+                    image_to_show = result["data"]
+                    game_status = "READING_IMAGE"
+                    pygame.mixer.music.pause()
 
-            # A.1 Invisible Triggers
+
             hit_triggers = pygame.sprite.spritecollide(
                 player_sprite, 
                 scene._triggers, 
                 False,
-                lambda p, t: p.collision_rect.colliderect(t.rect)
+                collided=lambda p, t: p.collision_rect.colliderect(t.rect)
             )
-
             for trig in hit_triggers:
                 if trig.condition in ["OnEnter", "IfFlag"]:
-                    process_object_event(trig)
+                    res = event_manager.process_trigger(trig, player_sprite, scene)
+                    handle_event_result(res)
 
-            # A.2 Floor interactables (Instant)
-            # We use manual loop to compare player.collision_rect (feet) vs obj.rect (whole image)
-            # This fixes the "Pasable" issue
+            # INTERACTABLES (OnEnter & OnInteract)
+            processed_interaction = False 
             for obj in scene.interactables:
-                if obj.trigger_condition == "OnEnter" and not obj.interacted_once:
+                is_contacting = False
+                
+                if obj.trigger_condition == "OnEnter":
                     if player_sprite.collision_rect.colliderect(obj.rect):
-                        process_object_event(obj)
+                        if obj.progress_interaction() != "finished": 
+                             obj.current_progress = obj.interaction_duration 
+                        is_contacting = True
 
-
-            # 2. List B. Objects activated by ATTACKING (interacting with them)
-            # Only if player is attacking
-            for obj in scene.interactables:
-                # We only process if it's OnInteract
-                # OnEnter is already processed if the program makes it here
-                cond = getattr(obj, "trigger_condition", "OnInteract")
-                if cond in ["OnInteract", "None"] and not obj.interacted_once:
-                    
-                    is_hitting = False
-                    
+                elif obj.trigger_condition == "OnInteract" or obj.trigger_condition == "None":
                     if player_sprite.is_attacking:
                         if player_sprite.attack_rect.colliderect(obj.rect):
-                            is_hitting = True
-                    
-                    if is_hitting:
-                        status = obj.progress_interaction()
+                            is_contacting = True
+
+                if is_contacting and not processed_interaction:
+                    status = obj.progress_interaction() 
+                    if status == "finished":
+                        processed_interaction = True
                         
-                        if status == "finished":
-                            process_object_event(obj)
-                            player_sprite.cancel_attack() 
-                    else:
-                        obj.reset_interaction()
+                        res = event_manager.process_trigger(obj, player_sprite, scene)
+                        handle_event_result(res)
+                        
+                        if player_sprite.is_attacking:
+                            player_sprite.cancel_attack()
+                else:
+                    obj.reset_interaction()
+
 
             if player_sprite.is_attacking:
                 for enemy in scene.enemies:
@@ -492,6 +457,8 @@ def game_loop(screen, clock):
                 
                 screen.blit(light_mask, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
 
+            if event_manager.current_image:
+                draw_image_ui(screen, event_manager.current_image)
 
             # Right direction
             if (player.sprite.rect.left > SCREEN_WIDTH + TRANSITION_BIAS):

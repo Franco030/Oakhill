@@ -25,6 +25,9 @@ class Obstacle(pygame.sprite.Sprite):
         self.is_ground = data.get("is_ground", False)
         self.is_passable = data.get("is_passable", False)
         self.resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
+        self.is_hidden = data.get("starts_hidden", False)
+        self.interacted_once = False # Obstacles don't interact but it's necessary to use the "is_hidden" property
+        # self.used_image = None
         
         # Trigger logic / Events (default values)
         self.trigger_condition = data.get("trigger_condition", "None")
@@ -84,6 +87,12 @@ class Obstacle(pygame.sprite.Sprite):
         """
         if self.animation:
             self.animation.animate()
+    
+    def unhide(self):
+        """
+        "Allows action manager to reveal this object
+        """
+        self.is_hidden = False
 
     @property
     def collision_rect(self):
