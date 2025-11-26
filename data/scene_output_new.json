@@ -15039,10 +15039,16 @@
                 "interaction_data": "",
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=Hola soy una nota",
+                "trigger_params": "",
                 "is_ground": true,
                 "z_index": 0,
-                "reflection_offset_y": 0
+                "reflection_offset_y": 0,
+                "scripted_events": [
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Soy una nota"
+                    }
+                ]
             }
         ],
         "(4, 2)": [
@@ -23823,35 +23829,6 @@
                 "border_width": 0
             },
             {
-                "id": "(1, 1)_obj_41",
-                "x": 570,
-                "y": 390,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
                 "id": "(1, 1)_obj_42",
                 "x": 670,
                 "y": 510,
@@ -23875,213 +23852,20 @@
                 "z_index": 0,
                 "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
+                "trigger_params": "",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_43",
-                "x": 530,
-                "y": 690,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_44",
-                "x": 710,
-                "y": 130,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_45",
-                "x": 1010,
-                "y": 350,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_46",
-                "x": 910,
-                "y": 670,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_47",
-                "x": 230,
-                "y": 570,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_48",
-                "x": 290,
-                "y": 350,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
-            },
-            {
-                "id": "(1, 1)_obj_49",
-                "x": 390,
-                "y": 230,
-                "type": "Interactable",
-                "image_path": "assets/images/note.png",
-                "flash_image_path": "assets/images/note_flash.png",
-                "resize_factor": 4.0,
-                "collision_rect_offset": [
-                    -20,
-                    -20,
-                    40,
-                    40
-                ],
-                "interaction_type": "Note",
-                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
-                "is_passable": true,
-                "starts_hidden": false,
-                "is_ground": true,
-                "animation_speed": 0.1,
-                "animation_images": [],
-                "z_index": 0,
-                "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
-                "trigger_params": "flag=read_notes",
-                "reflection_offset_y": 0,
-                "interaction_duration": 60,
-                "border_width": 0
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
             },
             {
                 "id": "(1, 1)_obj_50",
@@ -24107,10 +23891,20 @@
                 "z_index": 0,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "PlaySound",
-                "trigger_params": "sound=scream",
+                "trigger_params": "",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
-                "border_width": 0
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "PlaySound",
+                        "params": "sound=scream"
+                    },
+                    {
+                        "action": "ShowImage",
+                        "params": "path=assets/images/picture.png"
+                    }
+                ]
             },
             {
                 "id": "obj_1763616352",
@@ -24136,10 +23930,322 @@
                 "interaction_data": "",
                 "trigger_condition": "IfFlag",
                 "trigger_action": "UnhideObject",
-                "trigger_params": "flag=read_notes; value=9; id=(1, 1)_obj_50; sound=secret",
+                "trigger_params": "flag=read_notes; value=9; id=(1, 1)_obj_50; sound=item_discovered",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
                 "border_width": 0
+            },
+            {
+                "id": "obj_1764190876_44",
+                "x": 370,
+                "y": 644,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190878_45",
+                "x": 184,
+                "y": 310,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190879_46",
+                "x": 858,
+                "y": 685,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190881_47",
+                "x": 1012,
+                "y": 420,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190882_48",
+                "x": 1057,
+                "y": 179,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190883_49",
+                "x": 789,
+                "y": 167,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190884_50",
+                "x": 515,
+                "y": 738,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1764190885_51",
+                "x": 293,
+                "y": 112,
+                "type": "Interactable",
+                "image_path": "assets/images/note.png",
+                "flash_image_path": "assets/images/note_flash.png",
+                "resize_factor": 4.0,
+                "collision_rect_offset": [
+                    -20,
+                    -20,
+                    40,
+                    40
+                ],
+                "interaction_type": "Note",
+                "interaction_data": "Hu\nHUy\nHUwefy\nHUAD\nHUYAN",
+                "is_passable": true,
+                "starts_hidden": false,
+                "is_ground": true,
+                "animation_speed": 0.1,
+                "animation_images": [],
+                "z_index": 0,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "IncrementFlag",
+                "trigger_params": "",
+                "reflection_offset_y": 0,
+                "interaction_duration": 60,
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "IncrementFlag",
+                        "params": "flag=read_notes"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=Se subio una flag"
+                    }
+                ]
             }
         ],
         "(1, 2)": [

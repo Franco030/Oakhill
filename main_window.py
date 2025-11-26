@@ -287,7 +287,10 @@ def game_loop(screen, clock):
                 
         # --- Game logic ---
         if game_status == "PLAYING":  
-            event_manager.update(delta_time, player_sprite, scene)
+            seq_result = event_manager.update(delta_time, player_sprite, scene)
+
+            if seq_result:
+                handle_event_result(seq_result)
 
             if not event_manager.is_blocking:
                 player.update(scene.obstacles)
@@ -315,7 +318,6 @@ def game_loop(screen, clock):
                     image_to_show = result["data"]
                     game_status = "READING_IMAGE"
                     pygame.mixer.music.pause()
-
 
             hit_triggers = pygame.sprite.spritecollide(
                 player_sprite, 

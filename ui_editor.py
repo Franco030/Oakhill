@@ -423,7 +423,7 @@ class Ui_LevelEditor(object):
         self.prop_trigger_action.addItems([
             Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
             Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
-            Actions.CHANGE_LEVEL, Actions.SHOW_NOTE
+            Actions.CHANGE_LEVEL, Actions.SHOW_NOTE, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE
         ])
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)

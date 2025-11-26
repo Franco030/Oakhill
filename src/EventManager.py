@@ -35,13 +35,6 @@ class EventManager:
         if action == "Wait":
             p = self.action_manager.parse_params(params)
             self.wait_timer = float(p.get("time", 1.0)) * 1000
-        elif action == "ShowImage":
-            p = self.action_manager.parse_params(params)
-            self.current_image = p.get("path") or p.get("image")
-            self._next_step()
-        elif action == "CloseImage":
-            self.current_image = None
-            self._next_step()
         else:
             pass 
 
@@ -52,13 +45,14 @@ class EventManager:
             self.wait_timer -= delta_time
             if self.wait_timer <= 0:
                 self._next_step()
+            return None
         
         elif self.current_step:
             action = self.current_step.get("action")
-            if action not in ["Wait", "ShowImage", "CloseImage"]:
-                params = self.current_step.get("params", "")
-                self.action_manager.execute(action, params, player, scene)
-                self._next_step()
+            params = self.current_step.get("params", "")
+            result = self.action_manager.execute(action, params, player, scene)
+            self._next_step()
+            return result
 
     def end_sequence(self):
         self.is_active = False
