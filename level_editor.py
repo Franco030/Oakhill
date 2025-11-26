@@ -59,7 +59,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.current_scene.selectionChanged.connect(self.on_scene_selection_changed)
         self.current_hitbox_item = None
         self._updating_selection_from_canvas = False 
-        self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.data_image_path_combo, self.prop_used_image_path_combo]
+        self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.prop_used_image_path_combo]
 
         self.action_new_map.triggered.connect(self.create_new_json_from_map)
         self.action_load_json.triggered.connect(self.load_json)
@@ -93,12 +93,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_path', v))
         self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
         self.prop_interaction_duration.valueChanged.connect(lambda v: self.on_property_changed('interaction_duration', v))
-        self.prop_interaction_type.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_type', v))
-        self.data_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('interaction_data', v))
         self.prop_is_passable.stateChanged.connect(lambda v: self.on_property_changed('is_passable', bool(v)))
         self.prop_starts_hidden.stateChanged.connect(lambda v: self.on_property_changed('starts_hidden', bool(v)))
         self.prop_is_ground.stateChanged.connect(lambda v: self.on_property_changed('is_ground', bool(v)))
-        self.data_note_text.textChanged.connect(self.on_note_text_changed)
 
         self.prop_trigger_condition.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_condition', v))
         self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
@@ -116,12 +113,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.btn_anim_remove.clicked.connect(self.remove_animation_frame)
         self.prop_image_path_combo.currentTextChanged.connect(self.update_image_preview)
         self.prop_type.currentTextChanged.connect(self.on_main_type_changed)
-        self.prop_interaction_type.currentTextChanged.connect(self.on_interaction_type_changed)
+        # self.prop_interaction_type.currentTextChanged.connect(self.on_interaction_type_changed)
         self.btn_browse_image.clicked.connect(lambda: self.browse_file_for_combo(self.prop_image_path_combo))
         self.btn_browse_flash.clicked.connect(lambda: self.browse_file_for_combo(self.prop_flash_image_path_combo))
         self.btn_browse_charge.clicked.connect(lambda: self.browse_audio_for_combo(self.prop_charge_sound_combo))
         self.btn_browse_used.clicked.connect(lambda: self.browse_file_for_combo(self.prop_used_image_path_combo))
-        self.btn_browse_data.clicked.connect(lambda: self.browse_file_for_combo(self.data_image_path_combo))
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
         self.shortcut_up.activated.connect(lambda: self.navigate_zone(0, -1))
         self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
@@ -205,19 +201,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_used_image_path_combo.setCurrentText(obj_data.get('used_image_path', 'None'))
             self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))
 
-            self.prop_interaction_type.setCurrentText(obj_data.get('interaction_type', 'None'))
-            
-            itype = obj_data.get('interaction_type', 'None')
-            idata = obj_data.get('interaction_data', "")
-            
-            if itype == "Note":
-                if isinstance(idata, list):
-                    self.data_note_text.setText("\n".join(idata))
-                else:
-                    self.data_note_text.setText(str(idata))
-            elif itype == "Image":
-                self.data_image_path_combo.setCurrentText(str(idata))
-
             self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", Actions.SET_FLAG))
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
             
@@ -230,7 +213,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 item_text = f"{action} ({params})"
                 
                 list_item = QListWidgetItem(item_text)
-                list_item.setData(Qt.UserRole, step) # Guardamos el diccionario real
+                list_item.setData(Qt.UserRole, step)
                 self.list_trigger_sequence.addItem(list_item)
                 
             self.group_step_detail.setEnabled(False)
@@ -313,8 +296,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "charge_sound_path": "None",
             "used_image_path": "None", 
             "interaction_duration": 60, 
-            "interaction_type": "None",
-            "interaction_data": None,
             "trigger_condition": Conditions.ON_ENTER, 
             "trigger_action": Actions.SET_FLAG, 
             "trigger_params": ""
@@ -461,14 +442,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         current_item = self.list_objects.currentItem()
         pixmap_item = current_item.data(Qt.UserRole + 1)
         if pixmap_item: self.update_canvas_item(obj_data, pixmap_item)
-
-    def on_note_text_changed(self):
-        if self.is_programmatic_change: return
-        
-        obj_data = self.get_real_object_data()
-        if not obj_data: return
-        
-        obj_data['interaction_data'] = self.data_note_text.toPlainText()
 
     def on_trigger_params_changed(self):
         if self.is_programmatic_change: return
@@ -653,14 +626,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         if current_type == ObjectTypes.INTERACTABLE: self.prop_main_stack.setCurrentIndex(0)
         elif current_type == ObjectTypes.TRIGGER: self.prop_main_stack.setCurrentIndex(1)
         else: self.prop_main_stack.setCurrentIndex(0)
-
-    def on_interaction_type_changed(self):
-        combo_text = self.prop_interaction_type.currentText()
-        idx = 0
-        if combo_text == "Note": idx = 0
-        elif combo_text == "Image": idx = 1
-        elif combo_text == "Door": idx = 2
-        self.prop_interaction_data_stack.setCurrentIndex(idx)
 
     def create_new_json_from_map(self):
         """
@@ -1088,15 +1053,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))
         self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
         self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
-        
-        self.prop_interaction_type.setCurrentText(data.get("interaction_type", "None"))
-        itype = data.get("interaction_type", "None")
-        idata = data.get("interaction_data", "")
-        if itype == "Note": 
-            if isinstance(idata, list): self.data_note_text.setText("\n".join(idata))
-            else: self.data_note_text.setText(str(idata))
-        elif itype == "Image": 
-            self.data_image_path_combo.setCurrentText(str(idata))
             
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
@@ -1116,7 +1072,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.group_step_detail.setEnabled(False)
 
         self.on_main_type_changed()
-        self.on_interaction_type_changed()
         self.update_image_preview()
         
         pixmap_item = current.data(Qt.UserRole + 1)

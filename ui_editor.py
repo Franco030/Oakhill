@@ -2,7 +2,7 @@
 
 ################################################################################
 ## Form generated from reading UI file 'editor.ui'
-## (Modified to make Trigger Logic SHARED between Triggers and Interactables)
+## (CLEANED: Removed InteractionType and InteractionData widgets)
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -87,7 +87,7 @@ class Ui_LevelEditor(object):
         self.line = QFrame(self.groupBox)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+        self.line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout_2.addWidget(self.line)
         self.list_objects = QListWidget(self.groupBox)
         self.list_objects.setObjectName(u"list_objects")
@@ -330,10 +330,7 @@ class Ui_LevelEditor(object):
         
         self.page_interactable = QWidget()
         self.layout_interactable = QFormLayout(self.page_interactable)
-        self.lbl_int_type = QLabel("Tipo Visual:")
-        self.prop_interaction_type = QComboBox()
-        self.prop_interaction_type.addItems(["None", "Note", "Image", "Door"])
-        self.layout_interactable.addRow(self.lbl_int_type, self.prop_interaction_type)
+        # --- LIMPIEZA: ELIMINADOS LOS CONTROLES VIEJOS ---
         
         self.lbl_flash = QLabel("Flash Image:")
         self.layout_flash = QHBoxLayout()
@@ -376,27 +373,6 @@ class Ui_LevelEditor(object):
         self.layout_charge.addWidget(self.btn_browse_charge)
         self.layout_interactable.addRow(self.lbl_charge, self.layout_charge)
 
-        self.lbl_data = QLabel("Datos Visuales:")
-        self.prop_interaction_data_stack = QStackedWidget()
-        self.stack_page_note = QWidget()
-        self.v_note = QVBoxLayout(self.stack_page_note)
-        self.data_note_text = QTextEdit()
-        self.v_note.addWidget(self.data_note_text)
-        self.prop_interaction_data_stack.addWidget(self.stack_page_note)
-        self.stack_page_image = QWidget()
-        self.h_image = QHBoxLayout(self.stack_page_image)
-        self.data_image_path_combo = QComboBox()
-        self.data_image_path_combo.setEditable(True)
-        self.data_image_path_combo.setSizePolicy(sizePolicy)
-        self.btn_browse_data = QPushButton("...")
-        self.btn_browse_data.setMaximumWidth(30)
-        self.h_image.addWidget(self.data_image_path_combo)
-        self.h_image.addWidget(self.btn_browse_data)
-        self.prop_interaction_data_stack.addWidget(self.stack_page_image)
-        self.stack_page_door = QWidget()
-        self.prop_interaction_data_stack.addWidget(self.stack_page_door)
-        self.layout_interactable.addRow(self.lbl_data, self.prop_interaction_data_stack)
-        
         self.prop_main_stack.addWidget(self.page_interactable)
         self.page_trigger = QWidget()
         self.prop_main_stack.addWidget(self.page_trigger)
@@ -407,6 +383,7 @@ class Ui_LevelEditor(object):
         self.line_logic.setFrameShadow(QFrame.Sunken)
         self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
 
+        # --- 2. GLOBALES DEL TRIGGER ---
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
         self.prop_trigger_condition = QComboBox(self.group_interaction)
         self.prop_trigger_condition.addItems([
@@ -429,11 +406,12 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
         
         self.lbl_trig_params = QLabel("Params Globales:\n(blocking=true)", self.group_interaction)
-        self.prop_trigger_params = QTextEdit() # Este es para el objeto principal
+        self.prop_trigger_params = QTextEdit() 
         self.prop_trigger_params.setMaximumHeight(60)
         self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
 
+        # --- 3. LISTA DE SECUENCIA ---
         self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
         self.formLayout_2.setWidget(5, QFormLayout.SpanningRole, self.lbl_sequence)
@@ -451,8 +429,10 @@ class Ui_LevelEditor(object):
         self.layout_seq_btns.addWidget(self.btn_seq_remove)
         self.layout_seq_btns.addWidget(self.btn_seq_up)
         self.layout_seq_btns.addWidget(self.btn_seq_down)
-        self.formLayout_2.setLayout(7, QFormLayout.SpanningRole, self.layout_seq_btns) # <-- CORREGIDO: SpanningRole
         
+        self.formLayout_2.setLayout(7, QFormLayout.SpanningRole, self.layout_seq_btns)
+        
+        # --- 4. DETALLES DEL PASO ---
         self.group_step_detail = QGroupBox("Editar Paso Seleccionado", self.group_interaction)
         self.layout_step = QFormLayout(self.group_step_detail)
         
@@ -460,7 +440,7 @@ class Ui_LevelEditor(object):
         self.prop_step_action = QComboBox(self.group_step_detail)
         self.prop_step_action.addItems([
             Actions.WAIT, Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
-            Actions.PLAY_SOUND, Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
+            Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
             Actions.CHANGE_LEVEL, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE, Actions.SHOW_NOTE
         ])
         self.layout_step.addRow(self.lbl_step_act, self.prop_step_action)
@@ -472,7 +452,7 @@ class Ui_LevelEditor(object):
         self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
         
         self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
-
+        
         self.verticalLayout_4.addWidget(self.group_interaction)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -503,7 +483,6 @@ class Ui_LevelEditor(object):
 
         self.retranslateUi(LevelEditor)
         self.prop_main_stack.setCurrentIndex(0)
-        self.prop_interaction_data_stack.setCurrentIndex(1)
 
         QMetaObject.connectSlotsByName(LevelEditor)
 
@@ -549,13 +528,6 @@ class Ui_LevelEditor(object):
         
         self.group_interaction.setTitle(QCoreApplication.translate("LevelEditor", u"Configuración Específica", None))
         
-        # --- NOMBRES CORREGIDOS AQUÍ ---
-        self.lbl_int_type.setText(QCoreApplication.translate("LevelEditor", u"Tipo Visual:", None))
-        self.prop_interaction_type.setItemText(0, QCoreApplication.translate("LevelEditor", u"None", None))
-        self.prop_interaction_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Note", None))
-        self.prop_interaction_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Image", None))
-        self.prop_interaction_type.setItemText(3, QCoreApplication.translate("LevelEditor", u"Door", None))
-        
         self.lbl_flash.setText(QCoreApplication.translate("LevelEditor", u"Flash Image:", None))
         self.btn_browse_flash.setText(QCoreApplication.translate("LevelEditor", u"...", None))
         
@@ -566,9 +538,6 @@ class Ui_LevelEditor(object):
         
         self.lbl_charge.setText(QCoreApplication.translate("LevelEditor", u"Sonido Carga (Loop):", None))
         self.btn_browse_charge.setText(QCoreApplication.translate("LevelEditor", u"...", None))
-        
-        self.lbl_data.setText(QCoreApplication.translate("LevelEditor", u"Datos Visuales:", None))
-        self.btn_browse_data.setText(QCoreApplication.translate("LevelEditor", u"...", None))
         
         self.lbl_trig_cond.setText(QCoreApplication.translate("LevelEditor", u"Condición Global:", None))
         self.lbl_trig_act.setText(QCoreApplication.translate("LevelEditor", u"Acción Global:", None))
