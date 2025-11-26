@@ -21,6 +21,8 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QSplitter, QStackedWidget, QStatusBar, QTextEdit,
     QVBoxLayout, QWidget)
 
+from src.Game_Enums import Actions, Conditions, ObjectTypes, InteractionTypes
+
 class Ui_LevelEditor(object):
     def setupUi(self, LevelEditor):
         if not LevelEditor.objectName():
@@ -125,11 +127,13 @@ class Ui_LevelEditor(object):
         self.label_6.setObjectName(u"label_6")
         
         self.prop_type = QComboBox(self.properties_box)
-        self.prop_type.addItem("") # Obstacle
-        self.prop_type.addItem("") # Mirror
-        self.prop_type.addItem("") # Interactable
-        self.prop_type.addItem("") # Trigger
-        self.prop_type.addItem("") # Primitive
+        self.prop_type.addItems([
+            ObjectTypes.OBSTACLE,
+            ObjectTypes.MIRROR,
+            ObjectTypes.INTERACTABLE,
+            ObjectTypes.TRIGGER,
+            ObjectTypes.PRIMITIVE
+        ])
         self.prop_type.setObjectName(u"prop_type")
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.prop_type)
 
@@ -231,7 +235,7 @@ class Ui_LevelEditor(object):
         self.prop_hitbox_dh.setMaximum(999)
         self.horizontalLayout_6.addWidget(self.prop_hitbox_dh)
         self.formLayout.setLayout(7, QFormLayout.ItemRole.FieldRole, self.horizontalLayout_6)
-
+        
         self.label_z = QLabel(self.properties_box)
         self.label_z.setObjectName(u"label_z")
         self.formLayout.setWidget(8, QFormLayout.ItemRole.LabelRole, self.label_z)
@@ -256,6 +260,7 @@ class Ui_LevelEditor(object):
         self.layout_size.addWidget(self.prop_width)
         self.layout_size.addWidget(self.prop_height)
         self.formLayout.setLayout(9, QFormLayout.FieldRole, self.layout_size)
+        
         self.lbl_color = QLabel("Color (R, G, B):", self.properties_box)
         self.formLayout.setWidget(10, QFormLayout.LabelRole, self.lbl_color)
         self.layout_color = QHBoxLayout()
@@ -403,14 +408,23 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
 
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
-        self.prop_trigger_condition = QComboBox()
-        self.prop_trigger_condition.addItems(["OnEnter", "OnInteract", "AutoStart", "IfFlag"])
+        self.prop_trigger_condition = QComboBox(self.group_interaction)
+        self.prop_trigger_condition.addItems([
+            Conditions.ON_ENTER,
+            Conditions.ON_INTERACT,
+            Conditions.AUTO_START,
+            Conditions.IF_FLAG
+        ])
         self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.lbl_trig_cond)
         self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.prop_trigger_condition)
         
         self.lbl_trig_act = QLabel("Acción Global:", self.group_interaction)
         self.prop_trigger_action = QComboBox()
-        self.prop_trigger_action.addItems(["SetFlag", "IncrementFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue", "ChangeLevel"])
+        self.prop_trigger_action.addItems([
+            Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
+            Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
+            Actions.CHANGE_LEVEL, Actions.SHOW_NOTE
+        ])
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
         
@@ -423,95 +437,42 @@ class Ui_LevelEditor(object):
         self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
         self.formLayout_2.setWidget(5, QFormLayout.SpanningRole, self.lbl_sequence)
-        self.list_trigger_sequence = QListWidget()
-        self.list_trigger_sequence.setMaximumHeight(100)
-        self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.list_trigger_sequence)
-        
-        self.layout_seq_btns = QHBoxLayout()
-        self.btn_seq_add = QPushButton("+")
-        self.btn_seq_remove = QPushButton("-")
-        self.btn_seq_up = QPushButton("▲")
-        self.btn_seq_down = QPushButton("▼")
-        self.layout_seq_btns.addWidget(self.btn_seq_add)
-        self.layout_seq_btns.addWidget(self.btn_seq_remove)
-        self.layout_seq_btns.addWidget(self.btn_seq_up)
-        self.layout_seq_btns.addWidget(self.btn_seq_down)
-        self.formLayout_2.setLayout(7, QFormLayout.FieldRole, self.layout_seq_btns)
-
-        self.group_step_detail = QGroupBox("Editar Paso Seleccionado")
-        self.layout_step = QFormLayout(self.group_step_detail)
-        
-        self.lbl_step_act = QLabel("Acción Paso:")
-        self.prop_step_action = QComboBox()
-        self.prop_step_action.addItems(["Wait", "SetFlag", "IncrementFlag", "Teleport", "PlaySound", "UnhideObject", "ShowDialogue", "ChangeLevel", "ShowImage", "CloseImage"])
-        self.layout_step.addRow(self.lbl_step_act, self.prop_step_action)
-        
-        self.lbl_step_params = QLabel("Params Paso:")
-        self.prop_step_params = QTextEdit()
-        self.prop_step_params.setPlaceholderText("time=2.0")
-        self.prop_step_params.setMaximumHeight(50)
-        self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
-        
-        self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
-        
-        self.line_logic = QFrame()
-        self.line_logic.setFrameShape(QFrame.HLine)
-        self.line_logic.setFrameShadow(QFrame.Sunken)
-        self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
-
-        self.lbl_sequence = QLabel("Secuencia de Eventos:", self.group_interaction)
-        self.formLayout_2.setWidget(2, QFormLayout.SpanningRole, self.lbl_sequence)
         
         self.list_trigger_sequence = QListWidget(self.group_interaction)
-        self.list_trigger_sequence.setMaximumHeight(100) # Altura fija para que no ocupe todo
-        self.formLayout_2.setWidget(3, QFormLayout.SpanningRole, self.list_trigger_sequence)
+        self.list_trigger_sequence.setMaximumHeight(100)
+        self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.list_trigger_sequence)
         
         self.layout_seq_btns = QHBoxLayout()
         self.btn_seq_add = QPushButton("+", self.group_interaction)
         self.btn_seq_remove = QPushButton("-", self.group_interaction)
         self.btn_seq_up = QPushButton("▲", self.group_interaction)
         self.btn_seq_down = QPushButton("▼", self.group_interaction)
-        
         self.layout_seq_btns.addWidget(self.btn_seq_add)
         self.layout_seq_btns.addWidget(self.btn_seq_remove)
         self.layout_seq_btns.addWidget(self.btn_seq_up)
         self.layout_seq_btns.addWidget(self.btn_seq_down)
-        
-        self.formLayout_2.setLayout(4, QFormLayout.FieldRole, self.layout_seq_btns)
+        self.formLayout_2.setLayout(7, QFormLayout.SpanningRole, self.layout_seq_btns) # <-- CORREGIDO: SpanningRole
         
         self.group_step_detail = QGroupBox("Editar Paso Seleccionado", self.group_interaction)
         self.layout_step = QFormLayout(self.group_step_detail)
         
-        self.lbl_trig_act = QLabel("Acción:", self.group_step_detail)
-        self.prop_trigger_action = QComboBox(self.group_step_detail)
-        self.prop_trigger_action.addItems([
-            "Wait",
-            "SetFlag", 
-            "IncrementFlag", 
-            "Teleport", 
-            "PlaySound", 
-            "UnhideObject", 
-            "ShowDialogue", 
-            "ChangeLevel",
-            "ShowImage",
-            "CloseImage"
+        self.lbl_step_act = QLabel("Acción Paso:", self.group_step_detail)
+        self.prop_step_action = QComboBox(self.group_step_detail)
+        self.prop_step_action.addItems([
+            Actions.WAIT, Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
+            Actions.PLAY_SOUND, Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
+            Actions.CHANGE_LEVEL, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE, Actions.SHOW_NOTE
         ])
-        self.layout_step.addRow(self.lbl_trig_act, self.prop_trigger_action)
+        self.layout_step.addRow(self.lbl_step_act, self.prop_step_action)
         
-        self.lbl_trig_params = QLabel("Params:", self.group_step_detail)
-        self.prop_trigger_params = QTextEdit(self.group_step_detail)
-        self.prop_trigger_params.setPlaceholderText("time=2.0\nflag=x; value=y")
-        self.prop_trigger_params.setMaximumHeight(50)
-        self.layout_step.addRow(self.lbl_trig_params, self.prop_trigger_params)
+        self.lbl_step_params = QLabel("Params Paso:", self.group_step_detail)
+        self.prop_step_params = QTextEdit(self.group_step_detail)
+        self.prop_step_params.setPlaceholderText("time=2.0")
+        self.prop_step_params.setMaximumHeight(50)
+        self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
         
-        self.formLayout_2.setWidget(5, QFormLayout.SpanningRole, self.group_step_detail)
+        self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
 
-        self.lbl_trig_cond = QLabel("Activación:", self.group_interaction)
-        self.prop_trigger_condition = QComboBox(self.group_interaction)
-        self.prop_trigger_condition.addItems(["OnEnter", "OnInteract", "AutoStart", "IfFlag"])
-        self.formLayout_2.setWidget(6, QFormLayout.LabelRole, self.lbl_trig_cond)
-        self.formLayout_2.setWidget(6, QFormLayout.FieldRole, self.prop_trigger_condition)
-        
         self.verticalLayout_4.addWidget(self.group_interaction)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -580,8 +541,42 @@ class Ui_LevelEditor(object):
         self.prop_is_ground.setText(QCoreApplication.translate("LevelEditor", u"Suelo", None))
         self.label_10.setText(QCoreApplication.translate("LevelEditor", u"Hitbox:", None))
         self.label_z.setText(QCoreApplication.translate("LevelEditor", u"Z-Index:", None))
+        
         self.group_animation.setTitle(QCoreApplication.translate("LevelEditor", u"Animación", None))
         self.btn_anim_add.setText(QCoreApplication.translate("LevelEditor", u"+", None))
         self.btn_anim_remove.setText(QCoreApplication.translate("LevelEditor", u"-", None))
         self.label_13.setText(QCoreApplication.translate("LevelEditor", u"Speed:", None))
+        
+        self.group_interaction.setTitle(QCoreApplication.translate("LevelEditor", u"Configuración Específica", None))
+        
+        # --- NOMBRES CORREGIDOS AQUÍ ---
+        self.lbl_int_type.setText(QCoreApplication.translate("LevelEditor", u"Tipo Visual:", None))
+        self.prop_interaction_type.setItemText(0, QCoreApplication.translate("LevelEditor", u"None", None))
+        self.prop_interaction_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Note", None))
+        self.prop_interaction_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Image", None))
+        self.prop_interaction_type.setItemText(3, QCoreApplication.translate("LevelEditor", u"Door", None))
+        
+        self.lbl_flash.setText(QCoreApplication.translate("LevelEditor", u"Flash Image:", None))
+        self.btn_browse_flash.setText(QCoreApplication.translate("LevelEditor", u"...", None))
+        
+        self.lbl_used.setText(QCoreApplication.translate("LevelEditor", u"Used Image (Opcional):", None))
+        self.btn_browse_used.setText(QCoreApplication.translate("LevelEditor", u"...", None))
+        
+        self.lbl_duration.setText(QCoreApplication.translate("LevelEditor", u"Duración (Frames):", None))
+        
+        self.lbl_charge.setText(QCoreApplication.translate("LevelEditor", u"Sonido Carga (Loop):", None))
+        self.btn_browse_charge.setText(QCoreApplication.translate("LevelEditor", u"...", None))
+        
+        self.lbl_data.setText(QCoreApplication.translate("LevelEditor", u"Datos Visuales:", None))
+        self.btn_browse_data.setText(QCoreApplication.translate("LevelEditor", u"...", None))
+        
+        self.lbl_trig_cond.setText(QCoreApplication.translate("LevelEditor", u"Condición Global:", None))
+        self.lbl_trig_act.setText(QCoreApplication.translate("LevelEditor", u"Acción Global:", None))
+        self.lbl_trig_params.setText(QCoreApplication.translate("LevelEditor", u"Params Globales:", None))
+        
+        self.lbl_sequence.setText(QCoreApplication.translate("LevelEditor", u"--- Secuencia de Pasos ---", None))
+        self.group_step_detail.setTitle(QCoreApplication.translate("LevelEditor", u"Editar Paso Seleccionado", None))
+        self.lbl_step_act.setText(QCoreApplication.translate("LevelEditor", u"Acción Paso:", None))
+        self.lbl_step_params.setText(QCoreApplication.translate("LevelEditor", u"Params Paso:", None))
+        
         self.menuArchivo.setTitle(QCoreApplication.translate("LevelEditor", u"Archivo", None))

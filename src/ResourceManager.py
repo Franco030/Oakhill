@@ -1,0 +1,58 @@
+import pygame
+import os
+from utils import resource_path
+
+class ResourceManager:
+    @staticmethod
+    def load_all_sounds(folder_relative_path):
+        sounds = {}
+        full_path = resource_path(folder_relative_path)
+        
+        valid_ext = ('.wav', '.mp3', '.ogg')
+
+        if not os.path.exists(full_path):
+            print(f"[ResourceManager] Error: Folder {folder_relative_path} doesn't exist")
+            return sounds
+
+        print(f"[ResourceManager] Loading sounds from: {folder_relative_path}...")
+
+        for root, _, files in os.walk(full_path):
+            for filename in files:
+                if filename.lower().endswith(valid_ext):
+                    key_name = os.path.splitext(filename)[0]
+                    file_path = os.path.join(root, filename)
+                    
+                    try:
+                        sound = pygame.mixer.Sound(file_path)
+                        sounds[key_name] = sound
+                        print(f"  -> Loaded: {key_name}")
+                    except Exception as e:
+                        print(f"  -> Error loading {filename}: {e}")
+        
+        return sounds
+    
+    @staticmethod
+    def load_all_images(folder_relative_path):
+        images = {}
+        full_path = resource_path(folder_relative_path)
+        valid_ext = ('.png', '.jpg', '.jpeg')
+
+        if not os.path.exists(full_path):
+            print(f"[ResourceManager] Error: Folder: {folder_relative_path} doesn't exist")
+            return images
+
+        print(f"[ResourceManager] Loading images from: {folder_relative_path}...")
+
+        for root, _, files in os.walk(full_path):
+            for filename in files:
+                if filename.lower().endswith(valid_ext):
+                    key_name = os.path.splitext(filename)[0]
+                    file_path = os.path.join(root, filename)
+                    
+                    try:
+                        img = pygame.image.load(file_path).convert_alpha()
+                        images[key_name] = img
+                    except Exception as e:
+                        print(f"  -> Error loading image {filename}: {e}")
+        
+        return images

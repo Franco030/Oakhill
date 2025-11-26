@@ -5,6 +5,7 @@ from src.Obstacles import Obstacle
 from src.Interactable import Interactable 
 from src.Player import Player
 from src.Scene_Loader import SceneLoader
+from src.ResourceManager import ResourceManager
 from utils import resource_path
 
 from src.ActionManager import ActionManager
@@ -205,69 +206,9 @@ def game_loop(screen, clock):
 
     note_to_show = None
 
-    try:
-        chase_sound = pygame.mixer.Sound(resource_path("assets/sounds/chase_loop.wav"))
-    except pygame.error as e:
-        print("Error when loading the file")
-        chase_sound = None
-
-    try:
-        flee_sound = pygame.mixer.Sound(resource_path("assets/sounds/flee_loop.wav"))
-    except pygame.error as e:
-        print("Error when loading the file")
-        flee_sound = None
-
-    try:
-        note_interact_sound = pygame.mixer.Sound(resource_path("assets/sounds/note_reading_more_vol.wav"))
-    except pygame.error as e:
-        print("Error when loading the file")
-        note_interact_sound = None
-
-    try:
-        screaming_sound = pygame.mixer.Sound(resource_path("assets/sounds/scream.wav"))
-        screaming_sound.set_volume(0.7)
-    except pygame.error as e:
-        print("Error when loading the file")
-        screaming_sound = None
-
-    # Doesn't sound that good
-    # try:
-    #     walking_sound = pygame.mixer.Sound(resource_path("assets/sounds/steps_cut.wav"))
-    #     walking_sound.set_volume(0.6)
-    # except pygame.error as e:
-    #     print("Error when loading the file")
-    #     walking_sound = None
-
-    try:
-        secret_revealed = pygame.mixer.Sound(resource_path("assets/sounds/item_discovered.wav"))
-    except pygame.error as e:
-        print("Error when loading the file")
-        secret_revealed = None
-
-    try:
-        game_over_sound = pygame.mixer.Sound(resource_path("assets/sounds/game_over_sound.wav"))
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
-        game_over_sound = None
-
-    try:
-        game_over_image = pygame.image.load(resource_path("assets/images/death_pic.png")).convert_alpha()
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
-        game_over_image = None
-
-    try:
-        death_sound = pygame.mixer.Sound(resource_path("assets/sounds/death_sound.wav"))
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
-        death_sound = None
-
-    try:
-        blow_light_sound = pygame.mixer.Sound(resource_path("assets/sounds/blow_light.wav"))
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
-        blow_light_sound = None
-
+    sounds = ResourceManager.load_all_sounds("assets/sounds")
+    images = ResourceManager.load_all_images("assets/images")
+    game_over_image = images.get("death_pic")
 
     # Ilumination setup
     light_mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)) 
@@ -279,15 +220,6 @@ def game_loop(screen, clock):
         intensity = int(255 * (1 - (r / light_radius)))
         pygame.draw.circle(flashlight_texture, (intensity, intensity, intensity), (light_radius, light_radius), r)
 
-    sound_lib = {
-        "scream": screaming_sound,
-        "blow": blow_light_sound,
-        "chase": chase_sound,
-        "flee": flee_sound,
-        "note": note_interact_sound,
-        "secret": secret_revealed
-    }
-
     player = pygame.sprite.GroupSingle()
     player_sprite = Player(player_x_pos, player_y_pos)
     player.add(player_sprite)
@@ -295,7 +227,7 @@ def game_loop(screen, clock):
     current_music_path = LEVEL_MUSIC["forest"]
     initial_darkness = LEVEL_DARKNESS["forest"]
     
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, chase_sound, flee_sound, music_path=current_music_path, has_darkness=initial_darkness)
+    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, sounds.get("chase_loop"), sounds.get("flee_loop"), music_path=current_music_path, has_darkness=initial_darkness)
     scene = main_scene
 
     try:  
@@ -306,7 +238,7 @@ def game_loop(screen, clock):
         print(f"Error when loading the file: {e}")
 
 
-    action_manager = ActionManager(sound_library=sound_lib)
+    action_manager = ActionManager(sound_library=sounds)
     event_manager = EventManager(action_manager)
 
     while True:
@@ -333,10 +265,10 @@ def game_loop(screen, clock):
                 elif event.key == pygame.K_ESCAPE:
                     
                     if game_status == "PLAYER_DEAD" or player.sprite.is_defeated:
-                        if death_sound:
-                            death_sound.stop()
-                        if game_over_sound:
-                            game_over_sound.stop()
+                        if sounds.get("death_sound"):
+                            sounds.get("death_sound").stop()
+                        if sounds.get("game_over_sound"):
+                            sounds.get("game_over_sound").stop()
 
                         pygame.mixer.music.stop()
                         return "MAIN_MENU"
@@ -374,8 +306,8 @@ def game_loop(screen, clock):
                 if result["type"] == "Note":
                     note_to_show = result["data"]
                     game_status = "READING_NOTE"
-                    if result["play_default_sound"] and sound_lib["note"]: 
-                        sound_lib["note"].play()
+                    if result["play_default_sound"] and sounds.get("note_reading_more_vol"): 
+                        sounds.get("note_reading_more_vol").play()
                     
                 elif result["type"] == "Image":
                     image_to_show = result["data"]
@@ -435,11 +367,11 @@ def game_loop(screen, clock):
                     player.sprite.defeat() 
                     pygame.mixer.music.stop()
                     
-                    if chase_sound:
-                        chase_sound.stop()
+                    if sounds.get("chase_sound"):
+                        sounds.get("chase_sound").stop()
 
-                    if death_sound:
-                        death_sound.play()
+                    if sounds.get("death_sound"):
+                        sounds.get("death_sound").play()
 
                     break
 
@@ -514,8 +446,8 @@ def game_loop(screen, clock):
                     game_status = "PLAYER_DEAD"
 
                     if not game_over_sound_played:
-                        if game_over_sound:
-                            game_over_sound.play()
+                        if sounds.get("game_over_sound"):
+                            sounds.get("game_over_sound").play()
                         game_over_sound_played = True
         
         elif game_status == "PLAYER_DEAD":
@@ -543,8 +475,8 @@ def game_loop(screen, clock):
                 level_request["map_matrix"],
                 level_request["entry_zone"],
                 player_sprite,
-                chase_sound,
-                flee_sound,
+                sounds.get("chase_loop"),
+                sounds.get("flee_loop"),
                 level_request["music_path"],
                 level_request["darkness"]
             )

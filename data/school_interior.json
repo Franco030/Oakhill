@@ -69730,7 +69730,7 @@
                 "scripted_events": [
                     {
                         "action": "PlaySound",
-                        "params": "sound=blow"
+                        "params": "sound=blow_light"
                     },
                     {
                         "action": "Wait",
@@ -69738,7 +69738,7 @@
                     },
                     {
                         "action": "PlaySound",
-                        "params": "sound=note"
+                        "params": "sound=blow_light"
                     }
                 ],
                 "z_index": 0,

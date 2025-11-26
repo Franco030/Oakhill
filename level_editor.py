@@ -16,10 +16,11 @@ from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
-from src.Game_Constants import MAPS
+from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.Game_Enums import Actions, Conditions, ObjectTypes, InteractionTypes
 
-GAME_WIDTH = 1280
-GAME_HEIGHT = 780
+GAME_WIDTH = SCREEN_WIDTH
+GAME_HEIGHT = SCREEN_HEIGHT
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 AUDIO_EXTENSIONS = ('.wav', '.mp3', '.ogg')
 
@@ -98,11 +99,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_starts_hidden.stateChanged.connect(lambda v: self.on_property_changed('starts_hidden', bool(v)))
         self.prop_is_ground.stateChanged.connect(lambda v: self.on_property_changed('is_ground', bool(v)))
         self.data_note_text.textChanged.connect(self.on_note_text_changed)
-        self.prop_trigger_condition.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_condition', v))
-        self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
+
         self.prop_trigger_params.textChanged.connect(self.on_trigger_params_changed)
+        self.btn_seq_add.clicked.connect(self.add_sequence_step)
+        self.btn_seq_remove.clicked.connect(self.remove_sequence_step)
+        self.btn_seq_up.clicked.connect(lambda: self.move_sequence_step(-1))
+        self.btn_seq_down.clicked.connect(lambda: self.move_sequence_step(1))
+        self.list_trigger_sequence.currentRowChanged.connect(lambda row: self.load_selected_step_to_ui())
         self.prop_step_action.currentTextChanged.connect(self.update_selected_step_data)
         self.prop_step_params.textChanged.connect(self.update_selected_step_data)
+
+
         self.btn_anim_add.clicked.connect(self.add_animation_frame)
         self.btn_anim_remove.clicked.connect(self.remove_animation_frame)
         self.prop_image_path_combo.currentTextChanged.connect(self.update_image_preview)
@@ -209,22 +216,22 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             elif itype == "Image":
                 self.data_image_path_combo.setCurrentText(str(idata))
 
-            self.prop_trigger_condition.setCurrentText(obj_data.get("trigger_condition", "OnEnter"))
-            self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", "SetFlag"))
+            self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", Actions.SET_FLAG))
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
             
             self.list_trigger_sequence.clear()
-            
             sequence = obj_data.get("scripted_events", [])
             
             for step in sequence:
-                action = step.get("action", "Wait")
+                action = step.get("action", Actions.WAIT)
                 params = step.get("params", "")
                 item_text = f"{action} ({params})"
                 
                 list_item = QListWidgetItem(item_text)
-                list_item.setData(Qt.UserRole, step) 
+                list_item.setData(Qt.UserRole, step) # Guardamos el diccionario real
                 self.list_trigger_sequence.addItem(list_item)
+                
+            self.group_step_detail.setEnabled(False)
             
             if self.list_trigger_sequence.count() > 0:
                 self.list_trigger_sequence.setCurrentRow(0)
@@ -282,7 +289,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         new_obj_data = {
             "id": new_id,
             
-            "type": "Primitive", 
+            "type": ObjectTypes.PRIMITIVE, 
             
             "x": GAME_WIDTH // 2, 
             "y": GAME_HEIGHT // 2,
@@ -306,8 +313,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "interaction_duration": 60, 
             "interaction_type": "None",
             "interaction_data": None,
-            "trigger_condition": "OnEnter", 
-            "trigger_action": "SetFlag", 
+            "trigger_condition": Conditions.ON_ENTER, 
+            "trigger_action": Actions.SET_FLAG, 
             "trigger_params": ""
         }
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
@@ -618,7 +625,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def on_main_type_changed(self):
         current_type = self.prop_type.currentText()
-        is_primitive = (current_type == "Primitive")
+        is_primitive = (current_type == ObjectTypes.PRIMITIVE)
 
         self.label_2.setVisible(not is_primitive)
         self.prop_image_path_combo.setVisible(not is_primitive)
@@ -639,10 +646,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_color_g.setVisible(is_primitive)
         self.prop_color_b.setVisible(is_primitive)
 
-        self.group_interaction.setEnabled(current_type in ["Interactable", "Trigger"])
+        self.group_interaction.setEnabled(current_type in [ObjectTypes.INTERACTABLE, ObjectTypes.TRIGGER])
         self.group_animation.setEnabled(True)
-        if current_type == "Interactable": self.prop_main_stack.setCurrentIndex(0)
-        elif current_type == "Trigger": self.prop_main_stack.setCurrentIndex(1)
+        if current_type == ObjectTypes.INTERACTABLE: self.prop_main_stack.setCurrentIndex(0)
+        elif current_type == ObjectTypes.TRIGGER: self.prop_main_stack.setCurrentIndex(1)
         else: self.prop_main_stack.setCurrentIndex(0)
 
     def on_interaction_type_changed(self):
@@ -863,7 +870,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         imgpath = obj.get("image_path", "None")
         pixmap = None
         obj_type = obj.get("type")
-        if obj_type == "Primitive":
+        if obj_type == ObjectTypes.PRIMITIVE:
             pixmap = self.generate_primitive_pixmap(obj)
             
             item = LevelObjectItem(pixmap, obj, self)
@@ -885,9 +892,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
-            if obj.get("type") == "Trigger":
+            if obj.get("type") == ObjectTypes.TRIGGER:
                 pixmap.fill(QColor(255, 100, 255, 150))
-            elif obj.get("type") == "Interactable":
+            elif obj.get("type") == ObjectTypes.INTERACTABLE:
                 pixmap.fill(QColor(100, 255, 255, 150))
             else:
                 pixmap.fill(QColor(200, 200, 200, 150))
@@ -929,7 +936,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         pixmap = None
 
         obj_type = data.get("type")
-        if obj_type == "Primitive":
+        if obj_type == ObjectTypes.PRIMITIVE:
             pixmap = self.generate_primitive_pixmap(data)
         
         if imgpath not in (None, "None", ""):
@@ -939,9 +946,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
-            if data.get("type") == "Trigger":
+            if data.get("type") == ObjectTypes.TRIGGER:
                 pixmap.fill(QColor(255, 100, 255, 150))
-            elif data.get("type") == "Interactable":
+            elif data.get("type") == ObjectTypes.INTERACTABLE:
                 pixmap.fill(QColor(100, 255, 255, 150))
             else:
                 pixmap.fill(QColor(200, 200, 200, 150))
@@ -970,7 +977,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.current_scene.removeItem(self.current_hitbox_item)
             self.current_hitbox_item = None
         
-        if not data.get("is_passable", False) or data.get("type") == "Trigger":
+        if not data.get("is_passable", False) or data.get("type") == ObjectTypes.TRIGGER:
             offset = data.get("collision_rect_offset", [0, 0, 0, 0])
             sprite_x = x - (w / 2)
             sprite_y = y - (h / 2)
@@ -991,7 +998,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 self.current_hitbox_item.setSelected(True)
 
             if pixmap_item.isSelected():
-                if data.get("type") == "Primitive":
+                if data.get("type") == ObjectTypes.PRIMITIVE:
                     if not hasattr(pixmap_item, 'resize_handle') or not pixmap_item.resize_handle:
                         pixmap_item.create_primitive_handle()
                 
@@ -1001,7 +1008,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                     pixmap_item.remove_handle()
 
     def update_canvas_from_resize(self, data, item):
-        if data.get("type") != "Primitive": return
+        if data.get("type") != ObjectTypes.PRIMITIVE: return
         
         pixmap = self.generate_primitive_pixmap(data)
         item.setPixmap(pixmap)
@@ -1040,7 +1047,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.is_programmatic_change = True
 
         self.prop_id.setText(data.get("id", ""))
-        self.prop_type.setCurrentText(data.get("type", "Obstacle"))
+        self.prop_type.setCurrentText(data.get("type", ObjectTypes.OBSTACLE))
         self.prop_x.setValue(data.get("x", 0))
         self.prop_y.setValue(data.get("y", 0))
         self.prop_z_index.setValue(int(data.get("z_index", 0)))
@@ -1089,15 +1096,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         elif itype == "Image": 
             self.data_image_path_combo.setCurrentText(str(idata))
             
-        self.prop_trigger_condition.setCurrentText(data.get("trigger_condition", "OnEnter"))
-        self.prop_trigger_action.setCurrentText(data.get("trigger_action", "SetFlag"))
+        self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
 
         self.list_trigger_sequence.clear()
         sequence = data.get("scripted_events", [])
         
         for step in sequence:
-            action = step.get("action", "Wait")
+            action = step.get("action", Actions.WAIT)
             params = step.get("params", "")
             item_text = f"{action} ({params})"
             
@@ -1122,7 +1128,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                  self.update_canvas_item(data, new_pix)
                  pixmap_item = new_pix
         
-        if pixmap_item and data.get("type") == "Primitive":
+        if pixmap_item and data.get("type") == ObjectTypes.PRIMITIVE:
             pixmap_item.create_primitive_handle()
         elif pixmap_item:
             pixmap_item.remove_handle()
@@ -1204,26 +1210,27 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         obj_data = self.get_real_object_data()
         if not obj_data: return
-
+        
         new_sequence = []
         for i in range(self.list_trigger_sequence.count()):
             item = self.list_trigger_sequence.item(i)
-            new_sequence.append(item.data(Qt.UserRole))
-
+            step_data = item.data(Qt.UserRole)
+            new_sequence.append(copy.deepcopy(step_data))
+        
         old_sequence = obj_data.get("scripted_events", [])
         if new_sequence != old_sequence:
             cmd = CmdPropertyChange(self, obj_data, "scripted_events", old_sequence, new_sequence)
             self.undo_manager.push(cmd, execute_now=False)
+            
             obj_data["scripted_events"] = new_sequence
 
     def add_sequence_step(self):
-        new_step = {"action": "Wait", "params": "time=1.0"}
+        new_step = {"action": Actions.WAIT, "params": "time=1.0"}
         
-        item = QListWidgetItem(f"Wait (time=1.0)")
+        item = QListWidgetItem(f"{Actions.WAIT} (time=1.0)")
         item.setData(Qt.UserRole, new_step)
         self.list_trigger_sequence.addItem(item)
         self.list_trigger_sequence.setCurrentItem(item)
-        
         self.save_sequence_changes()
 
     def remove_sequence_step(self):
@@ -1235,7 +1242,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     def move_sequence_step(self, direction):
         row = self.list_trigger_sequence.currentRow()
         new_row = row + direction
-        
         if 0 <= new_row < self.list_trigger_sequence.count():
             item = self.list_trigger_sequence.takeItem(row)
             self.list_trigger_sequence.insertItem(new_row, item)
@@ -1251,7 +1257,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         step_data = item.data(Qt.UserRole)
         
         self.is_programmatic_change = True
-        self.prop_step_action.setCurrentText(step_data.get("action", "Wait"))
+        self.prop_step_action.setCurrentText(step_data.get("action", Actions.WAIT))
         self.prop_step_params.setText(step_data.get("params", ""))
         self.is_programmatic_change = False
 
@@ -1263,12 +1269,12 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         new_action = self.prop_step_action.currentText()
         new_params = self.prop_step_params.toPlainText()
-        
+
         step_data = item.data(Qt.UserRole)
         step_data["action"] = new_action
         step_data["params"] = new_params
-
         item.setData(Qt.UserRole, step_data)
+        
         item.setText(f"{new_action} ({new_params})")
         
         self.save_sequence_changes()
