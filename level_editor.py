@@ -17,7 +17,7 @@ from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
 from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
-from src.Game_Enums import Actions, Conditions, ObjectTypes, InteractionTypes
+from src.Game_Enums import Actions, Conditions, ObjectTypes
 
 GAME_WIDTH = SCREEN_WIDTH
 GAME_HEIGHT = SCREEN_HEIGHT
@@ -100,6 +100,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_is_ground.stateChanged.connect(lambda v: self.on_property_changed('is_ground', bool(v)))
         self.data_note_text.textChanged.connect(self.on_note_text_changed)
 
+        self.prop_trigger_condition.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_condition', v))
+        self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
         self.prop_trigger_params.textChanged.connect(self.on_trigger_params_changed)
         self.btn_seq_add.clicked.connect(self.add_sequence_step)
         self.btn_seq_remove.clicked.connect(self.remove_sequence_step)

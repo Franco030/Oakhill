@@ -304,10 +304,12 @@ def game_loop(screen, clock):
                 if not result: return
                 
                 if result["type"] == "Note":
-                    note_to_show = result["data"]
                     game_status = "READING_NOTE"
-                    if result["play_default_sound"] and sounds.get("note_reading_more_vol"): 
-                        sounds.get("note_reading_more_vol").play()
+                    note_to_show = result["data"]
+                    should_play = result.get("play_default_sound", True)
+                    has_custom_sound = result.get("sound") is not None
+                    if should_play and not has_custom_sound and sounds.get("note_reading_more_vol"): 
+                        sounds["note_reading_more_vol"].play()
                     
                 elif result["type"] == "Image":
                     image_to_show = result["data"]
@@ -349,9 +351,12 @@ def game_loop(screen, clock):
                         
                         res = event_manager.process_trigger(obj, player_sprite, scene)
                         handle_event_result(res)
+
+                        obj.read()
                         
                         if player_sprite.is_attacking:
                             player_sprite.cancel_attack()
+                    
                 else:
                     obj.reset_interaction()
 

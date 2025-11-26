@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QSplitter, QStackedWidget, QStatusBar, QTextEdit,
     QVBoxLayout, QWidget)
 
-from src.Game_Enums import Actions, Conditions, ObjectTypes, InteractionTypes
+from src.Game_Enums import Actions, Conditions, ObjectTypes
 
 class Ui_LevelEditor(object):
     def setupUi(self, LevelEditor):

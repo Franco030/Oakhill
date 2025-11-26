@@ -16,9 +16,6 @@ class Interactable(Obstacle):
         """
         super().__init__(data) 
         
-        self.interaction_type = data.get("interaction_type", "None")
-        self.interaction_data = data.get("interaction_data", None)
-        
         self.interacted_once = False
         self.is_hidden = data.get("starts_hidden", False)
         
@@ -143,7 +140,6 @@ class Interactable(Obstacle):
         else:
             self.kill()
         
-        return self.interaction_data
     
     def update(self):
         """

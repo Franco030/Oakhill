@@ -91,7 +91,7 @@ class EventManager:
 
         act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
         if act and act != "None":
-            self.action_manager.execute(act, raw_params, player, scene)
+            result = self.action_manager.execute(act, raw_params, player, scene)
             
             if act in ["Teleport", "ChangeLevel"]: 
                 should_kill = False
@@ -99,14 +99,6 @@ class EventManager:
             if should_kill:
                 obj.kill()
 
-        if hasattr(obj, "read"):
-            interaction_data = obj.read()
-            has_custom_sound = "sound" in params and params["sound"] != "silent"
-            
-            return {
-                "type": obj.interaction_type,
-                "data": interaction_data,
-                "play_default_sound": not has_custom_sound
-            }
-            
+            return result
+           
         return None

@@ -103,3 +103,21 @@ class ActionManager:
                     music_path=music,
                     darkness=is_dark
                 )
+
+        elif action_type == "ShowNote":
+            text_content = params.get("text", "")
+            return {
+                "type": "Note",
+                "data": text_content,
+                "sound": params.get("sound")
+            }
+        
+        elif action_type == "ShowImage":
+            path = params.get("image") or params.get("path")
+            return {
+                "type": "Image",
+                "data": path,
+                "sound": params.get("sound")
+            }
+        
+        return None
