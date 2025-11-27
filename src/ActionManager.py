@@ -120,4 +120,25 @@ class ActionManager:
                 "sound": params.get("sound")
             }
         
+        elif action_type == "CloseImage":
+            pass
+
+        elif action_type == "ShowAnimation":
+            base_path = params.get("path")
+            frames = int(params.get("frames", 1))
+            speed = float(params.get("speed", 0.1))
+
+            image_list = []
+            if base_path:
+                clean_base = base_path.replace(".png", "")
+                for i in range(frames):
+                    image_list.append(f"{clean_base}_{i}.png")
+                
+            return {
+                "type": "Animation",
+                "data": image_list,
+                "speed": speed,
+                "sound": params.get("sound")
+            }
+        
         return None

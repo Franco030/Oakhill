@@ -48,7 +48,10 @@ class SceneLoader:
             zone_interactables[zone] = interactable_list
             zone_triggers[zone] = trigger_list
 
-            stalker = Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=20.0, max_wait=60.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))
+            global_enemies = []
+            if "school" not in path.lower():
+                stalker = Stalker_Ghost(-200, -200, 100, StalkerBehaviour(player, speed=300, min_wait=20.0, max_wait=60.0, stop_distance=50, chase_sound=chase_sound, flee_sound=flee_sound))
+                global_enemies.append(stalker)
 
             enemy_dict_placeholder = {}
 
@@ -60,7 +63,7 @@ class SceneLoader:
             zone_triggers, 
             enemy_dict_placeholder, 
             map_level, 
-            global_enemies=[stalker], 
+            global_enemies=global_enemies, 
             music_path=music_path, 
             has_darkness=has_darkness
         )

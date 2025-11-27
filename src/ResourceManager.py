@@ -56,3 +56,19 @@ class ResourceManager:
                         print(f"  -> Error loading image {filename}: {e}")
         
         return images
+    
+    @staticmethod
+    def load_images_from_list(file_paths):
+        loaded_images = []
+        print(f"[RESOURCE MANAGER] Loading batch of {len(file_paths)} images...")
+
+        for path in file_paths:
+            full_path = resource_path(path)
+            try:
+                img = pygame.image.load(full_path).convert_alpha()
+                loaded_images.append(img)
+            except Exception as e:
+                print(f"[RESOURCE MANAGER] Error loading animation frame '{path}': {e}")
+
+            
+        return loaded_images

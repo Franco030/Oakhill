@@ -22,6 +22,9 @@ class LevelManager:
             intensity = int(255 * (1 - (r / self.light_radius)))
             pygame.draw.circle(texture, (intensity, intensity, intensity), (self.light_radius, self.light_radius), r)
         return texture
+    
+    def reset_music_state(self):
+        self.current_music_path = None
 
     def load_level_from_request(self, level_req, player_sprite):
         if self.current_scene:
@@ -58,7 +61,6 @@ class LevelManager:
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
 
     def update(self, delta_time):
-        """Actualiza la lógica de la escena actual."""
         if self.current_scene:
             self.current_scene.enemies.update(delta_time)
             self.current_scene.obstacles.update()

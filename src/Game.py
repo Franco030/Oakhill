@@ -8,6 +8,7 @@ from src.ActionManager import ActionManager
 from src.EventManager import EventManager
 from src.LevelManager import LevelManager
 from src.GameState import game_state
+from src.Game_Enums import Actions, Conditions
 from utils import resource_path
 
 class Game:
@@ -118,6 +119,8 @@ class Game:
         self.death_screen_delay = DEATH_DELAY
         self.ui_manager.close()
 
+        self.level_manager.reset_music_state()
+
         self.player.is_defeated = False
         self.player.cancel_attack()
         self.player.direction = pygame.math.Vector2(0,0)
@@ -152,15 +155,18 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         self.player.attack()
                     elif event.key == pygame.K_ESCAPE:
-                        pygame.mixer.music.stop()
-                        if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].stop()
-                        if self.sounds.get("death_sound"): self.sounds["death_sound"].stop()
-                        self.state = "MAIN_MENU"
-                        return
+                        if self.player.is_defeated:
+                            pygame.mixer.music.stop()
+                            if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].stop()
+                            if self.sounds.get("death_sound"): self.sounds["death_sound"].stop()
+                            self.state = "MAIN_MENU"
+                            return
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         self.player.stop_attack()
+
+            self.ui_manager.update(delta_time)
 
             if not self.ui_manager.active or not self.ui_manager.is_blocking:
                 seq_result = self.event_manager.update(delta_time, self.player, self.level_manager.current_scene)
@@ -179,18 +185,18 @@ class Game:
                 if scene:
                     hits = pygame.sprite.spritecollide(self.player, scene._triggers, False, collided=lambda p,t: p.collision_rect.colliderect(t.rect))
                     for trig in hits:
-                        if trig.condition in ["OnEnter", "IfFlag"]:
+                        if trig.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG]:
                             res = self.event_manager.process_trigger(trig, self.player, scene)
                             self._handle_event_result(res)
                     
                     processed = False
                     for obj in scene.interactables:
                         contact = False
-                        if obj.trigger_condition == "OnEnter":
+                        if obj.trigger_condition == Conditions.ON_ENTER:
                             if self.player.collision_rect.colliderect(obj.rect):
                                 if obj.progress_interaction() != "finished": obj.current_progress = obj.interaction_duration
                                 contact = True
-                        elif obj.trigger_condition in ["OnInteract", "None"]:
+                        elif obj.trigger_condition in [Conditions.ON_INTERACT, "None"]:
                             if self.player.is_attacking and self.player.attack_rect.colliderect(obj.rect):
                                 contact = True
                         
@@ -200,7 +206,7 @@ class Game:
                                 processed = True
                                 res = self.event_manager.process_trigger(obj, self.player, scene)
                                 self._handle_event_result(res)
-                                obj.read() # Persistencia visual
+                                obj.read()
                                 if self.player.is_attacking: self.player.cancel_attack()
                         else:
                             obj.reset_interaction()
@@ -255,4 +261,8 @@ class Game:
                 
         elif result["type"] == "Image":
             self.ui_manager.show_image(result["data"], blocking=should_block)
+            pygame.mixer.music.pause()
+
+        elif result["type"] == "Animation":
+            self.ui_manager.show_animation(result["data"], speed=result["speed"], blocking=should_block)
             pygame.mixer.music.pause()

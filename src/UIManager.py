@@ -1,13 +1,20 @@
 import pygame
 from utils import resource_path
 from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.ResourceManager import ResourceManager
 
 class UIManager:
     def __init__(self):
         self.active = False
-        self.content_type = None # "NOTE" o "IMAGE"
+        self.content_type = None # "NOTE" o "IMAGE" o "Animation"
         self.content_data = None
         self.is_blocking = False
+
+        self.anim_frames = []
+        self.anim_index = 0
+        self.anim_timer = 0
+        self.anim_speed = 0.1
+
         
         try:
             self.font_path = resource_path("assets/fonts/scary_font.ttf")
@@ -28,6 +35,40 @@ class UIManager:
         self.is_blocking = blocking
         self.content_type = "IMAGE"
         self.content_data = image_path
+
+    def show_animation(self, image_paths, speed=0.1, blocking=False):
+        self.anim_frames = []
+        self.anim_index = 0
+        self.anim_timer = 0
+        self.anim_speed = speed
+        self.content_type = "ANIMATION"
+
+        raw_images = ResourceManager.load_images_from_list(image_paths)
+
+        if raw_images:
+            for img in raw_images:
+                if img: 
+                    scaled = self._scale_surface(img)
+                    self.anim_frames.append(scaled)
+        
+        if len(self.anim_frames) > 0:
+            self.active = True
+            self.is_blocking = blocking
+        else:
+            print(f"[UI] Error: No valid frames for animation.")
+            self.active = False
+            self.is_blocking = False
+
+    def update(self, delta_time):
+        if not self.active or self.content_type != "ANIMATION" or not self.anim_frames:
+            return
+        
+        dt_seconds = delta_time / 1000.0
+        self.anim_timer += dt_seconds
+
+        if self.anim_timer >= self.anim_speed:
+            self.anim_timer = 0
+            self.anim_index = (self.anim_index + 1) % len(self.anim_frames)
 
     def close(self):
         self.active = False
@@ -59,6 +100,19 @@ class UIManager:
             self._draw_note(screen)
         elif self.content_type == "IMAGE":
             self._draw_image(screen)
+        elif self.content_type == "ANIMATION":
+            self._draw_animation(screen)
+
+    def _scale_surface(self, surface):
+        img_rect = surface.get_rect()
+        margin = 50
+        available_w = SCREEN_WIDTH - (margin * 2)
+        available_h = SCREEN_HEIGHT - (margin * 2)
+
+        scale = min(available_w / img_rect.width, available_h / img_rect.height)
+        new_size = (int(img_rect.width * scale), int(img_rect.height * scale))
+
+        return pygame.transform.scale(surface, new_size)
 
     def _draw_note(self, screen):
         padding = 50
@@ -105,6 +159,17 @@ class UIManager:
             
         except Exception as e:
             print(f"Error UI image: {e}")
+
+        close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
+        rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)
+        screen.blit(close_txt, rect)
+
+    def _draw_animation(self, screen):
+        if not self.anim_frames: return
+
+        current_img = self.anim_frames[self.anim_index]
+        img_rect = current_img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        screen.blit(current_img, img_rect)
 
         close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
         rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)

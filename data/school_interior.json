@@ -69725,22 +69725,9 @@
                 "interaction_type": "None",
                 "interaction_data": "",
                 "trigger_condition": "OnEnter",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "scripted_events": [
-                    {
-                        "action": "PlaySound",
-                        "params": "sound=blow_light"
-                    },
-                    {
-                        "action": "Wait",
-                        "params": "time=2.0"
-                    },
-                    {
-                        "action": "PlaySound",
-                        "params": "sound=blow_light"
-                    }
-                ],
+                "trigger_action": "ShowAnimation",
+                "trigger_params": "path=assets/animations/Stalker/ghost; frames=4; speed=0.5; blocking=true",
+                "scripted_events": [],
                 "z_index": 0,
                 "reflection_offset_y": 0
             }

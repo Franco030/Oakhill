@@ -10,6 +10,7 @@ class Actions:
     SHOW_IMAGE = "ShowImage"
     CLOSE_IMAGE = "CloseImage"
     SHOW_NOTE = "ShowNote"
+    SHOW_ANIMATION = "ShowAnimation"
 
 class Conditions:
     ON_ENTER = "OnEnter"
