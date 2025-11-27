@@ -162,7 +162,7 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         self.player.stop_attack()
 
-            if not self.ui_manager.active:
+            if not self.ui_manager.active or not self.ui_manager.is_blocking:
                 seq_result = self.event_manager.update(delta_time, self.player, self.level_manager.current_scene)
                 if seq_result:
                     self._handle_event_result(seq_result)
@@ -247,11 +247,13 @@ class Game:
 
     def _handle_event_result(self, result):
         if not result: return
+
+        should_block = result.get("blocking", False)
+        print(f"Should block, {should_block}")
         
         if result["type"] == "Note":
-            self.ui_manager.show_note(result["data"])
-
+            self.ui_manager.show_note(result["data"], blocking=should_block)
                 
         elif result["type"] == "Image":
-            self.ui_manager.show_image(result["data"])
+            self.ui_manager.show_image(result["data"], blocking=should_block)
             pygame.mixer.music.pause()

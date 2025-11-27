@@ -24193,7 +24193,7 @@
                 "z_index": 0,
                 "trigger_condition": "OnEnter",
                 "trigger_action": "IncrementFlag",
-                "trigger_params": "",
+                "trigger_params": "blocking=true",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
                 "border_width": 0,

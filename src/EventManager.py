@@ -38,22 +38,6 @@ class EventManager:
         else:
             pass 
 
-    # def update(self, delta_time, player, scene):
-    #     if not self.is_active: return
-
-    #     if self.current_step and self.current_step.get("action") == "Wait":
-    #         self.wait_timer -= delta_time
-    #         if self.wait_timer <= 0:
-    #             self._next_step()
-    #         return None
-        
-    #     elif self.current_step:
-    #         action = self.current_step.get("action")
-    #         params = self.current_step.get("params", "")
-    #         result = self.action_manager.execute(action, params, player, scene)
-    #         self._next_step()
-    #         return result
-
     def update(self, delta_time, player, scene):
         if not self.is_active: return None
 
@@ -73,6 +57,9 @@ class EventManager:
             
             result = self.action_manager.execute(action, params, player, scene)
             self._next_step()
+            
+            if result:
+                result["blocking"] = self.is_blocking
             return result 
             
         return None
@@ -110,6 +97,9 @@ class EventManager:
         if act and act != "None":
             result = self.action_manager.execute(act, raw_params, player, scene)
             
+            if result:
+                result["blocking"] = self.is_blocking
+
             if act in ["Teleport", "ChangeLevel"]: 
                 should_kill = False
             

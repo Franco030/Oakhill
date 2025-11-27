@@ -7,6 +7,7 @@ class UIManager:
         self.active = False
         self.content_type = None # "NOTE" o "IMAGE"
         self.content_data = None
+        self.is_blocking = False
         
         try:
             self.font_path = resource_path("assets/fonts/scary_font.ttf")
@@ -16,13 +17,15 @@ class UIManager:
             self.font = pygame.font.SysFont("Arial", 36)
             self.ui_font = pygame.font.SysFont("Arial", 30)
 
-    def show_note(self, text):
+    def show_note(self, text, blocking=False):
         self.active = True
+        self.is_blocking = blocking
         self.content_type = "NOTE"
         self.content_data = text
 
-    def show_image(self, image_path):
+    def show_image(self, image_path, blocking=False):
         self.active = True
+        self.is_blocking = blocking
         self.content_type = "IMAGE"
         self.content_data = image_path
 
@@ -30,6 +33,7 @@ class UIManager:
         self.active = False
         self.content_type = None
         self.content_data = None
+        self.is_blocking = False
         pygame.mixer.music.unpause()
 
     def handle_input(self, event):
@@ -41,7 +45,7 @@ class UIManager:
                 self.close()
                 return True
         
-        return True
+        return self.is_blocking
 
     def draw(self, screen):
         if not self.active: return
