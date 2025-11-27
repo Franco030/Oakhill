@@ -14914,7 +14914,7 @@
                 "reflection_offset_y": 0,
                 "trigger_condition": "OnEnter",
                 "interaction_duration": 60,
-                "trigger_params": "text=Dia ~3=-3=-14~!@,\nEl señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4",
+                "trigger_params": "text=Dia ~3=-3=-14~!@,\nEl señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4; sound=scream",
                 "border_width": 0,
                 "trigger_action": "ShowNote"
             },
