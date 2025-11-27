@@ -249,7 +249,6 @@ class Game:
         if not result: return
 
         should_block = result.get("blocking", False)
-        print(f"Should block, {should_block}")
         
         if result["type"] == "Note":
             self.ui_manager.show_note(result["data"], blocking=should_block)

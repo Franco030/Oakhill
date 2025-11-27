@@ -50,20 +50,24 @@ class EventManager:
             if self.wait_timer <= 0:
                 self._next_step()
             return None
-
+        
         elif self.current_step:
             action = self.current_step.get("action")
             params = self.current_step.get("params", "")
             
+
+            was_blocking = self.is_blocking
+            
             result = self.action_manager.execute(action, params, player, scene)
+            
             self._next_step()
             
             if result:
-                result["blocking"] = self.is_blocking
+                result["blocking"] = was_blocking
+                
             return result 
             
         return None
-
     def end_sequence(self):
         self.is_active = False
         self.is_blocking = False
@@ -73,7 +77,7 @@ class EventManager:
     def process_trigger(self, obj, player, scene):
         raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
         params = self.action_manager.parse_params(raw_params)
-
+        
         if hasattr(obj, "condition") and obj.condition == "IfFlag":
             if not game_state.check_flag(params.get("flag"), params.get("value")):
                 return None 
@@ -90,7 +94,6 @@ class EventManager:
             
             if should_kill:
                 obj.kill()
-            
             return None 
 
         act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
@@ -98,7 +101,12 @@ class EventManager:
             result = self.action_manager.execute(act, raw_params, player, scene)
             
             if result:
-                result["blocking"] = self.is_blocking
+                blocking_param = params.get("blocking", None)
+                
+                if blocking_param is not None:
+                    result["blocking"] = blocking_param
+                else:
+                    result["blocking"] = self.is_blocking
 
             if act in ["Teleport", "ChangeLevel"]: 
                 should_kill = False
