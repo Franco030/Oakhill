@@ -38,21 +38,44 @@ class EventManager:
         else:
             pass 
 
+    # def update(self, delta_time, player, scene):
+    #     if not self.is_active: return
+
+    #     if self.current_step and self.current_step.get("action") == "Wait":
+    #         self.wait_timer -= delta_time
+    #         if self.wait_timer <= 0:
+    #             self._next_step()
+    #         return None
+        
+    #     elif self.current_step:
+    #         action = self.current_step.get("action")
+    #         params = self.current_step.get("params", "")
+    #         result = self.action_manager.execute(action, params, player, scene)
+    #         self._next_step()
+    #         return result
+
     def update(self, delta_time, player, scene):
-        if not self.is_active: return
+        if not self.is_active: return None
 
         if self.current_step and self.current_step.get("action") == "Wait":
+            p = self.action_manager.parse_params(self.current_step.get("params", ""))
+            if self.wait_timer <= 0 and p:
+                 self.wait_timer = float(p.get("time", 1.0)) * 1000
+
             self.wait_timer -= delta_time
             if self.wait_timer <= 0:
                 self._next_step()
             return None
-        
+
         elif self.current_step:
             action = self.current_step.get("action")
             params = self.current_step.get("params", "")
+            
             result = self.action_manager.execute(action, params, player, scene)
             self._next_step()
-            return result
+            return result 
+            
+        return None
 
     def end_sequence(self):
         self.is_active = False

@@ -23851,7 +23851,7 @@
                 "animation_images": [],
                 "z_index": 0,
                 "trigger_condition": "OnEnter",
-                "trigger_action": "IncrementFlag",
+                "trigger_action": "UnhideObject",
                 "trigger_params": "",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
@@ -23863,7 +23863,7 @@
                     },
                     {
                         "action": "ShowNote",
-                        "params": "text=Se subio una flag"
+                        "params": "text=Se subio una flag; sound=note_reading_more_vol"
                     }
                 ]
             },

@@ -59,7 +59,6 @@ class Interactable(Obstacle):
                 self.flash_image, (self.image.get_width(), self.image.get_height())
             )
         except pygame.error as e:
-            print("Can't load image, there's no flash")
             self.flash_image = self.original_image.copy()
 
         if game_state.has_interacted(self.id):
