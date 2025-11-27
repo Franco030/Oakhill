@@ -25,6 +25,27 @@ class ActionManager:
                 params[key] = value
         return params
 
+    def parse_params(self, param_string):
+        params = {}
+        if not param_string: return params
+
+        clean_string = param_string.replace('\n', ';').replace('\r', '')
+        
+        pairs = clean_string.split(';')
+        for pair in pairs:
+            if '=' in pair:
+                key, value = pair.split('=', 1)
+                key = key.strip()
+                value = value.strip()
+                # Conversión de tipos
+                if value.lower() == 'true': value = True
+                elif value.lower() == 'false': value = False
+                else:
+                    try: value = int(value)
+                    except: pass
+                params[key] = value
+        return params
+
     def execute(self, action_type, param_string, player, scene):
         print(f"[ACTION] {action_type} -> {param_string}")
         params = self.parse_params(param_string)
@@ -66,7 +87,9 @@ class ActionManager:
 
         elif action_type == "PlaySound":
             sound_name = params.get("sound")
+            sound_volume = float(params.get("volume"))
             if sound_name in self.sound_library:
+                self.sound_library[sound_name].set_volume(sound_volume)
                 self.sound_library[sound_name].play()
                 print(f"Playing sound: {sound_name}")
             else:

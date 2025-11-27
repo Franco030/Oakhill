@@ -152,6 +152,8 @@ class Game:
                     continue 
 
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        print(self.player.pos)
                     if event.key == pygame.K_SPACE:
                         self.player.attack()
                     elif event.key == pygame.K_ESCAPE:
