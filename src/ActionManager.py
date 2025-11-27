@@ -87,9 +87,11 @@ class ActionManager:
 
         elif action_type == "PlaySound":
             sound_name = params.get("sound")
-            sound_volume = float(params.get("volume"))
+            sound_volume = params.get("volume")
             if sound_name in self.sound_library:
-                self.sound_library[sound_name].set_volume(sound_volume)
+                if sound_volume:
+                    sound_volume = float(sound_volume)
+                    self.sound_library[sound_name].set_volume(sound_volume)
                 self.sound_library[sound_name].play()
                 print(f"Playing sound: {sound_name}")
             else:
