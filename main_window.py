@@ -7,6 +7,7 @@ from src.Player import Player
 from src.Scene_Loader import SceneLoader
 from src.ResourceManager import ResourceManager
 from src.UIManager import UIManager
+from src.LevelManager import LevelManager
 from utils import resource_path
 
 from src.ActionManager import ActionManager
@@ -101,24 +102,11 @@ def game_loop(screen, clock):
 
     player_x_pos = 600
     player_y_pos = 300
-    
-    y_cord, x_cord = Y_CORD, X_CORD
-    current_zone = (y_cord, x_cord)
 
     game_status = "PLAYING"
 
     death_screen_delay = DEATH_DELAY
     game_over_sound_played = False
-
-    # Ilumination setup
-    light_mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)) 
-    
-    light_radius = 250
-    flashlight_texture = pygame.Surface((light_radius * 2, light_radius * 2))
-    
-    for r in range(light_radius, 0, -2):
-        intensity = int(255 * (1 - (r / light_radius)))
-        pygame.draw.circle(flashlight_texture, (intensity, intensity, intensity), (light_radius, light_radius), r)
 
     sounds = ResourceManager.load_all_sounds("assets/sounds")
     images = ResourceManager.load_all_images("assets/images")
@@ -128,22 +116,21 @@ def game_loop(screen, clock):
     player_sprite = Player(player_x_pos, player_y_pos)
     player.add(player_sprite)
 
-    current_music_path = LEVEL_MUSIC["forest"]
-    initial_darkness = LEVEL_DARKNESS["forest"]
-    
-    main_scene = SceneLoader.load_from_json(resource_path("data/scene_output_new.json"), WORLD_MAP_LEVEL, INITIAL_ZONE, player_sprite, sounds.get("chase_loop"), sounds.get("flee_loop"), music_path=current_music_path, has_darkness=initial_darkness)
-    scene = main_scene
 
-    try:  
-        pygame.mixer.music.load(current_music_path)
-        pygame.mixer.music.play(loops=-1)
-        pygame.mixer.music.set_volume(0.5)
-    except pygame.error as e:
-        print(f"Error when loading the file: {e}")
-
-    action_manager = ActionManager(sound_library=sounds)
+    action_manager = ActionManager(sounds)
     event_manager = EventManager(action_manager)
     ui_manager = UIManager()
+    level_manager = LevelManager(sounds)
+    start_request = {
+        "json_path": resource_path("data/scene_output_new.json"),
+        "map_matrix": WORLD_MAP_LEVEL,
+        "entry_zone": INITIAL_ZONE,
+        "player_pos": (player_x_pos, player_y_pos),
+        "music_path": LEVEL_MUSIC.get("forest"),
+        "darkness": LEVEL_DARKNESS.get("forest", False)
+    }
+    level_manager.load_level_from_request(start_request, player_sprite)
+    
 
     def handle_event_result(result):
         if not result: return
@@ -192,6 +179,8 @@ def game_loop(screen, clock):
                 
         # --- Game logic ---
         if game_status == "PLAYING":  
+            scene = level_manager.current_scene
+            level_manager.update(delta_time)
             if not ui_manager.active:
                 seq_result = event_manager.update(delta_time, player_sprite, scene)
 
@@ -202,11 +191,6 @@ def game_loop(screen, clock):
                     player.update(scene.obstacles)
                 else:
                     player_sprite.stop_attack()
-
-
-                scene.enemies.update(delta_time)
-                scene.obstacles.update()
-                scene.interactables.update()
 
                 hit_triggers = pygame.sprite.spritecollide(
                     player_sprite, 
@@ -272,94 +256,16 @@ def game_loop(screen, clock):
                         break
 
                     # --- Change level management ---
-                level_request = game_state.consume_level_change()
-                if level_request:
-                    scene.cleanup()
+                level_req = game_state.consume_level_change()
+                if level_req:
                     screen.fill((0, 0, 0))
                     pygame.display.flip()
-
-                    new_scene = SceneLoader.load_from_json(
-                        level_request["json_path"],
-                        level_request["map_matrix"],
-                        level_request["entry_zone"],
-                        player_sprite,
-                        sounds.get("chase_loop"),
-                        sounds.get("flee_loop"),
-                        level_request["music_path"],
-                        level_request["darkness"]
-                    )
-
-                    new_music = level_request["music_path"]
-
-                    if new_music and new_music != current_music_path:
-                            print(f"Changing music: {new_music}")
-                            pygame.mixer.music.fadeout(500)
-                            try:
-                                pygame.mixer.music.load(resource_path(new_music))
-                                pygame.mixer.music.play(-1)
-                                pygame.mixer.music.set_volume(0.60)
-                            except Exception as e:
-                                print(f"Error when loading the file: {e}")
-                            current_music_path = new_music
-
-                    scene = new_scene
-                    current_zone = level_request["entry_zone"]
-                    y_cord, x_cord = current_zone
-
-                    pos = level_request["player_pos"]
-                    player_sprite.rect.topleft = pos
-                    player_sprite.pos = pygame.math.Vector2(pos)
-
-                    print("Level changed")
+                    
+                    level_manager.load_level_from_request(level_req, player_sprite)
+                    
+                    scene = level_manager.current_scene
                     continue
-
-                # Right direction
-                if (player.sprite.rect.left > SCREEN_WIDTH + TRANSITION_BIAS):
-                    if scene.check_zone((y_cord, x_cord + 1)):
-                        x_cord += 1
-                        current_zone = (y_cord, x_cord)
-                        scene.set_location(current_zone)
-                        player.sprite.rect.left = 0 - (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
-                    else:
-                        player.sprite.rect.left = 0 - (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
-                
-                # Left direction
-                if (player.sprite.rect.right < 0 - TRANSITION_BIAS):
-                    if scene.check_zone((y_cord, x_cord - 1)):
-                        x_cord -= 1
-                        current_zone = (y_cord, x_cord)
-                        scene.set_location(current_zone)
-                        player.sprite.rect.right = SCREEN_WIDTH + (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.Vector2(player.sprite.rect.center)
-                    else:
-                        player.sprite.rect.right = SCREEN_WIDTH + (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
-
-                # Bottom direction
-                if (player.sprite.rect.top > SCREEN_HEIGHT + TRANSITION_BIAS):
-                    if scene.check_zone((y_cord + 1, x_cord)):
-                        y_cord += 1
-                        current_zone = (y_cord, x_cord)
-                        scene.set_location(current_zone)
-                        player.sprite.rect.top = 0 - (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
-                    else:
-                        player.sprite.rect.top = 0 - TRANSITION_BIAS
-                        player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
-
-                # Top direction 
-                if (player.sprite.rect.bottom < 0):
-                    if scene.check_zone((y_cord - 1, x_cord)):
-                        y_cord -= 1
-                        current_zone = (y_cord, x_cord)
-                        scene.set_location(current_zone)
-                        player.sprite.rect.bottom = SCREEN_HEIGHT + (TRANSITION_BIAS / 2)
-                        player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
-                    else:
-                        player.sprite.rect.bottom = SCREEN_HEIGHT + TRANSITION_BIAS
-                        player.sprite.pos = pygame.math.Vector2(player.sprite.rect.center)
+                level_manager.handle_zone_transition(player_sprite)
             
                 if player.sprite.is_defeated:
                     death_screen_delay -= delta_time
@@ -370,12 +276,7 @@ def game_loop(screen, clock):
                                 sounds.get("game_over_sound").play()
                             game_over_sound_played = True
             
-            scene.draw(screen, player_sprite)
-            # if scene.has_darkness:
-            #     light_mask.fill((50, 50, 50))
-            #     light_mask.blit(flashlight_texture, (player_sprite.rect.centerx - light_radius, player_sprite.rect.centery - light_radius), special_flags=pygame.BLEND_ADD)
-            #     screen.blit(light_mask, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
-            
+            level_manager.draw(screen, player_sprite)
             ui_manager.draw(screen)
         
         elif game_status == "PLAYER_DEAD":

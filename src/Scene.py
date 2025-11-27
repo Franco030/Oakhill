@@ -20,7 +20,8 @@ class Scene:
             Initializes _interactables which is a kind of obstacles that is interactable e.g. (a door, a tree that has apples in it, a trapdoor, etc.)
         """
         self.location = initial_location
-        
+        self.has_darkness = has_darkness
+
         self.obstacles_dict = obstacles
         self._interactables_dict = interactables
         self._triggers_dict = triggers
