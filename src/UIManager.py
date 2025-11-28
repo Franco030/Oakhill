@@ -36,11 +36,12 @@ class UIManager:
         self.content_type = "IMAGE"
         self.content_data = image_path
 
-    def show_animation(self, image_paths, speed=0.1, blocking=False):
+    def show_animation(self, image_paths, speed=0.1, blocking=False, loop=True):
         self.anim_frames = []
         self.anim_index = 0
         self.anim_timer = 0
         self.anim_speed = speed
+        self.anim_loop = loop
         self.content_type = "ANIMATION"
 
         raw_images = ResourceManager.load_images_from_list(image_paths)
@@ -62,13 +63,17 @@ class UIManager:
     def update(self, delta_time):
         if not self.active or self.content_type != "ANIMATION" or not self.anim_frames:
             return
-        
+
         dt_seconds = delta_time / 1000.0
         self.anim_timer += dt_seconds
 
         if self.anim_timer >= self.anim_speed:
             self.anim_timer = 0
-            self.anim_index = (self.anim_index + 1) % len(self.anim_frames)
+            if self.anim_loop:
+                self.anim_index = (self.anim_index + 1) % len(self.anim_frames)
+            else:
+                if self.anim_index < len(self.anim_frames) - 1:
+                    self.anim_index += 1
 
     def close(self):
         self.active = False
@@ -166,14 +171,14 @@ class UIManager:
 
     def _draw_animation(self, screen):
         if not self.anim_frames: return
-
         current_img = self.anim_frames[self.anim_index]
         img_rect = current_img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        screen.fill((0, 0, 0))
         screen.blit(current_img, img_rect)
 
-        close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
-        rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)
-        screen.blit(close_txt, rect)
+        # close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
+        # rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)
+        # screen.blit(close_txt, rect)
 
     @staticmethod
     def draw_game_over(screen, image):

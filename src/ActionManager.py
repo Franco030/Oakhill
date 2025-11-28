@@ -37,7 +37,6 @@ class ActionManager:
                 key, value = pair.split('=', 1)
                 key = key.strip()
                 value = value.strip()
-                # Conversión de tipos
                 if value.lower() == 'true': value = True
                 elif value.lower() == 'false': value = False
                 else:
@@ -142,7 +141,8 @@ class ActionManager:
             return {
                 "type": "Image",
                 "data": path,
-                "sound": params.get("sound")
+                "sound": params.get("sound"),
+                "pause_music": params.get("pause_music", False)
             }
         
         elif action_type == "CloseImage":
@@ -152,6 +152,7 @@ class ActionManager:
             base_path = params.get("path")
             frames = int(params.get("frames", 1))
             speed = float(params.get("speed", 0.1))
+            loop = params.get("loop", True)
 
             image_list = []
             if base_path:
@@ -163,7 +164,9 @@ class ActionManager:
                 "type": "Animation",
                 "data": image_list,
                 "speed": speed,
-                "sound": params.get("sound")
+                "loop": loop,
+                "sound": params.get("sound"),
+                "pause_music": params.get("pause_music", False)
             }
         
         return None

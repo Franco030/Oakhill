@@ -250,6 +250,45 @@ class Game:
                 if self.event_manager.current_image:
                     self.ui_manager.show_image(self.event_manager.current_image)
 
+
+
+
+
+            DEBUG_SHOW_HITBOXES = True
+            if DEBUG_SHOW_HITBOXES:
+                scene = self.level_manager.current_scene
+                if scene:
+                    # 1. OBSTACLES
+                    for obj in scene.obstacles:
+                        if hasattr(obj, "collision_rect"):
+                            pygame.draw.rect(self.screen, (0, 255, 255), obj.collision_rect, 1)
+                        else:
+                            pygame.draw.rect(self.screen, (0, 255, 255), obj.rect, 1)
+
+                    # 2. INTERACTABLES
+                    for obj in scene.interactables:
+                        pygame.draw.rect(self.screen, (0, 255, 0), obj.rect, 1)
+
+                    # 3. TRIGGERS
+                    for trig in scene._triggers:
+                        pygame.draw.rect(self.screen, (255, 0, 255), trig.rect, 1)
+
+                    # 4. ENEMIES
+                    for enemy in scene.enemies:
+                        if hasattr(enemy, "collision_rect"):
+                            pygame.draw.rect(self.screen, (150, 0, 0), enemy.collision_rect, 1)
+
+                # 5. Player
+                pygame.draw.rect(self.screen, (255, 0, 0), self.player.collision_rect, 1)
+                
+                # 6. Player attack
+                if self.player.is_attacking:
+                     pygame.draw.rect(self.screen, (255, 255, 0), self.player.attack_rect, 1)
+
+
+
+                     
+
             pygame.display.flip()
             self.clock.tick(60)
 
@@ -263,8 +302,12 @@ class Game:
                 
         elif result["type"] == "Image":
             self.ui_manager.show_image(result["data"], blocking=should_block)
-            pygame.mixer.music.pause()
+            
+            if result.get("pause_music", False):
+                pygame.mixer.music.pause()
 
         elif result["type"] == "Animation":
-            self.ui_manager.show_animation(result["data"], speed=result["speed"], blocking=should_block)
-            pygame.mixer.music.pause()
+            self.ui_manager.show_animation(result["data"], speed=result["speed"], blocking=should_block, loop=result.get("loop", True))
+            
+            if result.get("pause_music", False):
+                pygame.mixer.music.pause()

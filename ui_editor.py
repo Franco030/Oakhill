@@ -325,12 +325,10 @@ class Ui_LevelEditor(object):
         self.group_interaction.setTitle("Lógica e Interacción")
         self.formLayout_2 = QFormLayout(self.group_interaction)
 
-        # 1. Stack Visual (Interactables)
+
         self.prop_main_stack = QStackedWidget(self.group_interaction)
-        
         self.page_interactable = QWidget()
         self.layout_interactable = QFormLayout(self.page_interactable)
-        # --- LIMPIEZA: ELIMINADOS LOS CONTROLES VIEJOS ---
         
         self.lbl_flash = QLabel("Flash Image:")
         self.layout_flash = QHBoxLayout()
@@ -383,7 +381,6 @@ class Ui_LevelEditor(object):
         self.line_logic.setFrameShadow(QFrame.Sunken)
         self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
 
-        # --- 2. GLOBALES DEL TRIGGER ---
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
         self.prop_trigger_condition = QComboBox(self.group_interaction)
         self.prop_trigger_condition.addItems([
@@ -412,7 +409,6 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
 
-        # --- 3. LISTA DE SECUENCIA ---
         self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
         self.formLayout_2.setWidget(5, QFormLayout.SpanningRole, self.lbl_sequence)
@@ -433,7 +429,6 @@ class Ui_LevelEditor(object):
         
         self.formLayout_2.setLayout(7, QFormLayout.SpanningRole, self.layout_seq_btns)
         
-        # --- 4. DETALLES DEL PASO ---
         self.group_step_detail = QGroupBox("Editar Paso Seleccionado", self.group_interaction)
         self.layout_step = QFormLayout(self.group_step_detail)
         

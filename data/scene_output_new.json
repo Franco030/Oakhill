@@ -23898,11 +23898,11 @@
                 "scripted_events": [
                     {
                         "action": "PlaySound",
-                        "params": "sound=scream"
+                        "params": "sound=scream; volume=0.6"
                     },
                     {
                         "action": "ShowImage",
-                        "params": "path=assets/images/picture.png"
+                        "params": "path=assets/images/picture.png; pause_music=true"
                     }
                 ]
             },
@@ -23918,8 +23918,8 @@
                 "starts_hidden": false,
                 "is_ground": false,
                 "collision_rect_offset": [
-                    -383,
-                    -95,
+                    -385,
+                    -98,
                     1189,
                     765
                 ],
