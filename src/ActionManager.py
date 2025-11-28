@@ -1,6 +1,7 @@
 from src.GameState import game_state
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from utils import resource_path
+from src.ResourceManager import ResourceManager
 import pygame
 
 class ActionManager:
@@ -86,11 +87,10 @@ class ActionManager:
 
         elif action_type == "PlaySound":
             sound_name = params.get("sound")
-            sound_volume = params.get("volume")
+            sound_volume = float(params.get("volume", 1.0))
             if sound_name in self.sound_library:
-                if sound_volume:
-                    sound_volume = float(sound_volume)
-                    self.sound_library[sound_name].set_volume(sound_volume)
+
+                self.sound_library[sound_name].set_volume(sound_volume)
                 self.sound_library[sound_name].play()
                 print(f"Playing sound: {sound_name}")
             else:
@@ -168,5 +168,15 @@ class ActionManager:
                 "sound": params.get("sound"),
                 "pause_music": params.get("pause_music", False)
             }
+        
+        elif action_type == "ChangeMusic":
+            # This action needs the path and not the key because of the way pygame manages music and sounds
+            music_path = params.get("path") or params.get("music")
+            fade_ms = int(params.get("fade", 500))
+            volume = float(params.get("volume", 0.6))
+            loop_count = int(params.get("loop", -1))
+
+            if music_path:
+                ResourceManager.play_music(music_path, volume, loop_count, fade_ms)
         
         return None

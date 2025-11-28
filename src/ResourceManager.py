@@ -72,3 +72,21 @@ class ResourceManager:
 
             
         return loaded_images
+    
+    @staticmethod
+    def play_music(relative_path, volume=0.6, loops=-1, fade_ms=500):
+        try:
+            full_path = resource_path(relative_path)
+            
+            if not os.path.exists(full_path):
+                print(f"[ResourceManager] Error: Music file not found at {full_path}")
+                return
+
+            print(f"[ResourceManager] Playing music: {relative_path}")
+            pygame.mixer.music.fadeout(fade_ms)
+            pygame.mixer.music.load(full_path)
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play(loops)
+            
+        except Exception as e:
+            print(f"[ResourceManager] Critical Error loading music '{relative_path}': {e}")

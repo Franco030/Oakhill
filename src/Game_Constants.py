@@ -8,7 +8,7 @@ RESIZE_FACTOR = 4
 TRANSITION_BIAS = 20
 FPS = 60
 DEATH_DELAY = 3000
-INITIAL_ZONE = (1, 1)
+INITIAL_ZONE = (5, 2)
 Y_CORD, X_CORD = INITIAL_ZONE
 
 WORLD_MAP_LEVEL = [
@@ -27,6 +27,18 @@ SCHOOL_MAP_LEVEL = [
     [0, 0, 1, 1, 1],
     [1, 1, 1, 0, 1],
     [1, 0, 1, 0, 1]
+]
+
+# SCHOOL_MAP_LEVEL = [
+#     [1, 1, 0, 0, 0],
+#     [1, 0, 1, 0, 1],
+#     [1, 0, 1, 1, 1],
+#     [1, 1, 1, 0, 1],
+#     [1, 0, 1, 0, 1]
+# ]
+
+BASEMENT_MAP_LEVEL = [
+    []
 ]
 
 MAPS = {

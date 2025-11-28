@@ -49234,9 +49234,18 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowAnimation",
-                "trigger_params": "path=assets/animations/Angel/angel; frames=157; speed=0.095; loop=false; sound=surprise_attack; pause_music=true; blocking=true",
+                "trigger_params": "blocking=true",
                 "reflection_offset_y": 0,
-                "scripted_events": [],
+                "scripted_events": [
+                    {
+                        "action": "ShowAnimation",
+                        "params": "path=assets/animations/Angel/angel; frames=157; speed=0.095; loop=false; sound=surprise_attack; pause_music=true"
+                    },
+                    {
+                        "action": "ChangeMusic",
+                        "params": "music=assets/music/BEHIND.wav; volume=0.75"
+                    }
+                ],
                 "z_index": 0,
                 "interaction_data": ""
             }

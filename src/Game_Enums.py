@@ -11,6 +11,7 @@ class Actions:
     CLOSE_IMAGE = "CloseImage"
     SHOW_NOTE = "ShowNote"
     SHOW_ANIMATION = "ShowAnimation"
+    CHANGE_MUSIC = "ChangeMusic"
 
 class Conditions:
     ON_ENTER = "OnEnter"
