@@ -2,6 +2,7 @@ from src.GameState import game_state
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from utils import resource_path
 from src.ResourceManager import ResourceManager
+from src.Game_Enums import Actions
 import pygame
 
 class ActionManager:
@@ -134,6 +135,27 @@ class ActionManager:
                 "type": "Note",
                 "data": text_content,
                 "sound": params.get("sound")
+            }
+        
+        elif action_type == Actions.SHOW_DIALOGUE:
+            text = params.get("text", "...")
+            
+            color_str = str(params.get("color", "255,255,255"))
+            
+            try:
+                text_color = tuple(map(int, color_str.split(',')))
+            except:
+                print(f"Error parsing color: {color_str}, using white.")
+                text_color = (255, 255, 255)
+
+            return {
+                "type": "Dialogue",
+                "data": {
+                    "text": text,
+                    "color": text_color
+                },
+                "sound": params.get("sound"),
+                "pause_music": params.get("pause_music", False)
             }
         
         elif action_type == "ShowImage":

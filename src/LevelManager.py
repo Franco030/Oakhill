@@ -48,7 +48,7 @@ class LevelManager:
             try:
                 pygame.mixer.music.load(resource_path(new_music))
                 pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.6)
+                pygame.mixer.music.set_volume(1)
             except Exception as e:
                 print(f"Error loading music: {e}")
             self.current_music_path = new_music

@@ -3,6 +3,24 @@ import os
 from utils import resource_path
 
 class ResourceManager:
+    _fonts = {}
+
+
+    @staticmethod
+    def get_font(size):
+        if size not in ResourceManager._fonts:
+            try:
+                font_path = resource_path("assets/fonts/little-pixel.ttf")
+                font = pygame.font.Font(font_path, size)
+                ResourceManager._fonts[size] = font
+                print(f"[ResourceManager] Loaded Global Font size {size}")
+            except Exception as e:
+                print(f"[ResourceManager] Error loading font size {size}: {e}")
+                ResourceManager._fonts[size] = pygame.font.SysFont("Arial", size)
+            
+            return ResourceManager._fonts[size]
+
+
     @staticmethod
     def load_all_sounds(folder_relative_path):
         sounds = {}

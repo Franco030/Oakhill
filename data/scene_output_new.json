@@ -14914,9 +14914,9 @@
                 "reflection_offset_y": 0,
                 "trigger_condition": "OnEnter",
                 "interaction_duration": 60,
-                "trigger_params": "text=Dia ~3=-3=-14~!@,\nEl señor Ki`12~!@- \nme atacó~@!@$~@$!@~#\n~)39`4-`,.,./''`~!@340\n2-3=4; sound=scream",
+                "trigger_params": "text=soy un texto diferente a la nota",
                 "border_width": 0,
-                "trigger_action": "ShowNote"
+                "trigger_action": "ShowDialogue"
             },
             {
                 "id": "obj_1763613130",

@@ -9,6 +9,7 @@ from src.EventManager import EventManager
 from src.LevelManager import LevelManager
 from src.GameState import game_state
 from src.Game_Enums import Actions, Conditions
+from src.Effects import RetroEffects
 from utils import resource_path
 
 class Game:
@@ -19,13 +20,15 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
         pygame.display.set_caption('Oakhill')
         self.clock = pygame.time.Clock()
-        
+
         self._load_resources()
         
         self.action_manager = ActionManager(self.sounds)
         self.event_manager = EventManager(self.action_manager)
         self.ui_manager = UIManager()
         self.level_manager = LevelManager(self.sounds)
+        
+        self.retro_effects = RetroEffects()
         
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
@@ -59,19 +62,14 @@ class Game:
         sys.exit()
 
     def _menu_loop(self):
-        try:
-            font_path = resource_path("assets/fonts/scary_font.ttf")
-            title_font = pygame.font.Font(font_path, 90)
-            btn_font = pygame.font.Font(font_path, 60)
-        except:
-            title_font = pygame.font.Font(None, 100)
-            btn_font = pygame.font.Font(None, 70)
+        title_font = ResourceManager.get_font(90)
+        btn_font = ResourceManager.get_font(60)
 
         try:
             if not pygame.mixer.music.get_busy():
                 pygame.mixer.music.load(resource_path("assets/sounds/main_menu_song.wav"))
                 pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.7)
+                pygame.mixer.music.set_volume(1)
         except: pass
 
         title_surf = title_font.render("OAKHILL", True, (255, 255, 0))
@@ -245,6 +243,7 @@ class Game:
                 UIManager.draw_game_over(self.screen, self.images.get("death_pic"))
             else:
                 self.level_manager.draw(self.screen, self.player)
+                self.retro_effects.update_and_draw(self.screen, delta_time)
                 self.ui_manager.draw(self.screen)
                 
                 if self.event_manager.current_image:
@@ -299,6 +298,9 @@ class Game:
         
         if result["type"] == "Note":
             self.ui_manager.show_note(result["data"], blocking=should_block)
+
+        elif result["type"] == "Dialogue":
+            self.ui_manager.show_dialogue(result["data"], blocking=should_block)
                 
         elif result["type"] == "Image":
             self.ui_manager.show_image(result["data"], blocking=should_block)

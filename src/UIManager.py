@@ -10,25 +10,28 @@ class UIManager:
         self.content_data = None
         self.is_blocking = False
 
+        self.font = ResourceManager.get_font(24)
+        self.ui_font = ResourceManager.get_font(20)
+
         self.anim_frames = []
         self.anim_index = 0
         self.anim_timer = 0
         self.anim_speed = 0.1
 
         
-        try:
-            self.font_path = resource_path("assets/fonts/scary_font.ttf")
-            self.font = pygame.font.Font(self.font_path, 36)
-            self.ui_font = pygame.font.Font(None, 30)
-        except:
-            self.font = pygame.font.SysFont("Arial", 36)
-            self.ui_font = pygame.font.SysFont("Arial", 30)
+        
 
     def show_note(self, text, blocking=False):
         self.active = True
         self.is_blocking = blocking
         self.content_type = "NOTE"
         self.content_data = text
+
+    def show_dialogue(self, data, blocking=False):
+        self.active = True
+        self.is_blocking = blocking 
+        self.content_type = "DIALOGUE"
+        self.content_data = data # data is a dict, we may use data: dict but meh
 
     def show_image(self, image_path, blocking=False):
         self.active = True
@@ -60,6 +63,8 @@ class UIManager:
             self.active = False
             self.is_blocking = False
 
+
+    # Only for animation
     def update(self, delta_time):
         if not self.active or self.content_type != "ANIMATION" or not self.anim_frames:
             return
@@ -96,13 +101,10 @@ class UIManager:
     def draw(self, screen):
         if not self.active: return
 
-        s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        s.set_alpha(200)
-        s.fill((0, 0, 0))
-        screen.blit(s, (0, 0))
-
         if self.content_type == "NOTE":
             self._draw_note(screen)
+        elif self.content_type == "DIALOGUE":
+            self._draw_dialogue(screen)
         elif self.content_type == "IMAGE":
             self._draw_image(screen)
         elif self.content_type == "ANIMATION":
@@ -120,6 +122,11 @@ class UIManager:
         return pygame.transform.scale(surface, new_size)
 
     def _draw_note(self, screen):
+        s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        s.set_alpha(200)
+        s.fill((0, 0, 0))
+        screen.blit(s, (0, 0))
+
         padding = 50
         ui_width = SCREEN_WIDTH - padding * 2
         ui_height = SCREEN_HEIGHT - padding * 2
@@ -139,7 +146,40 @@ class UIManager:
         rect = close_txt.get_rect(centerx=sheet_rect.centerx, bottom=sheet_rect.bottom - 20)
         screen.blit(close_txt, rect)
 
+    def _draw_dialogue(self, screen):
+        margin = 20
+        height = 200
+        rect_x = margin
+        rect_y = SCREEN_HEIGHT - height - margin
+        rect_w = SCREEN_WIDTH - (margin * 2)
+        
+        box_rect = pygame.Rect(rect_x, rect_y, rect_w, height)
+        
+        s = pygame.Surface((rect_w, height))
+        # s.set_alpha(220)
+        s.fill((0, 0, 0))
+        screen.blit(s, (rect_x, rect_y))
+        
+        data = self.content_data
+        text_color = data.get("color", (255, 255, 255))
+        
+        pygame.draw.rect(screen, (255, 255, 255), box_rect, 3) 
+
+        text = data.get("text", "")
+        text_start_y = rect_y + 30
+        
+        lines = text.split('\n') if isinstance(text, str) else [str(text)]
+        
+        for i, line in enumerate(lines):
+            txt_surf = self.ui_font.render(line, True, text_color)
+            screen.blit(txt_surf, (rect_x + 30, text_start_y + i * 35))
+
+        close_txt = self.ui_font.render("SPACEBAR", True, (150, 150, 150))
+        close_rect = close_txt.get_rect(bottomright=(rect_x + rect_w - 20, rect_y + height - 20))
+        screen.blit(close_txt, close_rect)
+
     def _draw_image(self, screen):
+        screen.fill((0, 0, 0))
         try:
             path = resource_path(self.content_data)
             img = pygame.image.load(path).convert_alpha()
@@ -158,7 +198,6 @@ class UIManager:
             new_size = (int(img_rect.width * scale), int(img_rect.height * scale))
             img = pygame.transform.scale(img, new_size)
             
-            screen.fill((0, 0, 0))
             img_rect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
             screen.blit(img, img_rect)
             
@@ -170,10 +209,10 @@ class UIManager:
         screen.blit(close_txt, rect)
 
     def _draw_animation(self, screen):
+        screen.fill((0, 0, 0))
         if not self.anim_frames: return
         current_img = self.anim_frames[self.anim_index]
         img_rect = current_img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
-        screen.fill((0, 0, 0))
         screen.blit(current_img, img_rect)
 
         # close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
