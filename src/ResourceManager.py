@@ -18,7 +18,7 @@ class ResourceManager:
                 print(f"[ResourceManager] Error loading font size {size}: {e}")
                 ResourceManager._fonts[size] = pygame.font.SysFont("Arial", size)
             
-            return ResourceManager._fonts[size]
+        return ResourceManager._fonts[size]
 
 
     @staticmethod

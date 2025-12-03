@@ -113,23 +113,17 @@ from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class RetroEffects:
     def __init__(self):
-        # --- SCANLINES ---
         self.scanline_offset = 0
-        # Tu preferencia era 0.01. Usaremos esto como base para la oscilación.
         self.scanline_base_speed = 0.02 
         
-        # --- FLICKER ---
         self.flicker_timer = 0
         
-        # --- INTERFERENCIA (NUEVO SISTEMA DE LISTA) ---
-        self.active_noises = [] # Lista para múltiples barras
+        self.active_noises = []
         self.noise_timer = 0    
         
-        # --- GRAIN ---
         self.grain_timer = 0
         self.grain_offset = (0, 0)
         
-        # --- Generar superficies con tus preferencias ---
         self.scanlines_surf = self._create_scanlines()
         self.vignette_surf = self._create_vignette()
         self.noise_surf = self._create_noise_texture()
@@ -139,13 +133,11 @@ class RetroEffects:
         surf.set_colorkey((0, 0, 0))
         surf.fill((0, 0, 0))
         
-        # Tu color preferido
         line_color = (20, 20, 20) 
 
         for y in range(0, SCREEN_HEIGHT + 10, 4):
             pygame.draw.line(surf, line_color, (0, y), (SCREEN_WIDTH, y), 1)
 
-        # Tu alpha preferido
         surf.set_alpha(50)
         return surf
     
@@ -167,7 +159,6 @@ class RetroEffects:
         w, h = 256, 256
         surf = pygame.Surface((w, h), pygame.SRCALPHA)
 
-        # Tus preferencias de Grano: 2000 puntos, muy oscuros y sutiles
         for _ in range(2000):
             x = random.randint(0, w-1)
             y = random.randint(0, h-1)
@@ -177,14 +168,11 @@ class RetroEffects:
         return surf
     
     def _spawn_noise_bar(self):
-        """Genera una barra con tus preferencias de velocidad y tamaño"""
-        direction = random.choice([-1, 1]) # Puede ir arriba o abajo
+        direction = random.choice([-1, 1])
         
-        # Tu velocidad preferida era 5. Hacemos que varíe ligeramente alrededor de 5.
         base_speed = 5
         speed = random.randint(base_speed - 1, base_speed + 2) * direction
         
-        # Altura variable (5 a 20 como tenías antes)
         height = random.randint(5, 20)
         
         if direction == 1:
@@ -199,7 +187,6 @@ class RetroEffects:
         }
 
     def update_and_draw(self, screen, delta_time):
-        # 1. RUIDO DE GRANO (GRAIN)
         self.grain_timer += delta_time
         if self.grain_timer > 30:
             self.grain_offset = (random.randint(-100, 0), random.randint(-100, 0))
@@ -207,19 +194,14 @@ class RetroEffects:
             
         for x in range(self.grain_offset[0], SCREEN_WIDTH, 256):
             for y in range(self.grain_offset[1], SCREEN_HEIGHT, 256):
-                # Mantengo tu preferencia de BLEND_ADD
                 screen.blit(self.noise_surf, (x, y), special_flags=pygame.BLEND_ADD)
 
-        # 2. SCANLINES DINÁMICAS (Lentas como te gustan)
-        # Usamos oscilación suave pero mantenemos la velocidad base muy baja
         current_time = pygame.time.get_ticks() / 1000.0
-        oscillation = math.sin(current_time * 0.5) * 0.02 # Variación muy pequeña
+        oscillation = math.sin(current_time * 0.5) * 0.02
         
-        # La velocidad oscilará cerca de tu 0.01 original
         current_speed = self.scanline_base_speed + oscillation
         self.scanline_offset = (self.scanline_offset + current_speed) % 4
         
-        # Flicker (Mismo rango 100-140 que tenías)
         self.flicker_timer += delta_time
         if self.flicker_timer > 50:
             new_alpha = random.randint(100, 140)
@@ -228,39 +210,31 @@ class RetroEffects:
 
         screen.blit(self.scanlines_surf, (0, -int(self.scanline_offset)))
 
-        # 3. INTERFERENCIA MÚLTIPLE
         self.noise_timer -= delta_time
         if self.noise_timer <= 0:
-            # A veces sale 1, a veces 2 barras
             num_bars = random.choices([1, 2], weights=[0.8, 0.2])[0]
             for _ in range(num_bars):
                 self.active_noises.append(self._spawn_noise_bar())
             
-            # Tu rango de tiempo preferido: 20s a 30s
             self.noise_timer = random.randint(20000, 30000)
         
-        # Actualizar y dibujar lista de barras
         remaining_noises = []
         
         for noise in self.active_noises:
             noise['y'] += noise['speed']
             
-            # Solo dibujamos si está en pantalla (con margen)
             if -50 < noise['y'] < SCREEN_HEIGHT + 50:
                 noise_rect = pygame.Rect(0, int(noise['y']), SCREEN_WIDTH, noise['height'])
                 
-                # Tu color de barra preferido (50, 50, 50, 100)
                 shape_surf = pygame.Surface(noise_rect.size, pygame.SRCALPHA)
                 shape_surf.fill((50, 50, 50, 100))
                 screen.blit(shape_surf, noise_rect, special_flags=pygame.BLEND_ADD)
                 
-                # Efecto TEARING con tu configuración (-20, 20)
                 offset_x = random.randint(-20, 20)
                 if offset_x == 0: offset_x = 5
                 
                 screen.blit(screen, (offset_x, int(noise['y'])), area=noise_rect)
                 
-                # Tu Tinte Cian Oscuro (0, 10, 10)
                 tint_surf = pygame.Surface(noise_rect.size)
                 tint_surf.fill((0, 10, 10))
                 screen.blit(tint_surf, (offset_x, int(noise['y'])), special_flags=pygame.BLEND_ADD)
@@ -269,5 +243,4 @@ class RetroEffects:
         
         self.active_noises = remaining_noises
 
-        # 4. VIÑETA
         screen.blit(self.vignette_surf, (0, 0))

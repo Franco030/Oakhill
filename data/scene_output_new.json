@@ -15039,16 +15039,11 @@
                 "interaction_data": "",
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowNote",
-                "trigger_params": "",
+                "trigger_params": "text=Soy una nota; sound=interaction_occured",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "scripted_events": [
-                    {
-                        "action": "ShowNote",
-                        "params": "text=Soy una nota"
-                    }
-                ]
+                "scripted_events": []
             }
         ],
         "(4, 2)": [

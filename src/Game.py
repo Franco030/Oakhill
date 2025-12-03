@@ -67,7 +67,7 @@ class Game:
 
         try:
             if not pygame.mixer.music.get_busy():
-                pygame.mixer.music.load(resource_path("assets/sounds/main_menu_song.wav"))
+                pygame.mixer.music.load(resource_path("assets/music/MENU.wav"))
                 pygame.mixer.music.play(-1)
                 pygame.mixer.music.set_volume(1)
         except: pass
@@ -243,11 +243,11 @@ class Game:
                 UIManager.draw_game_over(self.screen, self.images.get("death_pic"))
             else:
                 self.level_manager.draw(self.screen, self.player)
-                self.retro_effects.update_and_draw(self.screen, delta_time)
                 self.ui_manager.draw(self.screen)
                 
                 if self.event_manager.current_image:
                     self.ui_manager.show_image(self.event_manager.current_image)
+                self.retro_effects.update_and_draw(self.screen, delta_time)
 
 
 

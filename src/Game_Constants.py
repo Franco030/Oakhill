@@ -59,7 +59,7 @@ MAPS = {
 }
 
 LEVEL_MUSIC = {
-    "forest": resource_path("assets/music/experiment.wav"),
+    "forest": resource_path("assets/music/MAIN_SONG.wav"),
     "school": resource_path("assets/sounds/inside_schoolbuilding_loop.wav")
 }
 
@@ -71,15 +71,3 @@ LEVEL_DARKNESS = {
 # player sprite is 8 x 25
 # most resizes must be around 4 times the original size
 # player sprite will be 32 x 100
-
-
-# Every inside wall has a border of 16 x 5 pixels
-# And we simulate a wall with 16 x 11 pixels
-# This means if we use Grid 16 x 16 it'll be:
-#   -
-#   | 5 squares
-#   -
-#   |   11 squares
-#   |
-#   - 
-#
