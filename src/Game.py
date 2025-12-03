@@ -17,7 +17,7 @@ class Game:
         pygame.init()
         pygame.mixer.init()
         
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.DOUBLEBUF, vsync=1)
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED | pygame.RESIZABLE | pygame.FULLSCREEN | pygame.DOUBLEBUF, vsync=1)
         pygame.display.set_caption('Oakhill')
         self.clock = pygame.time.Clock()
 
@@ -69,7 +69,7 @@ class Game:
             if not pygame.mixer.music.get_busy():
                 pygame.mixer.music.load(resource_path("assets/music/MENU.wav"))
                 pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(1)
+                pygame.mixer.music.set_volume(0.6)
         except: pass
 
         title_surf = title_font.render("OAKHILL", True, (255, 255, 0))
@@ -84,6 +84,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.state = "QUIT"
                     return
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_F11:
+                        pygame.display.toggle_fullscreen()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if play_rect.collidepoint(event.pos):
@@ -146,10 +151,15 @@ class Game:
                     self.state = "QUIT"
                     return
                 
+                if event.type == MUSIC_END_EVENT:
+                    self.level_manager.on_music_ended()
+
                 if self.ui_manager.handle_input(event):
                     continue 
 
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_F11:
+                        pygame.display.toggle_fullscreen()
                     if event.key == pygame.K_p:
                         print(self.player.pos)
                     if event.key == pygame.K_SPACE:

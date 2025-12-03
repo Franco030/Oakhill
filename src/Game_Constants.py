@@ -1,5 +1,6 @@
 # This script stores global constants used throughout the game.
 from utils import resource_path
+import pygame
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 800
@@ -67,6 +68,8 @@ LEVEL_DARKNESS = {
     "forest": False,
     "school": True
 }
+
+MUSIC_END_EVENT = pygame.USEREVENT + 1
 
 # player sprite is 8 x 25
 # most resizes must be around 4 times the original size

@@ -1,8 +1,9 @@
 import pygame
 from src.Scene_Loader import SceneLoader
 from src.GameState import game_state
-from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS
+from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS, MUSIC_END_EVENT
 from utils import resource_path
+import random
 
 class LevelManager:
     def __init__(self, sounds):
@@ -10,6 +11,10 @@ class LevelManager:
 
         self.current_scene = None
         self.current_music_path = None
+
+        self.silence_timer = 0
+        self.is_in_silence = False
+
         self.current_zone = (0, 0)
 
         self.light_mask = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -41,14 +46,18 @@ class LevelManager:
             level_req["darkness"]
         )
 
+        self.silence_timer = 0
+        self.is_in_silence = False
+
         new_music = level_req["music_path"]
         if new_music and new_music != self.current_music_path:
             print(f"[LevelManager] Changing music to: {new_music}")
             pygame.mixer.music.fadeout(500)
             try:
                 pygame.mixer.music.load(resource_path(new_music))
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(1)
+                pygame.mixer.music.play(0)
+                pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
+                pygame.mixer.music.set_volume(0.5)
             except Exception as e:
                 print(f"Error loading music: {e}")
             self.current_music_path = new_music
@@ -60,11 +69,28 @@ class LevelManager:
         
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
 
+    def on_music_ended(self):
+        self.silence_timer = random.randint(60000, 120000)
+        self.is_in_silence = True
+        print(f"[LevelManager] Music ended. Silence for {self.silence_timer/1000} seconds.")
+
     def update(self, delta_time):
         if self.current_scene:
             self.current_scene.enemies.update(delta_time)
             self.current_scene.obstacles.update()
             self.current_scene.interactables.update()
+
+        if self.is_in_silence:
+            self.silence_timer -= delta_time
+            if self.silence_timer <= 0:
+                self.is_in_silence = False
+                if self.current_music_path:
+                    try:
+                        print("[LevelManager] Silence over. Replaying music.")
+                        pygame.mixer.music.play(0)
+                        pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
+                    except Exception as e:
+                        print(f"Error replaying music: {e}")
 
     def draw(self, screen, player_sprite):
         if self.current_scene:

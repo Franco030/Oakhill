@@ -14942,10 +14942,21 @@
                 "interaction_data": "Puede que un secreto \nhaya sido\nrevelado...\n...\n...",
                 "trigger_condition": "OnInteract",
                 "trigger_action": "SetFlag",
-                "trigger_params": "flag=have_key; value=true",
+                "trigger_params": "",
                 "reflection_offset_y": 0,
                 "interaction_duration": 60,
-                "border_width": 0
+                "border_width": 0,
+                "scripted_events": [
+                    {
+                        "action": "SetFlag",
+                        "params": "flag=have_key; value=true;"
+                    },
+                    {
+                        "action": "ShowNote",
+                        "params": "text=A secret teleport has been opened...; sound=interaction_occured"
+                    }
+                ],
+                "charge_sound_path": "assets/sounds/interacting.wav"
             },
             {
                 "id": "obj_1763613395",
