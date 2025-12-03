@@ -2444,7 +2444,7 @@
             {
                 "id": "obj_1764286288413_264",
                 "type": "Trigger",
-                "x": 397,
+                "x": 401,
                 "y": -47,
                 "image_path": "",
                 "resize_factor": 1.0,
@@ -13751,7 +13751,7 @@
                 "interaction_data": "",
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowAnimation",
-                "trigger_params": "path=assets/animations/Stalker/ghost; frames=4; speed=0.5; blocking=true",
+                "trigger_params": "path=assets/animations/Stalker/ghost; frames=4; speed=0.5; loop=true; kill=true; blocking=true",
                 "scripted_events": [],
                 "z_index": 0,
                 "reflection_offset_y": 0

@@ -1,111 +1,3 @@
-# import pygame
-# import random
-# from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
-
-# class RetroEffects:
-#     def __init__(self):
-#         self.scanline_offset = 0
-#         self.scanline_speed = 0.01
-#         self.flicker_timer = 0
-#         self.noise_line_y = -100
-#         self.noise_timer = 0
-        
-#         self.scanlines_surf = self._create_scanlines()
-#         self.vignette_surf = self._create_vignette()
-#         self.noise_surf = self._create_noise_texture()
-
-#         self.grain_timer = 0
-#         self.grain_offset = (0, 0)
-
-#     def _create_scanlines(self):
-#         surf = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT + 10))
-#         surf.set_colorkey((0, 0, 0))
-#         surf.fill((0, 0, 0))
-
-#         line_color = (20, 20, 20)
-
-#         for y in range(0, SCREEN_HEIGHT + 10, 4):
-#             pygame.draw.line(surf, line_color, (0, y), (SCREEN_WIDTH, y), 1)
-
-#         surf.set_alpha(50)
-#         return surf
-    
-#     def _create_vignette(self):
-#         surf = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-#         surf.fill((0, 0, 0, 0)) # Transparente total
-        
-#         max_radius = int(((SCREEN_WIDTH/2)**2 + (SCREEN_HEIGHT/2)**2)**0.5)
-#         center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        
-#         for r in range(max_radius, int(SCREEN_HEIGHT * 0.4), -8):
-#             progress = (r - (SCREEN_HEIGHT * 0.4)) / (max_radius - (SCREEN_HEIGHT * 0.4))
-#             alpha = int(min(255, progress * 200))
-            
-#             pygame.draw.circle(surf, (0, 0, 0, alpha), center, r, 10)
-            
-#         return surf
-    
-#     def _create_noise_texture(self):
-#         w, h = 256, 256
-#         surf = pygame.Surface((w, h), pygame.SRCALPHA)
-
-#         for _ in range(2000):
-#             x = random.randint(0, w-1)
-#             y = random.randint(0, h-1)
-#             alpha = random.randint(5, 10)
-#             surf.set_at((x, y), (10, 10, 10, alpha))
-            
-#         return surf
-    
-#     def update_and_draw(self, screen, delta_time):
-#         self.grain_timer += delta_time
-#         if self.grain_timer > 30:
-#             self.grain_offset = (random.randint(-100, 0), random.randint(-100, 0))
-#             self.grain_timer = 0
-            
-
-#         for x in range(self.grain_offset[0], SCREEN_WIDTH, 256):
-#             for y in range(self.grain_offset[1], SCREEN_HEIGHT, 256):
-#                 screen.blit(self.noise_surf, (x, y), special_flags=pygame.BLEND_ADD)
-
-#         self.scanline_offset = (self.scanline_offset + self.scanline_speed) % 4
-        
-#         self.flicker_timer += delta_time
-#         if self.flicker_timer > 50:
-#             new_alpha = random.randint(100, 140)
-#             self.scanlines_surf.set_alpha(new_alpha)
-#             self.flicker_timer = 0
-
-#         screen.blit(self.scanlines_surf, (0, -int(self.scanline_offset)))
-
-#         self.noise_timer -= delta_time
-#         if self.noise_timer <= 0:
-#             self.noise_line_y = random.randint(0, SCREEN_HEIGHT // 2)
-#             self.noise_timer = random.randint(20000, 30000)
-        
-#         if self.noise_line_y < SCREEN_HEIGHT:
-#             height = random.randint(5, 20)
-#             noise_rect = pygame.Rect(0, self.noise_line_y, SCREEN_WIDTH, height)
-#             shape_surf = pygame.Surface(noise_rect.size, pygame.SRCALPHA)
-#             shape_surf.fill((50, 50, 50, 100))
-#             screen.blit(shape_surf, noise_rect, special_flags=pygame.BLEND_ADD)
-#             self.noise_line_y += 5
-
-
-#             offset_x = random.randint(-20, 20) 
-            
-#             # Evitamos que el offset sea 0 (porque entonces no se vería nada)
-#             if offset_x == 0: offset_x = 5
-
-#             screen.blit(screen, (offset_x, self.noise_line_y), area=noise_rect)
-            
-#             tint_surf = pygame.Surface(noise_rect.size)
-#             tint_surf.fill((0, 10, 10))
-#             screen.blit(tint_surf, (offset_x, self.noise_line_y), special_flags=pygame.BLEND_ADD)
-
-
-#         screen.blit(self.vignette_surf, (0, 0))
-
 import pygame
 import random
 import math
@@ -123,6 +15,10 @@ class RetroEffects:
         
         self.grain_timer = 0
         self.grain_offset = (0, 0)
+
+        self.transition_value = 0.0
+        self.fade_surf = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.fade_surf.fill((0, 0, 0))
         
         self.scanlines_surf = self._create_scanlines()
         self.vignette_surf = self._create_vignette()
@@ -185,8 +81,19 @@ class RetroEffects:
             'height': height,
             'speed': speed
         }
+    
+    def set_transition(self, value):
+        self.transition_value = max(0, 0, min(1.0, value))
 
     def update_and_draw(self, screen, delta_time):
+        if self.transition_value > 0:
+            fade_alpha = int(255 * (self.transition_value ** 2))
+            self.fade_surf.set_alpha(fade_alpha)
+            screen.blit(self.fade_surf, (0, 0))
+
+        target_scan_alpha = 50 + (205 * self.transition_value)
+        self.scanlines_surf.set_alpha(int(target_scan_alpha))
+
         self.grain_timer += delta_time
         if self.grain_timer > 30:
             self.grain_offset = (random.randint(-100, 0), random.randint(-100, 0))
@@ -216,7 +123,10 @@ class RetroEffects:
             for _ in range(num_bars):
                 self.active_noises.append(self._spawn_noise_bar())
             
-            self.noise_timer = random.randint(20000, 30000)
+            if self.transition_value > 0.5:
+                self.noise_timer = random.randint(2000, 5000)
+            else:
+                self.noise_timer = random.randint(20000, 30000)
         
         remaining_noises = []
         

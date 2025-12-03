@@ -70,7 +70,7 @@ class LevelManager:
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
 
     def on_music_ended(self):
-        self.silence_timer = random.randint(60000, 120000)
+        self.silence_timer = random.randint(90000, 150000)
         self.is_in_silence = True
         print(f"[LevelManager] Music ended. Silence for {self.silence_timer/1000} seconds.")
 

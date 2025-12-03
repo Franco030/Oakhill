@@ -74,17 +74,9 @@ class ActionManager:
             x = params.get("x")
             y = params.get("y")
             
-            if zone_str:
-                scene.change_zone_by_string(zone_str)
-                
-                if x is not None and y is not None:
-                    try:
-                        player.teleport(x, y)
-                    except AttributeError:
-                        if hasattr(player, "sprite"):
-                            player.sprite.teleport(x, y)
-                        else:
-                            pass
+            if x is not None and y is not None:
+                game_state.request_teleport(zone_str, x, y)
+                print(f"[ActionManager] Teleport requested to {zone_str} at ({x}, {y})")
 
         elif action_type == "PlaySound":
             sound_name = params.get("sound")

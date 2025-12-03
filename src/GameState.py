@@ -10,6 +10,7 @@ class GameState:
             cls._instance.flags = {}
             cls._instance.interacted_objects = set()
             cls._instance.pending_level_change = None
+            cls._instance.teleport_req = None
         return cls._instance
     
     # --- Flag logic ---
@@ -81,6 +82,20 @@ class GameState:
         self.pending_level_change = None
         return data
     # ----------------------------------
+
+    # --- Teleport logic ---
+    def request_teleport(self, zone_str, x, y):
+        self.teleport_req = {
+            "zone": zone_str,
+            "x": x,
+            "y": y
+        }
+
+    def consume_teleport(self):
+        data = self.teleport_req
+        self.teleport_req = None
+        return data
+    # ------------------------------------------------
     
     def reset(self):
         """

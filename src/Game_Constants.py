@@ -61,7 +61,7 @@ MAPS = {
 
 LEVEL_MUSIC = {
     "forest": resource_path("assets/music/MAIN_SONG.wav"),
-    "school": resource_path("assets/sounds/inside_schoolbuilding_loop.wav")
+    "school": resource_path("assets/music/INSIDE_SCHOOL.wav")
 }
 
 LEVEL_DARKNESS = {

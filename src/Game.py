@@ -33,6 +33,11 @@ class Game:
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
         self.death_screen_delay = DEATH_DELAY
+
+        self.transition_state = "NONE"
+        self.transition_timer = 0
+        self.transition_duration = 500
+        self.pending_level_req = None
         
         self.player_group = pygame.sprite.GroupSingle()
         self.player = Player(0, 0)
@@ -146,160 +151,200 @@ class Game:
             self.screen.fill('black')
             delta_time = self.clock.get_time()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.state = "QUIT"
-                    return
-                
-                if event.type == MUSIC_END_EVENT:
-                    self.level_manager.on_music_ended()
-
-                if self.ui_manager.handle_input(event):
-                    continue 
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_F11:
-                        pygame.display.toggle_fullscreen()
-                    if event.key == pygame.K_p:
-                        print(self.player.pos)
-                    if event.key == pygame.K_SPACE:
-                        self.player.attack()
-                    elif event.key == pygame.K_ESCAPE:
-                        if self.player.is_defeated:
-                            pygame.mixer.music.stop()
-                            if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].stop()
-                            if self.sounds.get("death_sound"): self.sounds["death_sound"].stop()
-                            self.state = "MAIN_MENU"
-                            return
-
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_SPACE:
-                        self.player.stop_attack()
-
+            self._handle_input_events()
             self.ui_manager.update(delta_time)
 
-            if not self.ui_manager.active or not self.ui_manager.is_blocking:
-                seq_result = self.event_manager.update(delta_time, self.player, self.level_manager.current_scene)
-                if seq_result:
-                    self._handle_event_result(seq_result)
-
-                if not self.event_manager.is_blocking:
-                    self.player_group.update(self.level_manager.current_scene.obstacles)
-                else:
-                    self.player.stop_attack()
-                
-                self.level_manager.update(delta_time)
-                self.level_manager.handle_zone_transition(self.player)
-                
-                scene = self.level_manager.current_scene
-                if scene:
-                    hits = pygame.sprite.spritecollide(self.player, scene._triggers, False, collided=lambda p,t: p.collision_rect.colliderect(t.rect))
-                    for trig in hits:
-                        if trig.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG]:
-                            res = self.event_manager.process_trigger(trig, self.player, scene)
-                            self._handle_event_result(res)
-                    
-                    processed = False
-                    for obj in scene.interactables:
-                        contact = False
-                        if obj.trigger_condition == Conditions.ON_ENTER:
-                            if self.player.collision_rect.colliderect(obj.rect):
-                                if obj.progress_interaction() != "finished": obj.current_progress = obj.interaction_duration
-                                contact = True
-                        elif obj.trigger_condition in [Conditions.ON_INTERACT, "None"]:
-                            if self.player.is_attacking and self.player.attack_rect.colliderect(obj.rect):
-                                contact = True
-                        
-                        if contact and not processed:
-                            status = obj.progress_interaction()
-                            if status == "finished":
-                                processed = True
-                                res = self.event_manager.process_trigger(obj, self.player, scene)
-                                self._handle_event_result(res)
-                                obj.read()
-                                if self.player.is_attacking: self.player.cancel_attack()
-                        else:
-                            obj.reset_interaction()
-
-                    if self.player.is_attacking:
-                        for enemy in scene.enemies:
-                            if enemy.collision_rect.colliderect(self.player.attack_rect) and hasattr(enemy, 'while_attacked'):
-                                enemy.while_attacked()
-
-                    for enemy in scene.enemies:
-                        if enemy.collides_with(self.player) and not self.player.is_defeated:
-                            self.player.defeat()
-                            pygame.mixer.music.stop()
-                            if self.sounds.get("chase_loop"): self.sounds["chase_loop"].stop()
-                            if self.sounds.get("death_sound"): self.sounds["death_sound"].play()
-                            break
-
-                req = game_state.consume_level_change()
-                if req:
-                    self.screen.fill((0,0,0)); pygame.display.flip()
-                    self.level_manager.load_level_from_request(req, self.player)
-                    continue 
-
-                if self.player.is_defeated:
-                    self.death_screen_delay -= delta_time
-                    if self.death_screen_delay <= 0:
-                        if not self.game_over_sound_played:
-                            if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].play()
-                            self.game_over_sound_played = True
-                        pass 
-
-            if self.player.is_defeated and self.death_screen_delay <= 0:
-                self.level_manager.draw(self.screen, self.player)
-                UIManager.draw_game_over(self.screen, self.images.get("death_pic"))
+            if self.transition_state != "NONE":
+                self._update_transition(delta_time)
             else:
-                self.level_manager.draw(self.screen, self.player)
-                self.ui_manager.draw(self.screen)
-                
-                if self.event_manager.current_image:
-                    self.ui_manager.show_image(self.event_manager.current_image)
-                self.retro_effects.update_and_draw(self.screen, delta_time)
+                request_handled = self._check_game_requests()
+                if not request_handled:
+                    self._update_gameplay(delta_time)
 
-
-
-
-
-            # DEBUG_SHOW_HITBOXES = True
-            # if DEBUG_SHOW_HITBOXES:
-            #     scene = self.level_manager.current_scene
-            #     if scene:
-            #         # 1. OBSTACLES
-            #         for obj in scene.obstacles:
-            #             if hasattr(obj, "collision_rect"):
-            #                 pygame.draw.rect(self.screen, (0, 255, 255), obj.collision_rect, 1)
-            #             else:
-            #                 pygame.draw.rect(self.screen, (0, 255, 255), obj.rect, 1)
-
-            #         # 2. INTERACTABLES
-            #         for obj in scene.interactables:
-            #             pygame.draw.rect(self.screen, (0, 255, 0), obj.rect, 1)
-
-            #         # 3. TRIGGERS
-            #         for trig in scene._triggers:
-            #             pygame.draw.rect(self.screen, (255, 0, 255), trig.rect, 1)
-
-            #         # 4. ENEMIES
-            #         for enemy in scene.enemies:
-            #             if hasattr(enemy, "collision_rect"):
-            #                 pygame.draw.rect(self.screen, (150, 0, 0), enemy.collision_rect, 1)
-
-            #     # 5. Player
-            #     pygame.draw.rect(self.screen, (255, 0, 0), self.player.collision_rect, 1)
-                
-            #     # 6. Player attack
-            #     if self.player.is_attacking:
-            #          pygame.draw.rect(self.screen, (255, 255, 0), self.player.attack_rect, 1)
-
-
-
-
+            self._draw(delta_time)
 
             pygame.display.flip()
             self.clock.tick(60)
+
+
+    def _handle_input_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.state = "QUIT"
+                return
+            
+            if event.type == MUSIC_END_EVENT:
+                self.level_manager.on_music_ended()
+
+            if self.transition_state != "NONE":
+                continue
+
+            if self.ui_manager.handle_input(event):
+                continue
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE: self.player.attack()
+                elif event.key == pygame.K_ESCAPE: self._handle_pause_or_exit()
+                elif event.key == pygame.K_F11: pygame.display.toggle_fullscreen()
+            
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE: self.player.stop_attack()
+
+    def _check_game_requests(self):
+        teleport_req = game_state.consume_teleport()
+        if teleport_req:
+            self.pending_teleport = teleport_req
+            self.transition_state = "OUT"
+            self.transition_timer = 0
+            print("[Game] Starting Teleport Transition")
+            return True 
+        
+        level_req = game_state.consume_level_change()
+        if level_req:
+            self.screen.fill((0, 0, 0)); pygame.display.flip()
+            self.level_manager.load_level_from_request(level_req, self.player)
+            self.retro_effects.set_transition(0.0)
+            return True
+            
+        return False
+
+    def _update_transition(self, delta_time):
+        self.transition_timer += delta_time
+        
+        progress = min(1.0, self.transition_timer / self.transition_duration)
+
+        if self.transition_state == "OUT":
+            self.retro_effects.set_transition(progress)
+
+            if progress >= 1.0:
+                
+                if hasattr(self, 'pending_teleport') and self.pending_teleport:
+                    data = self.pending_teleport
+                    if data["zone"] and data["zone"] != "None":
+                        self.level_manager.current_scene.change_zone_by_string(data["zone"])
+                    self.player.teleport(data["x"], data["y"])
+                    self.pending_teleport = None
+                    print("[Game] Teleport executed mid-transition")
+
+                self.transition_state = "IN"
+                self.transition_timer = 0 
+                self.retro_effects.set_transition(1.0) 
+        
+        elif self.transition_state == "IN":
+            inverse_progress = 1.0 - progress
+            self.retro_effects.set_transition(inverse_progress)
+
+            if progress >= 1.0:
+                self.transition_state = "NONE"
+                self.retro_effects.set_transition(0.0)
+                print("[Game] Transition finished")
+
+    def _update_gameplay(self, delta_time):
+        if not self.ui_manager.active or not self.ui_manager.is_blocking:
+            seq_result = self.event_manager.update(delta_time, self.player, self.level_manager.current_scene)
+            if seq_result: self._handle_event_result(seq_result)
+
+            if not self.event_manager.is_blocking:
+                self.player_group.update(self.level_manager.current_scene.obstacles)
+            else:
+                self.player.stop_attack()
+
+            
+            self.level_manager.update(delta_time)
+            self.level_manager.handle_zone_transition(self.player)
+            
+            self._handle_collisions_and_triggers() 
+
+            if self.player.is_defeated:
+                self.death_screen_delay -= delta_time
+                if self.death_screen_delay <= 0 and not self.game_over_sound_played:
+                    if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].play()
+                    self.game_over_sound_played = True
+
+    def _draw(self, delta_time):
+        if self.player.is_defeated and self.death_screen_delay <= 0:
+            self.level_manager.draw(self.screen, self.player)
+            UIManager.draw_game_over(self.screen, self.images.get("death_pic"))
+            self.retro_effects.update_and_draw(self.screen, delta_time)
+        else:
+            self.level_manager.draw(self.screen, self.player)
+            self.ui_manager.draw(self.screen)
+            if self.event_manager.current_image:
+                self.ui_manager.show_image(self.event_manager.current_image)
+            self.retro_effects.update_and_draw(self.screen, delta_time)    
+
+    def _handle_pause_or_exit(self):
+        if self.player.is_defeated:
+            pygame.mixer.music.stop()
+            
+            if self.sounds.get("game_over_sound"): 
+                self.sounds["game_over_sound"].stop()
+            
+            if self.sounds.get("death_sound"): 
+                self.sounds["death_sound"].stop()
+            
+            self.state = "MAIN_MENU"
+
+    def _handle_collisions_and_triggers(self):
+        scene = self.level_manager.current_scene
+        if not scene: return
+
+        hits = pygame.sprite.spritecollide(
+            self.player, 
+            scene._triggers, 
+            False, 
+            collided=lambda p, t: p.collision_rect.colliderect(t.rect)
+        )
+        
+        for trig in hits:
+            if trig.condition in ["OnEnter", "IfFlag"]:
+                res = self.event_manager.process_trigger(trig, self.player, scene)
+                self._handle_event_result(res)
+        
+        processed = False
+        for obj in scene.interactables:
+            contact = False
+            
+            if obj.trigger_condition == "OnEnter":
+                if self.player.collision_rect.colliderect(obj.rect):
+                    if obj.progress_interaction() != "finished": 
+                        obj.current_progress = obj.interaction_duration
+                    contact = True
+            
+            elif obj.trigger_condition in ["OnInteract", "None"]:
+                if self.player.is_attacking and self.player.attack_rect.colliderect(obj.rect):
+                    contact = True
+            
+            if contact and not processed:
+                status = obj.progress_interaction()
+                if status == "finished":
+                    processed = True
+                    res = self.event_manager.process_trigger(obj, self.player, scene)
+                    self._handle_event_result(res)
+                    obj.read()
+                    
+                    if self.player.is_attacking: 
+                        self.player.cancel_attack()
+            else:
+                obj.reset_interaction()
+
+        if self.player.is_attacking:
+            for enemy in scene.enemies:
+                if enemy.collision_rect.colliderect(self.player.attack_rect) and hasattr(enemy, 'while_attacked'):
+                    enemy.while_attacked()
+
+        for enemy in scene.enemies:
+            if enemy.collides_with(self.player) and not self.player.is_defeated:
+                self.player.defeat()
+                
+                # Lógica de muerte
+                pygame.mixer.music.stop()
+                if self.sounds.get("chase_loop"): self.sounds["chase_loop"].stop()
+                if self.sounds.get("death_sound"): self.sounds["death_sound"].play()
+                
+                # Solo morimos una vez
+                break
+                    
 
     def _handle_event_result(self, result):
         if not result: return
