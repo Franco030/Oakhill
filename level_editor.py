@@ -302,7 +302,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "charge_sound_path": "None",
             "used_image_path": "None", 
             "interaction_duration": 60, 
-            "trigger_condition": Conditions.ON_ENTER, 
+            "trigger_condition": Conditions.ON_STAY,    
             "trigger_action": Actions.SET_FLAG, 
             "trigger_params": ""
         }

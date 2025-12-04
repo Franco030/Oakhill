@@ -38,6 +38,8 @@ class Game:
         self.transition_timer = 0
         self.transition_duration = 500
         self.pending_level_req = None
+
+        self.last_frame_triggers = set()
         
         self.debug_mode = False
 
@@ -303,22 +305,40 @@ class Game:
             collided=lambda p, t: p.collision_rect.colliderect(t.rect)
         )
         
-        for trig in hits:
-            if trig.condition in ["OnEnter", "IfFlag"]:
+        current_triggers_set = set(hits)
+
+        for trig in current_triggers_set:
+            should_execute = False
+
+            if trig.condition in [Conditions.ON_STAY, Conditions.IF_FLAG]:
+                should_execute = True
+
+            elif trig.condition == Conditions.ON_ENTER:
+                if trig not in self.last_frame_triggers:
+                    should_execute = True
+
+            if should_execute:
                 res = self.event_manager.process_trigger(trig, self.player, scene)
                 self._handle_event_result(res)
+
+        self.last_frame_triggers = current_triggers_set
+
+        # for trig in hits:
+        #     if trig.condition in [Conditions.ON_STAY, Conditions.IF_FLAG]:
+        #         res = self.event_manager.process_trigger(trig, self.player, scene)
+        #         self._handle_event_result(res)
         
         processed = False
         for obj in scene.interactables:
             contact = False
             
-            if obj.trigger_condition == "OnEnter":
+            if obj.trigger_condition == Conditions.ON_STAY:
                 if self.player.collision_rect.colliderect(obj.rect):
                     if obj.progress_interaction() != "finished": 
                         obj.current_progress = obj.interaction_duration
                     contact = True
             
-            elif obj.trigger_condition in ["OnInteract", "None"]:
+            elif obj.trigger_condition in [Conditions.ON_INTERACT, "None"]:
                 if self.player.is_attacking and self.player.attack_rect.colliderect(obj.rect):
                     contact = True
             
@@ -344,12 +364,10 @@ class Game:
             if enemy.collides_with(self.player) and not self.player.is_defeated:
                 self.player.defeat()
                 
-                # Lógica de muerte
                 pygame.mixer.music.stop()
                 if self.sounds.get("chase_loop"): self.sounds["chase_loop"].stop()
                 if self.sounds.get("death_sound"): self.sounds["death_sound"].play()
                 
-                # Solo morimos una vez
                 break
 
     def _debug_draw_collisions(self):

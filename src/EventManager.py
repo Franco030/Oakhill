@@ -108,7 +108,7 @@ class EventManager:
                     return None
 
         should_kill = False
-        if hasattr(obj, "condition") and obj.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG] and not hasattr(obj, "interaction_type"):
+        if hasattr(obj, "condition") and obj.condition in [Conditions.ON_STAY, Conditions.IF_FLAG] and not hasattr(obj, "interaction_type"):
              should_kill = params.get("kill", True)
 
         if hasattr(obj, "data") and obj.data.get("scripted_events"):

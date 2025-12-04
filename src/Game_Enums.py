@@ -26,6 +26,7 @@ class Actions:
         ]
 
 class Conditions:
+    ON_STAY = "OnStay"
     ON_ENTER = "OnEnter"
     ON_INTERACT = "OnInteract"
     AUTO_START = "AutoStart"
@@ -34,7 +35,7 @@ class Conditions:
     @staticmethod
     def get_conditions():
         return [
-            Conditions.ON_ENTER, Conditions.ON_INTERACT,
+            Conditions.ON_STAY, Conditions.ON_ENTER, Conditions.ON_INTERACT,
             Conditions.AUTO_START, Conditions.IF_FLAG
         ]
 

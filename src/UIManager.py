@@ -104,8 +104,14 @@ class UIManager:
                     self.content_data = self.note_pages[self.current_page]
                     self.sounds["turn_pages"].play()
                     self.retro_effects.add_trauma(0.5)
-                else:
+                elif self.content_type == "NOTE" and self.current_page == len(self.note_pages) -1:
                     self.sounds["note_closed"].play()
+                    self.close()
+                else:
+                    # Here are the other content_types: DIALOGUE, IMAGE, ANIMATION
+                    # If I want to add closing sound to each one, I can do the same I did with the notes
+                    # If at any point I want to add the sounds via ActionManager I can add a new param named "closing_sound"
+                    # Then I return it along with all of the data, and just do a self.sounds[self.closing_sound] something like that
                     self.close()
 
                 return True
