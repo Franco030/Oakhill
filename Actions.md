@@ -1,160 +1,114 @@
-# Documentación de Acciones
+# Oakhill Action System Documentation
 
-Este documento detalla todas las acciones que se pueden utilizar en `trigger_action` (para objetos individuales) o dentro de la lista `scripted_events` (para secuencias).
+This document serves as a comprehensive reference for the Action System used in the Oakhill engine. Actions are defined in the `ActionManager` and executed via Triggers, Interactables, or Scripted Events.
 
-## Parámetros Globales
+## Syntax Overview
 
-Estos parámetros pueden añadirse a casi cualquier acción para modificar su comportamiento general.
+Parameters for actions are defined as a single string in the editor, using the following format:
+`key=value;key2=value`
 
-| Flag | Tipo | Descripción |
-| :--- | :--- | :--- |
-| `blocking` | `bool` | Si es `true`, detiene el movimiento del jugador y el ataque mientras dura la acción (ej. leer nota, ver imagen). |
-| `kill` | `bool` | *(Solo en Triggers)* Si es `true`, el objeto trigger se elimina tras ejecutarse. Por defecto es `true` para `OnEnter` y `IfFlag`. |
-| `sound` | `str` | Nombre del sonido a reproducir junto con la acción (debe existir en `assets/sounds`). |
+* **Separators:** Use semicolons (`;`) or newlines (Enter in the editor) to separate multiple parameters.
+* **Values:** The engine automatically parses values into Booleans (`true`/`false`), Integers, Floats, or Strings.
+* **Text Content:** For actions involving text, use `\n` to insert a line break within the text itself.
 
------
+---
 
-## 1\. Control de Flujo (EventManager)
+## Global Parameters
 
-Estas acciones son gestionadas directamente por el `EventManager` para controlar el tiempo de las secuencias.
+These parameters can be added to most actions to modify their general behavior.
 
-### `Wait`
+| Parameter    | Type     | Default | Description                                                                                                                       |
+| :---         | :---     | :---    | :---                                                                                                                              |
+| `blocking`   | `bool`   | `false` | If `true`, the game pauses player movement and inputs until the action (like a note or animation) is finished.                    |
+| `sound`      | `string` | `None`  | Plays a Sound Effect (SFX) from the `assets/sounds/` library when the action triggers.                                            |
+| `kill`       | `bool`   | `true`  | *(Triggers Only)* If `true`, the trigger object is permanently removed from the game (registered in `GameState`) after execution. |
+| `pause_music`| `bool`   | `false` | *(UI Actions Only)* If `true`, the background music pauses while the UI element (Image, Note, Dialogue) is active.                |
 
-Detiene la ejecución de la secuencia durante un tiempo determinado.
+---
 
-  * **Uso:** Pausas dramáticas en cinemáticas.
-  * **Parámetros:**
-      * `time`: (float) Tiempo en segundos a esperar.
-  * **Ejemplo:** `action="Wait", params="time=2.0"`
+## Action Reference
 
------
+### 1. User Interface (UI)
 
-## 2\. Acciones de Interfaz (Visuales)
+#### `ShowNote`
+Displays a text document on a dark background. Supports multi-page content.
+* `text`: The content of the note. Use `[P]` to separate pages.
+* **Example:** `text=Entry 1: Safe.\nNothing here.[P]Entry 2: Run.;blocking=true`
 
-Acciones que muestran elementos en pantalla. Gestionadas por `ActionManager` -\> `UIManager`.
+#### `ShowDialogue`
+Displays a text box at the bottom of the screen with a transparent background (RPG style).
+* `text`: The dialogue lines.
+* `color`: RGB tuple string defining text color. Default is white.
+* **Example:** `text=I see you...;color=255,0,0;blocking=true`
 
-### `ShowNote`
+#### `ShowImage`
+Displays a static image centered on the screen.
+* `path` (or `image`): Relative path to the image file.
+* **Example:** `path=assets/images/map.png;blocking=true`
 
-Muestra una nota de texto en pantalla sobre un fondo.
+#### `ShowAnimation`
+Plays a sequence of images as an animation loop.
+* `path`: Base path of the image sequence **without** the number suffix or extension (e.g., `assets/anim/fire` loads `fire_0.png`, `fire_1.png`...).
+* `frames`: Total number of frames to load.
+* `speed`: Time in seconds between frames.
+* `loop`: If `true` (default), loops infinitely. If `false`, stops at the last frame.
+* **Example:** `path=assets/anim/cinematic;frames=6;speed=0.2;loop=false;blocking=true`
 
-  * **Parámetros:**
-      * `text`: (str) El contenido del texto. Usa `\n` para saltos de línea (si lo escribes en código) o escríbelo en el editor.
-      * `sound`: (str) Sonido al abrir la nota (ej. `note_reading`).
-      * `blocking`: (bool) Recomendado `true`.
-  * **Ejemplo:** `text=Esto es una pista...;blocking=true`
+### 2. Level & Movement
 
-### `ShowImage`
+#### `Teleport`
+Moves the player to a new position within the **same** map/scene. Triggers a glitch transition effect.
+* `zone`: The target zone coordinates in format `(y, x)`.
+* `x`: Target pixel X position.
+* `y`: Target pixel Y position.
+* **Example:** `zone=(1, 2);x=500;y=400`
 
-Muestra una imagen estática centrada en la pantalla.
+#### `ChangeLevel`
+Unloads the current scene and loads a completely new JSON map file.
+* `level`: The map key identifier (e.g., `forest`, `school`).
+* `json`: Path to the new scene JSON file.
+* `zone`: Initial zone coordinates in the new map.
+* `x`, `y`: Player spawn position.
+* **Example:** `level=school;json=data/school_interior.json;zone=(0,0);x=100;y=500`
 
-  * **Parámetros:**
-      * `image` o `path`: (str) Ruta relativa de la imagen (ej. `assets/images/map.png`).
-      * `sound`: (str) Sonido opcional.
-      * `blocking`: (bool) Recomendado `true`.
-  * **Ejemplo:** `path=assets/images/clue.png;blocking=true`
+#### `UnhideObject`
+Reveals an object that was initialized with `starts_hidden=true`.
+* `id`: The unique `id` of the object to reveal.
+* **Example:** `id=hidden_door_1;sound=secret_found`
 
-### `ShowAnimation`
+### 3. State Management
 
-Muestra una secuencia de imágenes como una animación en bucle.
+#### `SetFlag`
+Sets a global variable in the `GameState`.
+* `flag`: The unique key name for the flag.
+* `value`: The value to store.
+* **Example:** `flag=has_key;value=true`
 
-  * **Parámetros:**
-      * `path`: (str) Ruta base de las imágenes **sin** número ni extensión (ej. `assets/anim/fire` leerá `fire_0.png`, `fire_1.png`...).
-      * `frames`: (int) Cantidad total de imágenes en la secuencia.
-      * `speed`: (float) Tiempo en segundos entre cada frame (menor es más rápido).
-      * `blocking`: (bool) Recomendado `true`.
-  * **Ejemplo:** `path=assets/images/cinematic;frames=4;speed=0.5;blocking=true`
+#### `IncrementFlag`
+Adds a value to a numeric flag. Useful for counting events.
+* `flag`: The key name.
+* `value`: Amount to add (default is 1).
+* **Example:** `flag=notes_read;value=1`
 
-### `CloseImage` (Implícito)
+### 4. Audio
 
-*Nota: Actualmente el cierre se gestiona con la tecla ESPACIO en el UIManager*
+#### `PlaySound`
+Plays a Sound Effect (SFX) once.
+* `sound`: The filename key from `assets/sounds/` (without extension).
+* **Example:** `sound=scream_short`
 
------
+#### `ChangeMusic`
+Switches the background music track with a crossfade.
+* `path`: Relative path to the new music file.
+* `fade`: Fade-out time in milliseconds (default 500).
+* `volume`: Volume level from 0.0 to 1.0.
+* `loop`: Number of loops (-1 for infinite).
+* **Example:** `path=assets/music/boss_theme.wav;fade=2000;volume=0.8`
 
-## 3\. Acciones de Estado del Juego
+### 5. Sequencing
 
-Modifican las variables globales (`game_state`) para recordar eventos.
-
-### `SetFlag`
-
-Establece una variable global a un valor específico.
-
-  * **Parámetros:**
-      * `flag`: (str) Nombre único de la variable (ID).
-      * `value`: (bool/str/int) Valor a asignar.
-  * **Ejemplo:** `flag=has_key;value=true`
-
-### `IncrementFlag`
-
-Suma un valor a una variable numérica existente (o la crea si no existe).
-
-  * **Parámetros:**
-      * `flag`: (str) Nombre de la variable.
-      * `value`: (int) Cantidad a sumar (por defecto 1).
-  * **Ejemplo:** `flag=notes_read;value=1`
-
------
-
-## 4\. Acciones de Entorno y Objetos
-
-Interactúan con el nivel actual o los objetos en él.
-
-### `UnhideObject`
-
-Hace visible un objeto que estaba oculto (`starts_hidden=true`).
-
-  * **Parámetros:**
-      * `id`: (str) El `id` del objeto que quieres revelar.
-      * `sound`: (str) Sonido opcional (ej. `secret` o `item_discovered`).
-  * **Ejemplo:** `id=hidden_door_1;sound=secret`
-
-### `PlaySound`
-
-Reproduce un efecto de sonido sin acción visual asociada.
-
-  * **Parámetros:**
-      * `sound`: (str) Nombre del archivo de sonido (sin extensión, clave del diccionario de recursos).
-  * **Ejemplo:** `sound=scream`
-
------
-
-## 5\. Acciones de Movimiento y Nivel
-
-Cambian la posición del jugador o el escenario completo.
-
-### `Teleport`
-
-Mueve al jugador instantáneamente a otra posición dentro del **mismo** mapa.
-
-  * **Parámetros:**
-      * `zone`: (str) Coordenadas de la zona destino en formato `(y, x)` (ej. `(0, 1)`).
-      * `x`: (int) Nueva posición X en píxeles.
-      * `y`: (int) Nueva posición Y en píxeles.
-  * **Ejemplo:** `zone=(1, 2);x=400;y=300`
-
-### `ChangeLevel`
-
-Carga un archivo JSON diferente (otro mapa/nivel).
-
-  * **Parámetros:**
-      * `level`: (str) Clave del nivel en `MAPS` (ej. `school`, `forest`).
-      * `json`: (str) Ruta al archivo JSON del nuevo nivel (ej. `data/school_interior.json`).
-      * `zone`: (str) Zona inicial en el nuevo mapa `(y, x)`.
-      * `x`: (int) Posición X inicial del jugador.
-      * `y`: (int) Posición Y inicial del jugador.
-  * **Ejemplo:** `level=school;json=data/school.json;zone=(0,0);x=100;y=500`
-
------
-
-## Referencia Rápida de Sintaxis (Editor)
-
-Recuerda que en el campo `trigger_params` o `params` del editor, los pares clave-valor se separan por punto y coma (`;`) o saltos de línea (gracias a tu última corrección).
-
-**Formato recomendado:**
-
-```text
-text=Hola mundo
-sound=note_reading
-blocking=true
-
-text=Hola mundo; sound=note_reading; blocking=true
-```
+#### `Wait`
+*Note: This action is primarily used inside `scripted_events` lists.*
+Pauses the execution of the event sequence for a set duration.
+* `time`: Duration in seconds.
+* **Example:** `action=Wait;params=time=3.0`

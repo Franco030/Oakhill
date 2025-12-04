@@ -1459,8 +1459,8 @@
             {
                 "id": "obj_1764793727368_229",
                 "type": "Interactable",
-                "x": 431,
-                "y": 321,
+                "x": 430,
+                "y": 320,
                 "image_path": "assets/images/notes/note.png",
                 "resize_factor": 4.0,
                 "is_passable": true,

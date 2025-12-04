@@ -13,19 +13,22 @@ class UIManager:
         self.font = ResourceManager.get_font(24)
         self.ui_font = ResourceManager.get_font(20)
 
+        self.note_pages = []
+        self.current_page = 0
+
         self.anim_frames = []
         self.anim_index = 0
         self.anim_timer = 0
-        self.anim_speed = 0.1
-
-        
-        
+        self.anim_speed = 0.1        
 
     def show_note(self, text, blocking=False):
         self.active = True
         self.is_blocking = blocking
         self.content_type = "NOTE"
-        self.content_data = text
+        
+        self.note_pages = text.split("[P]")
+        self.current_page = 0
+        self.content_data = self.note_pages[self.current_page]
 
     def show_dialogue(self, data, blocking=False):
         self.active = True
@@ -92,8 +95,13 @@ class UIManager:
             return False
 
         if event.type == pygame.KEYDOWN:
-            if event.key in [pygame.K_SPACE, pygame.K_ESCAPE]:
-                self.close()
+            if event.key == pygame.K_SPACE:
+                if self.content_type == "NOTE" and self.current_page < len(self.note_pages) -1:
+                    self.current_page += 1
+                    self.content_data = self.note_pages[self.current_page]
+                    # A next page sound may be here
+                else:
+                    self.close()
                 return True
         
         return self.is_blocking
@@ -142,7 +150,16 @@ class UIManager:
             txt = self.font.render(line, True, (70, 70, 70))
             screen.blit(txt, (padding + 20, start_y + i * 40))
 
-        close_txt = self.ui_font.render("Press 'SPACE' to close", True, (200, 200, 200))
+        if self.current_page < len(self.note_pages) - 1:
+            msg = "Press 'SPACE' to continue..."
+        else:
+            msg = "Press 'SPACE' to close"
+
+        if len(self.note_pages) > 1:
+            page_txt = self.ui_font.render(f"{self.current_page + 1}/{len(self.note_pages)}", True, (150, 150, 150))
+            screen.blit(page_txt, (sheet_rect.right - 60, sheet_rect.bottom - 40))
+
+        close_txt = self.ui_font.render(msg, True, (200, 200, 200))
         rect = close_txt.get_rect(centerx=sheet_rect.centerx, bottom=sheet_rect.bottom - 20)
         screen.blit(close_txt, rect)
 
