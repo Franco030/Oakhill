@@ -7,10 +7,11 @@ from utils import resource_path
 import random
 
 class LevelManager:
-    def __init__(self, sounds):
+    def __init__(self, sounds, retro_effects):
         self.sounds = sounds
         self.ambience_sounds = ResourceManager.load_all_sounds("assets/sounds/ambience")
         print(f"[LevelManager] Loaded {len(self.ambience_sounds)} ambience tracks.")
+        self.retro_effects = retro_effects
 
         self.current_scene = None
         self.current_music_path = None
@@ -75,9 +76,9 @@ class LevelManager:
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
 
     def on_music_ended(self):
-        self.silence_timer = random.randint(90000, 150000)
+        self.silence_timer = random.randint(80000, 100000)
         self.is_in_silence = True
-        self.ambience_timer = random.randint(50000, 100000)
+        self.ambience_timer = random.randint(15000, 30000)
         print(f"[LevelManager] Music ended. Silence for {self.silence_timer/1000} seconds.")
 
     def update(self, delta_time):
@@ -102,7 +103,9 @@ class LevelManager:
                         sfx.play()
                         print(f"[Ambience] Played '{sound_key}' at vol {vol:.2f}")
 
-                self.ambience_timer = random.randint(50000, 100000)
+                        self.retro_effects.add_trauma(1)
+
+                self.ambience_timer = random.randint(15000, 30000)
 
             if self.silence_timer <= 0:
                 self.is_in_silence = False

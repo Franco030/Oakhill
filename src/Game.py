@@ -22,13 +22,13 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self._load_resources()
+
+        self.retro_effects = RetroEffects()
         
         self.action_manager = ActionManager(self.sounds)
         self.event_manager = EventManager(self.action_manager)
         self.ui_manager = UIManager()
-        self.level_manager = LevelManager(self.sounds)
-        
-        self.retro_effects = RetroEffects()
+        self.level_manager = LevelManager(self.sounds, self.retro_effects)
         
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
