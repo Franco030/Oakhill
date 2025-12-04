@@ -27,7 +27,7 @@ class Game:
         
         self.action_manager = ActionManager(self.sounds)
         self.event_manager = EventManager(self.action_manager)
-        self.ui_manager = UIManager()
+        self.ui_manager = UIManager(self.sounds, self.retro_effects)
         self.level_manager = LevelManager(self.sounds, self.retro_effects)
         
         self.state = "MAIN_MENU"

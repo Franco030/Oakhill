@@ -4,7 +4,7 @@ from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.ResourceManager import ResourceManager
 
 class UIManager:
-    def __init__(self):
+    def __init__(self, sounds, retro_effects):
         self.active = False
         self.content_type = None # "NOTE" o "IMAGE" o "Animation"
         self.content_data = None
@@ -12,6 +12,9 @@ class UIManager:
 
         self.font = ResourceManager.get_font(24)
         self.ui_font = ResourceManager.get_font(20)
+
+        self.sounds = sounds
+        self.retro_effects = retro_effects
 
         self.note_pages = []
         self.current_page = 0
@@ -99,9 +102,12 @@ class UIManager:
                 if self.content_type == "NOTE" and self.current_page < len(self.note_pages) -1:
                     self.current_page += 1
                     self.content_data = self.note_pages[self.current_page]
-                    # A next page sound may be here
+                    self.sounds["turn_pages"].play()
+                    self.retro_effects.add_trauma(0.5)
                 else:
+                    self.sounds["note_closed"].play()
                     self.close()
+
                 return True
         
         return self.is_blocking

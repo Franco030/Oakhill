@@ -74,10 +74,6 @@ LEVEL_DARKNESS = {
 
 MUSIC_END_EVENT = pygame.USEREVENT + 1
 
-AMBIENCE_SOUNDS = [
-
-]
-
 # player sprite is 8 x 25
 # most resizes must be around 4 times the original size
 # player sprite will be 32 x 100

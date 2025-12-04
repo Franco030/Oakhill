@@ -144,7 +144,7 @@ class Stalker_Ghost(_Enemy):
     def __init__(self, start_x, start_y, health, behaviours):
         # We changed the sprite for another one
         # super().__init__(start_x, start_y, resource_path("assets/images/ghost.png"), health, behaviours, 5)
-        super().__init__(start_x, start_y, resource_path("assets/animations/Soul/soul_1.png"), health, behaviours, 3)
+        super().__init__(start_x, start_y, resource_path("assets/animations/Stalker/stalker_0.png"), health, behaviours, 3)
         # --- Modify the self._collision_rect to get a better collision system ---
         self._collision_rect = pygame.Rect(
             self.rect.left,
@@ -153,8 +153,7 @@ class Stalker_Ghost(_Enemy):
             self.rect.height - 20
         )
 
-        # self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/ghost_{i}.png") for i in range (1, 5)], 0.09)
-        self.animation = Animation(self, [resource_path(f"assets/animations/Soul/soul_{i}.png") for i in range (1, 5)], 0.160)
+        self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/stalker_{i}.png") for i in range (0, 4)], 0.10)
 
     def while_attacked(self):
         if self.is_flashing:

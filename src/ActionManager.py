@@ -9,23 +9,23 @@ class ActionManager:
     def __init__(self, sound_library=None):
         self.sound_library = sound_library if sound_library else {}
 
-    def parse_params(self, param_string):
-        params = {}
-        if not param_string: return params
+    # def parse_params(self, param_string):
+    #     params = {}
+    #     if not param_string: return params
         
-        pairs = param_string.split(';')
-        for pair in pairs:
-            if '=' in pair:
-                key, value = pair.split('=', 1)
-                key = key.strip()
-                value = value.strip()
-                if value.lower() == 'true': value = True
-                elif value.lower() == 'false': value = False
-                else:
-                    try: value = int(value)
-                    except: pass
-                params[key] = value
-        return params
+    #     pairs = param_string.split(';')
+    #     for pair in pairs:
+    #         if '=' in pair:
+    #             key, value = pair.split('=', 1)
+    #             key = key.strip()
+    #             value = value.strip()
+    #             if value.lower() == 'true': value = True
+    #             elif value.lower() == 'false': value = False
+    #             else:
+    #                 try: value = int(value)
+    #                 except: pass
+    #             params[key] = value
+    #     return params
 
     def parse_params(self, param_string):
         params = {}

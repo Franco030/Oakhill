@@ -151,38 +151,29 @@ class StalkerBehaviour(_Behaviour):
                 self._start_waiting_offscreen(enemy)
     
     def shoo(self, enemy):
-        """
-        The player will call this when attacking
-        """
         if self.state == "FLEEING":
-            return # Already fleeing
+            return
         
         self.state = "FLEEING"
         self._stop_chase_sound()
         if self.flee_sound:
             self.flee_sound.play()
 
-        dist_top = enemy.y
-        dist_bottom = SCREEN_HEIGHT - enemy.y
-        dist_left = enemy.x
-        dist_right = SCREEN_WIDTH - enemy.x
+        player_pos = pygame.math.Vector2(self.target.rect.centerx, self.target.rect.centery)
+        enemy_pos = pygame.math.Vector2(enemy.x, enemy.y)
 
-        min_dist = min(dist_top, dist_bottom, dist_left, dist_right)
+        flee_direction = enemy_pos - player_pos
 
+        if flee_direction.length_squared() == 0:
+            flee_direction = pygame.math.Vector2(1, 0)
+        else:
+            flee_direction.normalize_ip()
 
-        # Flee target calculation
-        if min_dist == dist_top:
-            self.flee_target.x = enemy.x
-            self.flee_target.y = -100 
-        elif min_dist == dist_bottom:
-            self.flee_target.x = enemy.x
-            self.flee_target.y = SCREEN_HEIGHT + 100 
-        elif min_dist == dist_left:
-            self.flee_target.x = -100 
-            self.flee_target.y = enemy.y
-        else: # dist_right
-            self.flee_target.x = SCREEN_WIDTH + 100
-            self.flee_target.y = enemy.y
+        escape_distance = 1500 
+        target_pos = enemy_pos + (flee_direction * escape_distance)
+
+        self.flee_target.x = target_pos.x
+        self.flee_target.y = target_pos.y
 
     def reset(self):
         self.state = "WAITING"

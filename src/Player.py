@@ -10,10 +10,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, start_x, start_y, walking_sound=None):
         super().__init__()
 
-
-        # This is super super super bad, but we'll keep loading this image to get the rectangle right
-        # It is not the actual sprite, but since I decided to change the player sprite, no one will notice
-        self.image = pygame.image.load(resource_path('assets/images/detective.png')).convert_alpha()
+        self.image = pygame.image.load(resource_path('assets/images/detective_1.png')).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * RESIZE_FACTOR, self.image.get_height() * RESIZE_FACTOR))
         self.rect = self.image.get_rect(center = (start_x, start_y))
         self.pos = pygame.math.Vector2(self.rect.center)
@@ -22,9 +19,9 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2()
         self.facing = "down"
         self._collision_rect = pygame.Rect(
-            self.rect.left,
+            self.rect.left + 15,
             self.rect.top + 45,
-            self.rect.width,
+            self.rect.width - 36,
             self.rect.height - 80
         )
         self.attack_rect = self.rect.copy()
@@ -135,7 +132,6 @@ class Player(pygame.sprite.Sprite):
 
 
         if self.is_attacking:
-            # self.attack_timer -= 1
             self.animations['attack_' + self.facing].animate()
 
             RANGE = 250
@@ -144,11 +140,11 @@ class Player(pygame.sprite.Sprite):
                 self.attack_rect = pygame.Rect(
                     self.rect.right,
                     self.rect.top + 10,
-                    RANGE,
+                    RANGE - 100,
                     self.rect.height - (self.rect.height / 5)
                 )
             elif self.facing == "left":
-                self.attack_rect.width = RANGE
+                self.attack_rect.width = RANGE - 100
                 self.attack_rect.height = self.rect.height - (self.rect.height / 5)
                 self.attack_rect.right = self.rect.left
                 self.attack_rect.top = self.rect.top + 10
@@ -162,12 +158,6 @@ class Player(pygame.sprite.Sprite):
                 self.attack_rect.height = RANGE - 100
                 self.attack_rect.centerx = self.rect.centerx
                 self.attack_rect.top = self.rect.bottom
-
-            # if self.attack_timer <= 0:
-            #     self.is_attacking = False
-            #     self.attack_rect.width = 0
-            #     self.attack_rect.height = 0
-            #     self.image = self.animations[self.facing].images[0]
 
         else:
             self.direction.x = 0

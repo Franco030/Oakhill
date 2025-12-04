@@ -1,4 +1,5 @@
 from src.GameState import game_state
+from src.Game_Enums import Conditions, Actions
 
 class EventManager:
     def __init__(self, action_manager):
@@ -41,7 +42,7 @@ class EventManager:
     def update(self, delta_time, player, scene):
         if not self.is_active: return None
 
-        if self.current_step and self.current_step.get("action") == "Wait":
+        if self.current_step and self.current_step.get("action") == Actions.WAIT:
             p = self.action_manager.parse_params(self.current_step.get("params", ""))
             if self.wait_timer <= 0 and p:
                  self.wait_timer = float(p.get("time", 1.0)) * 1000
@@ -79,12 +80,12 @@ class EventManager:
         raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
         params = self.action_manager.parse_params(raw_params)
         
-        if hasattr(obj, "condition") and obj.condition == "IfFlag":
+        if hasattr(obj, "condition") and obj.condition == Conditions.IF_FLAG:
             if not game_state.check_flag(params.get("flag"), params.get("value")):
                 return None 
 
         should_kill = False
-        if hasattr(obj, "condition") and obj.condition in ["OnEnter", "IfFlag"] and not hasattr(obj, "interaction_type"):
+        if hasattr(obj, "condition") and obj.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG] and not hasattr(obj, "interaction_type"):
              should_kill = params.get("kill", True)
 
         if hasattr(obj, "data") and obj.data.get("scripted_events"):
@@ -109,7 +110,7 @@ class EventManager:
                 else:
                     result["blocking"] = self.is_blocking
 
-            if act in ["Teleport", "ChangeLevel"]: 
+            if act in [Actions.TELEPORT, Actions.CHANGE_LEVEL]: 
                 should_kill = False
             
             if should_kill:
