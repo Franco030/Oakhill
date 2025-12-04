@@ -65,7 +65,7 @@ Moves the player to a new position within the **same** map/scene. Triggers a gli
 
 #### `ChangeLevel`
 Unloads the current scene and loads a completely new JSON map file.
-* `level`: The map key identifier (e.g., `forest`, `school`).
+* `level`: The map key identifier (e.g., `forest`, `school`) -> this is made in `Game_Constants.py`. 
 * `json`: Path to the new scene JSON file.
 * `zone`: Initial zone coordinates in the new map.
 * `x`, `y`: Player spawn position.

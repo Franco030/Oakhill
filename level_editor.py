@@ -134,7 +134,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_undo.activated.connect(self.perform_undo)
         self.shortcut_redo = QShortcut(QKeySequence("Ctrl+Y"), self)
         self.shortcut_redo.activated.connect(self.perform_redo)
+        self.shortcut_delete = QShortcut(QKeySequence(Qt.Key_Delete), self)
+        self.shortcut_delete.activated.connect(self.delete_selected_object)
         self.combo_map_select.addItems(list(MAPS.keys()))
+        self.chk_layer_obstacles.stateChanged.connect(self.update_layers)
+        self.chk_layer_triggers.stateChanged.connect(self.update_layers)
+        self.chk_layer_interactables.stateChanged.connect(self.update_layers)
+        self.chk_lock_ground.stateChanged.connect(self.update_layers)
         self.populate_image_combos()
         self.populate_sound_combos()
         self.disable_property_panel()
@@ -782,6 +788,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.list_objects.addItem(item)
             pix_item = self.draw_object_on_canvas(obj)
             if pix_item: item.setData(Qt.UserRole + 1, pix_item)
+        self.update_layers()
 
     def draw_game_border(self):
         border = QGraphicsRectItem(0, 0, GAME_WIDTH, GAME_HEIGHT)
@@ -1235,6 +1242,37 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         item.setText(f"{new_action} ({new_params})")
         
         self.save_sequence_changes()
+
+    def update_layers(self):
+        show_obstacles = self.chk_layer_obstacles.isChecked()
+        show_triggers = self.chk_layer_triggers.isChecked()
+        show_interactables = self.chk_layer_interactables.isChecked()
+        lock_ground = self.chk_lock_ground.isChecked()
+
+        for item in self.current_scene.items():
+            if isinstance(item, LevelObjectItem):
+                obj_data = item.obj_data
+                obj_type = obj_data.get("type")
+                z_index = int(obj_data.get("z_index", 0))
+                is_ground = obj_data.get("is_ground", False) or z_index < 0
+
+                is_visible = True
+                
+                if obj_type == ObjectTypes.OBSTACLE and not show_obstacles:
+                    is_visible = False
+                elif obj_type == ObjectTypes.TRIGGER and not show_triggers:
+                    is_visible = False
+                elif obj_type == ObjectTypes.INTERACTABLE and not show_interactables:
+                    is_visible = False
+                
+                item.setVisible(is_visible)
+
+                if is_ground and lock_ground:
+                    item.setFlag(QGraphicsItem.ItemIsSelectable, False)
+                    item.setFlag(QGraphicsItem.ItemIsMovable, False)
+                else:
+                    item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+                    item.setFlag(QGraphicsItem.ItemIsMovable, True)
 
 
 if __name__ == "__main__":
