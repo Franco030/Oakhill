@@ -102,6 +102,9 @@ class GameState:
         Deletes all memory to initiate another game
         """
         self.flags = {}
+        self.interacted_objects = set()
+        self.pending_level_change = None
+        self.teleport_req = None
         print("[GameState] Memory restarted (Reset)")
     
 game_state = GameState()

@@ -39,6 +39,8 @@ class Game:
         self.transition_duration = 500
         self.pending_level_req = None
         
+        self.debug_mode = False
+
         self.player_group = pygame.sprite.GroupSingle()
         self.player = Player(0, 0)
         self.player_group.add(self.player)
@@ -137,7 +139,7 @@ class Game:
         self.player.image = self.player.animations["down"].images[0]
         
         start_req = {
-            "json_path": resource_path("data/scene_output_new.json"),
+            "json_path": resource_path("data/forest.json"),
             "map_matrix": WORLD_MAP_LEVEL,
             "entry_zone": INITIAL_ZONE,
             "player_pos": (600, 300),
@@ -172,7 +174,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.state = "QUIT"
                 return
-            
+
             if event.type == MUSIC_END_EVENT:
                 self.level_manager.on_music_ended()
 
@@ -186,6 +188,7 @@ class Game:
                 if event.key == pygame.K_SPACE: self.player.attack()
                 elif event.key == pygame.K_ESCAPE: self._handle_pause_or_exit()
                 elif event.key == pygame.K_F11: pygame.display.toggle_fullscreen()
+                elif event.key == pygame.K_F1: self.debug_mode = not self.debug_mode
             
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE: self.player.stop_attack()
@@ -268,6 +271,10 @@ class Game:
             self.retro_effects.update_and_draw(self.screen, delta_time)
         else:
             self.level_manager.draw(self.screen, self.player)
+
+            if self.debug_mode:
+                self._debug_draw_collisions()
+
             self.ui_manager.draw(self.screen)
             if self.event_manager.current_image:
                 self.ui_manager.show_image(self.event_manager.current_image)
@@ -344,6 +351,40 @@ class Game:
                 
                 # Solo morimos una vez
                 break
+
+    def _debug_draw_collisions(self):
+        scene = self.level_manager.current_scene
+        if not scene: return
+
+        COLOR_OBSTACLE = (0, 255, 255)    # Cian
+        COLOR_INTERACTABLE = (0, 255, 0)  # Verde
+        COLOR_TRIGGER = (255, 0, 255)     # Magenta
+        COLOR_ENEMY = (255, 0, 0)         # Rojo
+        COLOR_PLAYER = (255, 255, 0)      # Amarillo
+        COLOR_ATTACK = (255, 165, 0)      # Naranja
+
+        for obj in scene.obstacles:
+            rect = getattr(obj, "collision_rect", obj.rect)
+            pygame.draw.rect(self.screen, COLOR_OBSTACLE, rect, 1)
+
+        for obj in scene.interactables:
+            pygame.draw.rect(self.screen, COLOR_INTERACTABLE, obj.rect, 1)
+
+        for trig in scene._triggers:
+            pygame.draw.rect(self.screen, COLOR_TRIGGER, trig.rect, 1)
+
+        for enemy in scene.enemies:
+            rect = getattr(enemy, "collision_rect", enemy.rect)
+            pygame.draw.rect(self.screen, COLOR_ENEMY, rect, 1)
+            
+
+        if hasattr(self.player, "collision_rect"):
+            pygame.draw.rect(self.screen, COLOR_PLAYER, self.player.collision_rect, 1)
+        else:
+            pygame.draw.rect(self.screen, COLOR_PLAYER, self.player.rect, 1)
+
+        if self.player.is_attacking:
+             pygame.draw.rect(self.screen, COLOR_ATTACK, self.player.attack_rect, 2)
                     
 
     def _handle_event_result(self, result):

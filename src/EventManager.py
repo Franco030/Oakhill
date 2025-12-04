@@ -68,6 +68,7 @@ class EventManager:
             return result 
             
         return None
+    
     def end_sequence(self):
         self.is_active = False
         self.is_blocking = False
@@ -113,6 +114,8 @@ class EventManager:
             
             if should_kill:
                 obj.kill()
+                if hasattr(obj, "id") and obj.id:
+                    game_state.register_interaction(obj.id)
 
             return result
            

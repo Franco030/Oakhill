@@ -142,7 +142,7 @@ class UIManager:
             txt = self.font.render(line, True, (70, 70, 70))
             screen.blit(txt, (padding + 20, start_y + i * 40))
 
-        close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
+        close_txt = self.ui_font.render("Press 'SPACE' to close", True, (200, 200, 200))
         rect = close_txt.get_rect(centerx=sheet_rect.centerx, bottom=sheet_rect.bottom - 20)
         screen.blit(close_txt, rect)
 
@@ -204,7 +204,7 @@ class UIManager:
         except Exception as e:
             print(f"Error UI image: {e}")
 
-        close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
+        close_txt = self.ui_font.render("Press 'SPACE' to close", True, (200, 200, 200))
         rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)
         screen.blit(close_txt, rect)
 
@@ -214,10 +214,6 @@ class UIManager:
         current_img = self.anim_frames[self.anim_index]
         img_rect = current_img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
         screen.blit(current_img, img_rect)
-
-        # close_txt = self.ui_font.render("Presiona 'ESPACIO' para cerrar", True, (200, 200, 200))
-        # rect = close_txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT - 20)
-        # screen.blit(close_txt, rect)
 
     @staticmethod
     def draw_game_over(screen, image):

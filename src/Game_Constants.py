@@ -15,11 +15,14 @@ Y_CORD, X_CORD = INITIAL_ZONE
 WORLD_MAP_LEVEL = [
         [0, 0, 1, 1, 1, 1], 
         [0, 1, 1, 0, 0, 0], 
-        [0, 1, 0, 0, 0, 0], 
-        [0, 1, 1, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0]  
+        [0, 1, 0, 1, 1, 1], 
+        [0, 1, 1, 1, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 1, 1, 1, 0, 0]  
     ]
+
+# (4, 4) is a special room dedicated to a shack in the outside world, it'll be a single room so a Teleport(4, 4, x, y) in the entrance of the shack will be good
+# That's why it is not connected to the main "island"
 
 # Resolución (Width x Height) | How many 32px tiles fit?
 

@@ -30,7 +30,7 @@ class ActionManager:
     def parse_params(self, param_string):
         params = {}
         if not param_string: return params
-
+        
         clean_string = param_string.replace('\n', ';').replace('\r', '')
         
         pairs = clean_string.split(';')
@@ -39,11 +39,15 @@ class ActionManager:
                 key, value = pair.split('=', 1)
                 key = key.strip()
                 value = value.strip()
+                
+                value = value.replace('\\n', '\n') 
+
                 if value.lower() == 'true': value = True
                 elif value.lower() == 'false': value = False
                 else:
                     try: value = int(value)
-                    except: pass
+                    except: pass 
+                
                 params[key] = value
         return params
 

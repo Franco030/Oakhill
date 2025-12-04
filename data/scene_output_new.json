@@ -14953,7 +14953,7 @@
                     },
                     {
                         "action": "ShowNote",
-                        "params": "text=A secret teleport has been opened...; sound=interaction_occured"
+                        "params": "text=A secret teleport has been opened...; sound=interaction_occurred"
                     }
                 ],
                 "charge_sound_path": "assets/sounds/interacting.wav"
@@ -15050,7 +15050,7 @@
                 "interaction_data": "",
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=Soy una nota; sound=interaction_occured",
+                "trigger_params": "text=Soy una nota; sound=interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,

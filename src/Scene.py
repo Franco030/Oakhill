@@ -1,5 +1,6 @@
 import pygame
 from .Interactable import Interactable
+from .GameState import game_state
 
 class Scene:
     """
@@ -84,7 +85,10 @@ class Scene:
                     self._obstacles.add(obj)
 
         if self.location in self._triggers_dict:
-            self._triggers.add(self._triggers_dict[self.location])
+            for trig in self._triggers_dict[self.location]:
+                if trig.id and game_state.has_interacted(trig.id):
+                    continue
+                self._triggers.add(trig)
 
     def _load_enemies_for_current_location(self):
         self._enemies.empty()

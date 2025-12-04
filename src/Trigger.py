@@ -1,4 +1,5 @@
 import pygame
+from .GameState import game_state
 
 class Trigger(pygame.sprite.Sprite):
     def __init__(self, data):
@@ -11,7 +12,6 @@ class Trigger(pygame.sprite.Sprite):
         
         x = data.get("x", 0)
         y = data.get("y", 0)
-        
 
         self.image = pygame.Surface((64, 64)) 
         self.image.fill((255, 0, 255))

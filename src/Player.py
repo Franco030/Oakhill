@@ -10,6 +10,9 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, start_x, start_y, walking_sound=None):
         super().__init__()
 
+
+        # This is super super super bad, but we'll keep loading this image to get the rectangle right
+        # It is not the actual sprite, but since I decided to change the player sprite, no one will notice
         self.image = pygame.image.load(resource_path('assets/images/detective.png')).convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * RESIZE_FACTOR, self.image.get_height() * RESIZE_FACTOR))
         self.rect = self.image.get_rect(center = (start_x, start_y))
