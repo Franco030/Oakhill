@@ -63,7 +63,7 @@ MAPS = {
 }
 
 LEVEL_MUSIC = {
-    "forest": resource_path("assets/music/MAIN_SONG.wav"),
+    "forest": resource_path("assets/music/experiment.wav"),
     "school": resource_path("assets/music/INSIDE_SCHOOL.wav")
 }
 
@@ -73,6 +73,10 @@ LEVEL_DARKNESS = {
 }
 
 MUSIC_END_EVENT = pygame.USEREVENT + 1
+
+AMBIENCE_SOUNDS = [
+
+]
 
 # player sprite is 8 x 25
 # most resizes must be around 4 times the original size

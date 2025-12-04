@@ -1,6 +1,7 @@
 import pygame
 from src.Scene_Loader import SceneLoader
 from src.GameState import game_state
+from src.ResourceManager import ResourceManager
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS, MUSIC_END_EVENT
 from utils import resource_path
 import random
@@ -8,12 +9,16 @@ import random
 class LevelManager:
     def __init__(self, sounds):
         self.sounds = sounds
+        self.ambience_sounds = ResourceManager.load_all_sounds("assets/sounds/ambience")
+        print(f"[LevelManager] Loaded {len(self.ambience_sounds)} ambience tracks.")
 
         self.current_scene = None
         self.current_music_path = None
 
         self.silence_timer = 0
         self.is_in_silence = False
+
+        self.ambience_timer = 0
 
         self.current_zone = (0, 0)
 
@@ -72,6 +77,7 @@ class LevelManager:
     def on_music_ended(self):
         self.silence_timer = random.randint(90000, 150000)
         self.is_in_silence = True
+        self.ambience_timer = random.randint(50000, 100000)
         print(f"[LevelManager] Music ended. Silence for {self.silence_timer/1000} seconds.")
 
     def update(self, delta_time):
@@ -82,6 +88,22 @@ class LevelManager:
 
         if self.is_in_silence:
             self.silence_timer -= delta_time
+            self.ambience_timer -= delta_time
+
+
+            if self.ambience_timer <= 0:
+                if self.ambience_sounds:
+                    sound_key = random.choice(list(self.ambience_sounds.keys()))
+                    sfx = self.ambience_sounds[sound_key]
+
+                    if sfx:
+                        vol = random.uniform(0.5, 1)
+                        sfx.set_volume(vol)
+                        sfx.play()
+                        print(f"[Ambience] Played '{sound_key}' at vol {vol:.2f}")
+
+                self.ambience_timer = random.randint(50000, 100000)
+
             if self.silence_timer <= 0:
                 self.is_in_silence = False
                 if self.current_music_path:

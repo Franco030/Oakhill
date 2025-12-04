@@ -94,6 +94,7 @@ class Ui_LevelEditor(object):
         
         self.groupBox = QGroupBox(self.toolbox_container)
         self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setMaximumHeight(300)
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label_5 = QLabel(self.groupBox)
