@@ -81,8 +81,31 @@ class EventManager:
         params = self.action_manager.parse_params(raw_params)
         
         if hasattr(obj, "condition") and obj.condition == Conditions.IF_FLAG:
-            if not game_state.check_flag(params.get("flag"), params.get("value")):
-                return None 
+            flag_a = params.get("flag_a") or params.get("flag")
+            flag_b = params.get("flag_b")
+            expected_val = params.get("value")
+            operator = str(params.get("condition", "")).upper()
+
+            if not flag_b:
+                if not game_state.check_flag(flag_a, expected_val):
+                    return None
+                
+            else:
+                val_a = game_state.get_flag(flag_a)
+                val_b = game_state.get_flag(flag_b)
+                condition_met = False
+
+                if operator == "AND":
+                    condition_met = (val_a == expected_val) and (val_b == expected_val)
+                elif operator == "OR":
+                    condition_met = (val_a == expected_val) or (val_b == expected_val)
+                elif operator == "EQUAL":
+                    condition_met = (val_a == val_b)
+                elif operator == "NOT_EQUAL":
+                    condition_met = (val_a != val_b)
+
+                if not condition_met:
+                    return None
 
         should_kill = False
         if hasattr(obj, "condition") and obj.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG] and not hasattr(obj, "interaction_type"):

@@ -94,6 +94,9 @@ class Obstacle(pygame.sprite.Sprite):
         """
         self.is_hidden = False
 
+    def hide(self):
+        self.is_hidden = True
+
     @property
     def collision_rect(self):
         """

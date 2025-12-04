@@ -402,23 +402,13 @@ class Ui_LevelEditor(object):
 
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
         self.prop_trigger_condition = QComboBox(self.group_interaction)
-        self.prop_trigger_condition.addItems([
-            Conditions.ON_ENTER,
-            Conditions.ON_INTERACT,
-            Conditions.AUTO_START,
-            Conditions.IF_FLAG
-        ])
+        self.prop_trigger_condition.addItems(Conditions.get_conditions())
         self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.lbl_trig_cond)
         self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.prop_trigger_condition)
         
         self.lbl_trig_act = QLabel("Acción Global:", self.group_interaction)
         self.prop_trigger_action = QComboBox()
-        self.prop_trigger_action.addItems([
-            Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
-            Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
-            Actions.CHANGE_LEVEL, Actions.SHOW_NOTE, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE,
-            Actions.SHOW_ANIMATION, Actions.CHANGE_MUSIC
-        ])
+        self.prop_trigger_action.addItems(Actions.get_actions())
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
         
@@ -453,12 +443,7 @@ class Ui_LevelEditor(object):
         
         self.lbl_step_act = QLabel("Acción Paso:", self.group_step_detail)
         self.prop_step_action = QComboBox(self.group_step_detail)
-        self.prop_step_action.addItems([
-            Actions.WAIT, Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
-            Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.SHOW_DIALOGUE,
-            Actions.CHANGE_LEVEL, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE, Actions.SHOW_NOTE,
-            Actions.SHOW_ANIMATION, Actions.CHANGE_MUSIC
-        ])
+        self.prop_step_action.addItems(Actions.get_actions())
         self.layout_step.addRow(self.lbl_step_act, self.prop_step_action)
         
         self.lbl_step_params = QLabel("Params Paso:", self.group_step_detail)

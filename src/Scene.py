@@ -140,6 +140,28 @@ class Scene:
                 return
             
         print(f"[SCENE] ERROR: No object id found similiar to '{target_id}' in {self.location}")
+
+    def hide_object_by_id(self, target_id):
+        print(f"[SCENE] Hiding object with id: '{target_id}'")
+        clean_target = str(target_id).replace(" ", "")
+
+
+        all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers)
+        
+        found = False
+        for obj in all_sprites:
+            obj_id = getattr(obj, 'id', "")
+            clean_obj_id = str(obj_id).replace(" ", "")
+            
+            if clean_obj_id == clean_target:
+                if hasattr(obj, 'hide'):
+                    obj.hide()
+                
+                obj.kill()
+                found = True
+        
+        if not found:
+            print(f"[SCENE] Warning: Object '{target_id}' not found to hide.")
             
     def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
         """

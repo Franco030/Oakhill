@@ -4,28 +4,11 @@ from utils import resource_path
 from src.ResourceManager import ResourceManager
 from src.Game_Enums import Actions
 import pygame
+import random
 
 class ActionManager:
     def __init__(self, sound_library=None):
         self.sound_library = sound_library if sound_library else {}
-
-    # def parse_params(self, param_string):
-    #     params = {}
-    #     if not param_string: return params
-        
-    #     pairs = param_string.split(';')
-    #     for pair in pairs:
-    #         if '=' in pair:
-    #             key, value = pair.split('=', 1)
-    #             key = key.strip()
-    #             value = value.strip()
-    #             if value.lower() == 'true': value = True
-    #             elif value.lower() == 'false': value = False
-    #             else:
-    #                 try: value = int(value)
-    #                 except: pass
-    #             params[key] = value
-    #     return params
 
     def parse_params(self, param_string):
         params = {}
@@ -63,17 +46,17 @@ class ActionManager:
                 print(f"Sound '{sound_name}' not found.")
 
 
-        if action_type == "SetFlag":
+        if action_type == Actions.SET_FLAG:
             key = params.get("flag")
             val = params.get("value")
             if key: game_state.set_flag(key, val)
             
-        elif action_type == "IncrementFlag":
+        elif action_type == Actions.INCREMENT_FLAG:
             key = params.get("flag")
             amount = params.get("value", 1)
             if key: game_state.increment_flag(key, amount)
 
-        elif action_type == "Teleport":
+        elif action_type == Actions.TELEPORT:
             zone_str = str(params.get("zone"))
             x = params.get("x")
             y = params.get("y")
@@ -82,7 +65,7 @@ class ActionManager:
                 game_state.request_teleport(zone_str, x, y)
                 print(f"[ActionManager] Teleport requested to {zone_str} at ({x}, {y})")
 
-        elif action_type == "PlaySound":
+        elif action_type == Actions.PLAY_SOUND:
             sound_name = params.get("sound")
             sound_volume = float(params.get("volume", 1.0))
             if sound_name in self.sound_library:
@@ -93,15 +76,30 @@ class ActionManager:
             else:
                 print(f"Error: Sound '{sound_name}' not found in library")
             
-        elif action_type == "UnhideObject":
+        elif action_type == Actions.UNHIDE_OBJECT:
             tid = params.get("id")
-            sound_name = params.get("sound", "secret")
             if tid: 
                 scene.unhide_object_by_id(tid)
-                if sound_name != "silent" and sound_name in self.sound_library:
-                    self.sound_library[sound_name].play()
 
-        elif action_type == "ChangeLevel":
+        elif action_type == Actions.HIDE_OBJECT:
+            tid = params.get("id")
+            if tid:
+                scene.hide_object_by_id(tid)
+
+        elif action_type == Actions.MODIFY_LIGHT:
+            enable = params.get("enable", False)
+            scene.has_darkness = enable
+
+        elif action_type == Actions.RANDOM_ACTION:
+            chance = int(params.get("chance", 50))
+            roll = random.randint(1, 100)
+
+            if roll <= chance:
+                print(f"[RandomAction] Success ({roll} <= {chance}). Executing sub-action")
+                sub_action = params.get("action")
+                return self.execute(sub_action, param_string, player, scene)
+
+        elif action_type == Actions.CHANGE_LEVEL:
             level_name = params.get("level")
             json_file = params.get("json")
             zone_str = str(params.get("zone"))
@@ -125,7 +123,7 @@ class ActionManager:
                     darkness=is_dark
                 )
 
-        elif action_type == "ShowNote":
+        elif action_type == Actions.SHOW_NOTE:
             text_content = params.get("text", "")
             return {
                 "type": "Note",
@@ -154,7 +152,7 @@ class ActionManager:
                 "pause_music": params.get("pause_music", False)
             }
         
-        elif action_type == "ShowImage":
+        elif action_type == Actions.SHOW_IMAGE:
             path = params.get("image") or params.get("path")
             return {
                 "type": "Image",
@@ -163,10 +161,10 @@ class ActionManager:
                 "pause_music": params.get("pause_music", False)
             }
         
-        elif action_type == "CloseImage":
+        elif action_type == Actions.CLOSE_IMAGE:
             pass
 
-        elif action_type == "ShowAnimation":
+        elif action_type == Actions.SHOW_ANIMATION:
             base_path = params.get("path")
             frames = int(params.get("frames", 1))
             speed = float(params.get("speed", 0.1))
@@ -187,7 +185,7 @@ class ActionManager:
                 "pause_music": params.get("pause_music", False)
             }
         
-        elif action_type == "ChangeMusic":
+        elif action_type == Actions.CHANGE_MUSIC:
             # This action needs the path and not the key because of the way pygame manages music and sounds
             music_path = params.get("path") or params.get("music")
             fade_ms = int(params.get("fade", 500))
