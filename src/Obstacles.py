@@ -30,6 +30,7 @@ class Obstacle(pygame.sprite.Sprite):
         # self.used_image = None
         
         # Trigger logic / Events (default values)
+        # We have to retrieve it so that the Interactable class has this attributes
         self.trigger_condition = data.get("trigger_condition", "None")
         self.trigger_action = data.get("trigger_action", "None")
         self.trigger_params = data.get("trigger_params", "")

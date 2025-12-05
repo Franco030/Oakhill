@@ -1,5 +1,6 @@
 import pygame
 from .Interactable import Interactable
+from .Trigger import Trigger
 from .GameState import game_state
 
 class Scene:
@@ -61,7 +62,10 @@ class Scene:
     @property
     def enemies(self):
         return self._enemies
-        
+    
+
+    # I didn't change the name but a more correct name is:
+    # _load_objects_for_current_location
     def _load_obstacles_for_current_location(self):
         """
         Cleans and reloads the group of sprites in every self.location
@@ -86,7 +90,7 @@ class Scene:
 
         if self.location in self._triggers_dict:
             for trig in self._triggers_dict[self.location]:
-                if trig.id and game_state.has_interacted(trig.id):
+                if trig.id and game_state.has_interacted(trig.id) or trig.is_hidden:
                     continue
                 self._triggers.add(trig)
 
@@ -124,7 +128,7 @@ class Scene:
                     obj.unhide()
                     destination_group.add(obj)
                     
-                    if not getattr(obj, 'is_passable', False):
+                    if not getattr(obj, 'is_passable', False) and not isinstance(obj, Trigger):
                         self._obstacles.add(obj)
                         
                     print(f"[SCENE] Object '{obj_id}' revealed.")
@@ -137,6 +141,10 @@ class Scene:
 
         if self.location in self.obstacles_dict:
             if search_and_reveal(self.obstacles_dict[self.location], self._obstacles):
+                return
+            
+        if self.location in self._triggers_dict:
+            if search_and_reveal(self._triggers_dict[self.location], self._triggers):
                 return
             
         print(f"[SCENE] ERROR: No object id found similiar to '{target_id}' in {self.location}")

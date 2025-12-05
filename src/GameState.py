@@ -52,7 +52,7 @@ class GameState:
 
     def has_interacted(self, obj_id):
         """
-        Searchs if the object has already interacted
+        Searchs if the object has been already interacted
         
         :param obj_id: Objects ID
         """
