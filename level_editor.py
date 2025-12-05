@@ -9,13 +9,15 @@ from PySide6.QtWidgets import (
     QListWidgetItem, QGraphicsScene, QGraphicsPixmapItem,
     QGraphicsRectItem, QGraphicsItem,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
-    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView
+    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView,
+    QSizePolicy
 )
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
+from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
 from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
 from src.Game_Enums import Actions, Conditions, ObjectTypes
 

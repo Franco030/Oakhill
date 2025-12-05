@@ -2,7 +2,7 @@
 
 ################################################################################
 ## Form generated from reading UI file 'editor.ui'
-## (CLEANED: Removed InteractionType and InteractionData widgets)
+## (MODIFIED: 3-Column Layout Implementation)
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -19,36 +19,48 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QListWidgetItem, QMainWindow, QMenu, QMenuBar,
     QPushButton, QScrollArea, QSizePolicy, QSpinBox,
     QSplitter, QStackedWidget, QStatusBar, QTextEdit,
-    QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget, QSpacerItem)
 
 from src.Game_Enums import Actions, Conditions, ObjectTypes
-
+from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
 class Ui_LevelEditor(object):
     def setupUi(self, LevelEditor):
         if not LevelEditor.objectName():
             LevelEditor.setObjectName(u"LevelEditor")
-        LevelEditor.resize(1280, 850)
+        # Aumentamos un poco el ancho por defecto para acomodar las 3 columnas
+        LevelEditor.resize(1600, 900)
+        
         self.action_new_map = QAction(LevelEditor)
         self.action_new_map.setObjectName(u"action_new_map")
         self.action_load_json = QAction(LevelEditor)
         self.action_load_json.setObjectName(u"action_load_json")
         self.action_save_json = QAction(LevelEditor)
         self.action_save_json.setObjectName(u"action_save_json")
+        
         self.centralwidget = QWidget(LevelEditor)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(5, 5, 5, 5) # Márgenes reducidos
+        
+        # --- SPLITTER PRINCIPAL (3 Columnas) ---
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
-        self.toolbox_container = QWidget(self.splitter)
-        self.toolbox_container.setObjectName(u"toolbox_container")
-        self.toolbox_container.setMinimumSize(QSize(340, 0))
-        self.toolbox_container.setMaximumSize(QSize(16777215, 16777215))
-        self.verticalLayout = QVBoxLayout(self.toolbox_container)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+
+        # ==========================================================
+        # COLUMNA IZQUIERDA: Herramientas, Capas, Lista de Objetos
+        # ==========================================================
+        self.left_container = QWidget(self.splitter)
+        self.left_container.setObjectName(u"left_container")
+        self.left_container.setMinimumSize(QSize(300, 0))
+        self.left_container.setMaximumSize(QSize(400, 16777215))
+        self.layout_left = QVBoxLayout(self.left_container)
+        self.layout_left.setObjectName(u"layout_left")
+        self.layout_left.setContentsMargins(0, 0, 0, 0)
         
-        self.group_tools = QGroupBox(self.toolbox_container)
+        # 1. Herramientas
+        self.group_tools = QGroupBox(self.left_container)
         self.group_tools.setObjectName(u"group_tools")
         self.horizontalLayout_grid = QHBoxLayout(self.group_tools)
         self.horizontalLayout_grid.setObjectName(u"horizontalLayout_grid")
@@ -72,9 +84,10 @@ class Ui_LevelEditor(object):
         self.spin_grid_size.setMaximum(512)
         self.spin_grid_size.setValue(32)
         self.horizontalLayout_grid.addWidget(self.spin_grid_size)
-        self.verticalLayout.addWidget(self.group_tools)
+        self.layout_left.addWidget(self.group_tools)
 
-        self.group_layers = QGroupBox(self.toolbox_container)
+        # 2. Capas
+        self.group_layers = QGroupBox(self.left_container)
         self.group_layers.setObjectName(u"group_layers")
         self.group_layers.setTitle("Capas (Visibilidad / Bloqueo)")
         self.layout_layers = QVBoxLayout(self.group_layers)
@@ -90,11 +103,13 @@ class Ui_LevelEditor(object):
         self.chk_lock_ground = QCheckBox("Bloquear Suelo (Z < 0)", self.group_layers)
         self.chk_lock_ground.setChecked(False) 
         self.layout_layers.addWidget(self.chk_lock_ground)
-        self.verticalLayout.addWidget(self.group_layers)
+        self.layout_left.addWidget(self.group_layers)
         
-        self.groupBox = QGroupBox(self.toolbox_container)
+        # 3. Lista de Objetos (Ahora toma el espacio restante vertical de la izq)
+        self.groupBox = QGroupBox(self.left_container)
         self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setMaximumHeight(300)
+        # Quitamos el MaxHeight para que la lista crezca
+        # self.groupBox.setMaximumHeight(300) 
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label_5 = QLabel(self.groupBox)
@@ -120,9 +135,29 @@ class Ui_LevelEditor(object):
         self.btn_delete_object.setObjectName(u"btn_delete_object")
         self.horizontalLayout_3.addWidget(self.btn_delete_object)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
-        self.verticalLayout.addWidget(self.groupBox)
+        self.layout_left.addWidget(self.groupBox)
 
-        self.scrollArea = QScrollArea(self.toolbox_container)
+        # Añadimos el contenedor izquierdo al Splitter
+        self.splitter.addWidget(self.left_container)
+
+        # ==========================================================
+        # COLUMNA CENTRAL: Canvas
+        # ==========================================================
+        self.canvas_view = InteractiveGraphicsView(self.splitter)
+        self.canvas_view.setObjectName(u"canvas_view")
+        self.splitter.addWidget(self.canvas_view)
+
+        # ==========================================================
+        # COLUMNA DERECHA: Propiedades (Scroll Area)
+        # ==========================================================
+        self.right_container = QWidget(self.splitter)
+        self.right_container.setObjectName(u"right_container")
+        self.right_container.setMinimumSize(QSize(360, 0))
+        self.right_container.setMaximumSize(QSize(550, 16777215))
+        self.layout_right = QVBoxLayout(self.right_container)
+        self.layout_right.setContentsMargins(0, 0, 0, 0)
+
+        self.scrollArea = QScrollArea(self.right_container)
         self.scrollArea.setObjectName(u"scrollArea")
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
@@ -130,6 +165,8 @@ class Ui_LevelEditor(object):
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 378, 800))
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        
+        # --- Propiedades Generales ---
         self.properties_box = QGroupBox(self.scrollAreaWidgetContents)
         self.properties_box.setObjectName(u"properties_box")
         self.formLayout = QFormLayout(self.properties_box)
@@ -142,9 +179,11 @@ class Ui_LevelEditor(object):
         self.prop_id.setObjectName(u"prop_id")
         self.prop_id.setReadOnly(True)
         self.formLayout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.prop_id)
+        
         self.label_6 = QLabel(self.properties_box)
         self.label_6.setObjectName(u"label_6")
-        
+        self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.label_6)
+
         self.prop_type = QComboBox(self.properties_box)
         self.prop_type.addItems([
             ObjectTypes.OBSTACLE,
@@ -265,6 +304,7 @@ class Ui_LevelEditor(object):
         self.formLayout.setWidget(8, QFormLayout.ItemRole.FieldRole, self.prop_z_index)
         self.verticalLayout_4.addWidget(self.properties_box)
 
+        # Propiedades extra Primitive
         self.lbl_size = QLabel("Tamaño (W x H):", self.properties_box)
         self.formLayout.setWidget(9, QFormLayout.LabelRole, self.lbl_size)
         self.layout_size = QHBoxLayout()
@@ -309,6 +349,7 @@ class Ui_LevelEditor(object):
         self.prop_reflection_offset.setMaximum(999)
         self.formLayout.setWidget(12, QFormLayout.FieldRole, self.prop_reflection_offset)
 
+        # --- Animación ---
         self.group_animation = QGroupBox(self.scrollAreaWidgetContents)
         self.group_animation.setObjectName(u"group_animation")
         self.verticalLayout_5 = QVBoxLayout(self.group_animation)
@@ -339,11 +380,11 @@ class Ui_LevelEditor(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
         self.verticalLayout_4.addWidget(self.group_animation)
 
+        # --- Interacción ---
         self.group_interaction = QGroupBox(self.scrollAreaWidgetContents)
         self.group_interaction.setObjectName(u"group_interaction")
         self.group_interaction.setTitle("Lógica e Interacción")
         self.formLayout_2 = QFormLayout(self.group_interaction)
-
 
         self.prop_main_stack = QStackedWidget(self.group_interaction)
         self.page_interactable = QWidget()
@@ -453,18 +494,17 @@ class Ui_LevelEditor(object):
         self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
         
         self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
-        
         self.verticalLayout_4.addWidget(self.group_interaction)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.verticalLayout.addWidget(self.scrollArea)
+        self.layout_right.addWidget(self.scrollArea)
+        self.splitter.addWidget(self.right_container)
 
-        self.splitter.addWidget(self.toolbox_container)
-        self.canvas_view = QGraphicsView(self.splitter)
-        self.canvas_view.setObjectName(u"canvas_view")
-        self.splitter.addWidget(self.canvas_view)
-        self.splitter.setStretchFactor(0, 0)
-        self.splitter.setStretchFactor(1, 1)
+        # Configuramos los stretch factors para dar prioridad al Canvas (índice 1)
+        self.splitter.setStretchFactor(0, 0) # Izquierda: 0 (fijo/mínimo)
+        self.splitter.setStretchFactor(1, 1) # Centro: 1 (se expande)
+        self.splitter.setStretchFactor(2, 0) # Derecha: 0 (fijo/mínimo)
+        
         self.horizontalLayout.addWidget(self.splitter)
 
         LevelEditor.setCentralWidget(self.centralwidget)
@@ -504,6 +544,8 @@ class Ui_LevelEditor(object):
         self.properties_box.setTitle(QCoreApplication.translate("LevelEditor", u"Propiedades Generales", None))
         self.label.setText(QCoreApplication.translate("LevelEditor", u"ID:", None))
         self.label_6.setText(QCoreApplication.translate("LevelEditor", u"Tipo Objeto:", None))
+        
+        # Mantener traducciones originales...
         self.prop_type.setItemText(0, QCoreApplication.translate("LevelEditor", u"Obstacle", None))
         self.prop_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Mirror", None))
         self.prop_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Interactable", None))
