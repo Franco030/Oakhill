@@ -107,6 +107,9 @@ class UIManager:
                 elif self.content_type == "NOTE" and self.current_page == len(self.note_pages) -1:
                     self.sounds["note_closed"].play()
                     self.close()
+                elif self.content_type == "DIALOGUE":
+                    self.sounds["dialogue_closed"].play()
+                    self.close()
                 else:
                     # Here are the other content_types: DIALOGUE, IMAGE, ANIMATION
                     # If I want to add closing sound to each one, I can do the same I did with the notes
@@ -191,8 +194,9 @@ class UIManager:
         
         data = self.content_data
         text_color = data.get("color", (255, 255, 255))
-        
-        pygame.draw.rect(screen, (255, 255, 255), box_rect, 3) 
+        rect_color = text_color
+
+        pygame.draw.rect(screen, rect_color, box_rect, 3) 
 
         text = data.get("text", "")
         text_start_y = rect_y + 30

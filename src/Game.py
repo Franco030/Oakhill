@@ -56,9 +56,8 @@ class Game:
         self.sounds = ResourceManager.load_all_sounds("assets/sounds")
         self.images = ResourceManager.load_all_images("assets/images")
 
-        if self.sounds.get("chase_loop"): self.sounds["chase_loop"].set_volume(0.6)
-        if self.sounds.get("flee_loop"): self.sounds["flee_loop"].set_volume(0.6)
-        if self.sounds.get("note_reading_more_vol"): self.sounds["note_reading_more_vol"].set_volume(1.0)
+        if self.sounds.get("chase_loop"): self.sounds["chase_loop"].set_volume(0.5)
+        if self.sounds.get("flee_loop"): self.sounds["flee_loop"].set_volume(0.5)
 
     def run(self):
         while self.state != "QUIT":
@@ -333,6 +332,12 @@ class Game:
             contact = False
             
             if obj.trigger_condition == Conditions.ON_STAY:
+                if self.player.collision_rect.colliderect(obj.rect):
+                    if obj.progress_interaction() != "finished": 
+                        obj.current_progress = obj.interaction_duration
+                    contact = True
+
+            elif obj.trigger_condition == Conditions.ON_ENTER:
                 if self.player.collision_rect.colliderect(obj.rect):
                     if obj.progress_interaction() != "finished": 
                         obj.current_progress = obj.interaction_duration
