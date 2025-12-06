@@ -615,9 +615,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.properties_box.setEnabled(False)
         self.group_animation.setEnabled(False)
         self.group_interaction.setEnabled(False)
+        
         if self.current_hitbox_item:
-            self.current_scene.removeItem(self.current_hitbox_item)
+            if self.current_hitbox_item.scene():
+                self.current_hitbox_item.scene().removeItem(self.current_hitbox_item)
             self.current_hitbox_item = None
+
+        for item in self.current_scene.items():
+            if isinstance(item, (HitboxItem, ResizeHandle)):
+                self.current_scene.removeItem(item)
 
     def enable_property_panel(self):
         self.properties_box.setEnabled(True)
@@ -967,8 +973,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         pixmap_item.setZValue(z)
         
         if self.current_hitbox_item:
-            self.current_scene.removeItem(self.current_hitbox_item)
+            if self.current_hitbox_item.scene():
+                self.current_hitbox_item.scene().removeItem(self.current_hitbox_item)
             self.current_hitbox_item = None
+
+        for item in self.current_scene.items():
+            if isinstance(item, HitboxItem):
+                self.current_scene.removeItem(item)
         
         if not data.get("is_passable", False) or data.get("type") == ObjectTypes.TRIGGER:
             offset = data.get("collision_rect_offset", [0, 0, 0, 0])

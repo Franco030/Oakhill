@@ -186,7 +186,7 @@ class LevelObjectItem(QGraphicsPixmapItem):
             
     def remove_handle(self):
         if self.resize_handle:
-            if self.scene():
+            if self.scene() and self.resize_handle.scene() == self.scene():
                 self.scene().removeItem(self.resize_handle)
             self.resize_handle = None
 
