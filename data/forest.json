@@ -695,42 +695,6 @@
         ],
         "(2, 4)": [
             {
-                "id": "obj_1764909077_0",
-                "type": "Obstacle",
-                "x": 773,
-                "y": 201,
-                "image_path": "assets/images/trees/tree_2.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    48,
-                    123,
-                    -119,
-                    -161
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": ""
-            },
-            {
                 "id": "obj_1764909082_1",
                 "type": "Obstacle",
                 "x": 140,
@@ -1056,7 +1020,7 @@
             },
             {
                 "id": "obj_1764909191_10",
-                "type": "Obstacle",
+                "type": "Interactable",
                 "x": 907,
                 "y": 659,
                 "image_path": "assets/images/gravestones/cross_grave.png",
@@ -1079,13 +1043,13 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
+                "flash_image_path": "assets/images/gravestones/cross_grave_flash_0.png",
+                "charge_sound_path": "assets/sounds/interacting.wav",
                 "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnInteract",
+                "trigger_action": "UnhideObject",
+                "trigger_params": "id=obj_1765000861547_101\nsound=secret_found",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": ""
@@ -1129,8 +1093,8 @@
             {
                 "id": "obj_1764909209_12",
                 "type": "Obstacle",
-                "x": 930,
-                "y": 309,
+                "x": 973,
+                "y": 320,
                 "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
@@ -1233,6 +1197,79 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": ""
+            },
+            {
+                "id": "obj_1765000689343_108",
+                "type": "Obstacle",
+                "x": 821,
+                "y": 154,
+                "image_path": "assets/images/trees/bloody_tree_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    40,
+                    115,
+                    -106,
+                    -142
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": ""
+            },
+            {
+                "type": "Interactable",
+                "image_path": "assets/images/notes/note.png",
+                "resize_factor": 4.0,
+                "is_passable": true,
+                "starts_hidden": true,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "ShowNote",
+                "trigger_params": "text=What my eyes just see I cannot comprehend\\nWhat is the purpose of those people?\\nAre they really here just to torment, to inflict pain?\\nI want to run away as fast as I can but...\\nMaybe that ominous building hides something\\n\\nMatt, 23XX\nblocking=true\nsound=interaction_occurred",
+                "is_ground": true,
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "id": "obj_1765000861547_101",
+                "x": 960,
+                "y": 718
             }
         ],
         "(2, 5)": [
@@ -1246,7 +1283,7 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    9,
+                    11,
                     68,
                     -27,
                     -73
@@ -1282,8 +1319,8 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    10,
-                    66,
+                    12,
+                    64,
                     -24,
                     -69
                 ],
@@ -1915,7 +1952,7 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowDialogue",
-                "trigger_params": "text=ready to be used; color=170,30,30;sound=dialogue_occurred; kill=false; blocking=true;",
+                "trigger_params": "text=ready to be used; color=170,30,30;sound=dialogue_occurred; kill=true; blocking=true;",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": ""

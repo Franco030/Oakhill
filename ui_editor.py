@@ -40,16 +40,12 @@ class Ui_LevelEditor(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(5, 5, 5, 5) # Márgenes reducidos
+        self.horizontalLayout.setContentsMargins(5, 5, 5, 5)
         
-        # --- SPLITTER PRINCIPAL (3 Columnas) ---
         self.splitter = QSplitter(self.centralwidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
 
-        # ==========================================================
-        # COLUMNA IZQUIERDA: Herramientas, Capas, Lista de Objetos
-        # ==========================================================
         self.left_container = QWidget(self.splitter)
         self.left_container.setObjectName(u"left_container")
         self.left_container.setMinimumSize(QSize(300, 0))
@@ -58,7 +54,6 @@ class Ui_LevelEditor(object):
         self.layout_left.setObjectName(u"layout_left")
         self.layout_left.setContentsMargins(0, 0, 0, 0)
         
-        # 1. Herramientas
         self.group_tools = QGroupBox(self.left_container)
         self.group_tools.setObjectName(u"group_tools")
         self.horizontalLayout_grid = QHBoxLayout(self.group_tools)
@@ -85,7 +80,6 @@ class Ui_LevelEditor(object):
         self.horizontalLayout_grid.addWidget(self.spin_grid_size)
         self.layout_left.addWidget(self.group_tools)
 
-        # 2. Capas
         self.group_layers = QGroupBox(self.left_container)
         self.group_layers.setObjectName(u"group_layers")
         self.group_layers.setTitle("Capas (Visibilidad / Bloqueo)")
@@ -117,11 +111,8 @@ class Ui_LevelEditor(object):
         self.layout_left.addWidget(self.group_templates)
 
         
-        # 3. Lista de Objetos (Ahora toma el espacio restante vertical de la izq)
         self.groupBox = QGroupBox(self.left_container)
         self.groupBox.setObjectName(u"groupBox")
-        # Quitamos el MaxHeight para que la lista crezca
-        # self.groupBox.setMaximumHeight(300) 
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label_5 = QLabel(self.groupBox)
@@ -149,19 +140,12 @@ class Ui_LevelEditor(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         self.layout_left.addWidget(self.groupBox)
 
-        # Añadimos el contenedor izquierdo al Splitter
         self.splitter.addWidget(self.left_container)
 
-        # ==========================================================
-        # COLUMNA CENTRAL: Canvas
-        # ==========================================================
         self.canvas_view = InteractiveGraphicsView(self.splitter)
         self.canvas_view.setObjectName(u"canvas_view")
         self.splitter.addWidget(self.canvas_view)
 
-        # ==========================================================
-        # COLUMNA DERECHA: Propiedades (Scroll Area)
-        # ==========================================================
         self.right_container = QWidget(self.splitter)
         self.right_container.setObjectName(u"right_container")
         self.right_container.setMinimumSize(QSize(360, 0))
@@ -178,7 +162,6 @@ class Ui_LevelEditor(object):
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         
-        # --- Propiedades Generales ---
         self.properties_box = QGroupBox(self.scrollAreaWidgetContents)
         self.properties_box.setObjectName(u"properties_box")
         self.formLayout = QFormLayout(self.properties_box)
@@ -197,13 +180,7 @@ class Ui_LevelEditor(object):
         self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.label_6)
 
         self.prop_type = QComboBox(self.properties_box)
-        self.prop_type.addItems([
-            ObjectTypes.OBSTACLE,
-            ObjectTypes.MIRROR,
-            ObjectTypes.INTERACTABLE,
-            ObjectTypes.TRIGGER,
-            ObjectTypes.PRIMITIVE
-        ])
+        self.prop_type.addItems(ObjectTypes.get_object_types())
         self.prop_type.setObjectName(u"prop_type")
         self.formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, self.prop_type)
 
@@ -316,7 +293,6 @@ class Ui_LevelEditor(object):
         self.formLayout.setWidget(8, QFormLayout.ItemRole.FieldRole, self.prop_z_index)
         self.verticalLayout_4.addWidget(self.properties_box)
 
-        # Propiedades extra Primitive
         self.lbl_size = QLabel("Tamaño (W x H):", self.properties_box)
         self.formLayout.setWidget(9, QFormLayout.LabelRole, self.lbl_size)
         self.layout_size = QHBoxLayout()
@@ -361,7 +337,6 @@ class Ui_LevelEditor(object):
         self.prop_reflection_offset.setMaximum(999)
         self.formLayout.setWidget(12, QFormLayout.FieldRole, self.prop_reflection_offset)
 
-        # --- Animación ---
         self.group_animation = QGroupBox(self.scrollAreaWidgetContents)
         self.group_animation.setObjectName(u"group_animation")
         self.verticalLayout_5 = QVBoxLayout(self.group_animation)
@@ -392,7 +367,6 @@ class Ui_LevelEditor(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
         self.verticalLayout_4.addWidget(self.group_animation)
 
-        # --- Interacción ---
         self.group_interaction = QGroupBox(self.scrollAreaWidgetContents)
         self.group_interaction.setObjectName(u"group_interaction")
         self.group_interaction.setTitle("Lógica e Interacción")
@@ -474,15 +448,15 @@ class Ui_LevelEditor(object):
         self.prop_trigger_params.setMaximumHeight(60)
         self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
-        self.formLayout_2.addWidget(self.btn_zoom_trigger)
+        self.formLayout_2.setWidget(5, QFormLayout.FieldRole, self.btn_zoom_trigger)
 
         self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
-        self.formLayout_2.setWidget(5, QFormLayout.SpanningRole, self.lbl_sequence)
+        self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.lbl_sequence)
         
         self.list_trigger_sequence = QListWidget(self.group_interaction)
         self.list_trigger_sequence.setMaximumHeight(100)
-        self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.list_trigger_sequence)
+        self.formLayout_2.setWidget(7, QFormLayout.SpanningRole, self.list_trigger_sequence)
         
         self.layout_seq_btns = QHBoxLayout()
         self.btn_seq_add = QPushButton("+", self.group_interaction)
@@ -494,7 +468,7 @@ class Ui_LevelEditor(object):
         self.layout_seq_btns.addWidget(self.btn_seq_up)
         self.layout_seq_btns.addWidget(self.btn_seq_down)
         
-        self.formLayout_2.setLayout(7, QFormLayout.SpanningRole, self.layout_seq_btns)
+        self.formLayout_2.setLayout(8, QFormLayout.SpanningRole, self.layout_seq_btns)
         
         self.group_step_detail = QGroupBox("Editar Paso Seleccionado", self.group_interaction)
         self.layout_step = QFormLayout(self.group_step_detail)
@@ -517,17 +491,16 @@ class Ui_LevelEditor(object):
         self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
         self.layout_step.addWidget(self.btn_zoom_step)
         
-        self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
+        self.formLayout_2.setWidget(9, QFormLayout.SpanningRole, self.group_step_detail)
         self.verticalLayout_4.addWidget(self.group_interaction)
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.layout_right.addWidget(self.scrollArea)
         self.splitter.addWidget(self.right_container)
 
-        # Configuramos los stretch factors para dar prioridad al Canvas (índice 1)
-        self.splitter.setStretchFactor(0, 0) # Izquierda: 0 (fijo/mínimo)
-        self.splitter.setStretchFactor(1, 1) # Centro: 1 (se expande)
-        self.splitter.setStretchFactor(2, 0) # Derecha: 0 (fijo/mínimo)
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(1, 1)
+        self.splitter.setStretchFactor(2, 0)
         
         self.horizontalLayout.addWidget(self.splitter)
 

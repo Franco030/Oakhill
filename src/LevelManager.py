@@ -36,11 +36,10 @@ class LevelManager:
     
     def reset_music_state(self):
         self.current_music_path = None
-
+        pygame.mixer.music.stop()
         self.silence_timer = 0
         self.is_in_silence = False
         self.ambience_timer = 0
-        pygame.mixer.music.stop()
 
     def load_level_from_request(self, level_req, player_sprite):
         if self.current_scene:

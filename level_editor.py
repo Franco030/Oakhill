@@ -54,6 +54,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.image_paths = []
         self.clipboard_data = None
 
+        self.background_toggle = False
+
         self.templates = {}
         self.templates_file = os.path.join(self.base_path, "data", "templates.json")
 
@@ -148,6 +150,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_redo.activated.connect(self.perform_redo)
         self.shortcut_delete = QShortcut(QKeySequence(Qt.Key_Delete), self)
         self.shortcut_delete.activated.connect(self.delete_selected_object)
+        self.shortcut_preview = QShortcut(QKeySequence(Qt.Key.Key_F1), self)
+        self.shortcut_preview.activated.connect(self.change_background_color)
         self.combo_map_select.addItems(list(MAPS.keys()))
         self.chk_layer_obstacles.stateChanged.connect(self.update_layers)
         self.chk_layer_triggers.stateChanged.connect(self.update_layers)
@@ -316,7 +320,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             "flash_image_path": "None",
             "charge_sound_path": "None",
             "used_image_path": "None", 
-            "interaction_duration": 60, 
+            "interaction_duration": 120, 
             "trigger_condition": Conditions.ON_STAY,    
             "trigger_action": Actions.SET_FLAG, 
             "trigger_params": ""
@@ -789,9 +793,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def populate_views_for_current_zone(self):
         self.list_objects.clear()
+        self.current_hitbox_item = None
         self.current_scene.clear()
         self.draw_game_border()
-        self.current_hitbox_item = None
         self.disable_property_panel()
         zone = self.combo_zone_selector.currentText()
         if not zone or "zones" not in self.current_data: return
@@ -1385,6 +1389,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         if dialog.exec():
             source_text_edit.setPlainText(big_editor.toPlainText())
+
+    def change_background_color(self):
+        if self.background_toggle:
+            self.canvas_view.setBackgroundBrush(QBrush(QColor(22, 22, 22)))
+        else:
+            self.canvas_view.setBackgroundBrush(QBrush(QColor(Qt.GlobalColor.black)))
+
+        self.background_toggle = not self.background_toggle
 
 
 if __name__ == "__main__":

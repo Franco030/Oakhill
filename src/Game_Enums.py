@@ -45,3 +45,10 @@ class ObjectTypes:
     INTERACTABLE = "Interactable"
     TRIGGER = "Trigger"
     PRIMITIVE = "Primitive"
+
+    @staticmethod
+    def get_object_types():
+        return [
+            ObjectTypes.OBSTACLE, ObjectTypes.MIRROR, ObjectTypes.INTERACTABLE,
+            ObjectTypes.TRIGGER, ObjectTypes.PRIMITIVE
+        ]

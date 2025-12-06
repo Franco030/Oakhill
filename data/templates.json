@@ -31,5 +31,138 @@
         "z_index": 0,
         "reflection_offset_y": 0,
         "interaction_data": ""
+    },
+    "tree_0": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/tree_1.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            50,
+            130,
+            -114,
+            -166
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": ""
+    },
+    "tree_1": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/tree_0.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            57,
+            125,
+            -114,
+            -166
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": ""
+    },
+    "tree_2": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/tree_2.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            48,
+            123,
+            -119,
+            -161
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": ""
+    },
+    "simple_note": {
+        "type": "Interactable",
+        "image_path": "assets/images/notes/note.png",
+        "resize_factor": 4.0,
+        "is_passable": true,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "ShowNote",
+        "trigger_params": "text=any_text\nblocking=true\nsound=interaction_occurred",
+        "is_ground": true,
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": ""
     }
 }

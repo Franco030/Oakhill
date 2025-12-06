@@ -262,7 +262,9 @@ class Game:
             if self.player.is_defeated:
                 self.death_screen_delay -= delta_time
                 if self.death_screen_delay <= 0 and not self.game_over_sound_played:
-                    if self.sounds.get("game_over_sound"): self.sounds["game_over_sound"].play()
+                    if self.sounds.get("game_over_sound"): 
+                        self.sounds["game_over_sound"].set_volume(0.6)
+                        self.sounds["game_over_sound"].play()
                     self.game_over_sound_played = True
 
     def _draw(self, delta_time):
@@ -371,7 +373,9 @@ class Game:
                 
                 pygame.mixer.music.stop()
                 if self.sounds.get("chase_loop"): self.sounds["chase_loop"].stop()
-                if self.sounds.get("death_sound"): self.sounds["death_sound"].play()
+                if self.sounds.get("death_sound"): 
+                    self.sounds["death_sound"].set_volume(0.7)
+                    self.sounds["death_sound"].play()
                 
                 break
 
@@ -379,12 +383,12 @@ class Game:
         scene = self.level_manager.current_scene
         if not scene: return
 
-        COLOR_OBSTACLE = (0, 255, 255)    # Cian
-        COLOR_INTERACTABLE = (0, 255, 0)  # Verde
-        COLOR_TRIGGER = (255, 0, 255)     # Magenta
-        COLOR_ENEMY = (255, 0, 0)         # Rojo
-        COLOR_PLAYER = (255, 255, 0)      # Amarillo
-        COLOR_ATTACK = (255, 165, 0)      # Naranja
+        COLOR_OBSTACLE = (0, 255, 255)
+        COLOR_INTERACTABLE = (0, 255, 0)
+        COLOR_TRIGGER = (255, 0, 255)
+        COLOR_ENEMY = (255, 0, 0)
+        COLOR_PLAYER = (255, 255, 0)
+        COLOR_ATTACK = (255, 165, 0)
 
         for obj in scene.obstacles:
             rect = getattr(obj, "collision_rect", obj.rect)
