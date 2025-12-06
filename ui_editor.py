@@ -27,7 +27,6 @@ class Ui_LevelEditor(object):
     def setupUi(self, LevelEditor):
         if not LevelEditor.objectName():
             LevelEditor.setObjectName(u"LevelEditor")
-        # Aumentamos un poco el ancho por defecto para acomodar las 3 columnas
         LevelEditor.resize(1600, 900)
         
         self.action_new_map = QAction(LevelEditor)
@@ -104,6 +103,19 @@ class Ui_LevelEditor(object):
         self.chk_lock_ground.setChecked(False) 
         self.layout_layers.addWidget(self.chk_lock_ground)
         self.layout_left.addWidget(self.group_layers)
+
+        self.group_templates = QGroupBox("Plantillas (Moldes)")
+        self.layout_templates = QVBoxLayout(self.group_templates)
+        self.combo_templates = QComboBox()
+        self.layout_templates.addWidget(self.combo_templates)
+        self.layout_tmpl_btns = QHBoxLayout()
+        self.btn_add_template = QPushButton("Añadir Template")
+        self.btn_save_template = QPushButton("Guardar Selección")
+        self.layout_tmpl_btns.addWidget(self.btn_add_template)
+        self.layout_tmpl_btns.addWidget(self.btn_save_template)
+        self.layout_templates.addLayout(self.layout_tmpl_btns)
+        self.layout_left.addWidget(self.group_templates)
+
         
         # 3. Lista de Objetos (Ahora toma el espacio restante vertical de la izq)
         self.groupBox = QGroupBox(self.left_container)
@@ -455,9 +467,14 @@ class Ui_LevelEditor(object):
         
         self.lbl_trig_params = QLabel("Params Globales:\n(blocking=true)", self.group_interaction)
         self.prop_trigger_params = QTextEdit() 
+        self.btn_zoom_trigger = QPushButton("|--|", self.group_interaction)
+        self.btn_zoom_trigger.setToolTip("Open bigger editor")
+        self.btn_zoom_trigger.setMaximumWidth(30)
+        self.btn_zoom_trigger.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.prop_trigger_params.setMaximumHeight(60)
         self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
+        self.formLayout_2.addWidget(self.btn_zoom_trigger)
 
         self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
@@ -470,8 +487,8 @@ class Ui_LevelEditor(object):
         self.layout_seq_btns = QHBoxLayout()
         self.btn_seq_add = QPushButton("+", self.group_interaction)
         self.btn_seq_remove = QPushButton("-", self.group_interaction)
-        self.btn_seq_up = QPushButton("▲", self.group_interaction)
-        self.btn_seq_down = QPushButton("▼", self.group_interaction)
+        self.btn_seq_up = QPushButton("up", self.group_interaction)
+        self.btn_seq_down = QPushButton("down", self.group_interaction)
         self.layout_seq_btns.addWidget(self.btn_seq_add)
         self.layout_seq_btns.addWidget(self.btn_seq_remove)
         self.layout_seq_btns.addWidget(self.btn_seq_up)
@@ -491,7 +508,14 @@ class Ui_LevelEditor(object):
         self.prop_step_params = QTextEdit(self.group_step_detail)
         self.prop_step_params.setPlaceholderText("time=2.0")
         self.prop_step_params.setMaximumHeight(50)
+
+        self.btn_zoom_step = QPushButton("|--|", self.group_interaction)
+        self.btn_zoom_step.setToolTip("Open bigger editor")
+        self.btn_zoom_step.setMaximumWidth(30)
+        self.btn_zoom_step.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+
         self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
+        self.layout_step.addWidget(self.btn_zoom_step)
         
         self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.group_step_detail)
         self.verticalLayout_4.addWidget(self.group_interaction)
@@ -537,6 +561,10 @@ class Ui_LevelEditor(object):
         self.chk_grid_snap.setText("Snap Grid")
         self.label_grid.setText("Size:")
         
+        self.group_templates.setTitle(QCoreApplication.translate("LevelEditor", u"Templates", None))
+        self.btn_add_template.setText(QCoreApplication.translate("LevelEditor", u"Añadir Template", None))
+        self.btn_save_template.setText(QCoreApplication.translate("LevelEditor", u"Guardar Template"))
+
         self.groupBox.setTitle(QCoreApplication.translate("LevelEditor", u"Objetos", None))
         self.label_5.setText(QCoreApplication.translate("LevelEditor", u"Zona:", None))
         self.btn_add_object.setText(QCoreApplication.translate("LevelEditor", u"+ Añadir", None))
@@ -545,7 +573,6 @@ class Ui_LevelEditor(object):
         self.label.setText(QCoreApplication.translate("LevelEditor", u"ID:", None))
         self.label_6.setText(QCoreApplication.translate("LevelEditor", u"Tipo Objeto:", None))
         
-        # Mantener traducciones originales...
         self.prop_type.setItemText(0, QCoreApplication.translate("LevelEditor", u"Obstacle", None))
         self.prop_type.setItemText(1, QCoreApplication.translate("LevelEditor", u"Mirror", None))
         self.prop_type.setItemText(2, QCoreApplication.translate("LevelEditor", u"Interactable", None))

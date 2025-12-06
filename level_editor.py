@@ -10,14 +10,14 @@ from PySide6.QtWidgets import (
     QGraphicsRectItem, QGraphicsItem,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
     QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView,
-    QSizePolicy
+    QSizePolicy, QDialog, QDialogButtonBox, QVBoxLayout
 )
-from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
+from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter, QFont
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
-from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
+from src.editor_systems.SyntaxHighlighter import SyntaxHighlighter
 from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
 from src.Game_Enums import Actions, Conditions, ObjectTypes
 
@@ -53,6 +53,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.current_data = {"zones": {}}
         self.image_paths = []
         self.clipboard_data = None
+
+        self.templates = {}
+        self.templates_file = os.path.join(self.base_path, "data", "templates.json")
+
         self.current_scene = QGraphicsScene()
         self.canvas_view.setScene(self.current_scene)
         self.current_scene.setSceneRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
@@ -69,6 +73,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.btn_add_object.clicked.connect(self.add_new_object)
         self.btn_delete_object.clicked.connect(self.delete_selected_object)
         self.combo_zone_selector.currentIndexChanged.connect(self.populate_views_for_current_zone)
+
+        self.btn_add_template.clicked.connect(self.add_template)
+        self.btn_save_template.clicked.connect(self.save_selection_as_template)
 
         self.list_objects.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.list_objects.currentItemChanged.connect(self.on_object_selected)
@@ -119,6 +126,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.btn_browse_flash.clicked.connect(lambda: self.browse_file_for_combo(self.prop_flash_image_path_combo))
         self.btn_browse_charge.clicked.connect(lambda: self.browse_audio_for_combo(self.prop_charge_sound_combo))
         self.btn_browse_used.clicked.connect(lambda: self.browse_file_for_combo(self.prop_used_image_path_combo))
+        self.btn_zoom_trigger.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_trigger_params))
+        self.btn_zoom_step.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_step_params))
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
         self.shortcut_up.activated.connect(lambda: self.navigate_zone(0, -1))
         self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
@@ -144,8 +153,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.chk_layer_triggers.stateChanged.connect(self.update_layers)
         self.chk_layer_interactables.stateChanged.connect(self.update_layers)
         self.chk_lock_ground.stateChanged.connect(self.update_layers)
+        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document())
+        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document())
         self.populate_image_combos()
         self.populate_sound_combos()
+        self.load_templates()
         self.disable_property_panel()
 
     def perform_undo(self): self.undo_manager.undo()
@@ -1276,6 +1288,103 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 else:
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
+
+    def load_templates(self):
+        self.templates = {}
+        if os.path.exists(self.templates_file):
+            try:
+                with open(self.templates_file, "r", encoding="utf-8") as f:
+                    self.templates = json.load(f)
+            except Exception as e:
+                print(f"Error loading templates: {e}")
+        self.update_template_combo()
+    
+    def save_templates_to_file(self):
+        try:
+            os.makedirs(os.path.dirname(self.templates_file), exist_ok=True)
+            with open(self.templates_file, "w", encoding="utf-8") as f:
+                json.dump(self.templates, f, indent=4)
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Could not save templates: {e}")
+
+    def update_template_combo(self):
+        self.combo_templates.clear()
+        self.combo_templates.addItems(sorted(self.templates.keys()))
+
+    def save_selection_as_template(self):
+        obj_data = self.get_real_object_data()
+        if not obj_data:
+            QMessageBox.warning(self, "Warning", "Select an object first")
+            return
+        
+        name, ok = QInputDialog.getText(self, "Save Template", "Template Name:")
+        if not ok or not name: return
+
+        if name in self.templates:
+            res = QMessageBox.question(self, "Rewrite", f"The template '{name}' already exists. Replace it?", QMessageBox.Yes | QMessageBox.No)
+            if res == QMessageBox.No: return
+        
+        template_data = copy.deepcopy(obj_data)
+
+        keys_to_remove = ["id", "x", "y"]
+        for k in keys_to_remove:
+            if k in template_data: del template_data[k]
+
+        self.templates[name] = template_data
+        self.save_templates_to_file()
+        self.update_template_combo()
+        self.combo_templates.setCurrentText(name)
+        print(f"Template '{name}' saved")
+
+    def add_template(self):
+        name = self.combo_templates.currentText()
+        if not name or name not in self.templates: return
+        
+        current_zone = self.combo_zone_selector.currentText()
+        if not current_zone: return
+
+        template_data = self.templates[name]
+        new_obj_data = copy.deepcopy(template_data)
+
+        new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
+        new_obj_data["id"] = new_id
+
+        new_obj_data["x"] = GAME_WIDTH // 2
+        new_obj_data["y"] = GAME_HEIGHT // 2
+
+        cmd = CmdAddObject(self, current_zone, new_obj_data)
+        self.undo_manager.push(cmd, execute_now=True)
+
+    def open_text_editor_dialog(self, source_text_edit):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Editor de Texto Ampliado")
+        dialog.resize(600, 400)
+        
+        layout = QVBoxLayout(dialog)
+        
+        big_editor = QTextEdit(dialog)
+        big_editor.setPlainText(source_text_edit.toPlainText())
+        
+        big_editor.setStyleSheet("""
+            QTextEdit {
+                background-color: #1E1E1E;
+                color: #D4D4D4;
+                font-family: Consolas, 'Courier New', monospace;
+                font-size: 11pt;
+            }
+        """)
+        
+        self.temp_highlighter = SyntaxHighlighter(big_editor.document())
+
+        layout.addWidget(big_editor)
+        
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.accepted.connect(dialog.accept)
+        button_box.rejected.connect(dialog.reject)
+        layout.addWidget(button_box)
+        
+        if dialog.exec():
+            source_text_edit.setPlainText(big_editor.toPlainText())
 
 
 if __name__ == "__main__":

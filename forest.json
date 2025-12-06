@@ -4989,7 +4989,7 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=To whoever is reading this\\nI'm Matt Gray, I'm documenting what happenss around this town\\nbe aware of the \"people\" around this place\\nthey chase what they call \"sinners\"\\nthey try to bring salvation to them\\nthey are always lurking behind the dark\\nDON'T LET YOUR GUARD DOWN\\nSeriously... What is going on here?[P]For some reason\\nthey don't like to be 'examined'\\nif you have an ounce of reason, go away\\nIf you want to follow my steps\\n I'll be writing everything I see\\nKeep an eye out for secrets\\nWe can't let them know\\n\\nMatt, 23XX\nblocking=true\nsound=interaction_occurred",
+                "trigger_params": "text=To whoever is reading this\\nI'm Matt Gray, I'm documenting what happenss around this town\\nbe aware of the \"people\" around this place\\nthey chase what they call \"sinners\"\\nthey try to bring salvation to them\\nthey are always lurking behind the dark\\nDON'T LET YOUR GUARD DOWN\\nSeriously... What is going on here?[P]For some reason\\nthey don't like to be 'examined'\\nif you have an ounce of reason, go away\\nIf you want to follow my steps\\n I'll be writing everything I see\\nKeep an eye out for secrets\\nWe can't let them know\\n\\nMatt, 23XX; blocking=true; sound=interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
