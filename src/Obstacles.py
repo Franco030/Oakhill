@@ -75,6 +75,10 @@ class Obstacle(pygame.sprite.Sprite):
         
         self.animation = None
         animation_paths = data.get("animation_images")
+
+        self.auto_play = data.get("auto_play", True)
+        self.is_animating = self.auto_play
+
         if animation_paths:
             try:
                 images = [resource_path(p) for p in animation_paths]
@@ -84,12 +88,15 @@ class Obstacle(pygame.sprite.Sprite):
                 print(f"ERROR: Can't load animation for {data.get('id')}: {e}")
 
     def update(self):
-        """
-        This method is called for the sprites group in main_window
-        IMPORTANT for animations
-        """
-        if self.animation:
+        if self.animation and self.is_animating:
             self.animation.animate()
+
+    def start_animation(self):
+        self.is_animating = True
+
+    def stop_animation(self):
+        self.is_animating = False
+        self.image = self.animation.images[0]
     
     def unhide(self):
         """

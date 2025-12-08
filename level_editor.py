@@ -152,6 +152,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_redo.activated.connect(self.perform_redo)
         self.shortcut_delete = QShortcut(QKeySequence(Qt.Key_Delete), self)
         self.shortcut_delete.activated.connect(self.delete_selected_object)
+        self.shortcut_create = QShortcut(QKeySequence(Qt.Key_Insert), self)
+        self.shortcut_create.activated.connect(self.add_new_object)
         self.shortcut_preview = QShortcut(QKeySequence(Qt.Key.Key_F1), self)
         self.shortcut_preview.activated.connect(self.change_background_color)
         self.combo_map_select.addItems(list(MAPS.keys()))

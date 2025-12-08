@@ -20,7 +20,9 @@ class SceneLoader:
         zone_triggers = {}
 
         for zone_str, objects_data_list in zone_data.items():
-            zone = eval(zone_str)
+            # zone = eval(zone_str) security risk
+            coords = zone_str.replace('(', '').replace(')', '').split(',')
+            zone = (int(coords[0]), int(coords[1]))
             obstacle_list = []
             interactable_list = []
             trigger_list = []

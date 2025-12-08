@@ -41,6 +41,8 @@ class Scene:
         self._triggers = pygame.sprite.Group()
         self._enemies = pygame.sprite.Group()
 
+        self._id_map = {}
+
         self._load_obstacles_for_current_location()
         self._load_enemies_for_current_location()
 
@@ -65,6 +67,10 @@ class Scene:
     def enemies(self):
         return self._enemies
     
+    def _register_object_id(self, obj):
+        if hasattr(obj, 'id') and obj.id:
+            clean_id = str(obj.id).replace(" ", "")
+            self._id_map[clean_id] = obj
 
     # I didn't change the name but a more correct name is:
     # _load_objects_for_current_location
@@ -75,13 +81,20 @@ class Scene:
         self._obstacles.empty()
         self._interactables.empty()
         self._triggers.empty()
+        self._id_map.clear()
 
         if self.location in self.obstacles_dict:
-            self._obstacles.add(self.obstacles_dict[self.location])
+            current_obs = self.obstacles_dict[self.location]
+            self._obstacles.add(current_obs)
+            for obj in current_obs: self._register_object_id(obj)
+
 
         if self.location in self._interactables_dict:
-            for obj in self._interactables_dict[self.location]:
+            current_ints = self._interactables_dict[self.location]
+            for obj in current_ints:
+                self._register_object_id(obj)
                 is_hidden = getattr(obj, 'is_hidden', False)
+
                 
                 should_show = not is_hidden and (not obj.interacted_once or obj.used_image)
                 if should_show:
@@ -91,7 +104,9 @@ class Scene:
                     self._obstacles.add(obj)
 
         if self.location in self._triggers_dict:
-            for trig in self._triggers_dict[self.location]:
+            current_trigs = self._triggers_dict[self.location]
+            for trig in current_trigs:
+                self._register_object_id(obj)
                 if trig.id and game_state.has_interacted(trig.id) or trig.is_hidden:
                     continue
                 self._triggers.add(trig)
@@ -114,63 +129,97 @@ class Scene:
             self.location = new_location
             self._load_obstacles_for_current_location()
 
-    def unhide_object_by_id(self, target_id):
-        """
-        Searches for an object by id, ignoring spaces and checking all lists
-        """
-        print(f"[SCENE] Searching hidden object with id: '{target_id}'")
-        clean_target = str(target_id).replace(" ", "")
+    # def unhide_object_by_id(self, target_id):
+    #     """
+    #     Searches for an object by id, ignoring spaces and checking all lists
+    #     """
+    #     print(f"[SCENE] Searching hidden object with id: '{target_id}'")
+    #     clean_target = str(target_id).replace(" ", "")
 
-        def search_and_reveal(object_list, destination_group):
-            for obj in object_list:
-                obj_id = getattr(obj, 'id', "")
-                clean_obj_id = str(obj_id).replace(" ", "")
+    #     def search_and_reveal(object_list, destination_group):
+    #         for obj in object_list:
+    #             obj_id = getattr(obj, 'id', "")
+    #             clean_obj_id = str(obj_id).replace(" ", "")
                 
-                if clean_obj_id == clean_target:
-                    obj.unhide()
-                    destination_group.add(obj)
+    #             if clean_obj_id == clean_target:
+    #                 obj.unhide()
+    #                 destination_group.add(obj)
                     
-                    if not getattr(obj, 'is_passable', False) and not isinstance(obj, Trigger):
-                        self._obstacles.add(obj)
+    #                 if not getattr(obj, 'is_passable', False) and not isinstance(obj, Trigger):
+    #                     self._obstacles.add(obj)
                         
-                    print(f"[SCENE] Object '{obj_id}' revealed.")
-                    return True
-            return False
+    #                 print(f"[SCENE] Object '{obj_id}' revealed.")
+    #                 return True
+    #         return False
 
-        if self.location in self._interactables_dict:
-            if search_and_reveal(self._interactables_dict[self.location], self._interactables):
-                return
+    #     if self.location in self._interactables_dict:
+    #         if search_and_reveal(self._interactables_dict[self.location], self._interactables):
+    #             return
 
-        if self.location in self.obstacles_dict:
-            if search_and_reveal(self.obstacles_dict[self.location], self._obstacles):
-                return
+    #     if self.location in self.obstacles_dict:
+    #         if search_and_reveal(self.obstacles_dict[self.location], self._obstacles):
+    #             return
             
-        if self.location in self._triggers_dict:
-            if search_and_reveal(self._triggers_dict[self.location], self._triggers):
-                return
+    #     if self.location in self._triggers_dict:
+    #         if search_and_reveal(self._triggers_dict[self.location], self._triggers):
+    #             return
             
-        print(f"[SCENE] ERROR: No object id found similiar to '{target_id}' in {self.location}")
+    #     print(f"[SCENE] ERROR: No object id found similiar to '{target_id}' in {self.location}")
+
+    def unhide_object_by_id(self, target_id):
+        clean_target = str(target_id).replace(" ", "")
+        obj = self._id_map.get(clean_target)
+
+        if obj:
+            print(f"[SCENE] Object '{target_id}' found in map. Revealing...")
+            obj.unhide()
+            
+            if isinstance(obj, Interactable):
+                self._interactables.add(obj)
+            
+            if not getattr(obj, 'is_passable', False) and not isinstance(obj, Trigger):
+                self._obstacles.add(obj)
+                
+            if isinstance(obj, Trigger):
+                self._triggers.add(obj)
+
+            return
+            
+        print(f"[SCENE] ERROR: No object id found similar to '{target_id}' in {self.location}")
+
+    # def hide_object_by_id(self, target_id):
+    #     print(f"[SCENE] Hiding object with id: '{target_id}'")
+    #     clean_target = str(target_id).replace(" ", "")
+
+
+    #     all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers)
+        
+    #     found = False
+    #     for obj in all_sprites:
+    #         obj_id = getattr(obj, 'id', "")
+    #         clean_obj_id = str(obj_id).replace(" ", "")
+            
+    #         if clean_obj_id == clean_target:
+    #             if hasattr(obj, 'hide'):
+    #                 obj.hide()
+                
+    #             obj.kill()
+    #             found = True
+        
+    #     if not found:
+    #         print(f"[SCENE] Warning: Object '{target_id}' not found to hide.")
 
     def hide_object_by_id(self, target_id):
-        print(f"[SCENE] Hiding object with id: '{target_id}'")
         clean_target = str(target_id).replace(" ", "")
+        obj = self._id_map.get(clean_target)
 
-
-        all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers)
-        
-        found = False
-        for obj in all_sprites:
-            obj_id = getattr(obj, 'id', "")
-            clean_obj_id = str(obj_id).replace(" ", "")
+        if obj:
+            print(f"[SCENE] Hiding object with id: '{target_id}'")
+            if hasattr(obj, 'hide'):
+                obj.hide()
             
-            if clean_obj_id == clean_target:
-                if hasattr(obj, 'hide'):
-                    obj.hide()
-                
-                obj.kill()
-                found = True
-        
-        if not found:
+            obj.kill()
+        else:
             print(f"[SCENE] Warning: Object '{target_id}' not found to hide.")
             
     def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
@@ -257,14 +306,18 @@ class Scene:
         except Exception as e:
             print(f"Error changing zone to {zone_str}: {e}")
 
+    # def get_object_by_id(self, target_id):
+    #     clean_target = str(target_id).replace(" ", "")
+        
+    #     all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers) + list(self._enemies)
+        
+    #     for obj in all_sprites:
+    #         obj_id = getattr(obj, 'id', "")
+    #         if str(obj_id).replace(" ", "") == clean_target:
+    #             return obj
+        
+    #     return None
+
     def get_object_by_id(self, target_id):
         clean_target = str(target_id).replace(" ", "")
-        
-        all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers) + list(self._enemies)
-        
-        for obj in all_sprites:
-            obj_id = getattr(obj, 'id', "")
-            if str(obj_id).replace(" ", "") == clean_target:
-                return obj
-        
-        return None
+        return self._id_map.get(clean_target)
