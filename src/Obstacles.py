@@ -22,6 +22,7 @@ class Obstacle(pygame.sprite.Sprite):
         
         # Properties physics/render
         self.z_index = int(data.get("z_index", 0))
+        self.sort_offset_y = int(data.get("sort_offset_y", 0))
         self.is_ground = data.get("is_ground", False)
         self.is_passable = data.get("is_passable", False)
         self.resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))

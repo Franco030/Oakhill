@@ -51,6 +51,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.is_programmatic_change = False 
         self.base_path = os.path.abspath(os.path.dirname(__file__))
         self.current_data = {"zones": {}}
+        self.current_file_path = None
         self.image_paths = []
         self.clipboard_data = None
 
@@ -85,6 +86,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_x.valueChanged.connect(lambda v: self.on_property_changed('x', v))
         self.prop_y.valueChanged.connect(lambda v: self.on_property_changed('y', v))
         self.prop_z_index.valueChanged.connect(lambda v: self.on_property_changed('z_index', v))
+        self.prop_sort_offset.valueChanged.connect(lambda v: self.on_property_changed('sort_offset_y', v))
         self.prop_reflection_offset.valueChanged.connect(lambda v: self.on_property_changed('reflection_offset_y', v))
         self.prop_resize_factor.valueChanged.connect(lambda v: self.on_property_changed('resize_factor', v))
         self.prop_width.valueChanged.connect(lambda v: self.on_property_changed('width', v))
@@ -139,7 +141,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_right = QShortcut(QKeySequence(Qt.Key_Right), self)
         self.shortcut_right.activated.connect(lambda: self.navigate_zone(1, 0))
         self.shortcut_save = QShortcut(QKeySequence("Ctrl+S"), self)
-        self.shortcut_save.activated.connect(self.save_json)
+        self.shortcut_save.activated.connect(self.control_save_json)
         self.shortcut_copy = QShortcut(QKeySequence("Ctrl+C"), self)
         self.shortcut_copy.activated.connect(self.copy_object)
         self.shortcut_paste = QShortcut(QKeySequence("Ctrl+V"), self)
@@ -192,6 +194,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_x.setValue(obj_data.get('x', 0))
             self.prop_y.setValue(obj_data.get('y', 0))
             self.prop_z_index.setValue(int(obj_data.get('z_index', 0)))
+            self.prop_sort_offset.setValue(int(obj_data.get('sor_offset_y', 0)))
             self.prop_reflection_offset.setValue(int(obj_data.get('reflection_offset_y', 0)))
 
             self.prop_width.setValue(int(obj_data.get('width', 50)))
@@ -738,6 +741,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.combo_zone_selector.addItems(list(self.current_data.get("zones", {}).keys()))
         self.combo_zone_selector.blockSignals(False)
         self.populate_views_for_current_zone()
+        self.current_file_path = filepath
 
     def sanitize_before_save(self):
         zones = self.current_data.get("zones", {})
@@ -753,6 +757,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 except: obj["resize_factor"] = 1.0
                 try: obj["z_index"] = int(obj.get("z_index", 0))
                 except: obj["z_index"] = 0
+                try: obj["sort_offset_y"] = int(obj.get("sort_offset_y", 0))
+                except: obj["sort_offset_y"] = 0
                 try: obj["border_width"] = int(obj.get("border_width", 0))
                 except: obj["border_width"] = 0
                 try: obj["reflection_offset_y"] = int(obj.get("reflection_offset_y", 0))
@@ -779,6 +785,16 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(self.current_data, f, indent=4, ensure_ascii=False)
             print("Guardado exitoso.")
+        except Exception as e: print(f"Error: {e}")
+
+    def control_save_json(self): 
+        filepath = self.current_file_path
+        try: self.sanitize_before_save()
+        except: pass
+        try:
+            with open(filepath, 'w', encoding="utf-8") as f:
+                json.dump(self.current_data, f, indent=4, ensure_ascii=False)
+            print("Successful save")
         except Exception as e: print(f"Error: {e}")
 
     def populate_image_combos(self):
@@ -1055,6 +1071,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_x.setValue(data.get("x", 0))
         self.prop_y.setValue(data.get("y", 0))
         self.prop_z_index.setValue(int(data.get("z_index", 0)))
+        self.prop_sort_offset.setValue(int(data.get("sort_offset_y", 0)))
         self.prop_reflection_offset.setValue(int(data.get("reflection_offset_y", 0)))
         
         self.prop_width.setValue(int(data.get("width", 50)))
@@ -1403,7 +1420,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def change_background_color(self):
         if self.background_toggle:
-            self.canvas_view.setBackgroundBrush(QBrush(QColor(22, 22, 22)))
+            self.canvas_view.setBackgroundBrush(QBrush(QColor(42, 42, 42)))
         else:
             self.canvas_view.setBackgroundBrush(QBrush(QColor(Qt.GlobalColor.black)))
 

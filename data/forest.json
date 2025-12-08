@@ -42,7 +42,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764906085_1",
@@ -78,7 +79,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764906089_2",
@@ -114,7 +116,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907530957_675",
@@ -150,7 +153,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764907560_4",
@@ -186,7 +190,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907568_5",
@@ -222,7 +227,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907585_6",
@@ -258,7 +264,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907589062_899",
@@ -294,7 +301,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907603_8",
@@ -330,7 +338,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764907615234_183",
@@ -366,7 +375,8 @@
                 "trigger_params": "text=                In remembrance of ----------\\n(unintelligible); sound=interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907637735_209",
@@ -402,7 +412,8 @@
                 "trigger_params": "text=To my daughter...\\n(Unintelligible); sound=interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907669435_682",
@@ -438,7 +449,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907688986_164",
@@ -474,7 +486,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907700697_497",
@@ -510,7 +523,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907724_14",
@@ -546,7 +560,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907761_15",
@@ -582,7 +597,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907763_16",
@@ -618,7 +634,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907770_17",
@@ -654,7 +671,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764907774_18",
@@ -690,7 +708,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             }
         ],
         "(2, 4)": [
@@ -728,79 +747,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
-            },
-            {
-                "id": "obj_1764909089_2",
-                "type": "Obstacle",
-                "x": 227,
-                "y": 486,
-                "image_path": "assets/images/trees/broken_tree_1.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    68,
-                    119,
-                    -121,
-                    -163
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": ""
-            },
-            {
-                "id": "obj_1764909111073_788",
-                "type": "Obstacle",
-                "x": 708,
-                "y": 458,
-                "image_path": "assets/images/trees/broken_tree_0.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    40,
-                    107,
-                    -119,
-                    -149
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909140_4",
@@ -836,7 +784,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909151_5",
@@ -872,7 +821,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909156_6",
@@ -908,7 +858,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909165_7",
@@ -944,7 +895,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909172_8",
@@ -980,7 +932,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909177_9",
@@ -1016,13 +969,14 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909191_10",
                 "type": "Interactable",
-                "x": 907,
-                "y": 659,
+                "x": 881,
+                "y": 655,
                 "image_path": "assets/images/gravestones/cross_grave.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
@@ -1052,7 +1006,8 @@
                 "trigger_params": "id=obj_1765000861547_101\nsound=secret_found",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909205_11",
@@ -1088,7 +1043,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909209_12",
@@ -1124,7 +1080,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909219_13",
@@ -1160,7 +1117,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909226_14",
@@ -1196,7 +1154,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1765000689343_108",
@@ -1232,7 +1191,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "type": "Interactable",
@@ -1269,7 +1229,82 @@
                 "interaction_data": "",
                 "id": "obj_1765000861547_101",
                 "x": 960,
-                "y": 718
+                "y": 718,
+                "sort_offset_y": 0
+            },
+            {
+                "type": "Obstacle",
+                "image_path": "assets/images/trees/broken_tree_1.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    68,
+                    119,
+                    -121,
+                    -163
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765218287083_689",
+                "x": 227,
+                "y": 486
+            },
+            {
+                "type": "Obstacle",
+                "image_path": "assets/images/trees/broken_tree_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    40,
+                    107,
+                    -119,
+                    -149
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765218326356_231",
+                "x": 708,
+                "y": 459
             }
         ],
         "(2, 5)": [
@@ -1307,7 +1342,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909288_1",
@@ -1343,7 +1379,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909293_2",
@@ -1379,7 +1416,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909314_4",
@@ -1415,7 +1453,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909318_5",
@@ -1451,7 +1490,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909322_6",
@@ -1487,7 +1527,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909332_7",
@@ -1523,7 +1564,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909356_7",
@@ -1559,43 +1601,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
-            },
-            {
-                "id": "obj_1764909398818_453",
-                "type": "Obstacle",
-                "x": 508,
-                "y": 443,
-                "image_path": "assets/images/trees/bloody_tree_0.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    51,
-                    106,
-                    -120,
-                    -142
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764909427313_161",
@@ -1631,7 +1638,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764909507474_968",
@@ -1667,43 +1675,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
-            },
-            {
-                "id": "obj_1764909543_12",
-                "type": "Obstacle",
-                "x": 1158,
-                "y": 514,
-                "image_path": "assets/images/trees/bloody_tree_0.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    51,
-                    106,
-                    -120,
-                    -142
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764909557_13",
@@ -1739,7 +1712,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909568_14",
@@ -1775,7 +1749,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909575_15",
@@ -1811,7 +1786,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764909589_15",
@@ -1847,7 +1823,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764910698915_916",
@@ -1883,7 +1860,8 @@
                 "trigger_params": "text=It's full of ash; sound=dialogue_occurred; kill=false",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764911804_17",
@@ -1919,7 +1897,8 @@
                 "trigger_params": "text=Freshly burned; sound=dialogue_occurred; kill=false",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764911828_18",
@@ -1955,7 +1934,82 @@
                 "trigger_params": "text=ready to be used; color=170,30,30;sound=dialogue_occurred; kill=true; blocking=true;",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
+            },
+            {
+                "type": "Obstacle",
+                "image_path": "assets/images/trees/bloody_tree_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    40,
+                    115,
+                    -106,
+                    -142
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765218511872_0",
+                "x": 507,
+                "y": 446
+            },
+            {
+                "type": "Obstacle",
+                "image_path": "assets/images/trees/bloody_tree_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    40,
+                    115,
+                    -106,
+                    -142
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765218514026_85",
+                "x": 1158,
+                "y": 513
             }
         ],
         "(3, 1)": [
@@ -1993,7 +2047,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800230_1",
@@ -2029,7 +2084,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800233_2",
@@ -2065,7 +2121,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800246490_600",
@@ -2101,7 +2158,8 @@
                 "trigger_params": "text=We conmemorate the death of Luna.\\nShe didn't deserve any of what happened to her.\\nThose devils from the village should burn in hell.; sound=interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800302702_540",
@@ -2137,7 +2195,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800366893_173",
@@ -2173,7 +2232,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800388_6",
@@ -2209,7 +2269,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800399_7",
@@ -2245,7 +2306,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800403_8",
@@ -2281,7 +2343,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800413_9",
@@ -2317,7 +2380,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800414_10",
@@ -2353,7 +2417,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800420_11",
@@ -2389,7 +2454,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764800435_12",
@@ -2425,7 +2491,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ],
         "(3, 2)": [
@@ -2463,7 +2530,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799670_1",
@@ -2499,7 +2567,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799674_2",
@@ -2535,7 +2604,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799681_3",
@@ -2571,7 +2641,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799690_4",
@@ -2607,12 +2678,13 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799694_5",
                 "type": "Obstacle",
-                "x": 808,
+                "x": 811,
                 "y": 130,
                 "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
@@ -2643,7 +2715,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799703_6",
@@ -2679,7 +2752,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764799718_7",
@@ -2715,7 +2789,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799742_8",
@@ -2751,7 +2826,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799752_9",
@@ -2787,7 +2863,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799762_10",
@@ -2823,7 +2900,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799765829_903",
@@ -2859,7 +2937,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799797189_332",
@@ -2895,7 +2974,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799823869_938",
@@ -2931,7 +3011,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764799845_14",
@@ -2967,7 +3048,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             }
         ],
         "(3, 3)": [
@@ -3005,7 +3087,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905870_1",
@@ -3041,7 +3124,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905874_2",
@@ -3077,12 +3161,13 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905885_3",
                 "type": "Obstacle",
-                "x": 714,
+                "x": 718,
                 "y": 529,
                 "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
@@ -3113,7 +3198,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905887_4",
@@ -3149,13 +3235,14 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905890_5",
                 "type": "Obstacle",
-                "x": 389,
-                "y": 644,
+                "x": 392,
+                "y": 645,
                 "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
@@ -3185,7 +3272,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905904_6",
@@ -3221,7 +3309,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905910_7",
@@ -3257,7 +3346,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764905917_8",
@@ -3293,7 +3383,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905923_9",
@@ -3329,7 +3420,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905930_10",
@@ -3365,7 +3457,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905935_11",
@@ -3401,7 +3494,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905941_12",
@@ -3437,7 +3531,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905961_13",
@@ -3473,7 +3568,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905986_14",
@@ -3509,7 +3605,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905990_15",
@@ -3545,7 +3642,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764905993_16",
@@ -3581,7 +3679,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764906003186_509",
@@ -3617,7 +3716,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764906017468_249",
@@ -3653,7 +3753,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764906038_19",
@@ -3689,7 +3790,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ],
         "(4, 2)": [
@@ -3727,7 +3829,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793525_1",
@@ -3763,7 +3866,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793530_2",
@@ -3799,7 +3903,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793538_3",
@@ -3835,7 +3940,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793542_4",
@@ -3871,7 +3977,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793550_5",
@@ -3907,7 +4014,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793563_6",
@@ -3943,7 +4051,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793570206_187",
@@ -3979,7 +4088,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793594860_301",
@@ -4015,7 +4125,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793660749_255",
@@ -4051,7 +4162,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793675_10",
@@ -4087,7 +4199,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793703_11",
@@ -4123,7 +4236,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793727368_229",
@@ -4160,7 +4274,8 @@
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ],
         "(4, 4)": [],
@@ -4199,7 +4314,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823713_1",
@@ -4235,7 +4351,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823717_2",
@@ -4271,7 +4388,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823725_3",
@@ -4307,7 +4425,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823729_4",
@@ -4343,7 +4462,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823739_5",
@@ -4379,7 +4499,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823749_6",
@@ -4415,7 +4536,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823755_7",
@@ -4451,7 +4573,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823763_8",
@@ -4487,7 +4610,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823772_9",
@@ -4523,7 +4647,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823780_10",
@@ -4559,7 +4684,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823792_11",
@@ -4595,7 +4721,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823796288_764",
@@ -4631,7 +4758,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823811308_184",
@@ -4667,7 +4795,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ],
         "(5, 2)": [
@@ -4681,10 +4810,10 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    46,
-                    123,
-                    -108,
-                    -169
+                    41,
+                    132,
+                    -103,
+                    -156
                 ],
                 "width": 100,
                 "height": 100,
@@ -4705,7 +4834,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764793185_1",
@@ -4741,7 +4871,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793192856_490",
@@ -4777,7 +4908,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793283496_124",
@@ -4789,8 +4921,8 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    53,
-                    118,
+                    55,
+                    125,
                     -111,
                     -153
                 ],
@@ -4813,7 +4945,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764793311079_197",
@@ -4849,7 +4982,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": -20
             },
             {
                 "id": "obj_1764793348751_846",
@@ -4885,7 +5019,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793410_6",
@@ -4921,7 +5056,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764793421797_741",
@@ -4957,7 +5093,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823696_8",
@@ -4993,7 +5130,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764824708_9",
@@ -5030,7 +5168,8 @@
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ],
         "(5, 3)": [
@@ -5068,7 +5207,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823111_1",
@@ -5104,7 +5244,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823114_2",
@@ -5140,7 +5281,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823122_3",
@@ -5176,7 +5318,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823126_4",
@@ -5212,7 +5355,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823133_5",
@@ -5248,7 +5392,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823137_6",
@@ -5284,7 +5429,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823149_7",
@@ -5320,7 +5466,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823158_8",
@@ -5356,7 +5503,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823166_9",
@@ -5392,7 +5540,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823187_10",
@@ -5428,7 +5577,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823192_11",
@@ -5464,7 +5614,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823212519_290",
@@ -5500,7 +5651,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823276655_618",
@@ -5536,7 +5688,8 @@
                 "trigger_params": "text=Rest in peace; sound=interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823625448_390",
@@ -5572,7 +5725,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823645344_539",
@@ -5608,7 +5762,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764823661722_269",
@@ -5644,7 +5799,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             },
             {
                 "id": "obj_1764824516074_883",
@@ -5680,7 +5836,8 @@
                 "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": ""
+                "interaction_data": "",
+                "sort_offset_y": 0
             }
         ]
     }

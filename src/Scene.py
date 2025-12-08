@@ -214,8 +214,10 @@ class Scene:
 
         def sort_key(sprite):
             if sprite in self._enemies:
+                # Enemies are always on top
                 layer_priority = 2
             elif getattr(sprite, 'is_ground', False):
+                # Gound is always at the bottom
                 layer_priority = 0
             else:
                 layer_priority = 1
@@ -227,6 +229,9 @@ class Scene:
                  y_depth = sprite.collision_rect.bottom
             elif hasattr(sprite, 'rect'):
                  y_depth = sprite.rect.bottom
+
+            if hasattr(sprite, 'sort_offset_y'):
+                y_depth += sprite.sort_offset_y
             
             return (layer_priority, z, y_depth)
 

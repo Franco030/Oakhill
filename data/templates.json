@@ -39,10 +39,10 @@
         "is_passable": false,
         "starts_hidden": false,
         "collision_rect_offset": [
-            50,
-            130,
-            -114,
-            -166
+            41,
+            132,
+            -103,
+            -156
         ],
         "width": 100,
         "height": 100,
@@ -63,7 +63,8 @@
         "trigger_params": "",
         "z_index": 0,
         "reflection_offset_y": 0,
-        "interaction_data": ""
+        "interaction_data": "",
+        "sort_offset_y": -20
     },
     "tree_1": {
         "type": "Obstacle",
@@ -96,7 +97,8 @@
         "trigger_params": "",
         "z_index": 0,
         "reflection_offset_y": 0,
-        "interaction_data": ""
+        "interaction_data": "",
+        "sort_offset_y": -20
     },
     "tree_2": {
         "type": "Obstacle",
@@ -105,10 +107,10 @@
         "is_passable": false,
         "starts_hidden": false,
         "collision_rect_offset": [
-            48,
-            123,
+            49,
+            122,
             -119,
-            -161
+            -158
         ],
         "width": 100,
         "height": 100,
@@ -129,7 +131,8 @@
         "trigger_params": "",
         "z_index": 0,
         "reflection_offset_y": 0,
-        "interaction_data": ""
+        "interaction_data": "",
+        "sort_offset_y": -20
     },
     "simple_note": {
         "type": "Interactable",
@@ -164,5 +167,107 @@
         "z_index": 0,
         "reflection_offset_y": 0,
         "interaction_data": ""
+    },
+    "broken_tree_1": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/broken_tree_1.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            68,
+            119,
+            -121,
+            -163
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": "",
+        "sort_offset_y": -20
+    },
+    "broken_tree_0": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/broken_tree_0.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            40,
+            107,
+            -119,
+            -149
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": "",
+        "sort_offset_y": -20
+    },
+    "bloody_tree_0": {
+        "type": "Obstacle",
+        "image_path": "assets/images/trees/bloody_tree_0.png",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "starts_hidden": false,
+        "collision_rect_offset": [
+            40,
+            115,
+            -106,
+            -142
+        ],
+        "width": 100,
+        "height": 100,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "border_width": 0,
+        "animation_images": [],
+        "animation_speed": 0.1,
+        "flash_image_path": "",
+        "charge_sound_path": "",
+        "used_image_path": "",
+        "interaction_duration": 60,
+        "trigger_condition": "OnStay",
+        "trigger_action": "SetFlag",
+        "trigger_params": "",
+        "z_index": 0,
+        "reflection_offset_y": 0,
+        "interaction_data": "",
+        "sort_offset_y": -20
     }
 }
