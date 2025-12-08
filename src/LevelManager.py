@@ -2,6 +2,7 @@ import pygame
 from src.Scene_Loader import SceneLoader
 from src.GameState import game_state
 from src.ResourceManager import ResourceManager
+from src.TweenManager import tween_manager
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS, MUSIC_END_EVENT
 from utils import resource_path
 import random
@@ -55,7 +56,6 @@ class LevelManager:
             level_req["music_path"],
             level_req["darkness"]
         )
-
         self.silence_timer = 0
         self.is_in_silence = False
 
@@ -77,6 +77,8 @@ class LevelManager:
         pos = level_req["player_pos"]
         player_sprite.teleport(pos[0], pos[1])
         
+        tween_manager.clear()
+
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
 
     def on_music_ended(self):
@@ -90,7 +92,8 @@ class LevelManager:
             self.current_scene.enemies.update(delta_time)
             self.current_scene.obstacles.update()
             self.current_scene.interactables.update()
-
+            
+        tween_manager.update(delta_time/1000)
         if self.is_in_silence:
             self.silence_timer -= delta_time
             self.ambience_timer -= delta_time

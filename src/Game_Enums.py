@@ -15,6 +15,10 @@ class Actions:
     HIDE_OBJECT = "HideObject"
     RANDOM_ACTION = "RandomAction"
     MODIFY_LIGHT = "ModifyLight"
+    MOVE_OBJECT = "MoveObject"
+    SLIDE_OBJECT = "SlideObject"
+
+    ANIMATE_OBJECT = "AnimateObject"
 
     @staticmethod
     def get_actions():
@@ -22,7 +26,8 @@ class Actions:
             Actions.WAIT, Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
             Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.HIDE_OBJECT, Actions.SHOW_DIALOGUE,
             Actions.CHANGE_LEVEL, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE, Actions.SHOW_NOTE,
-            Actions.SHOW_ANIMATION, Actions.CHANGE_MUSIC, Actions.RANDOM_ACTION, Actions.MODIFY_LIGHT
+            Actions.SHOW_ANIMATION, Actions.CHANGE_MUSIC, Actions.RANDOM_ACTION, Actions.MODIFY_LIGHT,
+            Actions.MOVE_OBJECT, Actions.SLIDE_OBJECT, Actions.ANIMATE_OBJECT
         ]
 
 class Conditions:

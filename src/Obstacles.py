@@ -26,6 +26,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.is_ground = data.get("is_ground", False)
         self.is_passable = data.get("is_passable", False)
         self.resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
+        self.collision_rect_offset = list(data.get("collision_rect_offset", [0, 0, 0, 0]))
         self.is_hidden = data.get("starts_hidden", False)
         self.interacted_once = False # Obstacles don't interact but it's necessary to use the "is_hidden" property
         # self.used_image = None

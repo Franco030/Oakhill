@@ -2,6 +2,7 @@ from src.GameState import game_state
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from utils import resource_path
 from src.ResourceManager import ResourceManager
+from src.TweenManager import tween_manager
 from src.Game_Enums import Actions
 import pygame
 import random
@@ -194,5 +195,41 @@ class ActionManager:
 
             if music_path:
                 ResourceManager.play_music(music_path, volume, loop_count, fade_ms)
+
+        elif action_type == Actions.MOVE_OBJECT:
+            tid = params.get("id")
+            if tid:
+                target_obj = scene.get_object_by_id(tid)
+
+                if target_obj:
+                    try:
+                        tx = int(params.get("x", 0))
+                        ty = int(params.get("y", 0))
+                        is_rel = str(params.get("relative", "false")).lower() == "true"
+                
+                        tween_manager.teleport(target_obj, tx, ty, relative=is_rel)
+                        
+                    except ValueError:
+                        print(f"[ActionManager] Error params for MoveObject")
+                else:
+                    print(f"[ActionManager] Object '{tid}' not found for MoveObject.")
+
+        elif action_type == Actions.SLIDE_OBJECT:
+            tid = params.get("id")
+            if tid:
+                target_obj = scene.get_object_by_id(tid)
+                if target_obj:
+                    try:
+                        tx = int(params.get("x", 0))
+                        ty = int(params.get("y", 0))
+                        dur = float(params.get("duration", 1.0))
+                        is_rel = str(params.get("relative", "false")).lower() == "true"
+                        
+                        tween_manager.start_move(target_obj, tx, ty, dur, relative=is_rel)
+                        
+                    except ValueError:
+                        print(f"[ActionManager] Error params for SlideObject: {params}")
+                else:
+                    print(f"[ActionManager] Warning: Object '{tid}' not found for SlideObject.")
         
         return None

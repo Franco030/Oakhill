@@ -29,6 +29,8 @@ class Scene:
         self._triggers_dict = triggers
         self.enemies_dict = enemies
         self.global_enemies = global_enemies if global_enemies else []
+
+        self.active_slides = []
         
         self.music_path = music_path
         self.darkness = has_darkness
@@ -254,3 +256,15 @@ class Scene:
             self.change_zone(new_loc)
         except Exception as e:
             print(f"Error changing zone to {zone_str}: {e}")
+
+    def get_object_by_id(self, target_id):
+        clean_target = str(target_id).replace(" ", "")
+        
+        all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers) + list(self._enemies)
+        
+        for obj in all_sprites:
+            obj_id = getattr(obj, 'id', "")
+            if str(obj_id).replace(" ", "") == clean_target:
+                return obj
+        
+        return None

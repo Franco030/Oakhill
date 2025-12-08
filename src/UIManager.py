@@ -37,7 +37,7 @@ class UIManager:
         self.active = True
         self.is_blocking = blocking 
         self.content_type = "DIALOGUE"
-        self.content_data = data # data is a dict, we may use data: dict but meh
+        self.content_data = data
 
     def show_image(self, image_path, blocking=False):
         self.active = True

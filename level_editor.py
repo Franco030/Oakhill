@@ -784,7 +784,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         try:
             with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(self.current_data, f, indent=4, ensure_ascii=False)
-            print("Guardado exitoso.")
+            print("Successful save")
         except Exception as e: print(f"Error: {e}")
 
     def control_save_json(self): 
