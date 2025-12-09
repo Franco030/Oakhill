@@ -88,6 +88,8 @@ class TweenManager:
         
 
         if hasattr(obj, 'collision_rect'):
+            if getattr(obj, 'is_passable', False):
+                return
             offset = getattr(obj, 'collision_rect_offset', [0, 0, 0, 0])
             if isinstance(offset, list) and len(offset) >= 2:
                 obj.collision_rect.x = obj.rect.x + offset[0]

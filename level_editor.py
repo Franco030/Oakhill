@@ -1108,6 +1108,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
         self.chk_interaction_blocked.setChecked(data.get("interaction_blocked", False))
             
+        self.prop_trigger_condition.setCurrentText(data.get('trigger_condition', Conditions.ON_STAY))
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
 

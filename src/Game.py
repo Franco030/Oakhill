@@ -59,6 +59,7 @@ class Game:
         self.sounds = resource_manager.load_all_sounds("assets/sounds")
         self.images = resource_manager.load_all_images("assets/images")
 
+
         if self.sounds.get("chase_loop"): self.sounds["chase_loop"].set_volume(0.5)
         if self.sounds.get("flee_loop"): self.sounds["flee_loop"].set_volume(0.5)
 

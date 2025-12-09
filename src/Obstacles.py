@@ -89,6 +89,16 @@ class Obstacle(pygame.sprite.Sprite):
                 print(f"ERROR: Can't load animation for {data.get('id')}: {e}")
 
     def update(self):
+        if self.is_passable:
+            self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
+        else:
+            offset = self.data.get("collision_rect_offset", [0, 0, 0, 0])
+            self._collision_rect = pygame.Rect(
+                self.rect.left + offset[0],
+                self.rect.top + offset[1],
+                self.rect.width + offset[2],
+                self.rect.height + offset[3]
+            )
         if self.animation and self.is_animating:
             self.animation.animate()
 
@@ -126,24 +136,40 @@ class Obstacle(pygame.sprite.Sprite):
             for key, value in new_properties.items():
                 self.data[key] = value
 
+        special_keys = [
+            "image_path", "image_id", 
+            "resize_factor", 
+            "collision_rect_offset", 
+            "flash_image_path", "flash_image_id", 
+            "charge_sound_path", "charge_sound_id"
+        ]
+
         for key, value in new_properties.items():
-            if key in ["interaction_blocked", "is_passable", "z_index"]:
+            if key in ["interaction_blocked", "is_passable", "z_index", "starts_hidden"]:
                 setattr(self, key, value)
             
-            elif hasattr(self, key):
+            elif key not in special_keys and hasattr(self, key):
                 setattr(self, key, value)
 
-        if "image_path" in new_properties or "resize_factor" in new_properties:
-            img_path = new_properties.get("image_path", getattr(self, "image_path", "None"))
-            factor = float(new_properties.get("resize_factor", getattr(self, "resize_factor", 1.0)))
+        if any(k in new_properties for k in ["image_id", "image_path", "resize_factor"]):
+
+            target_res = new_properties.get("image_id", new_properties.get("image_path"))
             
-            new_img = resource_manager.get_image(img_path)
+            if not target_res:
+                target_res = getattr(self, "image_id", getattr(self, "image_path", "None"))
+
+            factor = float(new_properties.get("resize_factor", getattr(self, "resize_factor", 1.0)))
+            new_img = resource_manager.get_image(target_res)
+            
             if new_img:
                 w = int(new_img.get_width() * factor)
                 h = int(new_img.get_height() * factor)
                 self.image = pygame.transform.scale(new_img, (w, h))
                 self.original_image = self.image.copy()
                 
+                if "image_id" in new_properties: self.image_id = target_res
+                if "image_path" in new_properties: self.image_path = target_res
+
                 old_center = self.rect.center
                 self.rect = self.image.get_rect(center=old_center)
                 
@@ -152,39 +178,55 @@ class Obstacle(pygame.sprite.Sprite):
                 if hasattr(self, 'data'):
                     self.data['width'] = w
                     self.data['height'] = h
+            else:
+                if target_res not in ["None", None, ""]:
+                    print(f"[Obstacle] Error: Could not load image from '{target_res}'")
 
-        if "collision_rect_offset" in new_properties or "image_path" in new_properties:
+
+        if "collision_rect_offset" in new_properties or any(k in new_properties for k in ["image_id", "image_path"]):
             if hasattr(self, 'collision_rect'):
                 offset = new_properties.get("collision_rect_offset", getattr(self, "collision_rect_offset", [0,0,0,0]))
+                
                 if isinstance(offset, list) and len(offset) >= 4:
                     self.collision_rect.x = self.rect.x + offset[0]
                     self.collision_rect.y = self.rect.y + offset[1]
                     self.collision_rect.width = self.rect.width + offset[2]
                     self.collision_rect.height = self.rect.height + offset[3]
 
-        if "flash_image_path" in new_properties:
-            path = new_properties["flash_image_path"]
-            if path in ["None", "", None]:
+
+        if "flash_image_path" in new_properties or "flash_image_id" in new_properties:
+            target_res = new_properties.get("flash_image_id", new_properties.get("flash_image_path"))
+            
+            if target_res in ["None", "", None]:
                 self.flash_image = None
             else:
                 factor = getattr(self, "resize_factor", 1.0)
-                raw_flash = resource_manager.get_image(path)
+                raw_flash = resource_manager.get_image(target_res)
+                
                 if raw_flash:
                      w = int(raw_flash.get_width() * factor)
                      h = int(raw_flash.get_height() * factor)
                      self.flash_image = pygame.transform.scale(raw_flash, (w, h))
 
-        if "charge_sound_path" in new_properties:
-            path = new_properties["charge_sound_path"]
-            if path in ["None", "", None]:
+        if "charge_sound_path" in new_properties or "charge_sound_id" in new_properties:
+            target_snd = new_properties.get("charge_sound_id", new_properties.get("charge_sound_path"))
+            
+            if target_snd in ["None", "", None]:
                 self.charge_sound = None
             else:
                 try:
+                    real_path = target_snd
+                    if hasattr(resource_manager, 'asset_map'):
+                         real_path = resource_manager.asset_map.get(target_snd, target_snd)
+
                     import os
                     from utils import resource_path
-                    full = resource_path(path)
+                    full = resource_path(real_path)
+                    
                     if os.path.exists(full):
                         self.charge_sound = pygame.mixer.Sound(full)
-                except:
+                    else:
+                        print(f"[Obstacle] Sound file not found: {full}")
+                except Exception as e:
+                    print(f"[Obstacle] Error loading sound '{target_snd}': {e}")
                     self.charge_sound = None
-        

@@ -12,32 +12,57 @@ class ResourceManager:
             cls._instance.sounds = {}
             cls._instance.fonts = {}
             cls._instance._placeholder = None
+            cls._instance.current_music = None
+            cls._instance.asset_map = {}
+            cls._instance.load_manifest()
         return cls._instance
     
-    def get_image(self, relative_path):
-        if not relative_path or relative_path == "None":
-            return None
+    def load_manifest(self):
+        import json
+        
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(base_dir)
+            path = os.path.join(project_root, "data", "assets.json")
+            
+            if not os.path.exists(path):
+                print(f"[ResourceManager] WARNING: Manifest not found at {path}")
+                return
 
-        if relative_path in self.images:
-            return self.images[relative_path]
+            with open(path, "r") as f:
+                data = json.load(f)
+                self.asset_map.update(data.get("textures", {}))
+                self.asset_map.update(data.get("sounds", {}))
+                
+            print(f"[ResourceManager] Manifest loaded. {len(self.asset_map)} assets registered.")
+            
+        except Exception as e:
+            print(f"[ResourceManager] Error loading manifest: {e}")
+    
+    def get_image(self, key_or_path):
+        if not key_or_path or key_or_path == "None": return None
 
-        full_path = resource_path(relative_path)
+        real_path = self.asset_map.get(key_or_path, key_or_path)
+
+        if real_path in self.images:
+            return self.images[real_path]
 
         try:
+            full_path = resource_path(real_path)
+            
             if not os.path.exists(full_path):
-                print(f"[ResourceManager] Error: File not found '{full_path}'")
+                print(f"[ResourceManager] Error: File not found '{full_path}' (Key: {key_or_path})")
                 return self._get_placeholder()
 
             surface = pygame.image.load(full_path).convert_alpha()
-
-            self.images[relative_path] = surface
-            print(f"[ResourceManager] Loaded and cached: {relative_path}") # Descomentar para debug
+            
+            self.images[real_path] = surface
             return surface
 
         except Exception as e:
-            print(f"[ResourceManager] Critical Error loading '{relative_path}': {e}")
+            print(f"[ResourceManager] Critical Error loading '{real_path}': {e}")
             return self._get_placeholder()
-
+        
     def get_font(self, size):
         if size not in self.fonts:
             try:
@@ -53,23 +78,25 @@ class ResourceManager:
 
     def play_music(self, relative_path, volume=0.6, loops=-1, fade_ms=500):
         try:
-            full_path = resource_path(relative_path)
+            real_path = self.asset_map.get(relative_path, relative_path)
             
+            if self.current_music == real_path: return
+
+            full_path = resource_path(real_path)
             if not os.path.exists(full_path):
-                print(f"[ResourceManager] Error: Music file not found at {full_path}")
+                print(f"[ResourceManager] Music not found: {full_path}")
                 return
 
-
-            if self.current_music == relative_path: return
-
-            print(f"[ResourceManager] Playing music: {relative_path}")
+            print(f"[ResourceManager] Playing music: {real_path}")
             pygame.mixer.music.fadeout(fade_ms)
             pygame.mixer.music.load(full_path)
             pygame.mixer.music.set_volume(volume)
             pygame.mixer.music.play(loops)
             
+            self.current_music = real_path
+            
         except Exception as e:
-            print(f"[ResourceManager] Critical Error loading music '{relative_path}': {e}")
+            print(f"[ResourceManager] Error music '{relative_path}': {e}")
 
     def load_images_from_list(self, file_paths):
         loaded_images = []
