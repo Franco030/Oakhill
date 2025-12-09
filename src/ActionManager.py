@@ -1,15 +1,15 @@
 from src.GameState import game_state
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from utils import resource_path
-from src.ResourceManager import ResourceManager
+from src.ResourceManager import resource_manager
 from src.TweenManager import tween_manager
 from src.Game_Enums import Actions
 import pygame
 import random
 
 class ActionManager:
-    def __init__(self, sound_library=None):
-        self.sound_library = sound_library if sound_library else {}
+    def __init__(self):
+        pass
 
     def parse_params(self, param_string):
         params = {}
@@ -39,12 +39,10 @@ class ActionManager:
         print(f"[ACTION] {action_type} -> {param_string}")
         params = self.parse_params(param_string)
 
-        sound_name = params.get("sound")
-        if sound_name and sound_name != "silent":
-            if sound_name in self.sound_library:
-                self.sound_library[sound_name].play()
-            else:
-                print(f"Sound '{sound_name}' not found.")
+        sound_id = params.get("sound")
+        if sound_id and sound_id != "silent":
+            snd = resource_manager.get_sound(sound_id)
+            if snd: snd.play()
 
 
         if action_type == Actions.SET_FLAG:
@@ -67,15 +65,13 @@ class ActionManager:
                 print(f"[ActionManager] Teleport requested to {zone_str} at ({x}, {y})")
 
         elif action_type == Actions.PLAY_SOUND:
-            sound_name = params.get("sound")
+            sound_id = params.get("sound")
             sound_volume = float(params.get("volume", 1.0))
-            if sound_name in self.sound_library:
-
-                self.sound_library[sound_name].set_volume(sound_volume)
-                self.sound_library[sound_name].play()
-                print(f"Playing sound: {sound_name}")
-            else:
-                print(f"Error: Sound '{sound_name}' not found in library")
+            if sound_id and sound_id != "silent":
+                snd = resource_manager.get_sound(sound_id)
+                if snd:
+                    snd.set_volume(sound_volume) 
+                    snd.play()
             
         elif action_type == Actions.UNHIDE_OBJECT:
             tid = params.get("id")
@@ -169,16 +165,17 @@ class ActionManager:
             pass
 
         elif action_type == Actions.SHOW_ANIMATION:
-            base_path = params.get("path")
+            base_id = params.get("path")
             frames = int(params.get("frames", 1))
             speed = float(params.get("speed", 0.1))
             loop = params.get("loop", True)
 
             image_list = []
-            if base_path:
-                clean_base = base_path.replace(".png", "")
+            if base_id:
+                # Assuming that base_id is "anim_angel"
                 for i in range(frames):
-                    image_list.append(f"{clean_base}_{i}.png")
+                    # Generates "anim_angel_0", "anim_angel_1", etc.
+                    image_list.append(f"{base_id}_{i}")
                 
             return {
                 "type": "Animation",
@@ -197,7 +194,7 @@ class ActionManager:
             loop_count = int(params.get("loop", -1))
 
             if music_path:
-                ResourceManager.play_music(music_path, volume, loop_count, fade_ms)
+                resource_manager.play_music(music_path, volume, loop_count, fade_ms)
 
         elif action_type == Actions.MOVE_OBJECT:
             tid = params.get("id")

@@ -57,6 +57,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.background_toggle = False
 
+        self.asset_map = {}
+        self.load_asset_manifest()
+
         self.templates = {}
         self.templates_file = os.path.join(self.base_path, "data", "templates.json")
 
@@ -102,10 +105,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_anim_speed.valueChanged.connect(lambda v: self.on_property_changed('animation_speed', v))
         self.chk_auto_play.stateChanged.connect(lambda v: self.on_property_changed('animation_auto_play', bool(v)))
         self.prop_type.currentTextChanged.connect(lambda v: self.on_property_changed('type', v))
-        self.prop_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('image_path', v))
-        self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_path', v))
-        self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_path', v))
-        self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
+        self.prop_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('image_id', v))
+        self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_id', v))
+        self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_id', v))
+        self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_id', v))
         self.prop_interaction_duration.valueChanged.connect(lambda v: self.on_property_changed('interaction_duration', v))
         self.chk_interaction_blocked.stateChanged.connect(lambda v: self.on_property_changed('interaction_blocked', bool(v)))
         self.prop_is_passable.stateChanged.connect(lambda v: self.on_property_changed('is_passable', bool(v)))
@@ -170,6 +173,21 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.load_templates()
         self.disable_property_panel()
 
+    def load_asset_manifest(self):
+        path = "data/assets.json"
+        if os.path.exists(path):
+            try:
+                with open(path, "r") as f:
+                    data = json.load(f)
+                for category in data.values():
+                    for key, value in category.items():
+                        self.asset_map[key] = value
+                print(f"Manifest loaded: {len(self.asset_map)} assets.")
+            except Exception as e:
+                print(f"Error loading manifest: {e}")
+        else:
+            print("WARNING: data/assets.json not found!")
+
     def perform_undo(self): self.undo_manager.undo()
     def perform_redo(self): self.undo_manager.redo()
     def select_object_by_id(self, obj_id):
@@ -181,24 +199,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
     def refresh_ui_for_object(self, obj_data):
         """
-        Description: Populates the property panel (left sidebar) with the data of the selected object.
-        Parameters:
-            obj_data (dict): The data dictionary of the object to display.
-        Functionality:
-            - Sets a flag 'is_programmatic_change' to True to prevent triggering 'on_property_changed' loops.
-            - Updates every widget (SpinBox, ComboBox, CheckBox) with values from obj_data.
-            - Handles logic for specific types (e.g., showing specific stacks for 'Interactable' vs 'Trigger').
-            - Updates the list item text and the canvas visual representation to ensure sync.
-            - Resets 'is_programmatic_change' to False.
+        Description: Populates the property panel with ID-based data.
         """
         current = self.list_objects.currentItem()
+        
         if current and current.data(Qt.UserRole) is obj_data:
             self.is_programmatic_change = True
             
             self.prop_x.setValue(obj_data.get('x', 0))
             self.prop_y.setValue(obj_data.get('y', 0))
             self.prop_z_index.setValue(int(obj_data.get('z_index', 0)))
-            self.prop_sort_offset.setValue(int(obj_data.get('sor_offset_y', 0)))
+            self.prop_sort_offset.setValue(int(obj_data.get('sort_offset_y', 0)))
             self.prop_reflection_offset.setValue(int(obj_data.get('reflection_offset_y', 0)))
 
             self.prop_width.setValue(int(obj_data.get('width', 50)))
@@ -211,7 +222,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 self.prop_color_g.setValue(color[1])
                 self.prop_color_b.setValue(color[2])
             
-            self.prop_image_path_combo.setCurrentText(obj_data.get('image_path', 'None'))
+            img_val = obj_data.get('image_id', obj_data.get('image_path', 'None'))
+            self.prop_image_path_combo.setCurrentText(img_val)
+            
             self.prop_resize_factor.setValue(float(obj_data.get('resize_factor', 4.0)))
             
             self.prop_is_passable.setChecked(obj_data.get('is_passable', False))
@@ -225,17 +238,28 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_hitbox_dh.setValue(hb[3])
 
             self.prop_anim_list.clear()
-            self.prop_anim_list.addItems(obj_data.get('animation_images', []))
+            anim_ids = obj_data.get('animation_images', [])
+            self.prop_anim_list.addItems(anim_ids)
+            
             self.prop_anim_speed.setValue(float(obj_data.get('animation_speed', 0.1)))
             self.chk_auto_play.setChecked(obj_data.get('animation_auto_play', False))
 
-            self.prop_flash_image_path_combo.setCurrentText(obj_data.get('flash_image_path', 'None'))
-            self.prop_charge_sound_combo.setCurrentText(obj_data.get('charge_sound_path', 'None'))
-            self.prop_used_image_path_combo.setCurrentText(obj_data.get('used_image_path', 'None'))
+            flash_val = obj_data.get('flash_image_id', obj_data.get('flash_image_path', 'None'))
+            self.prop_flash_image_path_combo.setCurrentText(flash_val)
+            
+            charge_val = obj_data.get('charge_sound_id', obj_data.get('charge_sound_path', 'None'))
+            self.prop_charge_sound_combo.setCurrentText(charge_val)
+            
+            used_val = obj_data.get('used_image_id', obj_data.get('used_image_path', 'None'))
+            self.prop_used_image_path_combo.setCurrentText(used_val)
+            
             self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))
-            self.chk_auto_play.setChecked(obj_data.get('interaction_blocked', False))
+            self.chk_interaction_blocked.setChecked(obj_data.get('interaction_blocked', False)) 
 
-            self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", Actions.SET_FLAG))
+
+            trig_action = obj_data.get("trigger_action", Actions.SET_FLAG)
+            self.prop_trigger_action.setCurrentText(str(trig_action))
+            
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
             
             self.list_trigger_sequence.clear()
@@ -256,20 +280,39 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 self.list_trigger_sequence.setCurrentRow(0)
             
             current.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
+            
             pixmap_item = current.data(Qt.UserRole + 1)
-            if pixmap_item: self.update_canvas_item(obj_data, pixmap_item)
+            if pixmap_item: 
+                self.update_canvas_item(obj_data, pixmap_item)
             
             self.is_programmatic_change = False
 
     def browse_file_for_combo(self, combo_widget):
         start_dir = os.path.join(self.base_path, "assets")
         filepath, _ = QFileDialog.getOpenFileName(self, "Seleccionar Imagen", start_dir, "Images (*.png *.jpg *.jpeg)")
+        
         if filepath:
             try:
-                rel_path = os.path.relpath(filepath, self.base_path).replace("\\", "/")
-                if rel_path not in [combo_widget.itemText(i) for i in range(combo_widget.count())]:
-                    combo_widget.addItem(rel_path)
-                combo_widget.setCurrentText(rel_path)
+                rel_path = os.path.relpath(filepath, self.base_path).replace("\\", "/").strip()
+                
+                found_id = None
+                for aid, apath in self.asset_map.items():
+                    if apath.replace("\\", "/").strip() == rel_path:
+                        found_id = aid
+                        break
+                
+                if not found_id:
+                    found_id = self.register_asset_on_the_fly(rel_path)
+                    
+                    if combo_widget.findText(found_id) == -1:
+                        combo_widget.addItem(found_id)
+                        self.populate_assets_list() 
+
+                if found_id:
+                    index = combo_widget.findText(found_id)
+                    if index != -1:
+                        combo_widget.setCurrentIndex(index)
+                        
             except ValueError: pass
 
     def copy_object(self):
@@ -297,28 +340,29 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         ## Description: 
             Creates a new object entity in the current zone.
         ## Functionality:
-            - Generates a unique ID using timestamp and random entropy to prevent collisions.
-            - Creates a default dictionary structure for a 'Primitive' type object.
-            - Pushes a CmdAddObject command to the UndoManager (allowing Ctrl+Z to remove it).
-            - Updates the view to show the new object immediately.
+            - Generates a unique ID.
+            - Creates a default dictionary structure compatible with the new Asset ID system.
+            - Pushes a CmdAddObject command.
         """
         current_zone_key = self.combo_zone_selector.currentText()
         if not current_zone_key: return
+        
         new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
+        
         new_obj_data = {
             "id": new_id,
-            
-            "type": ObjectTypes.PRIMITIVE, 
+            "type": ObjectTypes.PRIMITIVE,
             
             "x": GAME_WIDTH // 2, 
             "y": GAME_HEIGHT // 2,
-            "image_path": "None",
-            "resize_factor": 1,
+            
+            "image_id": "None", 
+            "resize_factor": 1.0,
+            
             "is_passable": False,
             "starts_hidden": False,
             "collision_rect_offset": [0, 0, 0, 0],
             
-
             "width": 100,
             "height": 100,
             "color": [255, 255, 255],
@@ -326,14 +370,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             
             "animation_images": [],
             "animation_speed": 0.1,
-            "flash_image_path": "None",
-            "charge_sound_path": "None",
-            "used_image_path": "None", 
+            
+            "flash_image_id": "None",
+            "charge_sound_id": "None",
+            "used_image_id": "None", 
+            
             "interaction_duration": 120, 
             "trigger_condition": Conditions.ON_STAY,    
             "trigger_action": Actions.SET_FLAG, 
             "trigger_params": ""
         }
+        
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
         self.undo_manager.push(cmd, execute_now=True)
 
@@ -753,24 +800,33 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         zones = self.current_data.get("zones", {})
         for zone_key, objects in zones.items():
             for obj in objects:
-                if obj.get("image_path") == "None": obj["image_path"] = ""
-                if obj.get("flash_image_path") == "None": obj["flash_image_path"] = ""
-                if obj.get("charge_sound_path") == "None": obj["charge_sound_path"] = ""
-                if obj.get("used_image_path") == "None": obj["used_image_path"] = ""
+                if obj.get("image_id") == "None": obj["image_id"] = ""
+                if obj.get("flash_image_id") == "None": obj["flash_image_id"] = ""
+                if obj.get("charge_sound_id") == "None": obj["charge_sound_id"] = ""
+                if obj.get("used_image_id") == "None": obj["used_image_id"] = ""
+                
+
                 try: obj["interaction_duration"] = int(obj.get("interaction_duration", 60))
                 except: obj["interaction_duration"] = 60
+                
                 try: obj["resize_factor"] = float(obj.get("resize_factor", 1))
                 except: obj["resize_factor"] = 1.0
+                
                 try: obj["z_index"] = int(obj.get("z_index", 0))
                 except: obj["z_index"] = 0
+                
                 try: obj["sort_offset_y"] = int(obj.get("sort_offset_y", 0))
                 except: obj["sort_offset_y"] = 0
+                
                 try: obj["border_width"] = int(obj.get("border_width", 0))
                 except: obj["border_width"] = 0
+                
                 try: obj["reflection_offset_y"] = int(obj.get("reflection_offset_y", 0))
                 except: obj["reflection_offset_y"] = 0
+                
                 try: obj["animation_auto_play"] = bool(obj.get("animation_auto_play", False))
                 except: obj["animation_auto_play"] = False
+                
                 try: obj["interaction_blocked"] = bool(obj.get("interaction_blocked", False))
                 except: obj["interaction_blocked"] = False
 
@@ -796,15 +852,16 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         except Exception as e: print(f"Error: {e}")
 
     def populate_image_combos(self):
-        self.image_paths = ["None"]
-        for folder in ["assets/images", "assets/animations"]:
-            full = os.path.join(self.base_path, folder)
-            if not os.path.exists(full): continue
-            for root, _, files in os.walk(full):
-                for f in files:
-                    if f.lower().endswith(IMAGE_EXTENSIONS):
-                        rel = os.path.relpath(os.path.join(root, f), self.base_path).replace("\\", "/")
-                        self.image_paths.append(rel)
+        ids_list = ["None"]
+        
+        for asset_id, asset_path in self.asset_map.items():
+            if asset_id.startswith("spr_"):
+                ids_list.append(asset_id)
+        
+        ids_list.sort()
+        
+        self.image_paths = ids_list 
+        
         for combo in self.all_image_combos:
             combo.blockSignals(True)
             combo.clear()
@@ -868,21 +925,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         return pixmap
 
     def draw_object_on_canvas(self, obj):
-        """
-        ## Description: 
-            Creates the visual QGraphicsItem for an object based on its data.
-        ## Parameters:
-            - obj (dict): The data dictionary defining the object.
-        ## Functionality:
-            - Determines if the object is a 'Primitive' (draws a generated QPixmap) or a Sprite (loads an image).
-            - Applies fallback colors (pink, cyan) if images are missing.
-            - Sets Z-Index and position.
-            - Wraps the graphic in a LevelObjectItem class (which handles drag & drop logic).
-            - Adds the item to the current QGraphicsScene.
-        """
-        imgpath = obj.get("image_path", "None")
+        target_id = obj.get("image_id", obj.get("image_path", "None"))
+        
         pixmap = None
         obj_type = obj.get("type")
+        
         if obj_type == ObjectTypes.PRIMITIVE:
             pixmap = self.generate_primitive_pixmap(obj)
             
@@ -898,10 +945,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.current_scene.addItem(item)
             return item
         
-        if imgpath not in (None, "None", ""):
-            full = os.path.join(self.base_path, imgpath)
-            if os.path.exists(full):
-                pixmap = QPixmap(full)
+        if target_id not in (None, "None", ""):
+            real_path = self.asset_map.get(target_id)
+            
+            if real_path:
+                full_path = os.path.join(self.base_path, real_path)
+                if os.path.exists(full_path):
+                    pixmap = QPixmap(full_path)
+            else:
+                full_path = os.path.join(self.base_path, target_id)
+                if os.path.exists(full_path):
+                    pixmap = QPixmap(full_path)
 
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
@@ -917,6 +971,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         if factor <= 0: factor = 1
         
         scaled = pixmap.scaled(int(pixmap.width()*factor), int(pixmap.height()*factor), Qt.KeepAspectRatio)
+        
         item = LevelObjectItem(scaled, obj, self)
         
         item.ignore_movement = True
@@ -945,17 +1000,22 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         """
         if not pixmap_item: return
         
-        imgpath = data.get("image_path", "None")
+        img_id = data.get("image_id", data.get("image_path", "None"))
         pixmap = None
 
         obj_type = data.get("type")
         if obj_type == ObjectTypes.PRIMITIVE:
             pixmap = self.generate_primitive_pixmap(data)
         
-        if imgpath not in (None, "None", ""):
-            full = os.path.join(self.base_path, imgpath)
-            if os.path.exists(full):
-                pixmap = QPixmap(full)
+        if img_id not in (None, "None", ""):
+            real_path = self.asset_map.get(img_id)
+            if real_path:
+                full_path = os.path.join(self.base_path, real_path)
+                if os.path.exists(full_path):
+                    pixmap = QPixmap(full_path)
+                else:
+                    if os.path.exists(real_path):
+                        pixmap = QPixmap(real_path)
         
         if (not pixmap or pixmap.isNull()):
             pixmap = QPixmap(64, 64)
@@ -1082,7 +1142,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_color_g.setValue(color[1])
             self.prop_color_b.setValue(color[2])
 
-        self.prop_image_path_combo.setCurrentText(data.get("image_path", "None"))
+        img_val = data.get("image_id", data.get("image_path", "None"))
+        self.prop_image_path_combo.setCurrentText(img_val)
+
         try: rz = float(data.get("resize_factor", 1))
         except: rz = 1.0
         self.prop_resize_factor.setValue(rz)
@@ -1102,9 +1164,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_anim_speed.setValue(data.get("animation_speed", 0.1))
         self.chk_auto_play.setChecked(data.get("animation_auto_play", False))
         
-        self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_path", "None"))
-        self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))
-        self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
+        self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_id", "None"))
+        self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_id", "None"))
+        self.prop_used_image_path_combo.setCurrentText(data.get("used_image_id", "None"))
         self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
         self.chk_interaction_blocked.setChecked(data.get("interaction_blocked", False))
             
@@ -1148,61 +1210,97 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.is_programmatic_change = False
 
     def update_image_preview(self):
-        path = self.prop_image_path_combo.currentText()
-        if not path or path == "None":
+        asset_id = self.prop_image_path_combo.currentText()
+        
+        if not asset_id or asset_id == "None":
             self.prop_image_preview.clear()
             self.prop_image_preview.setText("None")
             return
-        full = os.path.join(self.base_path, path)
+        
+
+        relative_path = self.asset_map.get(asset_id)
+        
+        if not relative_path:
+            self.prop_image_preview.clear()
+            self.prop_image_preview.setText("ID Not Found")
+            return
+
+        full = os.path.join(self.base_path, relative_path)
+        
+        if not os.path.exists(full):
+            self.prop_image_preview.setText("File Missing")
+            return
+
         pixmap = QPixmap(full)
-        if pixmap.isNull(): self.prop_image_preview.setText("Error")
+        
+        if pixmap.isNull(): 
+            self.prop_image_preview.setText("Error Load")
         else:
             scaled = pixmap.scaled(self.prop_image_preview.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.prop_image_preview.setPixmap(scaled)
 
     def add_animation_frame(self):
         start_dir = os.path.join(self.base_path, "assets")
-        filepaths, _ = QFileDialog.getOpenFileNames(self, "Seleccionar", start_dir, "Images (*.png *.jpg)")
+        filepaths, _ = QFileDialog.getOpenFileNames(self, "Seleccionar Frames", start_dir, "Images (*.png *.jpg)")
+        
         if filepaths:
-            for fp in filepaths:
-                try: rel = os.path.relpath(fp, self.base_path).replace("\\", "/")
-                except: rel = fp
-                self.prop_anim_list.addItem(rel)
+            path_to_id = {}
+            for aid, apath in self.asset_map.items():
+                clean_path = apath.replace("\\", "/").strip()
+                path_to_id[clean_path] = aid
+
+            ids_to_add = []
             
-            anim_list = [self.prop_anim_list.item(i).text() for i in range(self.prop_anim_list.count())]
+            for fp in filepaths:
+                try:
+                    rel = os.path.relpath(fp, self.base_path).replace("\\", "/")
+                    
+                    found_id = path_to_id.get(rel)
+                    
+                    if found_id:
+                        ids_to_add.append(found_id)
+                    else:
+                        print(f"[Editor] Aviso: '{rel}' no está en assets.json. Se omitirá.")
+                except Exception as e:
+                    print(f"Error procesando path: {e}")
+
+            if ids_to_add:
+                self.prop_anim_list.addItems(ids_to_add)
+            
+            new_anim_list = [self.prop_anim_list.item(i).text() for i in range(self.prop_anim_list.count())]
 
             obj_data = self.get_real_object_data()
             if obj_data:
-                cmd = CmdPropertyChange(self, obj_data, 'animation_images', obj_data.get('animation_images', []), anim_list)
+                cmd = CmdPropertyChange(self, obj_data, 'animation_images', obj_data.get('animation_images', []), new_anim_list)
                 self.undo_manager.push(cmd, execute_now=False)
-                obj_data['animation_images'] = anim_list
+                
+                obj_data['animation_images'] = new_anim_list
 
     def remove_animation_frame(self):
         for item in self.prop_anim_list.selectedItems():
             self.prop_anim_list.takeItem(self.prop_anim_list.row(item))
         
-        anim_list = [self.prop_anim_list.item(i).text() for i in range(self.prop_anim_list.count())]
+        new_anim_list = [self.prop_anim_list.item(i).text() for i in range(self.prop_anim_list.count())]
         
         obj_data = self.get_real_object_data()
         if obj_data:
-            cmd = CmdPropertyChange(self, obj_data, 'animation_images', obj_data.get('animation_images', []), anim_list)
+            cmd = CmdPropertyChange(self, obj_data, 'animation_images', obj_data.get('animation_images', []), new_anim_list)
             self.undo_manager.push(cmd, execute_now=False)
-            obj_data['animation_images'] = anim_list
+            
+            obj_data['animation_images'] = new_anim_list
 
     def populate_sound_combos(self):
-        sounds_path = os.path.join(self.base_path, "assets/sounds")
-        sound_files = ["None"]
+        sound_ids = ["None"]
         
-        if os.path.exists(sounds_path):
-            for root, _, files in os.walk(sounds_path):
-                for f in files:
-                    if f.lower().endswith(AUDIO_EXTENSIONS):
-                        rel = os.path.relpath(os.path.join(root, f), self.base_path)
-                        sound_files.append(rel.replace("\\", "/"))
+        for asset_id, asset_path in self.asset_map.items():
+            if asset_id.startswith("sfx_") or asset_id.startswith("amb_"):
+                sound_ids.append(asset_id)
+        
+        sound_ids.sort()
         
         self.prop_charge_sound_combo.blockSignals(True)
         self.prop_charge_sound_combo.clear()
-        self.prop_charge_sound_combo.addItems(sound_files)
+        self.prop_charge_sound_combo.addItems(sound_ids)
         self.prop_charge_sound_combo.blockSignals(False)
 
     def browse_audio_for_combo(self, combo_widget):
@@ -1211,11 +1309,27 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         if filepath:
             try:
-                rel_path = os.path.relpath(filepath, self.base_path).replace("\\", "/")
-                if self.prop_charge_sound_combo.findText(rel_path) == -1:
-                    self.prop_charge_sound_combo.addItem(rel_path)
-                self.prop_charge_sound_combo.setCurrentText(rel_path)
-            except: pass
+                rel_path = os.path.relpath(filepath, self.base_path).replace("\\", "/").strip()
+                
+                found_id = None
+                for aid, apath in self.asset_map.items():
+                    if apath.replace("\\", "/").strip() == rel_path:
+                        found_id = aid
+                        break
+                
+                if not found_id:
+                    found_id = self.register_asset_on_the_fly(rel_path)
+
+                target = combo_widget if combo_widget else self.prop_charge_sound_combo
+                
+                if found_id:
+                    if target.findText(found_id) == -1:
+                        target.addItem(found_id)
+                        
+                    target.setCurrentText(found_id)
+                    
+            except Exception as e:
+                print(f"{e}")
 
     def save_sequence_changes(self):
         if self.is_programmatic_change: return
@@ -1426,6 +1540,54 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.canvas_view.setBackgroundBrush(QBrush(QColor(Qt.GlobalColor.black)))
 
         self.background_toggle = not self.background_toggle
+
+    def register_asset_on_the_fly(self, relative_path):
+        clean_path = relative_path.replace("\\", "/")
+        filename = os.path.splitext(os.path.basename(clean_path))[0]
+        
+        category = "SPRITES"
+        prefix = "spr_"
+        
+        if "assets/animations" in clean_path:
+            category = "ANIMATIONS"
+            prefix = "anim_"
+        elif "assets/sounds/ambience" in clean_path:
+            category = "AMBIENCE"
+            prefix = "amb_"
+        elif "assets/sounds" in clean_path:
+            category = "SFX"
+            prefix = "sfx_"
+        elif "assets/music" in clean_path:
+            category = "MUSIC"
+            prefix = "bgm_"
+            
+        if filename.startswith(prefix):
+            new_id = filename
+        else:
+            new_id = f"{prefix}{filename}"
+            
+        self.asset_map[new_id] = clean_path
+        print(f"[Auto-Register] New assets registered: {new_id} -> {clean_path}")
+
+        json_path = "data/assets.json"
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r") as f:
+                    data = json.load(f)
+                
+                if category not in data:
+                    data[category] = {}
+                
+                data[category][new_id] = clean_path
+                
+                with open(json_path, "w") as f:
+                    json.dump(data, f, indent=4, sort_keys=True)
+                    
+                print(f"[Auto-Register] Saved Successfully")
+            except Exception as e:
+                print(f"[Auto-Register] Error saving assets.json: {e}")
+                
+        return new_id
 
 
 if __name__ == "__main__":

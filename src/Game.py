@@ -25,10 +25,10 @@ class Game:
 
         self.retro_effects = RetroEffects()
         
-        self.action_manager = ActionManager(self.sounds)
+        self.action_manager = ActionManager()
         self.event_manager = EventManager(self.action_manager)
-        self.ui_manager = UIManager(self.sounds, self.retro_effects)
-        self.level_manager = LevelManager(self.sounds, self.retro_effects)
+        self.ui_manager = UIManager(self.retro_effects)
+        self.level_manager = LevelManager(self.retro_effects)
         
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
@@ -48,20 +48,14 @@ class Game:
         self.player_group.add(self.player)
 
     def _load_resources(self):
-        try:
-            icon = pygame.image.load(resource_path("assets/images/logo.png"))
-            pygame.display.set_icon(icon)
-        except: pass
+        icon = resource_manager.get_image("spr_logo")
+        if icon: pygame.display.set_icon(icon)
 
-        # self.sounds = ResourceManager.load_all_sounds("assets/sounds")
-        # self.images = ResourceManager.load_all_images("assets/images")
-
-        self.sounds = resource_manager.load_all_sounds("assets/sounds")
-        self.images = resource_manager.load_all_images("assets/images")
-
-
-        if self.sounds.get("chase_loop"): self.sounds["chase_loop"].set_volume(0.5)
-        if self.sounds.get("flee_loop"): self.sounds["flee_loop"].set_volume(0.5)
+        chase = resource_manager.get_sound("sfx_chase_loop")
+        if chase: chase.set_volume(0.5)
+        
+        flee = resource_manager.get_sound("sfx_flee_loop")
+        if flee: flee.set_volume(0.5)
 
     def run(self):
         while self.state != "QUIT":
@@ -74,16 +68,12 @@ class Game:
         sys.exit()
 
     def _menu_loop(self):
-        # title_font = ResourceManager.get_font(90)        
-        # btn_font = ResourceManager.get_font(60)
         title_font = resource_manager.get_font(90)
         btn_font = resource_manager.get_font(60)
 
         try:
             if not pygame.mixer.music.get_busy():
-                pygame.mixer.music.load(resource_path("assets/music/MENU.wav"))
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.6)
+                resource_manager.play_music("bgm_menu", volume=0.6)
         except: pass
 
         title_surf = title_font.render("OAKHILL", True, (255, 255, 0))
@@ -268,15 +258,17 @@ class Game:
             if self.player.is_defeated:
                 self.death_screen_delay -= delta_time
                 if self.death_screen_delay <= 0 and not self.game_over_sound_played:
-                    if self.sounds.get("game_over_sound"): 
-                        self.sounds["game_over_sound"].set_volume(0.6)
-                        self.sounds["game_over_sound"].play()
+                    go_sound = resource_manager.get_sound("sfx_game_over_sound")
+                    if go_sound: 
+                        go_sound.set_volume(0.6)
+                        go_sound.play()
                     self.game_over_sound_played = True
 
     def _draw(self, delta_time):
         if self.player.is_defeated and self.death_screen_delay <= 0:
             self.level_manager.draw(self.screen, self.player)
-            UIManager.draw_game_over(self.screen, self.images.get("death_pic"))
+            death_img = resource_manager.get_image("spr_death_pic")
+            UIManager.draw_game_over(self.screen, death_img)
             self.retro_effects.update_and_draw(self.screen, delta_time)
         else:
             self.level_manager.draw(self.screen, self.player)
@@ -293,11 +285,11 @@ class Game:
         if self.player.is_defeated:
             pygame.mixer.music.stop()
             
-            if self.sounds.get("game_over_sound"): 
-                self.sounds["game_over_sound"].stop()
+            go_sound = resource_manager.get_sound("sfx_game_over_sound")
+            if go_sound: go_sound.stop()
             
-            if self.sounds.get("death_sound"): 
-                self.sounds["death_sound"].stop()
+            death_sound = resource_manager.get_sound("sfx_death_sound")
+            if death_sound: death_sound.stop()
             
             self.state = "MAIN_MENU"
 
@@ -376,11 +368,13 @@ class Game:
                 self.player.defeat()
                 
                 pygame.mixer.music.stop()
-                if self.sounds.get("chase_loop"): self.sounds["chase_loop"].stop()
-                if self.sounds.get("death_sound"): 
-                    self.sounds["death_sound"].set_volume(0.7)
-                    self.sounds["death_sound"].play()
+                chase_sound = resource_manager.get_sound("sfx_chase_loop")
+                if chase_sound: chase_sound.stop()
                 
+                death_sound = resource_manager.get_sound("sfx_death_sound")
+                if death_sound: 
+                    death_sound.set_volume(0.7)
+                    death_sound.play()                
                 break
 
     def _debug_draw_collisions(self):

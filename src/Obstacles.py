@@ -38,27 +38,19 @@ class Obstacle(pygame.sprite.Sprite):
         self.trigger_action = data.get("trigger_action", "None")
         self.trigger_params = data.get("trigger_params", "")
 
-        image_path = data.get("image_path")
-        resize_factor = data.get("resize_factor", RESIZE_FACTOR)
+        image_key = data.get("image_id", data.get("image_path"))
+        resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
 
-        try:
-            if not image_path or image_path == "None":
-                raise ValueError("Image path is none or is empty")
-                
-            self.image = pygame.image.load(resource_path(image_path)).convert_alpha()
-            
+        self.image = resource_manager.get_image(image_key)
+
+        if self.image:
             self.image = pygame.transform.scale(self.image, 
                 (int(self.image.get_width() * resize_factor), int(self.image.get_height() * resize_factor))
             )
-            
-        except Exception as e:
-            self.image = pygame.Surface((int(20 * resize_factor), int(20 * resize_factor)))
-            self.image.fill((255, 0, 255))
-            self.image.set_alpha(150) 
+            self.original_image = self.image.copy()
         
 
         self.is_ground = data.get("is_ground", False)
-        
         self.rect = self.image.get_rect(center=(data["x"], data["y"]))
 
 
@@ -74,21 +66,16 @@ class Obstacle(pygame.sprite.Sprite):
                 self.rect.height + offset[3]
             )
         
-        self.animation = None
-        animation_paths = data.get("animation_images")
+        animation_ids = data.get("animation_images")
 
         self.animation_auto_play = data.get("animation_auto_play", False)
         self.is_animating = self.animation_auto_play
-
-        if animation_paths:
-            try:
-                images = [resource_path(p) for p in animation_paths]
-                if images:
-                    self.animation = Animation(self, images, data.get("animation_speed", 0.1))
-            except Exception as e:
-                print(f"ERROR: Can't load animation for {data.get('id')}: {e}")
+        self.animation = None
+        if animation_ids:
+            self.animation = Animation(self, animation_ids, data.get("animation_speed", 0.1))
 
     def update(self):
+        # I'll move this logic into the modify function
         if self.is_passable:
             self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
         else:

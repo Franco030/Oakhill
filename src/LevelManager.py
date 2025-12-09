@@ -8,11 +8,14 @@ from utils import resource_path
 import random
 
 class LevelManager:
-    def __init__(self, sounds, retro_effects):
-        self.sounds = sounds
-        self.ambience_sounds = resource_manager.load_all_sounds("assets/sounds/ambience")
-        print(f"[LevelManager] Loaded {len(self.ambience_sounds)} ambience tracks.")
+    def __init__(self, retro_effects):
         self.retro_effects = retro_effects
+
+        self.ambience_ids = [
+            key for key in resource_manager.asset_map.keys() 
+            if key.startswith("amb_")
+        ]
+        print(f"[LevelManager] Detected {len(self.ambience_ids)} ambience tracks IDs.")
 
         self.current_scene = None
         self.current_music_path = None
@@ -45,38 +48,41 @@ class LevelManager:
     def load_level_from_request(self, level_req, player_sprite):
         if self.current_scene:
             self.current_scene.cleanup()
-            
+
+        json_path = level_req.get("json_path")
+        map_matrix = level_req.get("map_matrix")
+        entry_zone = level_req.get("entry_zone")
+        player_pos = level_req.get("player_pos")
+        music_path = level_req.get("music_path")
+        darkness = level_req.get("darkness", False)
+
+        chase_snd = resource_manager.get_sound("sfx_chase_loop")
+        flee_snd = resource_manager.get_sound("sfx_flee_loop")
+
         self.current_scene = SceneLoader.load_from_json(
-            level_req["json_path"],
-            level_req["map_matrix"],
-            level_req["entry_zone"],
-            player_sprite,
-            self.sounds.get("chase_loop"),
-            self.sounds.get("flee_loop"),
-            level_req["music_path"],
-            level_req["darkness"]
+            json_path, 
+            map_matrix, 
+            entry_zone, 
+            player_sprite, 
+            chase_snd,
+            flee_snd,
+            music_path=music_path, 
+            has_darkness=darkness
         )
         self.silence_timer = 0
         self.is_in_silence = False
 
-        new_music = level_req["music_path"]
-        if new_music and new_music != self.current_music_path:
-            print(f"[LevelManager] Changing music to: {new_music}")
-            pygame.mixer.music.fadeout(500)
-            try:
-                pygame.mixer.music.load(resource_path(new_music))
-                pygame.mixer.music.play(0)
-                pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
-                pygame.mixer.music.set_volume(0.5)
-            except Exception as e:
-                print(f"Error loading music: {e}")
-            self.current_music_path = new_music
+        if player_pos:
+            player_sprite.teleport(player_pos[0], player_pos[1])
+
+        if music_path:
+            # music_path es un ID (ej: "bgm_forest"), play_music ya sabe manejarlo
+            # music_path is an ID, play_music knows how to handle it
+            resource_manager.play_music(music_path, fade_ms=1000)
+            self.current_music_path = music_path
 
         self.current_zone = level_req["entry_zone"]
-        
-        pos = level_req["player_pos"]
-        player_sprite.teleport(pos[0], pos[1])
-        
+
         tween_manager.clear()
 
         print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
@@ -100,16 +106,15 @@ class LevelManager:
 
 
             if self.ambience_timer <= 0:
-                if self.ambience_sounds:
-                    sound_key = random.choice(list(self.ambience_sounds.keys()))
-                    sfx = self.ambience_sounds[sound_key]
-
-                    if sfx:
+                if self.ambience_ids:
+                    random_id = random.choice(self.ambience_ids)
+                    sound = resource_manager.get_sound(random_id)
+                    
+                    if sound:
                         vol = random.uniform(0.5, 1)
-                        sfx.set_volume(vol)
-                        sfx.play()
-                        print(f"[Ambience] Played '{sound_key}' at vol {vol:.2f}")
-
+                        sound.set_volume(vol)
+                        sound.play()
+                        print(f"[Ambience] Played '{random_id}' at vol {vol:.2f}")
                         self.retro_effects.add_trauma(1)
 
                 self.ambience_timer = random.randint(15000, 30000)
@@ -119,7 +124,7 @@ class LevelManager:
                 if self.current_music_path:
                     try:
                         print("[LevelManager] Silence over. Replaying music.")
-                        pygame.mixer.music.play(0)
+                        resource_manager.play_music(self.current_music_path, loops=0, fade_ms=0)
                         pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
                     except Exception as e:
                         print(f"Error replaying music: {e}")

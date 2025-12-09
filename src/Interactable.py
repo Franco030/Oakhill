@@ -2,6 +2,7 @@ import pygame
 from .Obstacles import Obstacle
 from .Game_Constants import RESIZE_FACTOR
 from .GameState import game_state
+from .ResourceManager import resource_manager
 from utils import resource_path
 
 class Interactable(Obstacle):
@@ -19,47 +20,41 @@ class Interactable(Obstacle):
         self.interacted_once = False
         self.is_hidden = data.get("starts_hidden", False)
         
-        # self.is_interacting = False
         self.interaction_duration = data.get("interaction_duration", 120)
         self.interaction_blocked = data.get("interaction_blocked", False)
         self.current_progress = 0
-        # self.interaction_timer = 0
         self.original_image = self.image.copy()
 
         self.charge_sound = None
         self.is_playing_charge = False
-        charge_path = data.get("charge_sound_path", "None")
 
-        if charge_path and charge_path != "None":
-            try:
-                self.charge_sound = pygame.mixer.Sound(resource_path(charge_path))
+        charge_key = data.get("charge_sound_id", data.get("charge_sound_path", "None"))
+
+        if charge_key and charge_key != "None":
+            self.charge_sound = resource_manager.get_sound(charge_key)
+            if self.charge_sound:
                 self.charge_sound.set_volume(0.85)
-            except Exception as e:
-                print(f"Error when loading the sound: {e}")
 
         self.used_image = None
-        used_path = data.get("used_image_path", "None")
-        
-        if used_path and used_path != "None":
-            try:
-                loaded_used = pygame.image.load(resource_path(used_path)).convert_alpha()
+        used_key = data.get("used_image_id", data.get("used_image_path", "None"))
+
+        if used_key and used_key != "None":
+            raw_used = resource_manager.get_image(used_key)
+            if raw_used:
                 self.used_image = pygame.transform.scale(
-                    loaded_used, 
-                    (int(loaded_used.get_width() * self.resize_factor), int(loaded_used.get_height() * self.resize_factor))
+                    raw_used, 
+                    (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
                 )
-            except Exception as e:
-                print(f"Error while loading used image: {e}")
         
-        flash_path = data.get("flash_image_path")
-        try:
-            if not flash_path:
-                raise pygame.error("No flash image path provided")
-                
-            self.flash_image = pygame.image.load(resource_path(flash_path)).convert_alpha()
+
+        flash_key = data.get("flash_image_id", data.get("flash_image_path"))
+        raw_flash = resource_manager.get_image(flash_key)
+
+        if raw_flash:
             self.flash_image = pygame.transform.scale(
-                self.flash_image, (self.image.get_width(), self.image.get_height())
+                raw_flash, (self.image.get_width(), self.image.get_height())
             )
-        except pygame.error as e:
+        else:
             self.flash_image = self.original_image.copy()
 
         if game_state.has_interacted(self.id):

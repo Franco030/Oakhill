@@ -1,5 +1,6 @@
 import pygame
 import os
+import json
 from utils import resource_path
 
 class ResourceManager:
@@ -11,15 +12,17 @@ class ResourceManager:
             cls._instance.images = {}
             cls._instance.sounds = {}
             cls._instance.fonts = {}
+            cls._instance.asset_map = {}
             cls._instance._placeholder = None
             cls._instance.current_music = None
-            cls._instance.asset_map = {}
+            
+            if not pygame.mixer.get_init():
+                pygame.mixer.init()
+                
             cls._instance.load_manifest()
         return cls._instance
     
     def load_manifest(self):
-        import json
-        
         try:
             base_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(base_dir)
@@ -31,8 +34,11 @@ class ResourceManager:
 
             with open(path, "r") as f:
                 data = json.load(f)
-                self.asset_map.update(data.get("textures", {}))
-                self.asset_map.update(data.get("sounds", {}))
+                
+                categories = ["SPRITES", "ANIMATIONS", "SFX", "AMBIENCE", "MUSIC"]
+                for category in categories:
+                    if category in data:
+                        self.asset_map.update(data[category])
                 
             print(f"[ResourceManager] Manifest loaded. {len(self.asset_map)} assets registered.")
             
@@ -62,23 +68,31 @@ class ResourceManager:
         except Exception as e:
             print(f"[ResourceManager] Critical Error loading '{real_path}': {e}")
             return self._get_placeholder()
-        
-    def get_font(self, size):
-        if size not in self.fonts:
-            try:
-                font_path = resource_path("assets/fonts/little-pixel.ttf")
-                font = pygame.font.Font(font_path, size)
-                self.fonts[size] = font
-                print(f"[ResourceManager] Loaded Global Font size {size}")
-            except Exception as e:
-                print(f"[ResourceManager] Error loading font size {size}: {e}")
-                self.fonts[size] = pygame.font.SysFont("Arial", size)
-            
-        return self.fonts[size]
 
-    def play_music(self, relative_path, volume=0.6, loops=-1, fade_ms=500):
+    def get_sound(self, key_or_path):
+        if not key_or_path: return None
+        
+        real_path = self.asset_map.get(key_or_path, key_or_path)
+        
+        if real_path in self.sounds:
+            return self.sounds[real_path]
+            
         try:
-            real_path = self.asset_map.get(relative_path, relative_path)
+            full_path = resource_path(real_path)
+            if not os.path.exists(full_path):
+                print(f"[ResourceManager] Sound file not found: {full_path}")
+                return None
+                
+            sound = pygame.mixer.Sound(full_path)
+            self.sounds[real_path] = sound
+            return sound
+        except Exception as e:
+            print(f"[ResourceManager] Error loading sound '{key_or_path}': {e}")
+            return None
+
+    def play_music(self, music_id, volume=0.6, loops=-1, fade_ms=500):
+        try:
+            real_path = self.asset_map.get(music_id, music_id)
             
             if self.current_music == real_path: return
 
@@ -87,7 +101,7 @@ class ResourceManager:
                 print(f"[ResourceManager] Music not found: {full_path}")
                 return
 
-            print(f"[ResourceManager] Playing music: {real_path}")
+            print(f"[ResourceManager] Playing music: {music_id} -> {real_path}")
             pygame.mixer.music.fadeout(fade_ms)
             pygame.mixer.music.load(full_path)
             pygame.mixer.music.set_volume(volume)
@@ -96,12 +110,24 @@ class ResourceManager:
             self.current_music = real_path
             
         except Exception as e:
-            print(f"[ResourceManager] Error music '{relative_path}': {e}")
+            print(f"[ResourceManager] Error music '{music_id}': {e}")
+        
+    def get_font(self, size):
+        if size not in self.fonts:
+            try:
+                font_path = resource_path("assets/fonts/little-pixel.ttf")
+                font = pygame.font.Font(font_path, size)
+                self.fonts[size] = font
+            except Exception as e:
+                print(f"[ResourceManager] Error loading font size {size}: {e}")
+                self.fonts[size] = pygame.font.SysFont("Arial", size)
+            
+        return self.fonts[size]
 
-    def load_images_from_list(self, file_paths):
+    def load_images_from_list(self, image_ids):
         loaded_images = []
-        for path in file_paths:
-            img = self.get_image(path)
+        for img_id in image_ids:
+            img = self.get_image(img_id)
             if img:
                 loaded_images.append(img)
         return loaded_images
@@ -114,48 +140,8 @@ class ResourceManager:
         return self._placeholder
 
     def clear_cache(self):
-        count = len(self.images)
         self.images.clear()
-        # self.sounds.clear()
-        print(f"[ResourceManager] Cache cleared. Released {count} textures.")
-    
-    def load_all_sounds(self, folder_relative_path):
-        full_path = resource_path(folder_relative_path)
-        valid_ext = ('.wav', '.mp3', '.ogg')
+        self.sounds.clear()
+        print(f"[ResourceManager] Cache cleared.")
 
-        if not os.path.exists(full_path):
-            return {}
-
-        print(f"[ResourceManager] Bulk loading sounds from: {folder_relative_path}...")
-        for root, _, files in os.walk(full_path):
-            for filename in files:
-                if filename.lower().endswith(valid_ext):
-                    key_name = os.path.splitext(filename)[0]
-                    file_path = os.path.join(root, filename)
-                    try:
-                        self.sounds[key_name] = pygame.mixer.Sound(file_path)
-                    except Exception as e:
-                        print(f"  -> Error: {e}")
-        return self.sounds
-    
-    # --- Deprecated Functions (but I keep them for compatibility) --- 
-
-    def load_all_images(self, folder_relative_path):
-        full_path = resource_path(folder_relative_path)
-        valid_ext = ('.png', '.jpg', '.jpeg')
-
-        if not os.path.exists(full_path): return {}
-
-        for root, _, files in os.walk(full_path):
-            for filename in files:
-                if filename.lower().endswith(valid_ext):
-                    file_path = os.path.join(root, filename)
-                    try:
-                        img = pygame.image.load(file_path).convert_alpha()
-                        key_name = os.path.splitext(filename)[0]
-                        self.images[key_name] = img 
-                    except Exception: pass
-        return self.images
-
-# Global Instance
 resource_manager = ResourceManager()

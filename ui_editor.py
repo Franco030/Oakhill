@@ -585,7 +585,7 @@ class Ui_LevelEditor(object):
         self.prop_type.setItemText(4, QCoreApplication.translate("LevelEditor", u"Primitive", None))
 
         self.label_7.setText(QCoreApplication.translate("LevelEditor", u"Posición:", None))
-        self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image Path:", None))
+        self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image ID:", None))
         self.btn_browse_image.setText(QCoreApplication.translate("LevelEditor", u"...", None))
         self.label_12.setText(QCoreApplication.translate("LevelEditor", u"Preview:", None))
         self.label_8.setText(QCoreApplication.translate("LevelEditor", u"Resize:", None))

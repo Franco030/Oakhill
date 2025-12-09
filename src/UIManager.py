@@ -4,7 +4,7 @@ from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.ResourceManager import resource_manager
 
 class UIManager:
-    def __init__(self, sounds, retro_effects):
+    def __init__(self, retro_effects):
         self.active = False
         self.content_type = None # "NOTE" o "IMAGE" o "Animation"
         self.content_data = None
@@ -12,12 +12,9 @@ class UIManager:
 
         self.resume_music_on_close = False
 
-        # self.font = ResourceManager.get_font(24)
         self.font = resource_manager.get_font(24)
-        # self.ui_font = ResourceManager.get_font(20)
         self.ui_font = resource_manager.get_font(20)
 
-        self.sounds = sounds
         self.retro_effects = retro_effects
 
         self.note_pages = []
@@ -44,13 +41,13 @@ class UIManager:
         self.content_data = data
         self.resume_music_on_close = resume_music_on_close
 
-    def show_image(self, image_path, blocking=False):
+    def show_image(self, image_id, blocking=False):
         self.active = True
         self.is_blocking = blocking
         self.content_type = "IMAGE"
-        self.content_data = image_path
+        self.content_data = image_id
 
-    def show_animation(self, image_paths, speed=0.1, blocking=False, loop=True):
+    def show_animation(self, image_ids, speed=0.1, blocking=False, loop=True):
         self.anim_frames = []
         self.anim_index = 0
         self.anim_timer = 0
@@ -58,7 +55,7 @@ class UIManager:
         self.anim_loop = loop
         self.content_type = "ANIMATION"
 
-        raw_images = resource_manager.load_images_from_list(image_paths)
+        raw_images = resource_manager.load_images_from_list(image_ids)
 
         if raw_images:
             for img in raw_images:
@@ -109,13 +106,16 @@ class UIManager:
                 if self.content_type == "NOTE" and self.current_page < len(self.note_pages) -1:
                     self.current_page += 1
                     self.content_data = self.note_pages[self.current_page]
-                    self.sounds["turn_pages"].play()
+                    snd = resource_manager.get_sound("sfx_turn_pages")
+                    if snd: snd.play()
                     self.retro_effects.add_trauma(0.5)
                 elif self.content_type == "NOTE" and self.current_page == len(self.note_pages) -1:
-                    self.sounds["note_closed"].play()
+                    snd = resource_manager.get_sound("sfx_note_closed")
+                    if snd: snd.play()
                     self.close()
                 elif self.content_type == "DIALOGUE":
-                    self.sounds["dialogue_closed"].play()
+                    snd = resource_manager.get_sound("sfx_dialogue_closed")
+                    if snd: snd.play()
                     self.close()
                 else:
                     # Here are the other content_types: DIALOGUE, IMAGE, ANIMATION
@@ -221,25 +221,25 @@ class UIManager:
     def _draw_image(self, screen):
         screen.fill((0, 0, 0))
         try:
-            path = resource_path(self.content_data)
-            img = pygame.image.load(path).convert_alpha()
+            img = resource_manager.get_image(self.content_data)
             
-            img_rect = img.get_rect()
-            
-            margin = 50 
-            available_w = SCREEN_WIDTH - (margin * 2)
-            available_h = SCREEN_HEIGHT - (margin * 2)
-            
-            scale_w = available_w / img_rect.width
-            scale_h = available_h / img_rect.height
-            
-            scale = min(scale_w, scale_h)
-            
-            new_size = (int(img_rect.width * scale), int(img_rect.height * scale))
-            img = pygame.transform.scale(img, new_size)
-            
-            img_rect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
-            screen.blit(img, img_rect)
+            if img:
+                img_rect = img.get_rect()
+                
+                margin = 50 
+                available_w = SCREEN_WIDTH - (margin * 2)
+                available_h = SCREEN_HEIGHT - (margin * 2)
+                
+                scale_w = available_w / img_rect.width
+                scale_h = available_h / img_rect.height
+                
+                scale = min(scale_w, scale_h)
+                
+                new_size = (int(img_rect.width * scale), int(img_rect.height * scale))
+                img = pygame.transform.scale(img, new_size)
+                
+                img_rect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+                screen.blit(img, img_rect)
             
         except Exception as e:
             print(f"Error UI image: {e}")
@@ -278,5 +278,5 @@ class UIManager:
             screen.fill((0,0,0))
         
         font = pygame.font.Font(None, 30)
-        txt = font.render("Presiona 'ESC' para reiniciar", True, (200, 200, 200))
+        txt = font.render("Press 'ESC' to restart", True, (200, 200, 200))
         screen.blit(txt, txt.get_rect(centerx=SCREEN_WIDTH//2, bottom=SCREEN_HEIGHT-20))

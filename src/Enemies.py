@@ -2,6 +2,7 @@ import pygame
 from src.Game_Constants import RESIZE_FACTOR, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS
 from src.Behaviour import *
 from src.Animations import Animation
+from .ResourceManager import resource_manager
 from utils import resource_path
 
 class _Enemy(pygame.sprite.Sprite):
@@ -15,7 +16,7 @@ class _Enemy(pygame.sprite.Sprite):
         behaviour: How will the enemy behave?
         resize_factor (optional): A specific resize_factor for this enemy. Defaults to RESIZE_FACTOR from Game_Constants.py if not provided.
     """
-    def __init__(self, start_x, start_y, image, health, behaviours, resize_factor = None):
+    def __init__(self, start_x, start_y, image_id, health, behaviours, resize_factor = None):
         super().__init__()
 
         self.resize_factor = resize_factor if resize_factor is not None else RESIZE_FACTOR
@@ -30,9 +31,9 @@ class _Enemy(pygame.sprite.Sprite):
         
         self.behaviours = behaviours
 
-        self.image = pygame.image.load(image).convert_alpha()
+        self.image = resource_manager.get_image(image_id)
         self.image = pygame.transform.scale(self.image, (self.image.get_width() * self.resize_factor, self.image.get_height() * self.resize_factor))
-        self.original_image_path = image
+        self.original_image_path = image_id
         self.original_image = self.image.copy()
         self.rect = self.image.get_rect(center=(start_x, start_y))
         self._collision_rect = self.rect.copy() # Default collision_rect adjust in sub_classes
@@ -109,42 +110,11 @@ class _Enemy(pygame.sprite.Sprite):
         if self.health < 0:
             self.kill()
 
-class Red_Ghost(_Enemy):
-    
-    def __init__(self, start_x, start_y, health, behaviours):
-        super().__init__(start_x, start_y, resource_path("assets/images/enemy.png"), health, behaviours, 5)
-
-        # --- Modify the self._collision_rect to get a better collision system ---
-        self._collision_rect = pygame.Rect(
-            self.rect.left,
-            self.rect.top,
-            self.rect.width - 50,
-            self.rect.height - 50
-        )
-        self.animation = Animation(self, [resource_path(f"assets/animations/Red_Ghost/red_ghost_{i}.png") for i in range (1, 5)], 0.07)
-
-    def while_attacked(self, amount):
-        self.health -= amount
-        self.start_flash()
-
-    def update(self, delta_time):
-        """
-        We override the update method so that we can add custom animations
-        Conditionally apply behaviours
-        Apply extra logic
-        """
-        if self.rect.left > SCREEN_WIDTH + (TRANSITION_BIAS*2) or self.rect.right < 0 - (TRANSITION_BIAS*2):
-            self.behaviours.reverse()
-
-        self.animation.animate()
-        
-        super().update(delta_time)
-
 class Stalker_Ghost(_Enemy):
     def __init__(self, start_x, start_y, health, behaviours):
         # We changed the sprite for another one
         # super().__init__(start_x, start_y, resource_path("assets/images/ghost.png"), health, behaviours, 5)
-        super().__init__(start_x, start_y, resource_path("assets/animations/Stalker/stalker_0.png"), health, behaviours, 3)
+        super().__init__(start_x, start_y, "anim_stalker_0", health, behaviours, 3)
         # --- Modify the self._collision_rect to get a better collision system ---
         self._collision_rect = pygame.Rect(
             self.rect.left,
@@ -153,7 +123,8 @@ class Stalker_Ghost(_Enemy):
             self.rect.height - 20
         )
 
-        self.animation = Animation(self, [resource_path(f"assets/animations/Stalker/stalker_{i}.png") for i in range (0, 4)], 0.10)
+        anim_ids = [f"anim_stalker_{i}" for i in range(0, 4)]
+        self.animation = Animation(self, anim_ids, 0.10)
 
     def while_attacked(self):
         if self.is_flashing:

@@ -9,7 +9,7 @@ RESIZE_FACTOR = 4
 TRANSITION_BIAS = 20
 FPS = 60
 DEATH_DELAY = 3000
-INITIAL_ZONE = (2, 1)
+INITIAL_ZONE = (5, 2)
 Y_CORD, X_CORD = INITIAL_ZONE
 
 WORLD_MAP_LEVEL = [
@@ -63,8 +63,8 @@ MAPS = {
 }
 
 LEVEL_MUSIC = {
-    "forest": resource_path("assets/music/MAIN_SONG.wav"),
-    "school": resource_path("assets/music/INSIDE_SCHOOL.wav")
+    "forest": "bgm_main_song",
+    "school": "bgm_inside_school"
 }
 
 LEVEL_DARKNESS = {

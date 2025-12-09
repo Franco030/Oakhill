@@ -12,7 +12,6 @@
                 "type": "Interactable",
                 "x": 640,
                 "y": 280,
-                "image_path": "assets/images/doors/cemetery/cemetery_door_locked.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -34,24 +33,24 @@
                 "animation_speed": 0.1,
                 "flash_image_path": "",
                 "charge_sound_path": "",
-                "used_image_path": "assets/images/doors/cemetery/cemetery_doors_open.png",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "ModifyObject",
-                "trigger_params": "id=obj_1765238461284_230\nis_passable=true\nsound=interaction_occurred",
+                "trigger_params": "id=obj_1765238461284_230\nis_passable=true\nsound=sfx_interaction_occurred",
                 "z_index": 0,
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": true,
-                "scripted_events": []
+                "scripted_events": [],
+                "image_id": "spr_cemetery_door_locked",
+                "used_image_id": "spr_cemetery_doors_open"
             },
             {
                 "id": "obj_1765239436110_287",
                 "type": "Obstacle",
                 "x": 260,
                 "y": 323,
-                "image_path": "assets/images/wall/cemetery_walls_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -82,14 +81,14 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cemetery_walls_0"
             },
             {
                 "id": "obj_1765240971_3",
                 "type": "Obstacle",
                 "x": 1020,
                 "y": 324,
-                "image_path": "assets/images/wall/cemetery_walls_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -120,7 +119,8 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cemetery_walls_1"
             },
             {
                 "id": "obj_1765243410356_181",
@@ -166,7 +166,6 @@
                 "type": "Obstacle",
                 "x": 775,
                 "y": 290,
-                "image_path": "assets/images/wall/cemetery_column_wall.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -197,14 +196,14 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cemetery_column_wall"
             },
             {
                 "id": "obj_1765261299_5",
                 "type": "Obstacle",
                 "x": 505,
                 "y": 290,
-                "image_path": "assets/images/wall/cemetery_column_wall.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -235,7 +234,8 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cemetery_column_wall"
             }
         ],
         "(2, 3)": [
@@ -244,7 +244,6 @@
                 "type": "Obstacle",
                 "x": 179,
                 "y": 185,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -276,14 +275,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764906085_1",
                 "type": "Obstacle",
                 "x": 1061,
                 "y": 355,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -315,14 +314,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764906089_2",
                 "type": "Obstacle",
                 "x": 275,
                 "y": 563,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -354,14 +353,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764907530957_675",
                 "type": "Obstacle",
                 "x": 700,
                 "y": 319,
-                "image_path": "assets/images/trees/broken_tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -393,14 +392,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_1"
             },
             {
                 "id": "obj_1764907560_4",
                 "type": "Obstacle",
                 "x": 69,
                 "y": 421,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -432,14 +431,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764907568_5",
                 "type": "Obstacle",
                 "x": 692,
                 "y": 641,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -471,14 +470,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764907585_6",
                 "type": "Obstacle",
                 "x": 469,
                 "y": 682,
-                "image_path": "assets/images/grass/grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -510,14 +509,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_2"
             },
             {
                 "id": "obj_1764907589062_899",
                 "type": "Obstacle",
                 "x": 154,
                 "y": 687,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -549,14 +548,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764907603_8",
                 "type": "Obstacle",
                 "x": 862,
                 "y": 122,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -588,14 +587,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764907615234_183",
                 "type": "Interactable",
                 "x": 369,
                 "y": 191,
-                "image_path": "assets/images/gravestones/gravestone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -615,26 +614,26 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "assets/images/gravestones/gravestone_flash_0.png",
-                "charge_sound_path": "assets/sounds/interacting.wav",
-                "used_image_path": "assets/images/gravestones/bloody_gravestone_0.png",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=                In remembrance of ----------\\n(unintelligible); sound=interaction_occurred; blocking=true",
+                "trigger_params": "text=                In remembrance of ----------\\n(unintelligible); sound=sfx_interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_gravestone_0",
+                "flash_image_id": "spr_gravestone_flash_0",
+                "used_image_id": "spr_bloody_gravestone_0",
+                "charge_sound_id": "sfx_interacting"
             },
             {
                 "id": "obj_1764907637735_209",
                 "type": "Interactable",
                 "x": 474,
                 "y": 251,
-                "image_path": "assets/images/gravestones/gravestone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -654,26 +653,26 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "assets/images/gravestones/gravestone_flash_1.png",
-                "charge_sound_path": "assets/sounds/interacting.wav",
-                "used_image_path": "assets/images/gravestones/bloody_gravestone_1.png",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=To my daughter...\\n(Unintelligible); sound=interaction_occurred; blocking=true",
+                "trigger_params": "text=To my daughter...\\n(Unintelligible); sound=sfx_interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_gravestone_1",
+                "flash_image_id": "spr_gravestone_flash_1",
+                "used_image_id": "spr_bloody_gravestone_1",
+                "charge_sound_id": "sfx_interacting"
             },
             {
                 "id": "obj_1764907669435_682",
                 "type": "Obstacle",
                 "x": 296,
                 "y": 103,
-                "image_path": "assets/images/gravestones/cross_grave_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -705,14 +704,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cross_grave_1"
             },
             {
                 "id": "obj_1764907688986_164",
                 "type": "Obstacle",
                 "x": 326,
                 "y": 298,
-                "image_path": "assets/images/grass/flowered_grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -744,14 +743,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_2"
             },
             {
                 "id": "obj_1764907700697_497",
                 "type": "Obstacle",
                 "x": 510,
                 "y": 198,
-                "image_path": "assets/images/grass/flowered_grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -783,14 +782,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_0"
             },
             {
                 "id": "obj_1764907724_14",
                 "type": "Obstacle",
                 "x": 414,
                 "y": 374,
-                "image_path": "assets/images/gravestones/cross_grave.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -822,14 +821,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cross_grave"
             },
             {
                 "id": "obj_1764907761_15",
                 "type": "Obstacle",
                 "x": 923,
                 "y": 700,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -861,14 +860,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764907763_16",
                 "type": "Obstacle",
                 "x": 885,
                 "y": 276,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -900,14 +899,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764907770_17",
                 "type": "Obstacle",
                 "x": 1051,
                 "y": 526,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -939,14 +938,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764907774_18",
                 "type": "Obstacle",
                 "x": 916,
                 "y": 556,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -978,7 +977,8 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             }
         ],
         "(2, 4)": [
@@ -987,7 +987,6 @@
                 "type": "Obstacle",
                 "x": 140,
                 "y": 168,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1019,14 +1018,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764909140_4",
                 "type": "Obstacle",
                 "x": 558,
                 "y": 610,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1058,14 +1057,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764909151_5",
                 "type": "Obstacle",
                 "x": 408,
                 "y": 589,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1097,14 +1096,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764909156_6",
                 "type": "Obstacle",
                 "x": 752,
                 "y": 705,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1136,14 +1135,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764909165_7",
                 "type": "Obstacle",
                 "x": 341,
                 "y": 537,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -1175,14 +1174,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764909172_8",
                 "type": "Obstacle",
                 "x": 362,
                 "y": 486,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -1214,14 +1213,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764909177_9",
                 "type": "Obstacle",
                 "x": 202,
                 "y": 263,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -1253,14 +1252,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764909191_10",
                 "type": "Interactable",
                 "x": 881,
                 "y": 655,
-                "image_path": "assets/images/gravestones/cross_grave.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1280,8 +1279,6 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "assets/images/gravestones/cross_grave_flash_0.png",
-                "charge_sound_path": "assets/sounds/interacting.wav",
                 "used_image_path": "",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
@@ -1292,14 +1289,16 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cross_grave",
+                "flash_image_id": "spr_cross_grave_flash_0",
+                "charge_sound_id": "sfx_interacting"
             },
             {
                 "id": "obj_1764909205_11",
                 "type": "Obstacle",
                 "x": 1075,
                 "y": 571,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1331,14 +1330,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764909209_12",
                 "type": "Obstacle",
                 "x": 973,
                 "y": 320,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1370,14 +1369,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764909219_13",
                 "type": "Obstacle",
                 "x": 341,
                 "y": 204,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1409,14 +1408,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764909226_14",
                 "type": "Obstacle",
                 "x": 400,
                 "y": 206,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1448,14 +1447,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1765000689343_108",
                 "type": "Obstacle",
                 "x": 821,
                 "y": 154,
-                "image_path": "assets/images/trees/bloody_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1487,11 +1486,11 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_bloody_tree_0"
             },
             {
                 "type": "Interactable",
-                "image_path": "assets/images/notes/note.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": true,
@@ -1517,7 +1516,7 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=What my eyes just see I cannot comprehend\\nWhat is the purpose of those people?\\nAre they really here just to torment, to inflict pain?\\nI want to run away as fast as I can but...\\nMaybe that ominous building hides something\\n\\nMatt, 23XX\nblocking=true\nsound=interaction_occurred",
+                "trigger_params": "text=What my eyes just see I cannot comprehend\\nWhat is the purpose of those people?\\nAre they really here just to torment, to inflict pain?\\nI want to run away as fast as I can but...\\nMaybe that ominous building hides something\\n\\nMatt, 23XX\nblocking=true\nsound=sfx_interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
@@ -1527,11 +1526,11 @@
                 "y": 718,
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_note"
             },
             {
                 "type": "Obstacle",
-                "image_path": "assets/images/trees/broken_tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1566,11 +1565,11 @@
                 "x": 227,
                 "y": 486,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_1"
             },
             {
                 "type": "Obstacle",
-                "image_path": "assets/images/trees/broken_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1605,7 +1604,8 @@
                 "x": 708,
                 "y": 459,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_0"
             }
         ],
         "(2, 5)": [
@@ -1614,7 +1614,6 @@
                 "type": "Obstacle",
                 "x": 153,
                 "y": 111,
-                "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1646,14 +1645,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_1"
             },
             {
                 "id": "obj_1764909288_1",
                 "type": "Obstacle",
                 "x": 292,
                 "y": 392,
-                "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1685,14 +1684,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_1"
             },
             {
                 "id": "obj_1764909293_2",
                 "type": "Obstacle",
                 "x": 464,
                 "y": 110,
-                "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1724,14 +1723,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_1"
             },
             {
                 "id": "obj_1764909322_6",
                 "type": "Obstacle",
                 "x": 1142,
                 "y": 298,
-                "image_path": "assets/images/stakes/stake_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1763,14 +1762,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -25,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_0"
             },
             {
                 "id": "obj_1764909332_7",
                 "type": "Obstacle",
                 "x": 636,
                 "y": 235,
-                "image_path": "assets/images/stakes/burned_stake_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1802,14 +1801,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -30,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_burned_stake_0"
             },
             {
                 "id": "obj_1764909356_7",
                 "type": "Obstacle",
                 "x": 277,
                 "y": 579,
-                "image_path": "assets/images/trees/broken_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1841,14 +1840,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_0"
             },
             {
                 "id": "obj_1764909427313_161",
                 "type": "Obstacle",
                 "x": 325,
                 "y": 212,
-                "image_path": "assets/images/trees/bloody_tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1880,14 +1879,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_bloody_tree_1"
             },
             {
                 "id": "obj_1764909507474_968",
                 "type": "Obstacle",
                 "x": 698,
                 "y": 668,
-                "image_path": "assets/images/trees/broken_tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1919,14 +1918,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_2"
             },
             {
                 "id": "obj_1764909557_13",
                 "type": "Obstacle",
                 "x": 977,
                 "y": 500,
-                "image_path": "assets/images/gravestones/cross_grave_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1958,14 +1957,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cross_grave_1"
             },
             {
                 "id": "obj_1764909568_14",
                 "type": "Obstacle",
                 "x": 126,
                 "y": 670,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -1997,14 +1996,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764909575_15",
                 "type": "Obstacle",
                 "x": 482,
                 "y": 581,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2036,14 +2035,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764909589_15",
                 "type": "Obstacle",
                 "x": 801,
                 "y": 423,
-                "image_path": "assets/images/trees/broken_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2075,7 +2074,8 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_broken_tree_0"
             },
             {
                 "id": "obj_1764910698915_916",
@@ -2196,7 +2196,6 @@
             },
             {
                 "type": "Obstacle",
-                "image_path": "assets/images/trees/bloody_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2231,11 +2230,11 @@
                 "x": 507,
                 "y": 446,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_bloody_tree_0"
             },
             {
                 "type": "Obstacle",
-                "image_path": "assets/images/trees/bloody_tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2270,14 +2269,14 @@
                 "x": 1158,
                 "y": 513,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_bloody_tree_0"
             },
             {
                 "id": "obj_1765236691_19",
                 "type": "Obstacle",
                 "x": 803,
                 "y": 102,
-                "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2309,14 +2308,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_1"
             },
             {
                 "id": "obj_1765236703_19",
                 "type": "Obstacle",
                 "x": 952,
                 "y": 202,
-                "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2348,7 +2347,8 @@
                 "interaction_data": "",
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stake_1"
             }
         ],
         "(3, 1)": [
@@ -2357,7 +2357,6 @@
                 "type": "Obstacle",
                 "x": 201,
                 "y": 444,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2389,14 +2388,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764800230_1",
                 "type": "Obstacle",
                 "x": 108,
                 "y": 628,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2428,14 +2427,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764800233_2",
                 "type": "Obstacle",
                 "x": 457,
                 "y": 587,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2467,14 +2466,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764800246490_600",
                 "type": "Interactable",
                 "x": 288,
                 "y": 588,
-                "image_path": "assets/images/gravestones/gravestone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2494,26 +2493,26 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 0.1,
-                "flash_image_path": "assets/images/gravestones/gravestone_flash_1.png",
-                "charge_sound_path": "assets/sounds/interacting.wav",
-                "used_image_path": "assets/images/gravestones/bloody_gravestone_1.png",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=We conmemorate the death of Luna.\\nShe didn't deserve any of what happened to her.\\nThose devils from the village should burn in hell.; sound=interaction_occurred; blocking=true",
+                "trigger_params": "text=We conmemorate the death of Luna.\\nShe didn't deserve any of what happened to her.\\nThose devils from the village should burn in hell.; sound=sfx_interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_gravestone_1",
+                "flash_image_id": "spr_gravestone_flash_1",
+                "used_image_id": "spr_bloody_gravestone_1",
+                "charge_sound_id": "sfx_interacting"
             },
             {
                 "id": "obj_1764800302702_540",
                 "type": "Obstacle",
                 "x": 213,
                 "y": 639,
-                "image_path": "assets/images/grass/flowered_grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -2545,14 +2544,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_2"
             },
             {
                 "id": "obj_1764800366893_173",
                 "type": "Obstacle",
                 "x": 338,
                 "y": 542,
-                "image_path": "assets/images/grass/flowered_grass_1.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -2584,14 +2583,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_1"
             },
             {
                 "id": "obj_1764800388_6",
                 "type": "Obstacle",
                 "x": 87,
                 "y": 452,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2623,14 +2622,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764800399_7",
                 "type": "Obstacle",
                 "x": 482,
                 "y": 171,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2662,14 +2661,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764800403_8",
                 "type": "Obstacle",
                 "x": 602,
                 "y": 136,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2701,14 +2700,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764800413_9",
                 "type": "Obstacle",
                 "x": 692,
                 "y": 237,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -2740,14 +2739,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764800414_10",
                 "type": "Obstacle",
                 "x": 560,
                 "y": 688,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -2779,14 +2778,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764800420_11",
                 "type": "Obstacle",
                 "x": 919,
                 "y": 649,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2818,14 +2817,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764800435_12",
                 "type": "Obstacle",
                 "x": 840,
                 "y": 742,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2857,7 +2856,8 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             }
         ],
         "(3, 2)": [
@@ -2866,7 +2866,6 @@
                 "type": "Obstacle",
                 "x": 383,
                 "y": 505,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2898,14 +2897,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764799670_1",
                 "type": "Obstacle",
                 "x": 546,
                 "y": 262,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2937,14 +2936,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764799674_2",
                 "type": "Obstacle",
                 "x": 152,
                 "y": 217,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -2976,14 +2975,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764799681_3",
                 "type": "Obstacle",
                 "x": 125,
                 "y": 542,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3015,14 +3014,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764799690_4",
                 "type": "Obstacle",
                 "x": 654,
                 "y": 682,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3054,14 +3053,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764799694_5",
                 "type": "Obstacle",
                 "x": 811,
                 "y": 130,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3093,14 +3092,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764799703_6",
                 "type": "Obstacle",
                 "x": 989,
                 "y": 428,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3132,14 +3131,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764799718_7",
                 "type": "Obstacle",
                 "x": 89,
                 "y": 80,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3171,14 +3170,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764799742_8",
                 "type": "Obstacle",
                 "x": 768,
                 "y": 597,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3210,14 +3209,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764799752_9",
                 "type": "Obstacle",
                 "x": 239,
                 "y": 646,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -3249,14 +3248,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764799762_10",
                 "type": "Obstacle",
                 "x": 684,
                 "y": 250,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3288,14 +3287,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764799765829_903",
                 "type": "Obstacle",
                 "x": 661,
                 "y": 231,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -3327,14 +3326,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764799797189_332",
                 "type": "Obstacle",
                 "x": 286,
                 "y": 470,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3366,14 +3365,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764799823869_938",
                 "type": "Obstacle",
                 "x": 965,
                 "y": 184,
-                "image_path": "assets/images/grass/grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -3405,14 +3404,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_2"
             },
             {
                 "id": "obj_1764799845_14",
                 "type": "Obstacle",
                 "x": 1160,
                 "y": 537,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3444,7 +3443,8 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             }
         ],
         "(3, 3)": [
@@ -3492,7 +3492,6 @@
                 "type": "Obstacle",
                 "x": 233,
                 "y": 431,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3524,14 +3523,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764905874_2",
                 "type": "Obstacle",
                 "x": 287,
                 "y": 168,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3563,14 +3562,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764905885_3",
                 "type": "Obstacle",
                 "x": 718,
                 "y": 529,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3602,14 +3601,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764905887_4",
                 "type": "Obstacle",
                 "x": 927,
                 "y": 110,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3641,14 +3640,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764905890_5",
                 "type": "Obstacle",
                 "x": 392,
                 "y": 645,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3680,14 +3679,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764905904_6",
                 "type": "Obstacle",
                 "x": 1142,
                 "y": 664,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3719,14 +3718,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764905910_7",
                 "type": "Obstacle",
                 "x": 1153,
                 "y": 309,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3758,14 +3757,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764905917_8",
                 "type": "Obstacle",
                 "x": 780,
                 "y": 173,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3797,14 +3796,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764905923_9",
                 "type": "Obstacle",
                 "x": 171,
                 "y": 311,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3836,14 +3835,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764905930_10",
                 "type": "Obstacle",
                 "x": 571,
                 "y": 705,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3875,14 +3874,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764905935_11",
                 "type": "Obstacle",
                 "x": 605,
                 "y": 713,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3914,14 +3913,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764905941_12",
                 "type": "Obstacle",
                 "x": 622,
                 "y": 693,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -3953,14 +3952,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764905961_13",
                 "type": "Obstacle",
                 "x": 269,
                 "y": 712,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -3992,14 +3991,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764905986_14",
                 "type": "Obstacle",
                 "x": 937,
                 "y": 639,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4031,14 +4030,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764905990_15",
                 "type": "Obstacle",
                 "x": 893,
                 "y": 634,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4070,14 +4069,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764905993_16",
                 "type": "Obstacle",
                 "x": 913,
                 "y": 654,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4109,14 +4108,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764906003186_509",
                 "type": "Obstacle",
                 "x": 552,
                 "y": 564,
-                "image_path": "assets/images/grass/grass_1.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4148,14 +4147,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_1"
             },
             {
                 "id": "obj_1764906017468_249",
                 "type": "Obstacle",
                 "x": 996,
                 "y": 307,
-                "image_path": "assets/images/grass/grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4187,14 +4186,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_2"
             },
             {
                 "id": "obj_1764906038_19",
                 "type": "Obstacle",
                 "x": 463,
                 "y": 193,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4226,7 +4225,8 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             }
         ],
         "(4, 2)": [
@@ -4235,7 +4235,6 @@
                 "type": "Obstacle",
                 "x": 1079,
                 "y": 662,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4267,14 +4266,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764793525_1",
                 "type": "Obstacle",
                 "x": 805,
                 "y": 257,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4306,14 +4305,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764793530_2",
                 "type": "Obstacle",
                 "x": 244,
                 "y": 183,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4345,14 +4344,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764793538_3",
                 "type": "Obstacle",
                 "x": 214,
                 "y": 669,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4384,14 +4383,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764793542_4",
                 "type": "Obstacle",
                 "x": 524,
                 "y": 480,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4423,14 +4422,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764793550_5",
                 "type": "Obstacle",
                 "x": 122,
                 "y": 426,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4462,14 +4461,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764793563_6",
                 "type": "Obstacle",
                 "x": 364,
                 "y": 90,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4501,14 +4500,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764793570206_187",
                 "type": "Obstacle",
                 "x": 411,
                 "y": 697,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4540,14 +4539,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764793594860_301",
                 "type": "Obstacle",
                 "x": 322,
                 "y": 454,
-                "image_path": "assets/images/grass/grass_1.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4579,14 +4578,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_1"
             },
             {
                 "id": "obj_1764793660749_255",
                 "type": "Obstacle",
                 "x": 841,
                 "y": 601,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4618,14 +4617,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764793675_10",
                 "type": "Obstacle",
                 "x": 1003,
                 "y": 148,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4657,14 +4656,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764793703_11",
                 "type": "Obstacle",
                 "x": 997,
                 "y": 468,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4696,14 +4695,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764793727368_229",
                 "type": "Interactable",
                 "x": 430,
                 "y": 320,
-                "image_path": "assets/images/notes/note.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -4729,14 +4728,15 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=I heard multiple people died around here\\nI need to find answers\\nTheres multiple gravestones around here\\nperhaps I can found something in them.\\n\\nMatt, 23XX; blocking=true; sound=interaction_occurred",
+                "trigger_params": "text=I heard multiple people died around here\\nI need to find answers\\nTheres multiple gravestones around here\\nperhaps I can found something in them.\\n\\nMatt, 23XX; blocking=true; sound=sfx_interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_note"
             }
         ],
         "(4, 4)": [],
@@ -4746,7 +4746,6 @@
                 "type": "Obstacle",
                 "x": 160,
                 "y": 661,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4778,14 +4777,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823713_1",
                 "type": "Obstacle",
                 "x": 1039,
                 "y": 559,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4817,14 +4816,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764823717_2",
                 "type": "Obstacle",
                 "x": 638,
                 "y": 516,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4856,14 +4855,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764823725_3",
                 "type": "Obstacle",
                 "x": 1041,
                 "y": 159,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4895,14 +4894,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823729_4",
                 "type": "Obstacle",
                 "x": 191,
                 "y": 137,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4934,14 +4933,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764823739_5",
                 "type": "Obstacle",
                 "x": 492,
                 "y": 211,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4973,14 +4972,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823749_6",
                 "type": "Obstacle",
                 "x": 801,
                 "y": 247,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5012,14 +5011,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764823755_7",
                 "type": "Obstacle",
                 "x": 425,
                 "y": 124,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5051,14 +5050,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764823763_8",
                 "type": "Obstacle",
                 "x": 564,
                 "y": 611,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5090,14 +5089,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764823772_9",
                 "type": "Obstacle",
                 "x": 95,
                 "y": 174,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5129,14 +5128,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764823780_10",
                 "type": "Obstacle",
                 "x": 848,
                 "y": 267,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5168,14 +5167,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764823792_11",
                 "type": "Obstacle",
                 "x": 551,
                 "y": 594,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -5207,14 +5206,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764823796288_764",
                 "type": "Obstacle",
                 "x": 305,
                 "y": 690,
-                "image_path": "assets/images/grass/grass_1.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -5246,14 +5245,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_1"
             },
             {
                 "id": "obj_1764823811308_184",
                 "type": "Obstacle",
                 "x": 847,
                 "y": 529,
-                "image_path": "assets/images/grass/grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -5285,7 +5284,8 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_2"
             }
         ],
         "(5, 2)": [
@@ -5294,7 +5294,6 @@
                 "type": "Obstacle",
                 "x": 257,
                 "y": 204,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5326,14 +5325,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764793185_1",
                 "type": "Obstacle",
                 "x": 1100,
                 "y": 591,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5365,14 +5364,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764793192856_490",
                 "type": "Obstacle",
                 "x": 211,
                 "y": 451,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5404,14 +5403,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764793283496_124",
                 "type": "Obstacle",
                 "x": 819,
                 "y": 114,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5443,14 +5442,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764793311079_197",
                 "type": "Obstacle",
                 "x": 166,
                 "y": 552,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5482,14 +5481,14 @@
                 "interaction_data": "",
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764793348751_846",
                 "type": "Obstacle",
                 "x": 934,
                 "y": 655,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5521,14 +5520,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764793410_6",
                 "type": "Obstacle",
                 "x": 543,
                 "y": 639,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5558,16 +5557,16 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0,
+                "sort_offset_y": -20,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764793421797_741",
                 "type": "Obstacle",
                 "x": 754,
                 "y": 328,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5599,14 +5598,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764823696_8",
                 "type": "Obstacle",
                 "x": 377,
                 "y": 668,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -5638,14 +5637,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764824708_9",
                 "type": "Interactable",
                 "x": 622,
                 "y": 409,
-                "image_path": "assets/images/notes/note.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -5671,14 +5670,15 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=To whoever is reading this\\nI'm Matt Gray, I'm documenting what happenss around this town\\nbe aware of the \"people\" around this place\\nthey chase what they call \"sinners\"\\nthey try to bring salvation to them\\nthey are always lurking behind the dark\\nDON'T LET YOUR GUARD DOWN\\nSeriously... What is going on here?[P]For some reason\\nthey don't like to be 'examined'\\nif you have an ounce of reason, go away\\nIf you want to follow my steps\\n I'll be writing everything I see\\nKeep an eye out for secrets\\nWe can't let them know\\n\\nMatt, 23XX\nblocking=true\nsound=interaction_occurred",
+                "trigger_params": "text=To whoever is reading this\\nI'm Matt Gray, I'm documenting what happenss around this town\\nbe aware of the \"people\" around this place\\nthey chase what they call \"sinners\"\\nthey try to bring salvation to them\\nthey are always lurking behind the dark\\nDON'T LET YOUR GUARD DOWN\\nSeriously... What is going on here?[P]For some reason\\nthey don't like to be 'examined'\\nif you have an ounce of reason, go away\\nIf you want to follow my steps\\n I'll be writing everything I see\\nKeep an eye out for secrets\\nWe can't let them know\\n\\nMatt, 23XX\nblocking=true\nsound=sfx_interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_note"
             }
         ],
         "(5, 3)": [
@@ -5687,7 +5687,6 @@
                 "type": "Obstacle",
                 "x": 135,
                 "y": 138,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5719,14 +5718,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764823111_1",
                 "type": "Obstacle",
                 "x": 259,
                 "y": 581,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5758,14 +5757,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823114_2",
                 "type": "Obstacle",
                 "x": 585,
                 "y": 395,
-                "image_path": "assets/images/trees/tree_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5797,14 +5796,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_2"
             },
             {
                 "id": "obj_1764823122_3",
                 "type": "Obstacle",
                 "x": 563,
                 "y": 690,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5836,14 +5835,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764823126_4",
                 "type": "Obstacle",
                 "x": 326,
                 "y": 244,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5875,14 +5874,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823133_5",
                 "type": "Obstacle",
                 "x": 663,
                 "y": 151,
-                "image_path": "assets/images/trees/tree_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5914,14 +5913,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_1"
             },
             {
                 "id": "obj_1764823137_6",
                 "type": "Obstacle",
                 "x": 848,
                 "y": 502,
-                "image_path": "assets/images/trees/tree_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5953,14 +5952,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_tree_0"
             },
             {
                 "id": "obj_1764823149_7",
                 "type": "Obstacle",
                 "x": 404,
                 "y": 565,
-                "image_path": "assets/images/stones/stone_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -5992,14 +5991,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_0"
             },
             {
                 "id": "obj_1764823158_8",
                 "type": "Obstacle",
                 "x": 471,
                 "y": 288,
-                "image_path": "assets/images/stones/stone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -6031,14 +6030,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_2"
             },
             {
                 "id": "obj_1764823166_9",
                 "type": "Obstacle",
                 "x": 240,
                 "y": 124,
-                "image_path": "assets/images/stones/stone_3.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -6070,14 +6069,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_3"
             },
             {
                 "id": "obj_1764823187_10",
                 "type": "Obstacle",
                 "x": 442,
                 "y": 270,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -6109,14 +6108,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764823192_11",
                 "type": "Obstacle",
                 "x": 447,
                 "y": 594,
-                "image_path": "assets/images/stones/stone_4.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -6148,14 +6147,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_4"
             },
             {
                 "id": "obj_1764823212519_290",
                 "type": "Obstacle",
                 "x": 809,
                 "y": 668,
-                "image_path": "assets/images/stones/stone_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -6187,14 +6186,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_stone_1"
             },
             {
                 "id": "obj_1764823276655_618",
                 "type": "Interactable",
                 "x": 1081,
                 "y": 374,
-                "image_path": "assets/images/gravestones/gravestone_2.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -6214,26 +6213,26 @@
                 "border_width": 0,
                 "animation_images": [],
                 "animation_speed": 1.0408340855860843e-17,
-                "flash_image_path": "assets/images/gravestones/gravestone_flash_2.png",
-                "charge_sound_path": "assets/sounds/interacting.wav",
-                "used_image_path": "assets/images/gravestones/bloody_gravestone_2.png",
                 "interaction_duration": 120,
                 "trigger_condition": "OnInteract",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=Rest in peace; sound=interaction_occurred; blocking=true",
+                "trigger_params": "text=Rest in peace; sound=sfx_sfx_interaction_occurred; blocking=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_gravestone_2",
+                "flash_image_id": "spr_gravestone_flash_2",
+                "used_image_id": "spr_bloody_gravestone_2",
+                "charge_sound_id": "sfx_interacting"
             },
             {
                 "id": "obj_1764823625448_390",
                 "type": "Obstacle",
                 "x": 1019,
                 "y": 431,
-                "image_path": "assets/images/grass/flowered_grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -6265,14 +6264,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_0"
             },
             {
                 "id": "obj_1764823645344_539",
                 "type": "Obstacle",
                 "x": 1121,
                 "y": 339,
-                "image_path": "assets/images/grass/flowered_grass_2.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -6304,14 +6303,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_flowered_grass_2"
             },
             {
                 "id": "obj_1764823661722_269",
                 "type": "Obstacle",
                 "x": 346,
                 "y": 724,
-                "image_path": "assets/images/grass/grass_0.png",
                 "resize_factor": 4.0,
                 "is_passable": true,
                 "starts_hidden": false,
@@ -6343,14 +6342,14 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_grass_0"
             },
             {
                 "id": "obj_1764824516074_883",
                 "type": "Obstacle",
                 "x": 993,
                 "y": 244,
-                "image_path": "assets/images/gravestones/cross_grave.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -6382,7 +6381,8 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "image_id": "spr_cross_grave"
             }
         ]
     }
