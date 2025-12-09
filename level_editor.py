@@ -100,6 +100,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_hitbox_dw.valueChanged.connect(self.on_hitbox_changed)
         self.prop_hitbox_dh.valueChanged.connect(self.on_hitbox_changed)
         self.prop_anim_speed.valueChanged.connect(lambda v: self.on_property_changed('animation_speed', v))
+        self.chk_auto_play.stateChanged.connect(lambda v: self.on_property_changed('animation_auto_play', bool(v)))
         self.prop_type.currentTextChanged.connect(lambda v: self.on_property_changed('type', v))
         self.prop_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('image_path', v))
         self.prop_flash_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('flash_image_path', v))
@@ -225,6 +226,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_anim_list.clear()
             self.prop_anim_list.addItems(obj_data.get('animation_images', []))
             self.prop_anim_speed.setValue(float(obj_data.get('animation_speed', 0.1)))
+            self.chk_auto_play.setChecked(obj_data.get('animation_auto_play', False))
 
             self.prop_flash_image_path_combo.setCurrentText(obj_data.get('flash_image_path', 'None'))
             self.prop_charge_sound_combo.setCurrentText(obj_data.get('charge_sound_path', 'None'))
@@ -765,18 +767,22 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 except: obj["border_width"] = 0
                 try: obj["reflection_offset_y"] = int(obj.get("reflection_offset_y", 0))
                 except: obj["reflection_offset_y"] = 0
-                itype = obj.get("interaction_type", "None")
-                if itype == "Note":
-                    d = obj.get("interaction_data")
-                    if isinstance(d, list): obj["interaction_data"] = "\n".join(d)
-                    elif d is None: obj["interaction_data"] = ""
-                    else: obj["interaction_data"] = str(d)
-                elif itype == "Image":
-                    d = obj.get("interaction_data")
-                    obj["interaction_data"] = "" if d in (None, "None") else str(d)
-                elif itype == "Door":
-                    if obj.get("interaction_data") is None: obj["interaction_data"] = {}
-                else: obj["interaction_data"] = ""
+                try: obj["animation_auto_play"] = bool(obj.get("animation_auto_play", False))
+                except: obj["animation_auto_play"] = False
+                # itype = obj.get("interaction_type", "None")
+                # if itype == "Note":
+                #     d = obj.get("interaction_data")
+                #     if isinstance(d, list): obj["interaction_data"] = "\n".join(d)
+                #     elif d is None: obj["interaction_data"] = ""
+                #     else: obj["interaction_data"] = str(d)
+                # elif itype == "Image":
+                #     d = obj.get("interaction_data")
+                #     obj["interaction_data"] = "" if d in (None, "None") else str(d)
+                # elif itype == "Door":
+                #     if obj.get("interaction_data") is None: obj["interaction_data"] = {}
+                # else: obj["interaction_data"] = ""
+                # try: obj["interaction_data"] = str(obj.get("interaction_data", ""))
+                # except: obj["interaction_data"] = ""
 
     def save_json(self):
         filepath, _ = QFileDialog.getSaveFileName(self, "Guardar JSON", self.base_path, "JSON (*.json)")
@@ -1104,6 +1110,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_anim_list.clear()
         self.prop_anim_list.addItems(data.get("animation_images", []))
         self.prop_anim_speed.setValue(data.get("animation_speed", 0.1))
+        self.chk_auto_play.setChecked(data.get("animation_auto_play", False))
         
         self.prop_flash_image_path_combo.setCurrentText(data.get("flash_image_path", "None"))
         self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))

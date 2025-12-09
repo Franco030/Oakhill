@@ -24,7 +24,7 @@ class TweenManager:
         
         print(f"[TweenManager] Teleported object to ({final_x}, {final_y})")
 
-    def start_move(self, obj, target_x, target_y, duration, relative=False):
+    def start_move(self, obj, target_x, target_y, duration, relative=False, on_complete=None):
         start_x = obj.rect.x
         start_y = obj.rect.y
         
@@ -46,7 +46,8 @@ class TweenManager:
             "end_y": final_y,
             "duration": float(duration) if duration > 0 else 0.001,
             "elapsed": 0.0,
-            "finished": False
+            "finished": False,
+            "on_complete": on_complete
         }
         
         self.active_tweens.append(tween)
@@ -69,14 +70,16 @@ class TweenManager:
             self._apply_to_object(tween["obj"], current_x, current_y)
             
             if tween["finished"]:
+                if tween.get("on_complete"):
+                    tween["on_complete"]()
                 self.active_tweens.remove(tween)
 
     def _apply_to_object(self, obj, x, y):
         if hasattr(obj, 'x'): obj.x = x
         if hasattr(obj, 'y'): obj.y = y
         
-        obj.rect.x = int(x)
-        obj.rect.y = int(y)
+        obj.rect.centerx = int(x)
+        obj.rect.centery = int(y)
         
 
         if hasattr(obj, 'data') and isinstance(obj.data, dict):
@@ -87,11 +90,11 @@ class TweenManager:
         if hasattr(obj, 'collision_rect'):
             offset = getattr(obj, 'collision_rect_offset', [0, 0, 0, 0])
             if isinstance(offset, list) and len(offset) >= 2:
-                obj.collision_rect.x = int(x) + offset[0]
-                obj.collision_rect.y = int(y) + offset[1]
+                obj.collision_rect.x = obj.rect.x + offset[0]
+                obj.collision_rect.y = obj.rect.y + offset[1]
             else:
-                obj.collision_rect.x = int(x)
-                obj.collision_rect.y = int(y)
+                obj.collision_rect.centerx = int(x)
+                obj.collision_rect.centery = int(y)
 
     def clear(self):
         self.active_tweens.clear()

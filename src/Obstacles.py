@@ -76,8 +76,8 @@ class Obstacle(pygame.sprite.Sprite):
         self.animation = None
         animation_paths = data.get("animation_images")
 
-        self.auto_play = data.get("auto_play", True)
-        self.is_animating = self.auto_play
+        self.animation_auto_play = data.get("animation_auto_play", False)
+        self.is_animating = self.animation_auto_play
 
         if animation_paths:
             try:

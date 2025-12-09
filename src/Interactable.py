@@ -32,7 +32,7 @@ class Interactable(Obstacle):
         if charge_path and charge_path != "None":
             try:
                 self.charge_sound = pygame.mixer.Sound(resource_path(charge_path))
-                self.charge_sound.set_volume(0.7)
+                self.charge_sound.set_volume(0.85)
             except Exception as e:
                 print(f"Error when loading the sound: {e}")
 

@@ -143,7 +143,7 @@ class Game:
             "json_path": resource_path("data/forest.json"),
             "map_matrix": WORLD_MAP_LEVEL,
             "entry_zone": INITIAL_ZONE,
-            "player_pos": (600, 300),
+            "player_pos": (600, 600),
             "music_path": LEVEL_MUSIC.get("forest"),
             "darkness": False
         }
@@ -418,12 +418,13 @@ class Game:
         if not result: return
 
         should_block = result.get("blocking", False)
+        should_pause = result.get("pause_music", False)
         
         if result["type"] == "Note":
             self.ui_manager.show_note(result["data"], blocking=should_block)
 
         elif result["type"] == "Dialogue":
-            self.ui_manager.show_dialogue(result["data"], blocking=should_block)
+            self.ui_manager.show_dialogue(result["data"], blocking=should_block, resume_music_on_close=should_pause)
                 
         elif result["type"] == "Image":
             self.ui_manager.show_image(result["data"], blocking=should_block)

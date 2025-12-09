@@ -10,6 +10,8 @@ class UIManager:
         self.content_data = None
         self.is_blocking = False
 
+        self.resume_music_on_close = False
+
         self.font = ResourceManager.get_font(24)
         self.ui_font = ResourceManager.get_font(20)
 
@@ -33,11 +35,12 @@ class UIManager:
         self.current_page = 0
         self.content_data = self.note_pages[self.current_page]
 
-    def show_dialogue(self, data, blocking=False):
+    def show_dialogue(self, data, blocking=False, resume_music_on_close=False):
         self.active = True
         self.is_blocking = blocking 
         self.content_type = "DIALOGUE"
         self.content_data = data
+        self.resume_music_on_close = resume_music_on_close
 
     def show_image(self, image_path, blocking=False):
         self.active = True
@@ -91,7 +94,9 @@ class UIManager:
         self.content_type = None
         self.content_data = None
         self.is_blocking = False
-        pygame.mixer.music.unpause()
+        if self.resume_music_on_close:
+            pygame.mixer.music.unpause()
+            self.resume_music_on_close = False
 
     def handle_input(self, event):
         if not self.active:

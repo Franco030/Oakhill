@@ -6,7 +6,207 @@
         "(0, 5)": [],
         "(1, 1)": [],
         "(1, 2)": [],
-        "(2, 1)": [],
+        "(2, 1)": [
+            {
+                "id": "obj_1765238461284_230",
+                "type": "Obstacle",
+                "x": 640,
+                "y": 283,
+                "image_path": "assets/images/doors/cemetery/cemetery_door_locked.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    1,
+                    98,
+                    -4,
+                    -100
+                ],
+                "width": 240,
+                "height": 160,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 4,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765239436110_287",
+                "type": "Obstacle",
+                "x": 260,
+                "y": 323,
+                "image_path": "assets/images/wall/cemetery_walls_0.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    -60,
+                    6,
+                    60,
+                    0
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765240971_3",
+                "type": "Obstacle",
+                "x": 1020,
+                "y": 324,
+                "image_path": "assets/images/wall/cemetery_walls_1.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    60,
+                    0
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765243017_3",
+                "type": "Obstacle",
+                "x": 408,
+                "y": 107,
+                "image_path": "assets/images/doors/cemetery/cemetery_door_closed.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": true,
+                "collision_rect_offset": [
+                    1,
+                    98,
+                    -4,
+                    -100
+                ],
+                "width": 240,
+                "height": 160,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 4,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765243410356_181",
+                "type": "Trigger",
+                "x": 277,
+                "y": 491,
+                "image_path": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "UnhideObject",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "scripted_events": [
+                    {
+                        "action": "MoveObject",
+                        "params": "id=obj_1765243017_3\nx=640\ny=283\nrelative=false"
+                    },
+                    {
+                        "action": "HideObject",
+                        "params": "id=obj_1765238461284_230"
+                    },
+                    {
+                        "action": "UnhideObject",
+                        "params": "id=obj_1765243017_3"
+                    }
+                ]
+            }
+        ],
         "(2, 3)": [
             {
                 "id": "obj_1764906077_0",
@@ -43,7 +243,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764906085_1",
@@ -80,7 +281,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764906089_2",
@@ -117,7 +319,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907530957_675",
@@ -154,7 +357,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907560_4",
@@ -191,7 +395,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907568_5",
@@ -228,7 +433,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907585_6",
@@ -265,7 +471,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907589062_899",
@@ -302,7 +509,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907603_8",
@@ -339,7 +547,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907615234_183",
@@ -376,7 +585,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907637735_209",
@@ -413,7 +623,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907669435_682",
@@ -450,7 +661,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907688986_164",
@@ -487,7 +699,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907700697_497",
@@ -524,7 +737,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907724_14",
@@ -561,7 +775,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907761_15",
@@ -598,7 +813,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907763_16",
@@ -635,7 +851,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907770_17",
@@ -672,7 +889,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764907774_18",
@@ -709,7 +927,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             }
         ],
         "(2, 4)": [
@@ -748,7 +967,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909140_4",
@@ -785,7 +1005,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909151_5",
@@ -822,7 +1043,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909156_6",
@@ -859,7 +1081,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909165_7",
@@ -896,7 +1119,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909172_8",
@@ -933,7 +1157,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909177_9",
@@ -970,7 +1195,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909191_10",
@@ -1007,7 +1233,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909205_11",
@@ -1044,7 +1271,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909209_12",
@@ -1081,7 +1309,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909219_13",
@@ -1118,7 +1347,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909226_14",
@@ -1155,7 +1385,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1765000689343_108",
@@ -1192,7 +1423,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "type": "Interactable",
@@ -1230,7 +1462,8 @@
                 "id": "obj_1765000861547_101",
                 "x": 960,
                 "y": 718,
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "type": "Obstacle",
@@ -1267,7 +1500,8 @@
                 "sort_offset_y": -20,
                 "id": "obj_1765218287083_689",
                 "x": 227,
-                "y": 486
+                "y": 486,
+                "animation_auto_play": false
             },
             {
                 "type": "Obstacle",
@@ -1304,7 +1538,8 @@
                 "sort_offset_y": -20,
                 "id": "obj_1765218326356_231",
                 "x": 708,
-                "y": 459
+                "y": 459,
+                "animation_auto_play": false
             }
         ],
         "(2, 5)": [
@@ -1312,16 +1547,16 @@
                 "id": "obj_1764909253112_789",
                 "type": "Obstacle",
                 "x": 153,
-                "y": 112,
+                "y": 111,
                 "image_path": "assets/images/stakes/stake_1.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    11,
-                    68,
-                    -27,
-                    -73
+                    39,
+                    54,
+                    -84,
+                    -94
                 ],
                 "width": 100,
                 "height": 100,
@@ -1343,7 +1578,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": -40,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909288_1",
@@ -1355,10 +1591,10 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    12,
-                    64,
-                    -24,
-                    -69
+                    39,
+                    54,
+                    -84,
+                    -94
                 ],
                 "width": 100,
                 "height": 100,
@@ -1380,7 +1616,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": -40,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909293_2",
@@ -1392,10 +1629,10 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    15,
-                    62,
-                    -38,
-                    -68
+                    39,
+                    54,
+                    -84,
+                    -94
                 ],
                 "width": 100,
                 "height": 100,
@@ -1417,81 +1654,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
-            },
-            {
-                "id": "obj_1764909314_4",
-                "type": "Obstacle",
-                "x": 803,
-                "y": 100,
-                "image_path": "assets/images/stakes/stake_1.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    3,
-                    67,
-                    -14,
-                    -67
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": "",
-                "sort_offset_y": 0
-            },
-            {
-                "id": "obj_1764909318_5",
-                "type": "Obstacle",
-                "x": 953,
-                "y": 203,
-                "image_path": "assets/images/stakes/stake_1.png",
-                "resize_factor": 4.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    11,
-                    71,
-                    -27,
-                    -74
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 60,
-                "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "z_index": 0,
-                "reflection_offset_y": 0,
-                "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": -40,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909322_6",
@@ -1503,10 +1667,10 @@
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    14,
-                    80,
-                    -35,
-                    -87
+                    39,
+                    54,
+                    -84,
+                    -94
                 ],
                 "width": 100,
                 "height": 100,
@@ -1528,22 +1692,23 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": -25,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909332_7",
                 "type": "Obstacle",
-                "x": 638,
-                "y": 236,
+                "x": 636,
+                "y": 235,
                 "image_path": "assets/images/stakes/burned_stake_0.png",
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    -1,
-                    70,
-                    -2,
-                    -75
+                    39,
+                    54,
+                    -82,
+                    -93
                 ],
                 "width": 100,
                 "height": 100,
@@ -1565,7 +1730,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": -30,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909356_7",
@@ -1602,7 +1768,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909427313_161",
@@ -1639,7 +1806,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -40,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909507474_968",
@@ -1676,7 +1844,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909557_13",
@@ -1713,7 +1882,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909568_14",
@@ -1750,7 +1920,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909575_15",
@@ -1787,7 +1958,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764909589_15",
@@ -1824,7 +1996,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764910698915_916",
@@ -1861,7 +2034,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764911804_17",
@@ -1898,7 +2072,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764911828_18",
@@ -1931,11 +2106,12 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnEnter",
                 "trigger_action": "ShowDialogue",
-                "trigger_params": "text=ready to be used; color=170,30,30;sound=dialogue_occurred; kill=true; blocking=true;",
+                "trigger_params": "text=ready to be used; color=170,30,30;sound=dialogue_occurred; kill=true; blocking=true; pause_music=true",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "type": "Obstacle",
@@ -1972,7 +2148,8 @@
                 "sort_offset_y": -20,
                 "id": "obj_1765218511872_0",
                 "x": 507,
-                "y": 446
+                "y": 446,
+                "animation_auto_play": false
             },
             {
                 "type": "Obstacle",
@@ -2009,7 +2186,84 @@
                 "sort_offset_y": -20,
                 "id": "obj_1765218514026_85",
                 "x": 1158,
-                "y": 513
+                "y": 513,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765236691_19",
+                "type": "Obstacle",
+                "x": 803,
+                "y": 102,
+                "image_path": "assets/images/stakes/stake_1.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    39,
+                    54,
+                    -84,
+                    -94
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -40,
+                "animation_auto_play": false
+            },
+            {
+                "id": "obj_1765236703_19",
+                "type": "Obstacle",
+                "x": 952,
+                "y": 202,
+                "image_path": "assets/images/stakes/stake_1.png",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    39,
+                    54,
+                    -84,
+                    -94
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_path": "",
+                "charge_sound_path": "",
+                "used_image_path": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -40,
+                "animation_auto_play": false
             }
         ],
         "(3, 1)": [
@@ -2048,7 +2302,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800230_1",
@@ -2085,7 +2340,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800233_2",
@@ -2122,7 +2378,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800246490_600",
@@ -2159,7 +2416,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800302702_540",
@@ -2196,7 +2454,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800366893_173",
@@ -2233,7 +2492,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800388_6",
@@ -2270,7 +2530,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800399_7",
@@ -2307,7 +2568,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800403_8",
@@ -2344,7 +2606,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800413_9",
@@ -2381,7 +2644,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800414_10",
@@ -2418,7 +2682,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800420_11",
@@ -2455,7 +2720,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764800435_12",
@@ -2492,7 +2758,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ],
         "(3, 2)": [
@@ -2531,7 +2798,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799670_1",
@@ -2568,7 +2836,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799674_2",
@@ -2605,7 +2874,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799681_3",
@@ -2642,7 +2912,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799690_4",
@@ -2679,7 +2950,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799694_5",
@@ -2716,7 +2988,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799703_6",
@@ -2753,7 +3026,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799718_7",
@@ -2790,7 +3064,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799742_8",
@@ -2827,7 +3102,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799752_9",
@@ -2864,7 +3140,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799762_10",
@@ -2901,7 +3178,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799765829_903",
@@ -2938,7 +3216,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799797189_332",
@@ -2975,7 +3254,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799823869_938",
@@ -3012,7 +3292,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764799845_14",
@@ -3049,7 +3330,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             }
         ],
         "(3, 3)": [
@@ -3088,7 +3370,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905870_1",
@@ -3125,7 +3408,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905874_2",
@@ -3162,7 +3446,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905885_3",
@@ -3199,7 +3484,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905887_4",
@@ -3236,7 +3522,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905890_5",
@@ -3273,7 +3560,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905904_6",
@@ -3310,7 +3598,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905910_7",
@@ -3347,7 +3636,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905917_8",
@@ -3384,7 +3674,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905923_9",
@@ -3421,7 +3712,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905930_10",
@@ -3458,7 +3750,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905935_11",
@@ -3495,7 +3788,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905941_12",
@@ -3532,7 +3826,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905961_13",
@@ -3569,7 +3864,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905986_14",
@@ -3606,7 +3902,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905990_15",
@@ -3643,7 +3940,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764905993_16",
@@ -3680,7 +3978,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764906003186_509",
@@ -3717,7 +4016,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764906017468_249",
@@ -3754,7 +4054,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764906038_19",
@@ -3791,7 +4092,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ],
         "(4, 2)": [
@@ -3830,7 +4132,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793525_1",
@@ -3867,7 +4170,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793530_2",
@@ -3904,7 +4208,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793538_3",
@@ -3941,7 +4246,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793542_4",
@@ -3978,7 +4284,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793550_5",
@@ -4015,7 +4322,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793563_6",
@@ -4052,7 +4360,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793570206_187",
@@ -4089,7 +4398,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793594860_301",
@@ -4126,7 +4436,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793660749_255",
@@ -4163,7 +4474,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793675_10",
@@ -4200,7 +4512,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793703_11",
@@ -4237,7 +4550,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793727368_229",
@@ -4270,12 +4584,13 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "text=I heard someone died around here\\nI need to find answers\\nTheres multiple gravestones around here\\nperhaps I can found something in them.\\n\\nMatt, 23XX; blocking=true; sound=interaction_occurred",
+                "trigger_params": "text=I heard multiple people died around here\\nI need to find answers\\nTheres multiple gravestones around here\\nperhaps I can found something in them.\\n\\nMatt, 23XX; blocking=true; sound=interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ],
         "(4, 4)": [],
@@ -4315,7 +4630,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823713_1",
@@ -4352,7 +4668,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823717_2",
@@ -4389,7 +4706,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823725_3",
@@ -4426,7 +4744,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823729_4",
@@ -4463,7 +4782,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823739_5",
@@ -4500,7 +4820,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823749_6",
@@ -4537,7 +4858,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823755_7",
@@ -4574,7 +4896,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823763_8",
@@ -4611,7 +4934,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823772_9",
@@ -4648,7 +4972,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823780_10",
@@ -4685,7 +5010,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823792_11",
@@ -4722,7 +5048,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823796288_764",
@@ -4759,7 +5086,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823811308_184",
@@ -4796,7 +5124,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ],
         "(5, 2)": [
@@ -4835,7 +5164,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793185_1",
@@ -4872,7 +5202,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793192856_490",
@@ -4909,7 +5240,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793283496_124",
@@ -4946,7 +5278,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793311079_197",
@@ -4983,7 +5316,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": -20
+                "sort_offset_y": -20,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793348751_846",
@@ -5020,7 +5354,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793410_6",
@@ -5057,7 +5392,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764793421797_741",
@@ -5094,7 +5430,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823696_8",
@@ -5131,7 +5468,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764824708_9",
@@ -5169,7 +5507,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ],
         "(5, 3)": [
@@ -5208,7 +5547,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823111_1",
@@ -5245,7 +5585,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823114_2",
@@ -5282,7 +5623,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823122_3",
@@ -5319,7 +5661,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823126_4",
@@ -5356,7 +5699,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823133_5",
@@ -5393,7 +5737,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823137_6",
@@ -5430,7 +5775,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823149_7",
@@ -5467,7 +5813,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823158_8",
@@ -5504,7 +5851,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823166_9",
@@ -5541,7 +5889,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823187_10",
@@ -5578,7 +5927,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823192_11",
@@ -5615,7 +5965,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823212519_290",
@@ -5652,7 +6003,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823276655_618",
@@ -5689,7 +6041,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823625448_390",
@@ -5726,7 +6079,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823645344_539",
@@ -5763,7 +6117,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764823661722_269",
@@ -5800,7 +6155,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             },
             {
                 "id": "obj_1764824516074_883",
@@ -5837,7 +6193,8 @@
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "sort_offset_y": 0
+                "sort_offset_y": 0,
+                "animation_auto_play": false
             }
         ]
     }

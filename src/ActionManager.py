@@ -134,14 +134,17 @@ class ActionManager:
         
         elif action_type == Actions.SHOW_DIALOGUE:
             text = params.get("text", "...")
-            
             color_str = str(params.get("color", "255,255,255"))
+            should_pause = str(params.get("pause_music", "false")).lower() == "true"
             
             try:
                 text_color = tuple(map(int, color_str.split(',')))
             except:
                 print(f"Error parsing color: {color_str}, using white.")
                 text_color = (255, 255, 255)
+
+            if should_pause:
+                pygame.mixer.music.pause()
 
             return {
                 "type": "Dialogue",
@@ -150,7 +153,7 @@ class ActionManager:
                     "color": text_color
                 },
                 "sound": params.get("sound"),
-                "pause_music": params.get("pause_music", False)
+                "pause_music": should_pause,
             }
         
         elif action_type == Actions.SHOW_IMAGE:
@@ -224,8 +227,17 @@ class ActionManager:
                         ty = int(params.get("y", 0))
                         dur = float(params.get("duration", 1.0))
                         is_rel = str(params.get("relative", "false")).lower() == "true"
+
+                        should_animate = str(params.get("animate", "false")).lower() == "true"
+
+                        if should_animate and hasattr(target_obj, "start_animation"):
+                            target_obj.start_animation()
+
+                        def on_slide_complete():
+                            if should_animate and hasattr(target_obj, "stop_animation"):
+                                target_obj.stop_animation()
                         
-                        tween_manager.start_move(target_obj, tx, ty, dur, relative=is_rel)
+                        tween_manager.start_move(target_obj, tx, ty, dur, relative=is_rel, on_complete=on_slide_complete)
                         
                     except ValueError:
                         print(f"[ActionManager] Error params for SlideObject: {params}")
