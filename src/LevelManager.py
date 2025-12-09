@@ -1,7 +1,7 @@
 import pygame
 from src.Scene_Loader import SceneLoader
 from src.GameState import game_state
-from src.ResourceManager import ResourceManager
+from src.ResourceManager import resource_manager
 from src.TweenManager import tween_manager
 from src.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS, MUSIC_END_EVENT
 from utils import resource_path
@@ -10,7 +10,7 @@ import random
 class LevelManager:
     def __init__(self, sounds, retro_effects):
         self.sounds = sounds
-        self.ambience_sounds = ResourceManager.load_all_sounds("assets/sounds/ambience")
+        self.ambience_sounds = resource_manager.load_all_sounds("assets/sounds/ambience")
         print(f"[LevelManager] Loaded {len(self.ambience_sounds)} ambience tracks.")
         self.retro_effects = retro_effects
 

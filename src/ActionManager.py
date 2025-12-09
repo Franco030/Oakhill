@@ -243,5 +243,15 @@ class ActionManager:
                         print(f"[ActionManager] Error params for SlideObject: {params}")
                 else:
                     print(f"[ActionManager] Warning: Object '{tid}' not found for SlideObject.")
+
+        elif action_type == Actions.MODIFY_OBJECT:
+            print(params)
+            tid = params.get("id")
+            changes = {}
+            for k, v in params.items():
+                if k != "id":
+                    changes[k] = v
+                
+            scene.modify_object_by_id(tid, changes)
         
         return None

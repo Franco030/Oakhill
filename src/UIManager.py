@@ -1,7 +1,7 @@
 import pygame
 from utils import resource_path
 from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from src.ResourceManager import ResourceManager
+from src.ResourceManager import resource_manager
 
 class UIManager:
     def __init__(self, sounds, retro_effects):
@@ -12,8 +12,10 @@ class UIManager:
 
         self.resume_music_on_close = False
 
-        self.font = ResourceManager.get_font(24)
-        self.ui_font = ResourceManager.get_font(20)
+        # self.font = ResourceManager.get_font(24)
+        self.font = resource_manager.get_font(24)
+        # self.ui_font = ResourceManager.get_font(20)
+        self.ui_font = resource_manager.get_font(20)
 
         self.sounds = sounds
         self.retro_effects = retro_effects
@@ -56,7 +58,7 @@ class UIManager:
         self.anim_loop = loop
         self.content_type = "ANIMATION"
 
-        raw_images = ResourceManager.load_images_from_list(image_paths)
+        raw_images = resource_manager.load_images_from_list(image_paths)
 
         if raw_images:
             for img in raw_images:

@@ -444,6 +444,11 @@ class Ui_LevelEditor(object):
         self.layout_charge.addWidget(self.btn_browse_charge)
         self.layout_interactable.addRow(self.lbl_charge, self.layout_charge)
 
+        self.lbl_interaction_blocked = QLabel("Block Interaction (Start)")
+        self.chk_interaction_blocked = QCheckBox(self.page_interactable)
+        self.chk_interaction_blocked.setToolTip("If checked, the object won't act as an Interactable")
+        self.layout_interactable.addRow(self.lbl_interaction_blocked, self.chk_interaction_blocked)
+
         self.prop_main_stack.addWidget(self.page_interactable)
         self.page_trigger = QWidget()
         self.prop_main_stack.addWidget(self.page_trigger)

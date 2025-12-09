@@ -2,7 +2,7 @@ import pygame
 import sys
 from src.Game_Constants import *
 from src.Player import Player
-from src.ResourceManager import ResourceManager
+from src.ResourceManager import resource_manager
 from src.UIManager import UIManager
 from src.ActionManager import ActionManager
 from src.EventManager import EventManager
@@ -53,8 +53,11 @@ class Game:
             pygame.display.set_icon(icon)
         except: pass
 
-        self.sounds = ResourceManager.load_all_sounds("assets/sounds")
-        self.images = ResourceManager.load_all_images("assets/images")
+        # self.sounds = ResourceManager.load_all_sounds("assets/sounds")
+        # self.images = ResourceManager.load_all_images("assets/images")
+
+        self.sounds = resource_manager.load_all_sounds("assets/sounds")
+        self.images = resource_manager.load_all_images("assets/images")
 
         if self.sounds.get("chase_loop"): self.sounds["chase_loop"].set_volume(0.5)
         if self.sounds.get("flee_loop"): self.sounds["flee_loop"].set_volume(0.5)
@@ -70,8 +73,10 @@ class Game:
         sys.exit()
 
     def _menu_loop(self):
-        title_font = ResourceManager.get_font(90)
-        btn_font = ResourceManager.get_font(60)
+        # title_font = ResourceManager.get_font(90)        
+        # btn_font = ResourceManager.get_font(60)
+        title_font = resource_manager.get_font(90)
+        btn_font = resource_manager.get_font(60)
 
         try:
             if not pygame.mixer.music.get_busy():
@@ -323,15 +328,13 @@ class Game:
                 self._handle_event_result(res)
 
         self.last_frame_triggers = current_triggers_set
-
-        # for trig in hits:
-        #     if trig.condition in [Conditions.ON_STAY, Conditions.IF_FLAG]:
-        #         res = self.event_manager.process_trigger(trig, self.player, scene)
-        #         self._handle_event_result(res)
         
         processed = False
         for obj in scene.interactables:
             contact = False
+
+            if getattr(obj, 'interaction_blocked', False):
+                continue
             
             if obj.trigger_condition == Conditions.ON_STAY:
                 if self.player.collision_rect.colliderect(obj.rect):

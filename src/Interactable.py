@@ -20,7 +20,8 @@ class Interactable(Obstacle):
         self.is_hidden = data.get("starts_hidden", False)
         
         # self.is_interacting = False
-        self.interaction_duration = data.get("interaction_duration", 60)
+        self.interaction_duration = data.get("interaction_duration", 120)
+        self.interaction_blocked = data.get("interaction_blocked", False)
         self.current_progress = 0
         # self.interaction_timer = 0
         self.original_image = self.image.copy()
@@ -146,18 +147,3 @@ class Interactable(Obstacle):
         """
         super().update() 
         
-        # if not self.is_interacting:
-        #     return None
-
-        # self.interaction_timer -= 1
-        # if self.interaction_timer > 0:
-        #     if (self.interaction_timer // 10) % 2 == 0: 
-        #         self.image = self.flash_image
-        #     else:
-        #         self.image = self.original_image
-        # else:
-        #     self.is_interacting = False
-        #     self.image = self.original_image
-        #     return "interaction_finished"
-        
-        # return None

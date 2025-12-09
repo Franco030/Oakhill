@@ -107,6 +107,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_charge_sound_combo.currentTextChanged.connect(lambda v: self.on_property_changed('charge_sound_path', v))
         self.prop_used_image_path_combo.currentTextChanged.connect(lambda v: self.on_property_changed('used_image_path', v))
         self.prop_interaction_duration.valueChanged.connect(lambda v: self.on_property_changed('interaction_duration', v))
+        self.chk_interaction_blocked.stateChanged.connect(lambda v: self.on_property_changed('interaction_blocked', bool(v)))
         self.prop_is_passable.stateChanged.connect(lambda v: self.on_property_changed('is_passable', bool(v)))
         self.prop_starts_hidden.stateChanged.connect(lambda v: self.on_property_changed('starts_hidden', bool(v)))
         self.prop_is_ground.stateChanged.connect(lambda v: self.on_property_changed('is_ground', bool(v)))
@@ -232,6 +233,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_charge_sound_combo.setCurrentText(obj_data.get('charge_sound_path', 'None'))
             self.prop_used_image_path_combo.setCurrentText(obj_data.get('used_image_path', 'None'))
             self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))
+            self.chk_auto_play.setChecked(obj_data.get('interaction_blocked', False))
 
             self.prop_trigger_action.setCurrentText(obj_data.get("trigger_action", Actions.SET_FLAG))
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
@@ -769,20 +771,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 except: obj["reflection_offset_y"] = 0
                 try: obj["animation_auto_play"] = bool(obj.get("animation_auto_play", False))
                 except: obj["animation_auto_play"] = False
-                # itype = obj.get("interaction_type", "None")
-                # if itype == "Note":
-                #     d = obj.get("interaction_data")
-                #     if isinstance(d, list): obj["interaction_data"] = "\n".join(d)
-                #     elif d is None: obj["interaction_data"] = ""
-                #     else: obj["interaction_data"] = str(d)
-                # elif itype == "Image":
-                #     d = obj.get("interaction_data")
-                #     obj["interaction_data"] = "" if d in (None, "None") else str(d)
-                # elif itype == "Door":
-                #     if obj.get("interaction_data") is None: obj["interaction_data"] = {}
-                # else: obj["interaction_data"] = ""
-                # try: obj["interaction_data"] = str(obj.get("interaction_data", ""))
-                # except: obj["interaction_data"] = ""
+                try: obj["interaction_blocked"] = bool(obj.get("interaction_blocked", False))
+                except: obj["interaction_blocked"] = False
 
     def save_json(self):
         filepath, _ = QFileDialog.getSaveFileName(self, "Guardar JSON", self.base_path, "JSON (*.json)")
@@ -1116,6 +1106,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_charge_sound_combo.setCurrentText(data.get("charge_sound_path", "None"))
         self.prop_used_image_path_combo.setCurrentText(data.get("used_image_path", "None"))
         self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
+        self.chk_interaction_blocked.setChecked(data.get("interaction_blocked", False))
             
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))

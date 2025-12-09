@@ -1,6 +1,7 @@
 import pygame
 from .Interactable import Interactable
 from .Trigger import Trigger
+from .ResourceManager import resource_manager
 from .GameState import game_state
 
 class Scene:
@@ -253,18 +254,83 @@ class Scene:
         except Exception as e:
             print(f"Error changing zone to {zone_str}: {e}")
 
-    # def get_object_by_id(self, target_id):
-    #     clean_target = str(target_id).replace(" ", "")
-        
-    #     all_sprites = list(self._obstacles) + list(self._interactables) + list(self._triggers) + list(self._enemies)
-        
-    #     for obj in all_sprites:
-    #         obj_id = getattr(obj, 'id', "")
-    #         if str(obj_id).replace(" ", "") == clean_target:
-    #             return obj
-        
-    #     return None
 
     def get_object_by_id(self, target_id):
         clean_target = str(target_id).replace(" ", "")
         return self._id_map.get(clean_target)
+    
+    def modify_object_by_id(self, target_id, new_properties):
+        """
+        Powerful function that modifies an object
+        I'll use it carefully
+        """
+        obj = self.get_object_by_id(target_id)
+        if not obj: return
+
+        if hasattr(obj, 'data') and isinstance(obj.data, dict):
+            for key, value in new_properties.items():
+                obj.data[key] = value
+
+        for key, value in new_properties.items():
+            if key in ["interaction_blocked", "is_passable", "z_index"]:
+                setattr(obj, key, value)
+            
+            elif hasattr(obj, key):
+                setattr(obj, key, value)
+
+        if "image_path" in new_properties or "resize_factor" in new_properties:
+            img_path = new_properties.get("image_path", getattr(obj, "image_path", "None"))
+            factor = float(new_properties.get("resize_factor", getattr(obj, "resize_factor", 1.0)))
+            
+            new_img = resource_manager.get_image(img_path)
+            if new_img:
+                w = int(new_img.get_width() * factor)
+                h = int(new_img.get_height() * factor)
+                obj.image = pygame.transform.scale(new_img, (w, h))
+                obj.original_image = obj.image.copy()
+                
+                old_center = obj.rect.center
+                obj.rect = obj.image.get_rect(center=old_center)
+                
+                if hasattr(obj, 'width'): obj.width = w
+                if hasattr(obj, 'height'): obj.height = h
+                if hasattr(obj, 'data'):
+                    obj.data['width'] = w
+                    obj.data['height'] = h
+
+        if "collision_rect_offset" in new_properties or "image_path" in new_properties:
+            if hasattr(obj, 'collision_rect'):
+                offset = new_properties.get("collision_rect_offset", getattr(obj, "collision_rect_offset", [0,0,0,0]))
+                if isinstance(offset, list) and len(offset) >= 4:
+                    obj.collision_rect.x = obj.rect.x + offset[0]
+                    obj.collision_rect.y = obj.rect.y + offset[1]
+                    obj.collision_rect.width = obj.rect.width + offset[2]
+                    obj.collision_rect.height = obj.rect.height + offset[3]
+
+        if "flash_image_path" in new_properties:
+            path = new_properties["flash_image_path"]
+            if path in ["None", "", None]:
+                obj.flash_image = None
+            else:
+                factor = getattr(obj, "resize_factor", 1.0)
+                raw_flash = resource_manager.get_image(path)
+                if raw_flash:
+                     w = int(raw_flash.get_width() * factor)
+                     h = int(raw_flash.get_height() * factor)
+                     obj.flash_image = pygame.transform.scale(raw_flash, (w, h))
+
+        if "charge_sound_path" in new_properties:
+            path = new_properties["charge_sound_path"]
+            if path in ["None", "", None]:
+                obj.charge_sound = None
+            else:
+                try:
+                    import os
+                    from utils import resource_path
+                    full = resource_path(path)
+                    if os.path.exists(full):
+                        obj.charge_sound = pygame.mixer.Sound(full)
+                except:
+                    obj.charge_sound = None
+        
+        print(f"[Scene] Modified object '{target_id}'")
