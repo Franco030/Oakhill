@@ -1,6 +1,7 @@
 import pygame
 from .Game_Constants import RESIZE_FACTOR
 from .Animations import Animation
+from .ResourceManager import resource_manager
 from utils import resource_path
 
 class Obstacle(pygame.sprite.Sprite):
@@ -119,3 +120,71 @@ class Obstacle(pygame.sprite.Sprite):
         Checks collision with the custom hitbox
         """
         return self._collision_rect.colliderect(other_sprite.collision_rect)
+    
+    def modify(self, new_properties):
+        if hasattr(self, 'data') and isinstance(self.data, dict):
+            for key, value in new_properties.items():
+                self.data[key] = value
+
+        for key, value in new_properties.items():
+            if key in ["interaction_blocked", "is_passable", "z_index"]:
+                setattr(self, key, value)
+            
+            elif hasattr(self, key):
+                setattr(self, key, value)
+
+        if "image_path" in new_properties or "resize_factor" in new_properties:
+            img_path = new_properties.get("image_path", getattr(self, "image_path", "None"))
+            factor = float(new_properties.get("resize_factor", getattr(self, "resize_factor", 1.0)))
+            
+            new_img = resource_manager.get_image(img_path)
+            if new_img:
+                w = int(new_img.get_width() * factor)
+                h = int(new_img.get_height() * factor)
+                self.image = pygame.transform.scale(new_img, (w, h))
+                self.original_image = self.image.copy()
+                
+                old_center = self.rect.center
+                self.rect = self.image.get_rect(center=old_center)
+                
+                if hasattr(self, 'width'): self.width = w
+                if hasattr(self, 'height'): self.height = h
+                if hasattr(self, 'data'):
+                    self.data['width'] = w
+                    self.data['height'] = h
+
+        if "collision_rect_offset" in new_properties or "image_path" in new_properties:
+            if hasattr(self, 'collision_rect'):
+                offset = new_properties.get("collision_rect_offset", getattr(self, "collision_rect_offset", [0,0,0,0]))
+                if isinstance(offset, list) and len(offset) >= 4:
+                    self.collision_rect.x = self.rect.x + offset[0]
+                    self.collision_rect.y = self.rect.y + offset[1]
+                    self.collision_rect.width = self.rect.width + offset[2]
+                    self.collision_rect.height = self.rect.height + offset[3]
+
+        if "flash_image_path" in new_properties:
+            path = new_properties["flash_image_path"]
+            if path in ["None", "", None]:
+                self.flash_image = None
+            else:
+                factor = getattr(self, "resize_factor", 1.0)
+                raw_flash = resource_manager.get_image(path)
+                if raw_flash:
+                     w = int(raw_flash.get_width() * factor)
+                     h = int(raw_flash.get_height() * factor)
+                     self.flash_image = pygame.transform.scale(raw_flash, (w, h))
+
+        if "charge_sound_path" in new_properties:
+            path = new_properties["charge_sound_path"]
+            if path in ["None", "", None]:
+                self.charge_sound = None
+            else:
+                try:
+                    import os
+                    from utils import resource_path
+                    full = resource_path(path)
+                    if os.path.exists(full):
+                        self.charge_sound = pygame.mixer.Sound(full)
+                except:
+                    self.charge_sound = None
+        
