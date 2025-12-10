@@ -59,6 +59,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.asset_map = {}
         self.load_asset_manifest()
+        asset_ids = list(self.asset_map.keys()) if hasattr(self, "asset_map") else []
 
         self.templates = {}
         self.templates_file = os.path.join(self.base_path, "data", "templates.json")
@@ -177,8 +178,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.chk_layer_triggers.stateChanged.connect(self.update_layers)
         self.chk_layer_interactables.stateChanged.connect(self.update_layers)
         self.chk_lock_ground.stateChanged.connect(self.update_layers)
-        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document())
-        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document())
+        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids)
+        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids)
         self.populate_image_combos()
         self.populate_sound_combos()
         self.populate_assets_list()
@@ -199,6 +200,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 print(f"Error loading manifest: {e}")
         else:
             print("WARNING: data/assets.json not found!")
+
+        self.update_highlighters()
 
     def perform_undo(self): self.undo_manager.undo()
     def perform_redo(self): self.undo_manager.redo()
@@ -328,6 +331,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                         combo_widget.setCurrentIndex(index)
                         
             except ValueError: pass
+
+        self.update_highlighters()
 
     def copy_object(self):
         real_data = self.get_real_object_data()
@@ -1676,7 +1681,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             }
         """)
         
-        self.temp_highlighter = SyntaxHighlighter(big_editor.document())
+        asset_ids = list(self.asset_map.keys())
+        self.temp_highlighter = SyntaxHighlighter(big_editor.document(), asset_ids)
 
         layout.addWidget(big_editor)
         
@@ -1687,6 +1693,14 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         if dialog.exec():
             source_text_edit.setPlainText(big_editor.toPlainText())
+
+    def update_highlighters(self):
+        if not hasattr(self, "asset_map"): return
+
+        asset_ids = list(self.asset_map.keys())
+
+        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids)
+        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids)
 
     def change_background_color(self):
         if self.background_toggle:

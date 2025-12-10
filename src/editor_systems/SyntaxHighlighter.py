@@ -4,7 +4,7 @@ from PySide6.QtCore import QRegularExpression
 COL_KEYWORD_ACTION = QColor("#ff7300")
 COL_NUMBERS = QColor("#9DDB7B")
 COL_BOOLEAN = QColor("#C773C0")
-COL_ASSET_ID = QColor("#5B4FFF")
+COL_ASSET_ID = QColor("#9089F0")
 
 class SyntaxHighlighter(QSyntaxHighlighter):
     def __init__(self, parent=None, asset_keywords=None):
