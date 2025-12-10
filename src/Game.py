@@ -423,6 +423,9 @@ class Game:
 
         elif result["type"] == "Dialogue":
             self.ui_manager.show_dialogue(result["data"], blocking=should_block, resume_music_on_close=should_pause)
+
+        elif result["type"] == "Choice":
+            self.ui_manager.show_choice(result["data"]["text"], result["data"]["flag"], blocking=should_block)
                 
         elif result["type"] == "Image":
             self.ui_manager.show_image(result["data"], blocking=should_block)

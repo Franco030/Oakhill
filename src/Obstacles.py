@@ -75,17 +75,6 @@ class Obstacle(pygame.sprite.Sprite):
             self.animation = Animation(self, animation_ids, data.get("animation_speed", 0.1))
 
     def update(self):
-        # I'll move this logic into the modify function
-        if self.is_passable:
-            self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
-        else:
-            offset = self.data.get("collision_rect_offset", [0, 0, 0, 0])
-            self._collision_rect = pygame.Rect(
-                self.rect.left + offset[0],
-                self.rect.top + offset[1],
-                self.rect.width + offset[2],
-                self.rect.height + offset[3]
-            )
         if self.animation and self.is_animating:
             self.animation.animate()
 
@@ -134,6 +123,17 @@ class Obstacle(pygame.sprite.Sprite):
         for key, value in new_properties.items():
             if key in ["interaction_blocked", "is_passable", "z_index", "starts_hidden"]:
                 setattr(self, key, value)
+                if key == "is_passable":
+                    if self.is_passable:
+                        self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
+                    else:
+                        offset = self.data.get("collision_rect_offset", [0, 0, 0, 0])
+                        self._collision_rect = pygame.Rect(
+                            self.rect.left + offset[0],
+                            self.rect.top + offset[1],
+                            self.rect.width + offset[2],
+                            self.rect.height + offset[3]
+                        )
             
             elif key not in special_keys and hasattr(self, key):
                 setattr(self, key, value)

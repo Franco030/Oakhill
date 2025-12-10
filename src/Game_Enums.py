@@ -18,7 +18,6 @@ class Actions:
     MOVE_OBJECT = "MoveObject"
     SLIDE_OBJECT = "SlideObject"
     MODIFY_OBJECT = "ModifyObject"
-
     ASK_CHOICE = "AskChoice"
     JUMP_IF_TRUE = "JumpIfTrue"
     JUMP_IF_FALSE = "JumpIfFalse"
@@ -33,7 +32,7 @@ class Actions:
             cls.CHANGE_LEVEL, cls.SHOW_IMAGE, cls.CLOSE_IMAGE, cls.SHOW_NOTE,
             cls.SHOW_ANIMATION, cls.CHANGE_MUSIC, cls.RANDOM_ACTION, cls.MODIFY_LIGHT,
             cls.MOVE_OBJECT, cls.SLIDE_OBJECT, cls.MODIFY_OBJECT, cls.ASK_CHOICE,
-            cls.JUMP_IF_TRUE, cls.JUMP_IF_TRUE, cls.LABEL, cls.EXIT
+            cls.JUMP_IF_TRUE, cls.JUMP_IF_FALSE, cls.LABEL, cls.EXIT
         ]
 
 class Conditions:

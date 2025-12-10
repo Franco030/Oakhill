@@ -7,74 +7,102 @@ class EventManager:
         
         self.is_active = False
         self.is_blocking = False
-        self.sequence_queue = []
-        self.current_step = None
+        
+        self.current_sequence = []
+        self.step_index = 0
+        
         self.wait_timer = 0
         self.current_image = None
 
     def start_sequence(self, sequence_list, blocking=False):
         if not sequence_list: return
         if self.is_active: return
-        self.sequence_queue = sequence_list.copy()
+        
+        self.current_sequence = sequence_list 
+        self.step_index = 0
+        
         self.is_active = True
         self.is_blocking = blocking
         self.current_image = None
-        self._next_step()
-
-    def _next_step(self):
-        if not self.sequence_queue:
-            self.end_sequence()
-            return
-        self.current_step = self.sequence_queue.pop(0)
-        self._process_current_step()
-
-    def _process_current_step(self):
-        step = self.current_step
-        action = step.get("action")
-        params = step.get("params", "")
-
-        if action == "Wait":
-            p = self.action_manager.parse_params(params)
-            self.wait_timer = float(p.get("time", 1.0)) * 1000
-        else:
-            pass 
-
-    def update(self, delta_time, player, scene):
-        if not self.is_active: return None
-
-        if self.current_step and self.current_step.get("action") == Actions.WAIT:
-            p = self.action_manager.parse_params(self.current_step.get("params", ""))
-            if self.wait_timer <= 0 and p:
-                 self.wait_timer = float(p.get("time", 1.0)) * 1000
-
-            self.wait_timer -= delta_time
-            if self.wait_timer <= 0:
-                self._next_step()
-            return None
         
-        elif self.current_step:
-            action = self.current_step.get("action")
-            params = self.current_step.get("params", "")
-            
 
-            was_blocking = self.is_blocking
-            
-            result = self.action_manager.execute(action, params, player, scene)
-            
-            self._next_step()
-            
-            if result:
-                result["blocking"] = was_blocking
-                
-            return result 
-            
-        return None
-    
     def end_sequence(self):
         self.is_active = False
         self.is_blocking = False
-        self.current_step = None
+        self.current_sequence = []
+        self.step_index = 0
         self.current_image = None
+        
+    def update(self, delta_time, player, scene):
+        if not self.is_active:
+            return None
+
+        if self.wait_timer > 0:
+            self.wait_timer -= delta_time
+            return None
+
+        if self.step_index >= len(self.current_sequence):
+            self.end_sequence()
+            return None
+
+        step = self.current_sequence[self.step_index]
+        action = step.get("action")
+        raw_params = step.get("params", "")
+
+        if action == Actions.WAIT:
+            p = self.action_manager.parse_params(raw_params)
+            self.wait_timer = float(p.get("time", 1.0)) * 1000
+            self.step_index += 1
+            return None
+
+        result = self.action_manager.execute(action, raw_params, player, scene)
+
+        if action == Actions.LABEL:
+            self.step_index += 1
+            return None
+
+        if isinstance(result, dict) and result.get("type") == "Exit":
+            self.end_sequence()
+            return None
+
+        if isinstance(result, dict) and result.get("type") == "Jump":
+            target_label = result.get("target")
+            
+            if not target_label:
+                print(f"[EventManager] Error: Salto sin etiqueta destino.")
+                self.step_index += 1
+                return None
+
+            found_index = -1
+            for i, s in enumerate(self.current_sequence):
+                if s.get("action") == Actions.LABEL:
+                    p = self.action_manager.parse_params(s.get("params", ""))
+                    lbl_id = p.get("id", p.get("name"))
+                    if lbl_id == target_label:
+                        found_index = i
+                        break
+            
+            if found_index != -1:
+                print(f"[EventManager] Saltando a etiqueta '{target_label}' (índice {found_index})")
+                self.step_index = found_index
+            else:
+                print(f"[EventManager] ERROR: Etiqueta '{target_label}' no encontrada. Continuando.")
+                self.step_index += 1
+            
+            return None
+
+        if isinstance(result, dict):
+            if result.get("type") == "Image":
+                self.current_image = result.get("data") 
+            if result.get("type") == "Choice":
+                self.step_index += 1 
+                return result 
+
+            self.step_index += 1
+            return result
+
+        self.step_index += 1
+        return None
 
     def process_trigger(self, obj, player, scene):
         raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))

@@ -2,6 +2,7 @@ import pygame
 from utils import resource_path
 from src.Game_Constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from src.ResourceManager import resource_manager
+from src.GameState import game_state
 
 class UIManager:
     def __init__(self, retro_effects):
@@ -19,6 +20,8 @@ class UIManager:
 
         self.note_pages = []
         self.current_page = 0
+
+        self.choice_selection = None
 
         self.anim_frames = []
         self.anim_index = 0
@@ -40,6 +43,17 @@ class UIManager:
         self.content_type = "DIALOGUE"
         self.content_data = data
         self.resume_music_on_close = resume_music_on_close
+
+    def show_choice(self, text, target_flag, blocking=True):
+        self.active = True
+        self.is_blocking = blocking
+        self.content_type = "CHOICE"
+        
+        self.content_data = {
+            "text": text,
+            "flag": target_flag
+        }
+        self.choice_selection = True
 
     def show_image(self, image_id, blocking=False):
         self.active = True
@@ -102,6 +116,25 @@ class UIManager:
             return False
 
         if event.type == pygame.KEYDOWN:
+
+            if self.content_type == "CHOICE":
+                if event.key in [pygame.K_a, pygame.K_LEFT]:
+                    self.choice_selection = True
+                elif event.key in [pygame.K_d, pygame.K_RIGHT]:
+                    self.choice_selection = False
+
+                elif event.key == pygame.K_SPACE:
+                    target_flag = self.content_data.get("flag")
+                    if target_flag:
+                        game_state.set_flag(target_flag, self.choice_selection)
+                        print(f"[UI] Choice selected: {target_flag} = {self.choice_selection}")
+
+                    snd = resource_manager.get_sound("sfx_dialogue_closed")
+                    if snd: snd.play()
+
+                    self.close()
+                return True
+
             if event.key == pygame.K_SPACE:
                 if self.content_type == "NOTE" and self.current_page < len(self.note_pages) -1:
                     self.current_page += 1
@@ -117,6 +150,7 @@ class UIManager:
                     snd = resource_manager.get_sound("sfx_dialogue_closed")
                     if snd: snd.play()
                     self.close()
+            
                 else:
                     # Here are the other content_types: DIALOGUE, IMAGE, ANIMATION
                     # If I want to add closing sound to each one, I can do the same I did with the notes
@@ -135,6 +169,8 @@ class UIManager:
             self._draw_note(screen)
         elif self.content_type == "DIALOGUE":
             self._draw_dialogue(screen)
+        elif self.content_type == "CHOICE":
+            self._draw_choice(screen)
         elif self.content_type == "IMAGE":
             self._draw_image(screen)
         elif self.content_type == "ANIMATION":
@@ -217,6 +253,42 @@ class UIManager:
         close_txt = self.ui_font.render("SPACEBAR", True, (150, 150, 150))
         close_rect = close_txt.get_rect(bottomright=(rect_x + rect_w - 20, rect_y + height - 20))
         screen.blit(close_txt, close_rect)
+
+    def _draw_choice(self, screen):
+        margin = 20
+        height = 200
+        rect_x = margin
+        rect_y = SCREEN_HEIGHT - height - margin
+        rect_w = SCREEN_WIDTH - (margin * 2)
+        
+        s = pygame.Surface((rect_w, height))
+        s.fill((0, 0, 0))
+        screen.blit(s, (rect_x, rect_y))
+        pygame.draw.rect(screen, (255, 255, 255), (rect_x, rect_y, rect_w, height), 3)
+
+        text = self.content_data.get("text", "¿?")
+        lines = text.split('\n')
+        text_start_y = rect_y + 30
+        
+        for i, line in enumerate(lines):
+            txt_surf = self.ui_font.render(line, True, (255, 255, 255))
+            screen.blit(txt_surf, (rect_x + 30, text_start_y + i * 35))
+
+        opt_y = rect_y + height - 60
+        opt_center_x = SCREEN_WIDTH // 2
+        
+        color_yes = (255, 255, 0) if self.choice_selection else (100, 100, 100)
+        color_no = (255, 255, 0) if not self.choice_selection else (100, 100, 100)
+        
+        txt_yes = self.ui_font.render("YES", True, color_yes)
+        txt_no = self.ui_font.render("NO", True, color_no)
+        
+        screen.blit(txt_yes, (opt_center_x - 100, opt_y))
+        screen.blit(txt_no, (opt_center_x + 60, opt_y))
+        
+        cursor_x = (opt_center_x - 130) if self.choice_selection else (opt_center_x + 30)
+        txt_cursor = self.ui_font.render(">", True, (255, 255, 0))
+        screen.blit(txt_cursor, (cursor_x, opt_y))
 
     def _draw_image(self, screen):
         screen.fill((0, 0, 0))

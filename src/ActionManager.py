@@ -250,5 +250,42 @@ class ActionManager:
                     changes[k] = v
                 
             scene.modify_object_by_id(tid, changes)
+
+        elif action_type == Actions.ASK_CHOICE:
+            text = params.get("text", "Choose")
+            flag_name = params.get("flag", "temp_decision")
+
+            return {
+                "type": "Choice",
+                "data": {
+                    "text": text,
+                    "flag": flag_name
+                },
+                "blocking": True # Always true
+            }
+        
+        elif action_type == Actions.JUMP_IF_TRUE:
+            flag_name = params.get("flag")
+            target_label = params.get("label") or params.get("target")
+
+            if flag_name and game_state.get_flag(flag_name, False) == True:
+                return {"type": "Jump", "target": target_label}
+            
+            return None
+        
+        elif action_type == Actions.JUMP_IF_FALSE:
+            flag_name = params.get("flag")
+            target_label = params.get("label") or params.get("target")
+
+            if flag_name and game_state.get_flag(flag_name, False) == False:
+                return {"type": "Jump", "target": target_label}
+            
+            return None
+        
+        elif action_type == Actions.EXIT:
+            return {"type": "Exit"}
+        
+        elif action_type == Actions.LABEL:
+            return None
         
         return None
