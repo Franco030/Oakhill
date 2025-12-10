@@ -48,10 +48,10 @@ class Obstacle(pygame.sprite.Sprite):
                 (int(self.image.get_width() * resize_factor), int(self.image.get_height() * resize_factor))
             )
             self.original_image = self.image.copy()
+            self.rect = self.image.get_rect(center=(data["x"], data["y"]))
         
 
         self.is_ground = data.get("is_ground", False)
-        self.rect = self.image.get_rect(center=(data["x"], data["y"]))
 
 
         if data.get("is_passable", False):

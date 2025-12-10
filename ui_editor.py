@@ -2,7 +2,7 @@
 
 ################################################################################
 ## Form generated from reading UI file 'editor.ui'
-## (MODIFIED: 3-Column Layout Implementation)
+## (MODIFIED: Tabbed Interface Implementation)
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QListWidgetItem, QMainWindow, QMenu, QMenuBar,
     QPushButton, QScrollArea, QSizePolicy, QSpinBox,
     QSplitter, QStackedWidget, QStatusBar, QTextEdit,
-    QVBoxLayout, QWidget, QSpacerItem)
+    QVBoxLayout, QWidget, QSpacerItem, QTabWidget)
 
 from src.Game_Enums import Actions, Conditions, ObjectTypes
 from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
@@ -113,8 +113,14 @@ class Ui_LevelEditor(object):
 
         self.group_templates = QGroupBox("Plantillas (Moldes)")
         self.layout_templates = QVBoxLayout(self.group_templates)
-        self.combo_templates = CustomComboBox()
-        self.layout_templates.addWidget(self.combo_templates)
+        self.line_edit_template_search = QLineEdit(self.group_templates)
+        self.line_edit_template_search.setPlaceholderText("Search template...")
+        self.list_templates = QListWidget()
+        self.list_templates.setAlternatingRowColors(True)
+        self.list_templates.setMaximumHeight(200)
+        self.layout_templates.addWidget(self.line_edit_template_search)
+        self.layout_templates.addWidget(self.list_templates)
+
         self.layout_tmpl_btns = QHBoxLayout()
         self.btn_add_template = QPushButton("Añadir Template")
         self.btn_save_template = QPushButton("Guardar Selección")
@@ -123,7 +129,18 @@ class Ui_LevelEditor(object):
         self.layout_templates.addLayout(self.layout_tmpl_btns)
         self.layout_left.addWidget(self.group_templates)
 
-        
+        self.group_assets = QGroupBox(self.left_container)
+        self.group_assets.setObjectName(u"group_assets")
+        self.group_assets.setTitle("Biblioteca de Assets")
+        self.layout_assets = QVBoxLayout(self.group_assets)
+        self.lineEdit_search = QLineEdit(self.group_assets)
+        self.lineEdit_search.setPlaceholderText("Search asset...")
+        self.layout_assets.addWidget(self.lineEdit_search)
+        self.list_assets = QListWidget(self.group_assets)
+        self.list_assets.setObjectName(u"list_assets")
+        self.layout_assets.addWidget(self.list_assets)
+        self.layout_left.addWidget(self.group_assets)
+
         self.groupBox = QGroupBox(self.left_container)
         self.groupBox.setObjectName(u"groupBox")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox)
@@ -162,23 +179,26 @@ class Ui_LevelEditor(object):
         self.right_container = QWidget(self.splitter)
         self.right_container.setObjectName(u"right_container")
         self.right_container.setMinimumSize(QSize(360, 0))
-        self.right_container.setMaximumSize(QSize(550, 16777215))
+        self.right_container.setMaximumSize(QSize(600, 16777215))
         self.layout_right = QVBoxLayout(self.right_container)
         self.layout_right.setContentsMargins(0, 0, 0, 0)
 
-        self.scrollArea = QScrollArea(self.right_container)
-        self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents = QWidget()
-        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 378, 800))
-        self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.tabs_properties = QTabWidget(self.right_container)
+        self.tabs_properties.setObjectName(u"tabs_properties")
         
-        self.properties_box = QGroupBox(self.scrollAreaWidgetContents)
+        self.tab_visual = QWidget()
+        self.tab_visual.setObjectName(u"tab_visual")
+        self.layout_tab_visual = QVBoxLayout(self.tab_visual)
+        self.layout_tab_visual.setContentsMargins(0, 0, 0, 0)
+        
+        self.scroll_visual = QScrollArea(self.tab_visual)
+        self.scroll_visual.setWidgetResizable(True)
+        self.content_visual = QWidget()
+        self.layout_content_visual = QVBoxLayout(self.content_visual)
+
+        self.properties_box = QGroupBox(self.content_visual)
         self.properties_box.setObjectName(u"properties_box")
         self.formLayout = QFormLayout(self.properties_box)
-        self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.label = QLabel(self.properties_box)
         self.label.setObjectName(u"label")
@@ -311,7 +331,7 @@ class Ui_LevelEditor(object):
         self.prop_sort_offset.setRange(-999, 999)
         self.prop_sort_offset.setToolTip("Manual offset for depth\nNegative numbers means behind\nPositive numbers means before")
         self.formLayout.setWidget(9, QFormLayout.ItemRole.FieldRole, self.prop_sort_offset)
-        self.verticalLayout_4.addWidget(self.properties_box)
+        self.layout_content_visual.addWidget(self.properties_box)
 
         self.lbl_size = QLabel("Tamaño (W x H):", self.properties_box)
         self.formLayout.setWidget(10, QFormLayout.LabelRole, self.lbl_size)
@@ -357,7 +377,7 @@ class Ui_LevelEditor(object):
         self.prop_reflection_offset.setMaximum(999)
         self.formLayout.setWidget(13, QFormLayout.FieldRole, self.prop_reflection_offset)
 
-        self.group_animation = QGroupBox(self.scrollAreaWidgetContents)
+        self.group_animation = QGroupBox(self.content_visual)
         self.group_animation.setObjectName(u"group_animation")
         self.verticalLayout_5 = QVBoxLayout(self.group_animation)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
@@ -392,9 +412,26 @@ class Ui_LevelEditor(object):
         self.chk_auto_play.setToolTip("If checked, the animation starts automatically")
         self.horizontalLayout_10.addWidget(self.chk_auto_play)
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
-        self.verticalLayout_4.addWidget(self.group_animation)
+        self.layout_content_visual.addWidget(self.group_animation)
+        
+        self.spacer_visual = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.layout_content_visual.addItem(self.spacer_visual)
 
-        self.group_interaction = QGroupBox(self.scrollAreaWidgetContents)
+        self.scroll_visual.setWidget(self.content_visual)
+        self.layout_tab_visual.addWidget(self.scroll_visual)
+        self.tabs_properties.addTab(self.tab_visual, "Visual")
+
+        self.tab_logic = QWidget()
+        self.tab_logic.setObjectName(u"tab_logic")
+        self.layout_tab_logic = QVBoxLayout(self.tab_logic)
+        self.layout_tab_logic.setContentsMargins(0, 0, 0, 0)
+        
+        self.scroll_logic = QScrollArea(self.tab_logic)
+        self.scroll_logic.setWidgetResizable(True)
+        self.content_logic = QWidget()
+        self.layout_content_logic = QVBoxLayout(self.content_logic)
+
+        self.group_interaction = QGroupBox(self.content_logic)
         self.group_interaction.setObjectName(u"group_interaction")
         self.group_interaction.setTitle("Lógica e Interacción")
         self.formLayout_2 = QFormLayout(self.group_interaction)
@@ -487,7 +524,9 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.lbl_sequence)
         
         self.list_trigger_sequence = QListWidget(self.group_interaction)
-        self.list_trigger_sequence.setMaximumHeight(100)
+        self.list_trigger_sequence.setMinimumHeight(200)
+        self.list_trigger_sequence.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
         self.formLayout_2.setWidget(7, QFormLayout.SpanningRole, self.list_trigger_sequence)
         
         self.layout_seq_btns = QHBoxLayout()
@@ -513,7 +552,8 @@ class Ui_LevelEditor(object):
         self.lbl_step_params = QLabel("Params Paso:", self.group_step_detail)
         self.prop_step_params = QTextEdit(self.group_step_detail)
         self.prop_step_params.setPlaceholderText("time=2.0")
-        self.prop_step_params.setMaximumHeight(50)
+        # Le damos más altura a esto también
+        self.prop_step_params.setMinimumHeight(80) 
 
         self.btn_zoom_step = QPushButton("|--|", self.group_interaction)
         self.btn_zoom_step.setToolTip("Open bigger editor")
@@ -524,10 +564,16 @@ class Ui_LevelEditor(object):
         self.layout_step.addWidget(self.btn_zoom_step)
         
         self.formLayout_2.setWidget(9, QFormLayout.SpanningRole, self.group_step_detail)
-        self.verticalLayout_4.addWidget(self.group_interaction)
+        self.layout_content_logic.addWidget(self.group_interaction)
+        
+        self.spacer_logic = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.layout_content_logic.addItem(self.spacer_logic)
 
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.layout_right.addWidget(self.scrollArea)
+        self.scroll_logic.setWidget(self.content_logic)
+        self.layout_tab_logic.addWidget(self.scroll_logic)
+        self.tabs_properties.addTab(self.tab_logic, "Lógica")
+
+        self.layout_right.addWidget(self.tabs_properties)
         self.splitter.addWidget(self.right_container)
 
         self.splitter.setStretchFactor(0, 0)
@@ -553,6 +599,7 @@ class Ui_LevelEditor(object):
 
         self.retranslateUi(LevelEditor)
         self.prop_main_stack.setCurrentIndex(0)
+        self.tabs_properties.setCurrentIndex(0) 
 
         QMetaObject.connectSlotsByName(LevelEditor)
 
@@ -570,6 +617,9 @@ class Ui_LevelEditor(object):
         self.btn_add_template.setText(QCoreApplication.translate("LevelEditor", u"Añadir Template", None))
         self.btn_save_template.setText(QCoreApplication.translate("LevelEditor", u"Guardar Template"))
 
+        self.group_assets.setTitle("Biblioteca de Assets")
+        self.lineEdit_search.setPlaceholderText("Search asset...")
+
         self.groupBox.setTitle(QCoreApplication.translate("LevelEditor", u"Objetos", None))
         self.label_5.setText(QCoreApplication.translate("LevelEditor", u"Zona:", None))
         self.btn_add_object.setText(QCoreApplication.translate("LevelEditor", u"+ Añadir", None))
@@ -585,7 +635,7 @@ class Ui_LevelEditor(object):
         self.prop_type.setItemText(4, QCoreApplication.translate("LevelEditor", u"Primitive", None))
 
         self.label_7.setText(QCoreApplication.translate("LevelEditor", u"Posición:", None))
-        self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image ID:", None))
+        self.label_2.setText(QCoreApplication.translate("LevelEditor", u"Image Path:", None))
         self.btn_browse_image.setText(QCoreApplication.translate("LevelEditor", u"...", None))
         self.label_12.setText(QCoreApplication.translate("LevelEditor", u"Preview:", None))
         self.label_8.setText(QCoreApplication.translate("LevelEditor", u"Resize:", None))

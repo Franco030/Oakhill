@@ -3,12 +3,15 @@ from PySide6.QtWidgets import (
     QListWidgetItem, QGraphicsScene, QGraphicsPixmapItem,
     QGraphicsRectItem, QGraphicsItem,
     QPushButton, QLineEdit, QTextEdit, QComboBox, QSpinBox,
-    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView, QGraphicsView,
+    QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView, QGraphicsView
 )
 from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter
-from PySide6.QtCore import Qt, QRectF, QPointF
+from PySide6.QtCore import Qt, QRectF, QPointF, Signal
 
 class InteractiveGraphicsView(QGraphicsView):
+    # We'll send (Asset ID, X coordinate, Y coordinate)
+    asset_dropped = Signal(str, float, float)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -17,8 +20,42 @@ class InteractiveGraphicsView(QGraphicsView):
 
         self.setRenderHint(QPainter.Antialiasing, False)
         self.setDragMode(QGraphicsView.NoDrag)
+        self.setAcceptDrops(True)
         self._is_panning = False
         self._last_mouse_pos = QPointF()
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("application/x-qabstractitemmodeldatalist"):
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasFormat("application/x-qabstractitemmodeldatalist"):
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        source = event.source()
+        
+        if source and hasattr(source, "currentItem"):
+            item = source.currentItem()
+            if item:
+                asset_id = item.data(Qt.UserRole)
+                
+                if not asset_id:
+                    asset_id = item.text()
+                
+                if asset_id:
+                    scene_pos = self.mapToScene(event.position().toPoint())
+                    self.asset_dropped.emit(asset_id, scene_pos.x(), scene_pos.y())
+                    event.acceptProposedAction()
+                else:
+                    event.ignore()
+                return
+
+        super().dropEvent(event)
 
     def wheelEvent(self, event):
         if event.modifiers() & Qt.ControlModifier:

@@ -73,6 +73,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self._updating_selection_from_canvas = False 
         self.all_image_combos = [self.prop_image_path_combo, self.prop_flash_image_path_combo, self.prop_used_image_path_combo]
 
+        self.list_assets.setDragEnabled(True)
+        self.list_assets.setDragDropMode(QAbstractItemView.DragOnly)
+        self.list_assets.itemDoubleClicked.connect(self.on_assets_list_double_clicked)
+        self.canvas_view.asset_dropped.connect(self.handle_asset_drop)
+        
+        self.lineEdit_search.textChanged.connect(self.populate_assets_list)
+
         self.action_new_map.triggered.connect(self.create_new_json_from_map)
         self.action_load_json.triggered.connect(self.load_json)
         self.action_save_json.triggered.connect(self.save_json)
@@ -82,6 +89,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.btn_add_template.clicked.connect(self.add_template)
         self.btn_save_template.clicked.connect(self.save_selection_as_template)
+        self.line_edit_template_search.textChanged.connect(self.update_template_list)
+        self.list_templates.setDragEnabled(True)
+        self.list_templates.setDragDropMode(QAbstractItemView.DragOnly)
+        self.list_templates.itemDoubleClicked.connect(lambda item: self.add_template())
 
         self.list_objects.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.list_objects.currentItemChanged.connect(self.on_object_selected)
@@ -170,6 +181,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document())
         self.populate_image_combos()
         self.populate_sound_combos()
+        self.populate_assets_list()
         self.load_templates()
         self.disable_property_panel()
 
@@ -851,6 +863,36 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             print("Successful save")
         except Exception as e: print(f"Error: {e}")
 
+
+    def populate_assets_list(self):
+        if not hasattr(self, 'list_assets'): return
+        self.list_assets.clear()
+
+        search_text = ""
+        if hasattr(self, 'lineEdit_search'):
+            search_text = self.lineEdit_search.text().lower()
+
+        if not hasattr(self, 'asset_map'):
+            self.load_asset_manifest()
+
+        for asset_id, asset_path in self.asset_map.items():
+            if asset_id.startswith("sfx_") or asset_id.startswith("bgm_") or asset_id.startswith("amb_") or asset_id.startswith("anim_"):
+                continue
+
+            if search_text and search_text not in asset_id.lower():
+                continue
+
+            item = QListWidgetItem(asset_id)
+            item.setData(Qt.UserRole, asset_id)
+
+            full_path = os.path.join(self.base_path, asset_path)
+
+            if os.path.exists(full_path):
+                icon = QIcon(full_path)
+                item.setIcon(icon)
+
+            self.list_assets.addItem(item)
+
     def populate_image_combos(self):
         ids_list = ["None"]
         
@@ -1444,7 +1486,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                     self.templates = json.load(f)
             except Exception as e:
                 print(f"Error loading templates: {e}")
-        self.update_template_combo()
+        self.update_template_list()
     
     def save_templates_to_file(self):
         try:
@@ -1454,9 +1496,36 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Could not save templates: {e}")
 
-    def update_template_combo(self):
-        self.combo_templates.clear()
-        self.combo_templates.addItems(sorted(self.templates.keys()))
+    def update_template_list(self):
+        self.list_templates.clear()
+        
+        sorted_keys = sorted(self.templates.keys())
+        
+        search_text = ""
+        if hasattr(self, 'line_edit_template_search'):
+            search_text = self.line_edit_template_search.text().lower()
+
+        for name in sorted_keys:
+            if search_text and search_text not in name.lower():
+                continue
+
+            tmpl_data = self.templates[name]
+            item = QListWidgetItem(name)
+            item.setData(Qt.UserRole, name)
+            
+            img_id = tmpl_data.get("image_id", tmpl_data.get("image_path"))
+            
+            if img_id and img_id != "None":
+                real_path = self.asset_map.get(img_id)
+                if not real_path: real_path = img_id
+
+                if real_path:
+                    full_path = os.path.normpath(os.path.join(self.base_path, real_path))
+                    if os.path.exists(full_path):
+                        icon = QIcon(full_path)
+                        item.setIcon(icon)
+            
+            self.list_templates.addItem(item)
 
     def save_selection_as_template(self):
         obj_data = self.get_real_object_data()
@@ -1479,12 +1548,17 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.templates[name] = template_data
         self.save_templates_to_file()
-        self.update_template_combo()
-        self.combo_templates.setCurrentText(name)
+        self.update_template_list()
+        items = self.list_templates.findItems(name, Qt.MatchExactly)
+        if items:
+            self.list_templates.setCurrentItem(items[0])
         print(f"Template '{name}' saved")
 
     def add_template(self):
-        name = self.combo_templates.currentText()
+        item = self.list_templates.currentItem()
+        if not item: return
+        
+        name = item.text()
         if not name or name not in self.templates: return
         
         current_zone = self.combo_zone_selector.currentText()
@@ -1498,6 +1572,79 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         new_obj_data["x"] = GAME_WIDTH // 2
         new_obj_data["y"] = GAME_HEIGHT // 2
+
+        cmd = CmdAddObject(self, current_zone, new_obj_data)
+        self.undo_manager.push(cmd, execute_now=True)
+
+    def handle_asset_drop(self, dropped_data, x, y):
+        if dropped_data in self.templates:
+            self.create_object_from_template(dropped_data, x, y)
+        
+        elif dropped_data in self.asset_map:
+            self.create_object_from_asset(dropped_data, x, y)
+
+        else:
+            print(f"[Editor]: Unknown drop: {dropped_data}")
+
+    
+    def on_assets_list_double_clicked(self, item):
+        asset_id = item.data(Qt.UserRole)
+        center_x = GAME_WIDTH // 2
+        center_y = GAME_HEIGHT // 2
+        
+        self.create_object_from_asset(asset_id, center_x, center_y)
+
+    def create_object_from_asset(self, asset_id, x, y):
+        current_zone = self.combo_zone_selector.currentText()
+        if not current_zone: 
+            QMessageBox.warning(self, "Aviso", "Selecciona una zona primero.")
+            return
+
+        new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
+        
+        new_obj = {
+            "id": new_id,
+            "type": ObjectTypes.OBSTACLE,
+            "x": int(x),
+            "y": int(y),
+            "z_index": 0,
+            "image_id": asset_id,
+            "resize_factor": 4.0,
+            "is_passable": False,
+            "width": 100, 
+            "height": 100,
+            "color": [255, 255, 255],
+            "collision_rect_offset": [0,0,0,0]
+        }
+        
+        real_path = self.asset_map.get(asset_id)
+        if real_path:
+            full = os.path.join(self.base_path, real_path)
+            if os.path.exists(full):
+                pix = QPixmap(full)
+                if not pix.isNull():
+                    new_obj["width"] = int(pix.width() * new_obj["resize_factor"])
+                    new_obj["height"] = int(pix.height() * new_obj["resize_factor"])
+
+        cmd = CmdAddObject(self, current_zone, new_obj)
+        self.undo_manager.push(cmd, execute_now=True)
+
+    def create_object_from_template(self, tmpl_name, x, y):
+        current_zone = self.combo_zone_selector.currentText()
+        if not current_zone: 
+            QMessageBox.warning(self, "Warning", "You have to be in a selected zone")
+            return
+
+        template_data = self.templates.get(tmpl_name)
+        if not template_data: return
+
+        new_obj_data = copy.deepcopy(template_data)
+
+        new_id = f"obj_{int(time.time()*1000)}_{random.randint(0, 999)}"
+        new_obj_data["id"] = new_id
+
+        new_obj_data["x"] = int(x)
+        new_obj_data["y"] = int(y)
 
         cmd = CmdAddObject(self, current_zone, new_obj_data)
         self.undo_manager.push(cmd, execute_now=True)
