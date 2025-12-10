@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
     QDoubleSpinBox, QCheckBox, QListWidget, QInputDialog, QMessageBox, QAbstractItemView,
     QSizePolicy, QDialog, QDialogButtonBox, QVBoxLayout
 )
-from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter, QFont
+from PySide6.QtGui import QPixmap, QBrush, QColor, QPen, QKeySequence, QShortcut, QPainter, QFont, QIcon
 from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
@@ -306,7 +306,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                     
                     if combo_widget.findText(found_id) == -1:
                         combo_widget.addItem(found_id)
-                        self.populate_assets_list() 
+                        self.populate_image_combos()
 
                 if found_id:
                     index = combo_widget.findText(found_id)

@@ -52,10 +52,10 @@ class Game:
         if icon: pygame.display.set_icon(icon)
 
         chase = resource_manager.get_sound("sfx_chase_loop")
-        if chase: chase.set_volume(0.5)
+        if chase: chase.set_volume(0.4)
         
         flee = resource_manager.get_sound("sfx_flee_loop")
-        if flee: flee.set_volume(0.5)
+        if flee: flee.set_volume(0.4)
 
     def run(self):
         while self.state != "QUIT":

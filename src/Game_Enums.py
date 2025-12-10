@@ -19,14 +19,21 @@ class Actions:
     SLIDE_OBJECT = "SlideObject"
     MODIFY_OBJECT = "ModifyObject"
 
-    @staticmethod
-    def get_actions():
+    ASK_CHOICE = "AskChoice"
+    JUMP_IF_TRUE = "JumpIfTrue"
+    JUMP_IF_FALSE = "JumpIfFalse"
+    LABEL = "Label"
+    EXIT = "Exit"
+
+    @classmethod
+    def get_actions(cls):
         return [
-            Actions.WAIT, Actions.SET_FLAG, Actions.INCREMENT_FLAG, Actions.TELEPORT,
-            Actions.PLAY_SOUND, Actions.UNHIDE_OBJECT, Actions.HIDE_OBJECT, Actions.SHOW_DIALOGUE,
-            Actions.CHANGE_LEVEL, Actions.SHOW_IMAGE, Actions.CLOSE_IMAGE, Actions.SHOW_NOTE,
-            Actions.SHOW_ANIMATION, Actions.CHANGE_MUSIC, Actions.RANDOM_ACTION, Actions.MODIFY_LIGHT,
-            Actions.MOVE_OBJECT, Actions.SLIDE_OBJECT, Actions.MODIFY_OBJECT
+            cls.WAIT, cls.SET_FLAG, cls.INCREMENT_FLAG, cls.TELEPORT,
+            cls.PLAY_SOUND, cls.UNHIDE_OBJECT, cls.HIDE_OBJECT, cls.SHOW_DIALOGUE,
+            cls.CHANGE_LEVEL, cls.SHOW_IMAGE, cls.CLOSE_IMAGE, cls.SHOW_NOTE,
+            cls.SHOW_ANIMATION, cls.CHANGE_MUSIC, cls.RANDOM_ACTION, cls.MODIFY_LIGHT,
+            cls.MOVE_OBJECT, cls.SLIDE_OBJECT, cls.MODIFY_OBJECT, cls.ASK_CHOICE,
+            cls.JUMP_IF_TRUE, cls.JUMP_IF_TRUE, cls.LABEL, cls.EXIT
         ]
 
 class Conditions:
@@ -36,11 +43,11 @@ class Conditions:
     AUTO_START = "AutoStart"
     IF_FLAG = "IfFlag"
 
-    @staticmethod
-    def get_conditions():
+    @classmethod
+    def get_conditions(cls):
         return [
-            Conditions.ON_STAY, Conditions.ON_ENTER, Conditions.ON_INTERACT,
-            Conditions.AUTO_START, Conditions.IF_FLAG
+            cls.ON_STAY, cls.ON_ENTER, cls.ON_INTERACT,
+            cls.AUTO_START, cls.IF_FLAG
         ]
 
 class ObjectTypes:
@@ -50,9 +57,9 @@ class ObjectTypes:
     TRIGGER = "Trigger"
     PRIMITIVE = "Primitive"
 
-    @staticmethod
-    def get_object_types():
+    @classmethod
+    def get_object_types(cls):
         return [
-            ObjectTypes.OBSTACLE, ObjectTypes.MIRROR, ObjectTypes.INTERACTABLE,
-            ObjectTypes.TRIGGER, ObjectTypes.PRIMITIVE
+            cls.OBSTACLE, cls.MIRROR, cls.INTERACTABLE,
+            cls.TRIGGER, cls.PRIMITIVE
         ]
