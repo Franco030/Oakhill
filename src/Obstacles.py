@@ -38,21 +38,29 @@ class Obstacle(pygame.sprite.Sprite):
         self.trigger_action = data.get("trigger_action", "None")
         self.trigger_params = data.get("trigger_params", "")
 
+
+        w = int(data.get("width"))
+        h = int(data.get("height"))
+
         image_key = data.get("image_id", data.get("image_path"))
         resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
 
         self.image = resource_manager.get_image(image_key)
-
         if self.image:
             self.image = pygame.transform.scale(self.image, 
                 (int(self.image.get_width() * resize_factor), int(self.image.get_height() * resize_factor))
             )
-            self.original_image = self.image.copy()
-            self.rect = self.image.get_rect(center=(data["x"], data["y"]))
+            
+        else:
+            self.image = pygame.Surface((w, h))
+            color = data.get("color", [128, 128, 128])
+            self.image.fill(color)
+
         
+        self.original_image = self.image.copy()
+        self.rect = self.image.get_rect(center=(data["x"], data["y"]))
 
         self.is_ground = data.get("is_ground", False)
-
 
         if data.get("is_passable", False):
 

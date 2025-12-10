@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
 
 from src.Game_Enums import Actions, Conditions, ObjectTypes
 from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
+from src.editor_systems.SequenceListWidget import SequenceListWidget
 
 class CustomSpinBox(QSpinBox):
     def wheelEvent(self, event):
@@ -523,7 +524,7 @@ class Ui_LevelEditor(object):
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
         self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.lbl_sequence)
         
-        self.list_trigger_sequence = QListWidget(self.group_interaction)
+        self.list_trigger_sequence = SequenceListWidget(self.group_interaction)
         self.list_trigger_sequence.setMinimumHeight(200)
         self.list_trigger_sequence.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         

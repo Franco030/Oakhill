@@ -290,13 +290,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             
             if self.list_trigger_sequence.count() > 0:
                 self.list_trigger_sequence.setCurrentRow(0)
+
+            self.list_trigger_sequence.apply_logic_coloring()  
             
             current.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
             
             pixmap_item = current.data(Qt.UserRole + 1)
             if pixmap_item: 
                 self.update_canvas_item(obj_data, pixmap_item)
-            
+
             self.is_programmatic_change = False
 
     def browse_file_for_combo(self, combo_widget):
@@ -1227,6 +1229,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             list_item = QListWidgetItem(item_text)
             list_item.setData(Qt.UserRole, step)
             self.list_trigger_sequence.addItem(list_item)
+
+        self.list_trigger_sequence.apply_logic_coloring()
             
         self.group_step_detail.setEnabled(False)
 
@@ -1392,6 +1396,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             
             obj_data["scripted_events"] = new_sequence
 
+            self.list_trigger_sequence.apply_logic_coloring()
+
     def add_sequence_step(self):
         new_step = {"action": Actions.WAIT, "params": "time=1.0"}
         
@@ -1444,7 +1450,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         item.setData(Qt.UserRole, step_data)
         
         item.setText(f"{new_action} ({new_params})")
-        
+
+
+        self.list_trigger_sequence.apply_logic_coloring()
         self.save_sequence_changes()
 
     def update_layers(self):

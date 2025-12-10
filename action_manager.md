@@ -13,116 +13,188 @@ The following parameters can be added to **any** action command string. They are
 | `kill`       | `bool`   | `true`  | *(Triggers Only)* If `true`, the trigger object is permanently removed from the game (registered in `GameState`) after execution. |
 | `pause_music`| `bool`   | `false` | *(UI Actions Only)* If `true`, the background music pauses while the UI element (Image, Note, Dialogue) is active.                |
 
-## Action List
 
-### `SET_FLAG`
-Sets a value in the global `GameState`. Used to track story progress, puzzle states, or inventory items.
-* **`flag`**: (String) The unique identifier for the flag.
-* **`value`**: (String/Boolean/Int) The value to store. "true"/"false" are converted to booleans.
-* *Example:* `SET_FLAG(flag=has_key; value=true)`
+# Scripting System and Action Reference
 
-### `INCREMENT_FLAG`
-Increments a numeric flag in the `GameState`. Useful for counters (e.g., "candles_lit").
-* **`flag`**: (String) The identifier of the flag to increment.
-* **`value`**: (Int) The amount to add. Defaults to 1 if omitted.
-* *Example:* `INCREMENT_FLAG(flag=coins_collected; value=5)`
+This document serves as the technical reference for the scripting system used in the Level Editor. It details all available Actions that can be assigned to Triggers, Interactables, or Scripted Sequences.
 
-### `TELEPORT`
-Instantly moves the player to a specific location within the current map or zone.
-* **`zone`**: (String) The target zone identifier (e.g., `(0, 1)`).
-* **`x`**: (Int) The target X coordinate.
-* **`y`**: (Int) The target Y coordinate.
-* *Example:* `TELEPORT(zone=(1,0); x=300; y=400)`
+## Parameter Syntax
+Parameters are passed as a single string string, separated by semicolons (`;`). Key-value pairs are separated by an equals sign (`=`).
 
-### `PLAY_SOUND`
-Plays a specific sound effect from the `SoundLibrary` with volume control.
-* **`sound`**: (String) The name of the sound file.
-* **`volume`**: (Float) The volume level (0.0 to 1.0). Defaults to 1.0.
-* *Example:* `PLAY_SOUND(sound=scream; volume=0.8)`
+**Format:**
+`key=value;key2=value2;key3=value3`
 
-### `UNHIDE_OBJECT`
-Reveals an object that was initialized with `is_hidden: true` or previously hidden.
-* **`id`**: (String) The unique ID of the object to reveal.
-* *Example:* `UNHIDE_OBJECT(id=secret_door)`
+**Example:**
+`text=Hello World;speed=0.5;blocking=true`
 
-### `HIDE_OBJECT`
-Removes an object from the scene (stops rendering and collisions).
-* **`id`**: (String) The unique ID of the object to hide.
-* *Example:* `HIDE_OBJECT(id=breakable_wall)`
+---
 
-### `MODIFY_LIGHT`
-Enables or disables the global darkness/flashlight effect in the scene.
-* **`enable`**: (Boolean) `true` to enable darkness, `false` to disable it.
-* *Example:* `MODIFY_LIGHT(enable=true)`
+## 1. Flow Control
+These actions control the execution order of the script sequence, allowing for branching paths, loops, and decision-making.
 
-### `RANDOM_ACTION`
-Executes a sub-action based on a probability check.
-* **`chance`**: (Int) The percentage chance (0-100) for the action to succeed. Defaults to 50.
-* **`action`**: (String) The sub-action string to execute on success.
-* *Example:* `RANDOM_ACTION(chance=30; action=PLAY_SOUND(sound=thunder))`
+### `Label`
+Defines a destination point for Jump actions. It performs no logic on its own.
+* **name**: The unique identifier for this label within the sequence.
+* **Example**: `name=START_PUZZLE`
 
-### `CHANGE_LEVEL`
-Triggers a transition to a different JSON level file.
-* **`level`**: (String) The key name of the map matrix (defined in `Game_Constants.py`).
-* **`json`**: (String) Relative path to the JSON level file.
-* **`zone`**: (String) The starting zone in the new level.
-* **`x`**: (Int) The starting X coordinate for the player.
-* **`y`**: (Int) The starting Y coordinate for the player.
-* *Example:* `CHANGE_LEVEL(level=forest; json=data/forest.json; zone=(0,0); x=100; y=200)`
+### `AskChoice`
+Opens a UI prompt asking the player to choose between "YES" and "NO". The result is stored in a boolean Global Flag. This action should be blocking.
+* **text**: The question to display to the player.
+* **flag**: The name of the flag where the result (True/False) will be saved.
+* **Example**: `text=Do you want to use the key?;flag=decision_use_key`
 
-### `SHOW_NOTE`
-Opens the UI to display a text note.
-* **`text`**: (String) The content of the note.
-* **`sound`**: (String) Optional sound to play when opening.
-* *Example:* `SHOW_NOTE(text=It is locked from the other side.)`
+### `JumpIfTrue`
+Jumps to a specific Label if a Global Flag is set to True.
+* **flag**: The name of the flag to check.
+* **target**: The name of the `Label` to jump to.
+* **Example**: `flag=decision_use_key;target=OPEN_DOOR_SEQ`
 
-### `SHOW_DIALOGUE`
-Displays a dialogue box at the bottom of the screen.
-* **`text`**: (String) The dialogue text.
-* **`color`**: (String) RGB values separated by commas. Defaults to "255,255,255".
-* **`pause_music`**: (Boolean) Whether to pause background music while reading.
-* *Example:* `SHOW_DIALOGUE(text=Who is there?; color=255,0,0)`
+### `JumpIfFalse`
+Jumps to a specific Label if a Global Flag is set to False (or does not exist).
+* **flag**: The name of the flag to check.
+* **target**: The name of the `Label` to jump to.
+* **Example**: `flag=has_master_key;target=LOCKED_MESSAGE`
 
-### `SHOW_IMAGE`
-Displays a full-screen or centered static image.
-* **`image`** (or `path`): (String) Relative path to the image file.
-* **`pause_music`**: (Boolean) Pauses music while image is shown.
-* *Example:* `SHOW_IMAGE(image=assets/images/puzzle_clue.png)`
+### `Exit`
+Immediately terminates the current sequence. Useful for stopping execution after a successful branch to prevent fall-through.
+* **No parameters required.**
 
-### `CLOSE_IMAGE`
-Closes any currently active image or animation overlay.
-* *No parameters.*
+### `Wait`
+Pauses the execution of the sequence for a specific amount of time.
+* **time**: Duration in seconds.
+* **Example**: `time=1.5`
 
-### `SHOW_ANIMATION`
-Plays a frame-by-frame animation on the UI overlay.
-* **`path`**: (String) Base path of the animation frame (e.g., `anim_0.png` -> input `anim.png`).
-* **`frames`**: (Int) Total number of frames.
-* **`speed`**: (Float) Animation speed/delay. Defaults to 0.1.
-* **`loop`**: (Boolean) Whether the animation loops. Defaults to `true`.
-* *Example:* `SHOW_ANIMATION(path=assets/anim/fire.png; frames=5; speed=0.2)`
+### `RandomAction`
+(Implementation specific) Executes one random action from a predefined set or logic.
+* **params**: Context-dependent.
 
-### `CHANGE_MUSIC`
+---
+
+## 2. State Management
+Actions used to manipulate the persistent state of the game session.
+
+### `SetFlag`
+Sets a Global Flag to a specific value.
+* **flag**: The name of the flag.
+* **value**: The value to set (true, false, or an integer/string).
+* **Example**: `flag=boss_defeated;value=true`
+
+### `IncrementFlag`
+Increments an integer flag by a specific amount. Useful for counters.
+* **flag**: The name of the flag.
+* **value**: The amount to add (can be negative).
+* **Example**: `flag=coins_collected;value=1`
+
+---
+
+## 3. UI and Dialogues
+Actions that display visual elements on the screen.
+
+### `ShowDialogue`
+Displays the standard text box at the bottom of the screen.
+* **text**: The content string. Use `\n` for line breaks.
+* **name**: (Optional) Name of the speaker.
+* **speed**: (Optional) Text scrolling speed.
+* **Example**: `text=It is locked from the other side.;speed=0.05`
+
+### `ShowNote`
+Displays a full-screen note or document overlay.
+* **text**: The content of the note.
+* **image**: (Optional) Background image ID for the note.
+* **Example**: `text=Day 4: They are coming...`
+
+### `ShowImage`
+Displays a standalone image overlay on the screen (e.g., jumpscares, item pickups).
+* **image**: The Asset ID of the image to display.
+* **duration**: (Optional) How long to show it. If omitted, requires `CloseImage`.
+* **Example**: `image=spr_item_key_big`
+
+### `CloseImage`
+Manually closes any currently active overlay image.
+* **No parameters required.**
+
+### `ShowAnimation`
+Plays a specific animation sequence on the UI layer.
+* **animation**: The Asset ID of the animation.
+* **loop**: (Optional) true/false.
+* **Example**: `animation=anim_static_noise;loop=true`
+
+---
+
+## 4. Object Control
+Actions to manipulate objects within the current scene.
+
+### `ModifyObject`
+Changes properties of a specific object.
+* **id**: The ID of the target object.
+* **...**: Any property key to update (e.g., `image_id`, `x`, `y`, `color`).
+* **Example**: `id=obj_door_01;image_id=spr_door_open;is_passable=true`
+
+### `MoveObject`
+Instantly moves an object to a new position.
+* **id**: The ID of the target object.
+* **x**: New X coordinate.
+* **y**: New Y coordinate.
+* **Example**: `id=player;x=500;y=300`
+
+### `SlideObject`
+Smoothly interpolates an object to a new position over time.
+* **id**: The ID of the target object.
+* **x**: Target X coordinate.
+* **y**: Target Y coordinate.
+* **speed**: (or `duration`) Speed of movement.
+* **Example**: `id=obj_moving_platform;x=600;y=600;speed=2.0`
+
+### `HideObject`
+Makes an object invisible and non-interactable.
+* **id**: The ID of the target object.
+* **Example**: `id=obj_secret_wall`
+
+### `UnhideObject`
+Makes a hidden object visible and interactable.
+* **id**: The ID of the target object.
+* **Example**: `id=obj_monster_ambush`
+
+### `ModifyLight`
+(If lighting system is active) Changes the properties of a light source.
+* **id**: Light ID.
+* **radius**: New radius.
+* **color**: New RGB color.
+* **Example**: `id=light_01;radius=200;color=(255,0,0)`
+
+---
+
+## 5. Audio
+Actions to control the sound engine.
+
+### `PlaySound`
+Plays a one-shot sound effect.
+* **sound**: The Asset ID of the SFX.
+* **volume**: (Optional) 0.0 to 1.0.
+* **Example**: `sound=sfx_explosion;volume=0.8`
+
+### `ChangeMusic`
 Crossfades to a new background music track.
-* **`path`** (or `music`): (String) Relative path to the music file.
-* **`fade`**: (Int) Fade-out duration in milliseconds. Defaults to 500.
-* **`volume`**: (Float) Music volume (0.0 to 1.0).
-* **`loop`**: (Int) Number of loops (-1 for infinite).
-* *Example:* `CHANGE_MUSIC(path=assets/music/boss_theme.wav; volume=0.8)`
+* **music**: The Asset ID of the BGM.
+* **fade**: (Optional) Fade duration in seconds.
+* **Example**: `music=bgm_boss_fight;fade=2.0`
 
-### `MOVE_OBJECT`
-Instantly teleports an object to a new position.
-* **`id`**: (String) The unique ID of the target object.
-* **`x`**: (Int) Target X coordinate.
-* **`y`**: (Int) Target Y coordinate.
-* **`relative`**: (Boolean) If `true`, adds x/y to current position. Defaults to `false`.
-* *Example:* `MOVE_OBJECT(id=box; x=10; y=0; relative=true)`
+---
 
-### `SLIDE_OBJECT`
-Smoothly moves an object to a new position over a duration (Tween).
-* **`id`**: (String) The unique ID of the target object.
-* **`x`**: (Int) Target X coordinate.
-* **`y`**: (Int) Target Y coordinate.
-* **`duration`**: (Float) Time in seconds for the movement. Defaults to 1.0.
-* **`relative`**: (Boolean) If `true`, moves relative to current position.
-* **`animate`**: (Boolean) If `true`, triggers the object's internal animation loop during movement.
-* *Example:* `SLIDE_OBJECT(id=gate; y=-100; duration=2.5; relative=true; animate=true)`
+## 6. Level Navigation
+Actions related to map traversal.
+
+### `Teleport`
+Moves the player to a different location within the *current* map.
+* **zone**: The target zone key (e.g., `(0, 0)`).
+* **x**: Target X coordinate.
+* **y**: Target Y coordinate.
+* **Example**: `zone=(1, 0);x=50;y=300`
+
+### `ChangeLevel`
+Unloads the current map and loads a new JSON map file.
+* **map**: The filename of the new map (without extension, or relative path).
+* **entry_zone**: The starting zone in the new map.
+* **entry_x**: Starting X.
+* **entry_y**: Starting Y.
+* **Example**: `map=hospital_f2;entry_zone=(0, 0);entry_x=100;entry_y=100`
