@@ -125,8 +125,6 @@ class ActionManager:
             note_id = params.get("id")
             should_save = str(params.get("save", "false")).lower() == "true"
 
-            print(should_save)
-
             if not note_id:
                 return None
             

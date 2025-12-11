@@ -7,6 +7,47 @@ from PySide6.QtWidgets import (
     QSplitter, QGroupBox
 )
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QColor, QFont
+
+class NoteLimitHighlighter(QSyntaxHighlighter):
+    def __init__(self, document):
+        super().__init__(document)
+    
+        self.MAX_CHARS_PER_LINE = 39
+        self.MAX_LINES_PER_PAGE = 14 
+        
+        self.error_format = QTextCharFormat()
+        self.error_format.setForeground(QColor("#FF0000"))
+        self.error_format.setFontWeight(QFont.Bold)
+
+        self.page_break_format = QTextCharFormat()
+        self.page_break_format.setForeground(QColor("#FFFF00"))
+        self.page_break_format.setFontWeight(QFont.Bold)
+
+    def highlightBlock(self, text):
+        if len(text) > self.MAX_CHARS_PER_LINE:
+            self.setFormat(self.MAX_CHARS_PER_LINE, len(text) - self.MAX_CHARS_PER_LINE, self.error_format)
+
+        
+        previous_line_count = self.previousBlockState()
+        if previous_line_count == -1: previous_line_count = 0
+        
+        current_line_count = previous_line_count + 1
+
+        if current_line_count > self.MAX_LINES_PER_PAGE:
+            self.setFormat(0, len(text), self.error_format)
+
+        if "[P]" in text:
+            index = text.find("[P]")
+            while index >= 0:
+                self.setFormat(index, 3, self.page_break_format)
+                index = text.find("[P]", index + 3)
+            
+            self.setCurrentBlockState(0) 
+        else:
+            self.setCurrentBlockState(current_line_count)
+
+        
 
 class NoteEditorDialog(QDialog):
     def __init__(self, base_path, parent=None):
@@ -56,10 +97,16 @@ class NoteEditorDialog(QDialog):
         
         self.tabs = QTabWidget()
 
+        font = QFont("Consolas", 10)
+    
         self.edit_en = QTextEdit()
         self.tabs.addTab(self.edit_en, "English (EN)")
+        self.highlighter_en = NoteLimitHighlighter(self.edit_en.document())
+        self.edit_en.setFont(font)
         
         self.edit_es = QTextEdit()
+        self.highlighter_es = NoteLimitHighlighter(self.edit_es.document())
+        self.edit_es.setFont(font)
         self.tabs.addTab(self.edit_es, "Español (ES)")
         
         right_layout.addWidget(self.tabs)

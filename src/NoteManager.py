@@ -31,7 +31,7 @@ class NoteManager:
             return None
 
         contents = raw_data.get("content", {})
-        raw_text = contents.get(self.current_language, contents.get("es", ""))
+        raw_text = contents.get(self.current_language, contents.get("en", ""))
 
         pages = raw_text.split("[P]")
         clean_pages = [p.strip() for p in pages if p.strip()]
