@@ -1,5 +1,4 @@
 from PySide6.QtCore import Qt
-from src.Game_Constants import MAPS
 
 class Command:
     """

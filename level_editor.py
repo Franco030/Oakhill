@@ -19,8 +19,8 @@ from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
 from src.editor_systems.NoteEditorDialog import NoteEditorDialog
 from src.editor_systems.SyntaxHighlighter import SyntaxHighlighter
-from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
-from src.Game_Enums import Actions, Conditions, ObjectTypes
+from src.utils.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.utils.Game_Enums import Actions, Conditions, ObjectTypes
 
 GAME_WIDTH = SCREEN_WIDTH
 GAME_HEIGHT = SCREEN_HEIGHT

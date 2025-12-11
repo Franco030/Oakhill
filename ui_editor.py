@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBo
     QSplitter, QStackedWidget, QStatusBar, QTextEdit,
     QVBoxLayout, QWidget, QSpacerItem, QTabWidget)
 
-from src.Game_Enums import Actions, Conditions, ObjectTypes
+from src.utils.Game_Enums import Actions, Conditions, ObjectTypes
 from src.editor_systems.InteractiveGraphicsView import InteractiveGraphicsView
 from src.editor_systems.SequenceListWidget import SequenceListWidget
 
