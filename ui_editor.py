@@ -598,6 +598,13 @@ class Ui_LevelEditor(object):
         self.menuArchivo.addAction(self.action_load_json)
         self.menuArchivo.addAction(self.action_save_json)
 
+        self.menuHerramientas = QMenu(self.menubar)
+        self.menuHerramientas.setTitle("Settings")
+        self.menubar.addAction(self.menuHerramientas.menuAction())
+        self.action_notes_editor = QAction(LevelEditor)
+        self.action_notes_editor.setText("Notes manager")
+        self.menuHerramientas.addAction(self.action_notes_editor)
+
         self.retranslateUi(LevelEditor)
         self.prop_main_stack.setCurrentIndex(0)
         self.tabs_properties.setCurrentIndex(0) 

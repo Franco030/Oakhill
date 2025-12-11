@@ -17,6 +17,7 @@ from PySide6.QtCore import Qt, QRectF, QPointF
 from ui_editor import Ui_LevelEditor
 from src.editor_systems.EditorCommands import *
 from src.editor_systems.EditorGraphics import *
+from src.editor_systems.NoteEditorDialog import NoteEditorDialog
 from src.editor_systems.SyntaxHighlighter import SyntaxHighlighter
 from src.Game_Constants import MAPS, SCREEN_WIDTH, SCREEN_HEIGHT
 from src.Game_Enums import Actions, Conditions, ObjectTypes
@@ -31,7 +32,6 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
     Main controller for the LevelEditor
     Manages the GUI, handles user input, renders the visual representation of the level,
     and orchestrates the synchronization between the raw JSON data and the visual elements.
-    It acts as the "Director" in the MVC pattern, connecting the Data (JSON) with the View (Qt Widgets / Canvas)
     """
     def __init__(self):
         """
@@ -84,6 +84,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.action_new_map.triggered.connect(self.create_new_json_from_map)
         self.action_load_json.triggered.connect(self.load_json)
         self.action_save_json.triggered.connect(self.save_json)
+        self.action_notes_editor.triggered.connect(self.open_note_editor)
+
         self.btn_add_object.clicked.connect(self.add_new_object)
         self.btn_delete_object.clicked.connect(self.delete_selected_object)
         self.combo_zone_selector.currentIndexChanged.connect(self.populate_views_for_current_zone)
@@ -202,6 +204,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             print("WARNING: data/assets.json not found!")
 
         self.update_highlighters()
+
+    def open_note_editor(self):
+        dialog = NoteEditorDialog(self.base_path, self)
+        dialog.exec()
 
     def perform_undo(self): self.undo_manager.undo()
     def perform_redo(self): self.undo_manager.redo()

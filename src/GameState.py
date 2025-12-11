@@ -8,6 +8,7 @@ class GameState:
         if cls._instance is None:
             cls._instance  = super(GameState, cls).__new__(cls)
             cls._instance.flags = {}
+            cls._collected_notes = []
             cls._instance.interacted_objects = set()
             cls._instance.pending_level_change = None
             cls._instance.teleport_req = None
@@ -57,6 +58,19 @@ class GameState:
         :param obj_id: Objects ID
         """
         return obj_id in self.interacted_objects
+    
+    def unlock_note(self, note_id):
+        if note_id not in self._collected_notes:
+            self._collected_notes.append(note_id)
+            print(f"[GameState] Note saved: {note_id}")
+            return True
+        return False
+    
+    def has_note(self, note_id):
+        return note_id in self._collected_notes
+    
+    def get_all_notes(self):
+        return self._collected_notes
     
     # --------------------------------------------------
 

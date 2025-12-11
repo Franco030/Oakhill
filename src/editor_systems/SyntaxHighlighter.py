@@ -5,6 +5,7 @@ COL_KEYWORD_ACTION = QColor("#ff7300")
 COL_NUMBERS = QColor("#9DDB7B")
 COL_BOOLEAN = QColor("#C773C0")
 COL_ASSET_ID = QColor("#9089F0")
+COL_NOTE_ID = QColor("D19A66")
 
 class SyntaxHighlighter(QSyntaxHighlighter):
     def __init__(self, parent=None, asset_keywords=None):

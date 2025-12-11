@@ -28,14 +28,14 @@ class UIManager:
         self.anim_timer = 0
         self.anim_speed = 0.1        
 
-    def show_note(self, text, blocking=False):
+    def show_note(self, note_data, blocking=False):
         self.active = True
         self.is_blocking = blocking
         self.content_type = "NOTE"
         
-        self.note_pages = text.split("[P]")
-        self.current_page = 0
-        self.content_data = self.note_pages[self.current_page]
+        self.current_note_data = note_data
+        self.note_pages = note_data.get("pages", ["..."])
+        self.current_page_index = 0
 
     def show_dialogue(self, data, blocking=False, resume_music_on_close=False):
         self.active = True
@@ -134,31 +134,31 @@ class UIManager:
 
                     self.close()
                 return True
+            
+            elif self.content_type == "NOTE":
+                if event.key == pygame.K_SPACE:
+                    self.current_page_index += 1
 
-            if event.key == pygame.K_SPACE:
-                if self.content_type == "NOTE" and self.current_page < len(self.note_pages) -1:
-                    self.current_page += 1
-                    self.content_data = self.note_pages[self.current_page]
-                    snd = resource_manager.get_sound("sfx_turn_pages")
-                    if snd: snd.play()
-                    self.retro_effects.add_trauma(0.5)
-                elif self.content_type == "NOTE" and self.current_page == len(self.note_pages) -1:
-                    snd = resource_manager.get_sound("sfx_note_closed")
-                    if snd: snd.play()
-                    self.close()
-                elif self.content_type == "DIALOGUE":
+                    if self.current_page_index >= len(self.note_pages):
+                        snd = resource_manager.get_sound("sfx_note_closed")
+                        if snd: snd.play()
+                        self.close()
+                    else:
+                        snd = resource_manager.get_sound("sfx_turn_pages")
+                        if snd: snd.play()
+                        self.retro_effects.add_trauma(0.5)
+
+            elif self.content_type == "DIALOGUE":
+                if event.key == pygame.K_SPACE:
                     snd = resource_manager.get_sound("sfx_dialogue_closed")
                     if snd: snd.play()
                     self.close()
-            
-                else:
-                    # Here are the other content_types: DIALOGUE, IMAGE, ANIMATION
-                    # If I want to add closing sound to each one, I can do the same I did with the notes
-                    # If at any point I want to add the sounds via ActionManager I can add a new param named "closing_sound"
-                    # Then I return it along with all of the data, and just do a self.sounds[self.closing_sound] something like that
-                    self.close()
+                    return True
 
-                return True
+            else:
+                if event.key == pygame.K_SPACE:
+                    self.close()
+                    return True
         
         return self.is_blocking
 
@@ -201,20 +201,26 @@ class UIManager:
         pygame.draw.rect(screen, (0, 0, 0), sheet_rect)
         pygame.draw.rect(screen, (50, 50, 50), sheet_rect, 3)
 
-        lines = self.content_data.split('\n') if isinstance(self.content_data, str) else self.content_data
+        if 0 <= self.current_page_index < len(self.note_pages):
+            page_content = self.note_pages[self.current_page_index]
+        else:
+            page_content = ""
+
+        lines = page_content.split('\n')
         start_y = padding + 20
         
         for i, line in enumerate(lines):
-            txt = self.font.render(line, True, (70, 70, 70))
+            txt = self.ui_font.render(line, True, (200, 200, 200)) 
             screen.blit(txt, (padding + 20, start_y + i * 40))
 
-        if self.current_page < len(self.note_pages) - 1:
+        if self.current_page_index < len(self.note_pages) - 1:
             msg = "Press 'SPACE' to continue..."
         else:
             msg = "Press 'SPACE' to close"
 
         if len(self.note_pages) > 1:
-            page_txt = self.ui_font.render(f"{self.current_page + 1}/{len(self.note_pages)}", True, (150, 150, 150))
+            page_info = f"{self.current_page_index + 1}/{len(self.note_pages)}"
+            page_txt = self.ui_font.render(page_info, True, (150, 150, 150))
             screen.blit(page_txt, (sheet_rect.right - 60, sheet_rect.bottom - 40))
 
         close_txt = self.ui_font.render(msg, True, (200, 200, 200))

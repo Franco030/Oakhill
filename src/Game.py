@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 from src.Game_Constants import *
 from src.Player import Player
 from src.ResourceManager import resource_manager
@@ -7,6 +8,7 @@ from src.UIManager import UIManager
 from src.ActionManager import ActionManager
 from src.EventManager import EventManager
 from src.LevelManager import LevelManager
+from src.NoteManager import NoteManager
 from src.GameState import game_state
 from src.Game_Enums import Actions, Conditions
 from src.Effects import RetroEffects
@@ -24,11 +26,14 @@ class Game:
         self._load_resources()
 
         self.retro_effects = RetroEffects()
-        
-        self.action_manager = ActionManager()
+
+        self.base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.note_manager = NoteManager(self.base_path, language="en")
+        self.action_manager = ActionManager(self.note_manager)
         self.event_manager = EventManager(self.action_manager)
         self.ui_manager = UIManager(self.retro_effects)
         self.level_manager = LevelManager(self.retro_effects)
+        
         
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
@@ -414,6 +419,8 @@ class Game:
 
     def _handle_event_result(self, result):
         if not result: return
+
+        print(f"DEBUG: Game recibió evento tipo: {result.get('type')}")
 
         should_block = result.get("blocking", False)
         should_pause = result.get("pause_music", False)

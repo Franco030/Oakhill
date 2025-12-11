@@ -1,0 +1,14 @@
+{
+    "note_welcome": {
+        "content": {
+            "es": "Hola",
+            "en": "Hi"
+        }
+    },
+    "note_clue_01": {
+        "content": {
+            "es": "La puerta está cerrada con llave.[P]El guardia la escondió bajo la alfombra.",
+            "en": "The door is locked.[P]The guard hid the key under the rug."
+        }
+    }
+}

@@ -8,7 +8,8 @@ import pygame
 import random
 
 class ActionManager:
-    def __init__(self):
+    def __init__(self, note_manager):
+        self.note_manager = note_manager
         pass
 
     def parse_params(self, param_string):
@@ -121,12 +122,26 @@ class ActionManager:
                 )
 
         elif action_type == Actions.SHOW_NOTE:
-            text_content = params.get("text", "")
-            return {
-                "type": "Note",
-                "data": text_content,
-                "sound": params.get("sound")
-            }
+            note_id = params.get("id")
+
+            if not note_id:
+                return None
+            
+            note_data = self.note_manager.get_note_content(note_id)
+
+            if note_data:
+                is_new = game_state.unlock_note(note_id)
+                if is_new:
+                    # What happens when the note is new
+                    pass
+
+                return {
+                    "type": "Note",
+                    "data": note_data,
+                    "sound": params.get("sound")
+                }
+            else:
+                return None
         
         elif action_type == Actions.SHOW_DIALOGUE:
             text = params.get("text", "...")
