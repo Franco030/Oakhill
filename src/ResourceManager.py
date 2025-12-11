@@ -26,7 +26,7 @@ class ResourceManager:
         try:
             base_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(base_dir)
-            path = os.path.join(project_root, "data", "assets.json")
+            path = os.path.join(project_root, "data/database", "assets.json")
             
             if not os.path.exists(path):
                 print(f"[ResourceManager] WARNING: Manifest not found at {path}")

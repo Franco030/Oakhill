@@ -141,7 +141,7 @@ class Game:
         self.player.image = self.player.animations["down"].images[0]
         
         start_req = {
-            "json_path": resource_path("data/forest.json"),
+            "json_path": resource_path("data/maps/forest.json"),
             "map_matrix": WORLD_MAP_LEVEL,
             "entry_zone": INITIAL_ZONE,
             "player_pos": (600, 600),

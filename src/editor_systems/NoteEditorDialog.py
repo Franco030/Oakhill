@@ -56,7 +56,7 @@ class NoteEditorDialog(QDialog):
         self.resize(1000, 700)
         
         self.base_path = base_path
-        self.notes_file = os.path.join(self.base_path, "data/notes.json")
+        self.notes_file = os.path.join(self.base_path, "data/database/notes.json")
         self.notes_data = {}
         self.current_note_id = None
         

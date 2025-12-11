@@ -10,7 +10,7 @@ class NoteManager:
         self.load_database()
 
     def load_database(self):
-        path = os.path.join(self.base_path, "data/notes.json")
+        path = os.path.join(self.base_path, "data/database/notes.json")
         
         if os.path.exists(path):
             try:

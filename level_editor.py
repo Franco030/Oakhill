@@ -194,7 +194,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.disable_property_panel()
 
     def load_asset_manifest(self):
-        path = "data/assets.json"
+        path = "data/database/assets.json"
         if os.path.exists(path):
             try:
                 with open(path, "r") as f:
@@ -211,7 +211,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.update_highlighters()
 
     def load_note_manifest(self):
-        notes_path = os.path.join(self.base_path, "data/notes.json")
+        notes_path = os.path.join(self.base_path, "data/database/notes.json")
         self.note_ids = []
 
         if os.path.exists(notes_path):
