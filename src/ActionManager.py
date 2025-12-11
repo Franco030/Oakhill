@@ -123,6 +123,9 @@ class ActionManager:
 
         elif action_type == Actions.SHOW_NOTE:
             note_id = params.get("id")
+            should_save = str(params.get("save", "false")).lower() == "true"
+
+            print(should_save)
 
             if not note_id:
                 return None
@@ -130,10 +133,11 @@ class ActionManager:
             note_data = self.note_manager.get_note_content(note_id)
 
             if note_data:
-                is_new = game_state.unlock_note(note_id)
-                if is_new:
-                    # What happens when the note is new
-                    pass
+                if should_save:
+                    is_new = game_state.unlock_note(note_id)
+                    if is_new:
+                        # What happens when the note is new
+                        pass
 
                 return {
                     "type": "Note",

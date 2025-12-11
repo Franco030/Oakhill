@@ -5,10 +5,10 @@ COL_KEYWORD_ACTION = QColor("#ff7300")
 COL_NUMBERS = QColor("#9DDB7B")
 COL_BOOLEAN = QColor("#C773C0")
 COL_ASSET_ID = QColor("#9089F0")
-COL_NOTE_ID = QColor("D19A66")
+COL_NOTE_ID = QColor("#CE9055")
 
 class SyntaxHighlighter(QSyntaxHighlighter):
-    def __init__(self, parent=None, asset_keywords=None):
+    def __init__(self, parent=None, asset_keywords=None, note_keywords=None):
         super().__init__(parent)
         self._highlighting_rules = []
 
@@ -42,6 +42,16 @@ class SyntaxHighlighter(QSyntaxHighlighter):
             pattern_str = r"\b(" + "|".join(escaped_keywords) + r")\b"
             
             self._highlighting_rules.append((QRegularExpression(pattern_str), asset_format))
+
+        if note_keywords:
+            note_format = QTextCharFormat()
+            note_format.setForeground(COL_NOTE_ID)
+            note_format.setFontWeight(QFont.Bold)
+
+            escaped_notes = [QRegularExpression.escape(kw) for kw in note_keywords]
+            if escaped_notes:
+                pattern_notes = r"\b(" + "|".join(escaped_notes) + r")\b"
+                self._highlighting_rules.append((QRegularExpression(pattern_notes), note_format))
 
     def highlightBlock(self, text):
         for pattern, fmt in self._highlighting_rules:

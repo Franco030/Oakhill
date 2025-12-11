@@ -420,8 +420,6 @@ class Game:
     def _handle_event_result(self, result):
         if not result: return
 
-        print(f"DEBUG: Game recibió evento tipo: {result.get('type')}")
-
         should_block = result.get("blocking", False)
         should_pause = result.get("pause_music", False)
         

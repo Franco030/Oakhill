@@ -410,7 +410,7 @@
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
                 "trigger_action": "ShowNote",
-                "trigger_params": "id=note_clue_01\nblocking=true\nsound=sfx_interaction_occurred",
+                "trigger_params": "id=note_test\nsave=true\nblocking=true\nsound=sfx_interaction_occurred",
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,

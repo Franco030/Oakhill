@@ -61,6 +61,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.load_asset_manifest()
         asset_ids = list(self.asset_map.keys()) if hasattr(self, "asset_map") else []
 
+        self.load_note_manifest()
+        note_ids = self.note_ids if hasattr(self, "note_ids") else []
+
         self.templates = {}
         self.templates_file = os.path.join(self.base_path, "data", "templates.json")
 
@@ -175,13 +178,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.shortcut_create.activated.connect(self.add_new_object)
         self.shortcut_preview = QShortcut(QKeySequence(Qt.Key.Key_F1), self)
         self.shortcut_preview.activated.connect(self.change_background_color)
+        self.shortcut_note_dialog = QShortcut(QKeySequence("Ctrl+N"), self)
+        self.shortcut_note_dialog.activated.connect(self.open_note_editor)
         self.combo_map_select.addItems(list(MAPS.keys()))
         self.chk_layer_obstacles.stateChanged.connect(self.update_layers)
         self.chk_layer_triggers.stateChanged.connect(self.update_layers)
         self.chk_layer_interactables.stateChanged.connect(self.update_layers)
         self.chk_lock_ground.stateChanged.connect(self.update_layers)
-        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids)
-        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids)
+        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
+        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
         self.populate_image_combos()
         self.populate_sound_combos()
         self.populate_assets_list()
@@ -205,9 +210,23 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.update_highlighters()
 
+    def load_note_manifest(self):
+        notes_path = os.path.join(self.base_path, "data/notes.json")
+        self.note_ids = []
+
+        if os.path.exists(notes_path):
+            try:
+                with open(notes_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.note_ids = list(data.keys())
+            except Exception as e:
+                print(f"[Editor] Error loading note manifest: {e}")
+
     def open_note_editor(self):
         dialog = NoteEditorDialog(self.base_path, self)
         dialog.exec()
+        self.load_note_manifest()
+        self.update_highlighters()
 
     def perform_undo(self): self.undo_manager.undo()
     def perform_redo(self): self.undo_manager.redo()
@@ -1688,7 +1707,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         """)
         
         asset_ids = list(self.asset_map.keys())
-        self.temp_highlighter = SyntaxHighlighter(big_editor.document(), asset_ids)
+        note_ids = self.note_ids if hasattr(self, "note_ids") else []
+        self.temp_highlighter = SyntaxHighlighter(big_editor.document(), asset_ids, note_ids)
 
         layout.addWidget(big_editor)
         
@@ -1701,12 +1721,11 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             source_text_edit.setPlainText(big_editor.toPlainText())
 
     def update_highlighters(self):
-        if not hasattr(self, "asset_map"): return
-
         asset_ids = list(self.asset_map.keys())
+        note_ids = self.note_ids if hasattr(self, "note_ids") else []
 
-        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids)
-        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids)
+        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
+        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
 
     def change_background_color(self):
         if self.background_toggle:

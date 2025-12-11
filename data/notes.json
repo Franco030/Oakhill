@@ -7,8 +7,14 @@
     },
     "note_clue_01": {
         "content": {
-            "es": "La puerta está cerrada con llave.[P]El guardia la escondió bajo la alfombra.",
-            "en": "The door is locked.[P]The guard hid the key under the rug."
+            "es": "123456789ABCDEF123456789ABCDEF",
+            "en": "123456789ABCDEF123456789ABCDEF"
+        }
+    },
+    "note_test": {
+        "content": {
+            "es": "Hola Hola",
+            "en": "Hi Hi"
         }
     }
 }

@@ -210,7 +210,7 @@ class UIManager:
         start_y = padding + 20
         
         for i, line in enumerate(lines):
-            txt = self.ui_font.render(line, True, (200, 200, 200)) 
+            txt = self.font.render(line, True, (200, 200, 200)) 
             screen.blit(txt, (padding + 20, start_y + i * 40))
 
         if self.current_page_index < len(self.note_pages) - 1:

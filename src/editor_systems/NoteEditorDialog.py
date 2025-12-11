@@ -55,12 +55,12 @@ class NoteEditorDialog(QDialog):
         right_layout.addWidget(self.lbl_id)
         
         self.tabs = QTabWidget()
+
+        self.edit_en = QTextEdit()
+        self.tabs.addTab(self.edit_en, "English (EN)")
         
         self.edit_es = QTextEdit()
         self.tabs.addTab(self.edit_es, "Español (ES)")
-        
-        self.edit_en = QTextEdit()
-        self.tabs.addTab(self.edit_en, "English (EN)")
         
         right_layout.addWidget(self.tabs)
         
