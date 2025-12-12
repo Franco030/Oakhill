@@ -119,8 +119,14 @@ class UIManager:
             if self.content_type == "CHOICE":
                 if event.key in [pygame.K_a, pygame.K_LEFT]:
                     self.choice_selection = True
+                    snd = resource_manager.get_sound("sfx_select_choice")
+                    if snd: snd.play()
+                    self.retro_effects.add_trauma(0.1)
                 elif event.key in [pygame.K_d, pygame.K_RIGHT]:
                     self.choice_selection = False
+                    snd = resource_manager.get_sound("sfx_select_choice")
+                    if snd: snd.play()
+                    self.retro_effects.add_trauma(0.1)
 
                 elif event.key == pygame.K_SPACE:
                     target_flag = self.content_data.get("flag")

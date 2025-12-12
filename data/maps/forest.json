@@ -11,7 +11,7 @@
                 "id": "obj_1765238461284_230",
                 "type": "Interactable",
                 "x": 640,
-                "y": 280,
+                "y": 281,
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -134,45 +134,6 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "image_id": "spr_cemetery_walls_1"
-            },
-            {
-                "id": "obj_1765243410356_181",
-                "type": "Trigger",
-                "x": 277,
-                "y": 491,
-                "image_path": "",
-                "resize_factor": 1.0,
-                "is_passable": false,
-                "starts_hidden": false,
-                "collision_rect_offset": [
-                    0,
-                    0,
-                    0,
-                    0
-                ],
-                "width": 100,
-                "height": 100,
-                "color": [
-                    255,
-                    255,
-                    255
-                ],
-                "border_width": 0,
-                "animation_images": [],
-                "animation_speed": 0.1,
-                "flash_image_path": "",
-                "charge_sound_path": "",
-                "used_image_path": "",
-                "interaction_duration": 120,
-                "trigger_condition": "OnStay",
-                "trigger_action": "ModifyObject",
-                "trigger_params": "id=obj_1765238461284_230\nimage_id=spr_cemetery_door_closed\ninteraction_blocked=false\nflash_image_id=spr_cemetery_door_flash\ncharge_sound_id=sfx_interacting",
-                "z_index": 0,
-                "sort_offset_y": 0,
-                "reflection_offset_y": 0,
-                "animation_auto_play": false,
-                "scripted_events": [],
-                "interaction_blocked": false
             },
             {
                 "id": "obj_1765261277750_284",
@@ -327,19 +288,60 @@
                 "interaction_blocked": false
             },
             {
-                "id": "obj_1765397975957_488",
+                "id": "obj_1765495681237_66",
+                "type": "Obstacle",
+                "x": 499,
+                "y": 199,
+                "image_id": "spr_crow_0",
+                "resize_factor": 4.0,
+                "is_passable": true,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "width": 78,
+                "height": 71,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 3,
+                "animation_images": [
+                    "spr_crow_1",
+                    "spr_crow_2"
+                ],
+                "animation_speed": 0.15,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false
+            },
+            {
+                "id": "obj_1765497765529_294",
                 "type": "Trigger",
-                "x": 160,
-                "y": 405,
+                "x": 381,
+                "y": -89,
                 "image_id": "",
                 "resize_factor": 1.0,
                 "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    0,
-                    0,
-                    173,
-                    1
+                    -392,
+                    545,
+                    1309,
+                    98
                 ],
                 "width": 100,
                 "height": 100,
@@ -356,26 +358,8 @@
                 "used_image_id": "",
                 "interaction_duration": 120,
                 "trigger_condition": "OnStay",
-                "trigger_action": "SetFlag",
-                "trigger_params": "",
-                "scripted_events": [
-                    {
-                        "action": "AskChoice",
-                        "params": "text=Usar llave?; flag=uso_llave"
-                    },
-                    {
-                        "action": "JumpIfFalse",
-                        "params": "label=fin"
-                    },
-                    {
-                        "action": "Wait",
-                        "params": "time=1.0"
-                    },
-                    {
-                        "action": "Label",
-                        "params": "id=fin"
-                    }
-                ],
+                "trigger_action": "SlideObject",
+                "trigger_params": "id=obj_1765495681237_66\nx=-100\ny=-100\nduration=3.2\nanimate=true\nrelative=false\n",
                 "z_index": 0,
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
@@ -383,16 +367,16 @@
                 "interaction_blocked": false
             },
             {
-                "type": "Interactable",
-                "image_id": "spr_note",
+                "type": "Obstacle",
+                "image_id": "spr_tree_0",
                 "resize_factor": 4.0,
-                "is_passable": true,
+                "is_passable": false,
                 "starts_hidden": false,
                 "collision_rect_offset": [
-                    0,
-                    0,
-                    0,
-                    0
+                    57,
+                    125,
+                    -114,
+                    -166
                 ],
                 "width": 100,
                 "height": 100,
@@ -409,18 +393,299 @@
                 "used_image_id": "",
                 "interaction_duration": 60,
                 "trigger_condition": "OnStay",
-                "trigger_action": "ShowNote",
-                "trigger_params": "id=note_clue_01\nsave=true\nblocking=true\nsound=sfx_interaction_occurred",
-                "is_ground": true,
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
                 "z_index": 0,
                 "reflection_offset_y": 0,
                 "interaction_data": "",
-                "id": "obj_1765478066109_659",
-                "x": 937,
-                "y": 488,
+                "sort_offset_y": -20,
+                "id": "obj_1765498400374_305",
+                "x": 173,
+                "y": 582,
+                "animation_auto_play": false,
+                "interaction_blocked": false
+            },
+            {
+                "type": "Obstacle",
+                "image_id": "spr_tree_1",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    41,
+                    132,
+                    -103,
+                    -156
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765498403553_511",
+                "x": 972,
+                "y": 491,
+                "animation_auto_play": false,
+                "interaction_blocked": false
+            },
+            {
+                "type": "Obstacle",
+                "image_id": "spr_tree_2",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    49,
+                    122,
+                    -119,
+                    -158
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "sort_offset_y": -20,
+                "id": "obj_1765498410184_517",
+                "x": 322,
+                "y": 394,
+                "animation_auto_play": false,
+                "interaction_blocked": false
+            },
+            {
+                "type": "Obstacle",
+                "image_id": "spr_stone_1",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    3,
+                    -7,
+                    -3,
+                    10
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 60,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "reflection_offset_y": 0,
+                "interaction_data": "",
+                "id": "obj_1765498417780_821",
+                "x": 85,
+                "y": 577,
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false
+            },
+            {
+                "id": "obj_1765498426950_777",
+                "type": "Obstacle",
+                "x": 1011,
+                "y": 601,
+                "z_index": 0,
+                "image_id": "spr_stone_2",
+                "resize_factor": 4.0,
+                "is_passable": false,
+                "width": 60,
+                "height": 60,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "collision_rect_offset": [
+                    3,
+                    1,
+                    -7,
+                    -2
+                ],
+                "interaction_duration": 60,
+                "sort_offset_y": 0,
+                "border_width": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false
+            },
+            {
+                "id": "obj_1765498595669_24",
+                "type": "Trigger",
+                "x": 452,
+                "y": -87,
+                "image_id": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    136,
+                    436,
+                    89,
+                    7
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "ShowDialogue",
+                "trigger_params": "kill=false",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false,
+                "scripted_events": [
+                    {
+                        "action": "JumpIfFalse",
+                        "params": "flag=has_cemetery_key\ntarget=cemetery_key_false"
+                    },
+                    {
+                        "action": "JumpIfTrue",
+                        "params": "flag=has_cemetery_key\ntarget=cemetery_key_true"
+                    },
+                    {
+                        "action": "Label",
+                        "params": "id=cemetery_key_false"
+                    },
+                    {
+                        "action": "ShowDialogue",
+                        "params": "text=This door is blocked\\nThere's a lock.\nsound=sfx_dialogue_occurred"
+                    },
+                    {
+                        "action": "Exit",
+                        "params": ""
+                    },
+                    {
+                        "action": "Label",
+                        "params": "id=cemetery_key_true"
+                    },
+                    {
+                        "action": "AskChoice",
+                        "params": "text=There's a lock. Use key?\nflag=used_key\nblocking=true"
+                    },
+                    {
+                        "action": "JumpIfFalse",
+                        "params": "flag=used_key\ntarget=used_key_false"
+                    },
+                    {
+                        "action": "ModifyObject",
+                        "params": "id=obj_1765238461284_230\nimage_id=spr_cemetery_door_closed\nflash_image_id=spr_cemetery_door_flash\ncharge_sound_id=sfx_interacting\ninteraction_blocked=false\nsound=sfx_interaction_occurred\nkill=true"
+                    },
+                    {
+                        "action": "Exit",
+                        "params": ""
+                    },
+                    {
+                        "action": "Label",
+                        "params": "id=used_key_false"
+                    },
+                    {
+                        "action": "PlaySound",
+                        "params": "sound=sfx_flee_loop"
+                    }
+                ]
+            },
+            {
+                "id": "obj_1765500959_15",
+                "type": "Interactable",
+                "x": 338,
+                "y": 565,
+                "image_id": "spr_key_0",
+                "resize_factor": 4.0,
+                "is_passable": true,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "width": 24,
+                "height": 24,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 3,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false,
+                "scripted_events": [
+                    {
+                        "action": "SetFlag",
+                        "params": "flag=has_cemetery_key\nvalue=true"
+                    },
+                    {
+                        "action": "ShowDialogue",
+                        "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred"
+                    }
+                ]
             }
         ],
         "(2, 3)": [
@@ -4338,8 +4603,8 @@
             {
                 "id": "obj_1764906038_19",
                 "type": "Obstacle",
-                "x": 463,
-                "y": 193,
+                "x": 468,
+                "y": 191,
                 "resize_factor": 4.0,
                 "is_passable": false,
                 "starts_hidden": false,
@@ -4373,6 +4638,54 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "image_id": "spr_stone_2"
+            },
+            {
+                "id": "obj_1765499390800_527",
+                "type": "Interactable",
+                "x": 569,
+                "y": 244,
+                "image_id": "spr_key_0",
+                "resize_factor": 4.0,
+                "is_passable": true,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "width": 24,
+                "height": 24,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 3,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnStay",
+                "trigger_action": "SetFlag",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false,
+                "scripted_events": [
+                    {
+                        "action": "SetFlag",
+                        "params": "flag=has_cemetery_key\nvalue=true"
+                    },
+                    {
+                        "action": "ShowDialogue",
+                        "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred"
+                    }
+                ]
             }
         ],
         "(4, 2)": [

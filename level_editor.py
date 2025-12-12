@@ -1763,7 +1763,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.asset_map[new_id] = clean_path
         print(f"[Auto-Register] New assets registered: {new_id} -> {clean_path}")
 
-        json_path = "data/assets.json"
+        json_path = "data/database/assets.json"
         if os.path.exists(json_path):
             try:
                 with open(json_path, "r") as f:

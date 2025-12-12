@@ -446,3 +446,6 @@ class Game:
             
             if result.get("pause_music", False):
                 pygame.mixer.music.pause()
+
+        elif result["type"] == "DESTROY":
+            target_id = result["id"]

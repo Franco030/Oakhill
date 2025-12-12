@@ -241,7 +241,6 @@ class ActionManager:
                         ty = int(params.get("y", 0))
                         dur = float(params.get("duration", 1.0))
                         is_rel = str(params.get("relative", "false")).lower() == "true"
-
                         should_animate = str(params.get("animate", "false")).lower() == "true"
 
                         if should_animate and hasattr(target_obj, "start_animation"):
@@ -304,4 +303,13 @@ class ActionManager:
         elif action_type == Actions.LABEL:
             return None
         
+        elif action_type == Actions.DESTROY_OBJECT:
+            target_id = params.get("id")
+
+            # if target_id == "SELF" and self.current_event_source_id:
+            #     target_id = self.current_event_source_id
+        
+            if target_id:
+                return {"type": "DESTROY", "id": target_id}
+
         return None

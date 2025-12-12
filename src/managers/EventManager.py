@@ -69,7 +69,7 @@ class EventManager:
             target_label = result.get("target")
             
             if not target_label:
-                print(f"[EventManager] Error: Salto sin etiqueta destino.")
+                print(f"[EventManager] Error: Jump without label target.")
                 self.step_index += 1
                 return None
 
@@ -83,10 +83,10 @@ class EventManager:
                         break
             
             if found_index != -1:
-                print(f"[EventManager] Saltando a etiqueta '{target_label}' (índice {found_index})")
+                print(f"[EventManager] Jump to '{target_label}' (index {found_index})")
                 self.step_index = found_index
             else:
-                print(f"[EventManager] ERROR: Etiqueta '{target_label}' no encontrada. Continuando.")
+                print(f"[EventManager] ERROR: Label '{target_label}' not found. Continuing")
                 self.step_index += 1
             
             return None

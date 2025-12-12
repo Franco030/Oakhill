@@ -93,9 +93,7 @@ Actions that display visual elements on the screen.
 ### `ShowDialogue`
 Displays the standard text box at the bottom of the screen.
 * **text**: The content string. Use `\n` for line breaks.
-* **name**: (Optional) Name of the speaker.
-* **speed**: (Optional) Text scrolling speed.
-* **Example**: `text=It is locked from the other side.;speed=0.05`
+* **Example**: `text=It is locked from the other side.`
 
 ### `ShowNote`
 Displays a full-screen note or document overlay.
@@ -142,8 +140,8 @@ Smoothly interpolates an object to a new position over time.
 * **id**: The ID of the target object.
 * **x**: Target X coordinate.
 * **y**: Target Y coordinate.
-* **speed**: (or `duration`) Speed of movement.
-* **Example**: `id=obj_moving_platform;x=600;y=600;speed=2.0`
+* **duration**:  The time of the movement completion.
+* **Example**: `id=obj_moving_platform;x=600;y=600;duration=5.0(s)`
 
 ### `HideObject`
 Makes an object invisible and non-interactable.

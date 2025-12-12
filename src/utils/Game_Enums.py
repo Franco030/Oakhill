@@ -23,6 +23,7 @@ class Actions:
     JUMP_IF_FALSE = "JumpIfFalse"
     LABEL = "Label"
     EXIT = "Exit"
+    DESTROY_OBJECT = "DestroyObject"
 
     @classmethod
     def get_actions(cls):
@@ -32,7 +33,7 @@ class Actions:
             cls.CHANGE_LEVEL, cls.SHOW_IMAGE, cls.CLOSE_IMAGE, cls.SHOW_NOTE,
             cls.SHOW_ANIMATION, cls.CHANGE_MUSIC, cls.RANDOM_ACTION, cls.MODIFY_LIGHT,
             cls.MOVE_OBJECT, cls.SLIDE_OBJECT, cls.MODIFY_OBJECT, cls.ASK_CHOICE,
-            cls.JUMP_IF_TRUE, cls.JUMP_IF_FALSE, cls.LABEL, cls.EXIT
+            cls.JUMP_IF_TRUE, cls.JUMP_IF_FALSE, cls.LABEL, cls.EXIT, cls.DESTROY_OBJECT
         ]
 
 class Conditions:
