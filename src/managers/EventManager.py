@@ -99,15 +99,6 @@ class EventManager:
         if result is not None:
             self.step_index += 1
             return result
-        # if isinstance(result, dict):
-        #     if result.get("type") == "Image":
-        #         self.current_image = result.get("data") 
-        #     if result.get("type") == "Choice":
-        #         self.step_index += 1 
-        #         return result 
-
-        #     self.step_index += 1
-        #     return result
 
         self.step_index += 1
         return None
@@ -162,18 +153,10 @@ class EventManager:
         if act and act != "None":
             obj_id = getattr(obj, "id", None)
             result = self.action_manager.execute(act, raw_params, player, scene, source_id=obj_id)
-            
+
             if result:
-                blocking_param = params.get("blocking", None)
-                
-                if blocking_param is not None:
-                    if isinstance(result, dict):
-                        result["blocking"] = blocking_param
-                    elif hasattr(result, "blocking"):
-                        result.blocking = blocking_param
-                else:
-                    if isinstance(result, dict):
-                         result["blocking"] = self.is_blocking
+                if self.is_blocking and hasattr(result, "blocking"):
+                    pass
 
             if act in [Actions.TELEPORT, Actions.CHANGE_LEVEL]: 
                 should_kill = False

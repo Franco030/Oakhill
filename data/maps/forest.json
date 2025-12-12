@@ -687,7 +687,7 @@
                     },
                     {
                         "action": "ShowDialogue",
-                        "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred"
+                        "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred\nblocking=false"
                     }
                 ],
                 "is_ground": true
