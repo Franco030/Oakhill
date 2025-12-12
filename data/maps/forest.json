@@ -623,7 +623,11 @@
                     },
                     {
                         "action": "ModifyObject",
-                        "params": "id=obj_1765238461284_230\nimage_id=spr_cemetery_door_closed\nflash_image_id=spr_cemetery_door_flash\ncharge_sound_id=sfx_interacting\ninteraction_blocked=false\nsound=sfx_interaction_occurred\nkill=true"
+                        "params": "id=obj_1765238461284_230\nimage_id=spr_cemetery_door_closed\nflash_image_id=spr_cemetery_door_flash\ncharge_sound_id=sfx_interacting\ninteraction_blocked=false\nsound=sfx_interaction_occurred"
+                    },
+                    {
+                        "action": "DestroyObject",
+                        "params": "id=SELF"
                     },
                     {
                         "action": "Exit",
@@ -685,7 +689,8 @@
                         "action": "ShowDialogue",
                         "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred"
                     }
-                ]
+                ],
+                "is_ground": true
             }
         ],
         "(2, 3)": [

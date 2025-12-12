@@ -449,3 +449,6 @@ class Game:
 
         elif result["type"] == "DESTROY":
             target_id = result["id"]
+
+            if self.level_manager.current_scene:
+                self.level_manager.current_scene.remove_object_by_id(target_id)

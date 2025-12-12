@@ -112,7 +112,7 @@ class Scene:
         if self.location in self._triggers_dict:
             current_trigs = self._triggers_dict[self.location]
             for trig in current_trigs:
-                self._register_object_id(obj)
+                self._register_object_id(trig)
                 if trig.id and game_state.has_interacted(trig.id) or trig.is_hidden:
                     continue
                 self._triggers.add(trig)
@@ -268,3 +268,37 @@ class Scene:
             print(f"[Scene] Object '{target_id}' found but has no 'modify' method.")
         else:
             print(f"[Scene] Warning: Cannot modify '{target_id}', not found.")
+
+
+    def remove_object_by_id(self, target_id):
+        obj = self.get_object_by_id(target_id)
+
+        if obj:
+            if hasattr(obj, 'kill'):
+                obj.kill()
+
+            clean_id = str(target_id).replace(" ", "")
+            if clean_id in self._id_map:
+                del self._id_map[clean_id]
+
+            source_dicts = [
+                self.obstacles_dict, 
+                self._interactables_dict, 
+                self._triggers_dict, 
+                self.enemies_dict
+            ]
+
+            found_in_data = False
+            for d in source_dicts:
+                if self.location in d:
+                    if obj in d[self.location]:
+                        d[self.location].remove(obj)
+                        found_in_data = True
+            
+            if found_in_data:
+                print(f"[Scene] Object '{target_id}' permanently deleted")
+            else:
+                print(f"[Scene] Object '{target_id}' visually deteleted.")
+
+        else:
+            print(f"[Scene] Warning: Object '{target_id}' was not found to be deleted")

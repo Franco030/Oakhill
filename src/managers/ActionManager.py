@@ -36,7 +36,7 @@ class ActionManager:
                 params[key] = value
         return params
 
-    def execute(self, action_type, param_string, player, scene):
+    def execute(self, action_type, param_string, player, scene, source_id):
         print(f"[ACTION] {action_type} -> {param_string}")
         params = self.parse_params(param_string)
 
@@ -306,8 +306,12 @@ class ActionManager:
         elif action_type == Actions.DESTROY_OBJECT:
             target_id = params.get("id")
 
-            # if target_id == "SELF" and self.current_event_source_id:
-            #     target_id = self.current_event_source_id
+            if target_id == "SELF":
+                if source_id:
+                    target_id = source_id
+                else:
+                    print(f"[ActionManager] Error: SELF was used but was not bound to any ID")
+                    return None
         
             if target_id:
                 return {"type": "DESTROY", "id": target_id}

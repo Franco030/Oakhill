@@ -125,6 +125,8 @@ class SequenceListWidget(QListWidget):
         pen.setWidth(2)
         painter.setPen(pen)
 
+        painter.setBrush(Qt.NoBrush)
+
         offset_depth = (start_idx % 5) * 5
         x_base = self.viewport().width() - 25 - offset_depth
         y_start = rect_start.center().y()

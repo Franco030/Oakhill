@@ -14,7 +14,9 @@ class EventManager:
         self.wait_timer = 0
         self.current_image = None
 
-    def start_sequence(self, sequence_list, blocking=False):
+        self.current_source_id = None
+
+    def start_sequence(self, sequence_list, blocking=False, source_id=None):
         if not sequence_list: return
         if self.is_active: return
         
@@ -24,6 +26,8 @@ class EventManager:
         self.is_active = True
         self.is_blocking = blocking
         self.current_image = None
+
+        self.current_source_id = source_id
         
 
     def end_sequence(self):
@@ -32,6 +36,7 @@ class EventManager:
         self.current_sequence = []
         self.step_index = 0
         self.current_image = None
+        self.current_source_id = None
         
     def update(self, delta_time, player, scene):
         if not self.is_active:
@@ -55,7 +60,7 @@ class EventManager:
             self.step_index += 1
             return None
 
-        result = self.action_manager.execute(action, raw_params, player, scene)
+        result = self.action_manager.execute(action, raw_params, player, scene, source_id=self.current_source_id)
 
         if action == Actions.LABEL:
             self.step_index += 1
@@ -142,8 +147,9 @@ class EventManager:
         if hasattr(obj, "data") and obj.data.get("scripted_events"):
             sequence = obj.data.get("scripted_events")
             blocking = params.get("blocking", False)
-            
-            self.start_sequence(sequence, blocking)
+
+            obj_id = getattr(obj, "id", None)
+            self.start_sequence(sequence, blocking, source_id=obj_id)
             
             if should_kill:
                 obj.kill()
@@ -151,7 +157,8 @@ class EventManager:
 
         act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
         if act and act != "None":
-            result = self.action_manager.execute(act, raw_params, player, scene)
+            obj_id = getattr(obj, "id", None)
+            result = self.action_manager.execute(act, raw_params, player, scene, source_id=obj_id)
             
             if result:
                 blocking_param = params.get("blocking", None)
