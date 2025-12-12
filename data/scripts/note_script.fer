@@ -1,0 +1,4 @@
+func on_enter() {
+    play_sound("sfx_interaction_occurred")
+    show_dialogue("Hola como estas")
+}

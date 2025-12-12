@@ -15,6 +15,9 @@ class Interactable(Obstacle):
         Initialices the interactable object 
         """
         super().__init__(data) 
+
+        self.script = data.get("script")
+        self.function = data.get("function")
         
         self.interacted_once = False
         self.is_hidden = data.get("starts_hidden", False)

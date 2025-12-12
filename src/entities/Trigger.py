@@ -6,6 +6,10 @@ class Trigger(pygame.sprite.Sprite):
         super().__init__()
         self.data = data
         self.id = data.get("id")
+
+        self.script = data.get("script") # Name of the script
+        self.function = data.get("function") # Condition e.g. (on_enter)
+
         self.condition = data.get("trigger_condition", Conditions.ON_STAY)
         self.action = data.get("trigger_action", "None")
         self.params = data.get("trigger_params", "")

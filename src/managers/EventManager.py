@@ -1,5 +1,7 @@
 from src.core.GameState import game_state
 from src.utils.Game_Enums import Conditions, Actions
+from src.managers.ScriptManager import script_manager
+from src.scripting.Interpreter import Interpreter
 
 class EventManager:
     def __init__(self, action_manager):
@@ -104,6 +106,47 @@ class EventManager:
         return None
 
     def process_trigger(self, obj, player, scene):
+
+        if hasattr(obj, "script") and obj.script:
+            script_name = obj.script
+            func_name = getattr(obj, "function", "main") or "main" # Default a 'main' si no hay función
+
+            # Obtenemos el AST compilado (caché)
+            ast = script_manager.get_script(script_name)
+            
+            if ast:
+                # Instanciamos el intérprete temporalmente para este evento
+                interpreter = Interpreter(self.action_manager, player, scene)
+                interpreter.load(ast)
+                
+                print(f"[EventManager] Executing Script: {script_name} -> {func_name}()")
+                
+                try:
+                    # Ejecutamos la función. 
+                    # Si el script hace 'return show_dialogue(...)', capturamos ese resultado.
+                    result = interpreter.run_function(func_name)
+                    
+                    # Manejo de 'kill' para scripts (si es un trigger de un solo uso)
+                    # Podemos usar params del objeto o lógica interna
+                    should_kill = False
+                    if hasattr(obj, "condition") and obj.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG]:
+                         # Podrías agregar una propiedad "kill_on_script" al JSON si quieres control fino
+                         pass 
+
+                    # Si el script devuelve un GameResult (ej. DialogueResult), lo pasamos al Game
+                    return result
+
+                except Exception as e:
+                    print(f"[EventManager] Error executing script '{script_name}': {e}")
+                    return None
+            else:
+                print(f"[EventManager] Error: script '{script_name}' was not found")
+                return None
+
+
+
+        # OLD SYSTEM
+
         raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
         params = self.action_manager.parse_params(raw_params)
         

@@ -60,14 +60,11 @@ class ActionManager:
                 snd.play()
 
         handler = _handlers_registry.get(action_type)
-
         if handler:
             result = handler(self, params, param_string, player, scene, source_id)
-
             if result and hasattr(result, "blocking"):
                 if "blocking" in params:
                     result.blocking = params.get("blocking")
-                    
             return result
         else:
             print(f"[ActionManager] Warning: Action {action_type} not implemented")

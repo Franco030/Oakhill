@@ -13,6 +13,7 @@ from src.managers.EventManager import EventManager
 from src.managers.LevelManager import LevelManager
 from src.managers.NoteManager import NoteManager
 from src.core.GameState import game_state
+from src.managers.ScriptManager import script_manager
 from src.utils.Game_Enums import Actions, Conditions
 from src.managers.Effects import RetroEffects
 from src.utils.utils import resource_path

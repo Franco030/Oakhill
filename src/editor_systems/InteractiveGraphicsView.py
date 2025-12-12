@@ -78,7 +78,8 @@ class InteractiveGraphicsView(QGraphicsView):
             
             event.accept()
         else:
-            super().wheelEvent(event)
+            event.ignore()
+            # super().wheelEvent(event)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and (event.modifiers() & Qt.ControlModifier):
