@@ -26,6 +26,11 @@ class TokenType:
     GT = "GT"                   # >
     LT = "LT"                   # <
 
+    PLUS = "PLUS"   # +
+    MINUS = "MINUS" # -
+    MUL = "MUL"     # *
+    DIV = "DIV"     # /
+
     # Specials
     EOF = "EOF" # End of file
 
@@ -159,9 +164,23 @@ class Lexer:
         if self.peek() == '/':
             self.skip_comment()
             return None # No token generated
-        # Division may be here
         self.advance()
-        return None 
+        return Token(TokenType.DIV, line=self.line)
+    
+    @register_token('+')
+    def _handle_plus(self):
+        self.advance()
+        return Token(TokenType.PLUS, line=self.line)
+
+    @register_token('-')
+    def _handle_minus(self):
+        self.advance()
+        return Token(TokenType.MINUS, line=self.line)
+
+    @register_token('*')
+    def _handle_mul(self):
+        self.advance()
+        return Token(TokenType.MUL, line=self.line)
 
     @register_token('"')
     def _handle_string(self):

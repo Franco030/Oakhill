@@ -10,9 +10,14 @@ class Program(ASTNode):
         self.declarations = declarations # Function's list
 
 class FunctionDecl(ASTNode):
-    def __init__(self, name, body):
+    def __init__(self, name, params, body):
         self.name = name
+        self.params = params
         self.body = body # Block node
+
+class ReturnStatement(ASTNode):
+    def __init__(self, value):
+        self.value = value
 
 class Block(ASTNode):
     def __init__(self, statements):

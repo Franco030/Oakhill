@@ -1,7 +1,7 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import (
     Program, FunctionDecl, Block, FunctionCall, 
-    Literal, IfStatement, BinaryOp
+    Literal, IfStatement, BinaryOp, ReturnStatement
 )
 
 class Parser:
@@ -56,12 +56,20 @@ class Parser:
         name = self.consume(TokenType.IDENTIFIER, "a function name was expected").value
         
         self.consume(TokenType.LPAREN, "'(' was expected after the name")
-        # We may parse arguments here
+
+        parameters = []
+        if not self.check(TokenType.RPAREN):
+            while True:
+                param_token = self.consume(TokenType.IDENTIFIER, "a parameter was expected")
+                parameters.append(param_token.value)
+
+                if not self.check(TokenType.COMMA): break
+                self.advance()
         self.consume(TokenType.RPAREN, "')' was expected")
         
         self.consume(TokenType.LBRACE, "'{' was expected before the block")
         body = self.block()
-        return FunctionDecl(name, body)
+        return FunctionDecl(name, parameters, body)
 
     def block(self):
         """
@@ -78,6 +86,10 @@ class Parser:
     def statement(self):
         if self.check(TokenType.IF):
             return self.if_statement()
+        
+        if self.check(TokenType.RETURN):
+            return self.return_statement()
+
         if self.check(TokenType.LBRACE): # Nested block
             self.consume(TokenType.LBRACE, "")
             return self.block()
@@ -106,6 +118,16 @@ class Parser:
         expr = self.expression()
         self.consume(TokenType.SEMICOLON, "';' was expected at the end of the sentence")
         return expr
+    
+    def return_statement(self):
+        self.consume(TokenType.RETURN, "return was expected")
+        value = None
+
+        if not self.check(TokenType.SEMICOLON):
+            value = self.expression()
+
+        self.consume(TokenType.SEMICOLON, "';' was expected after return")
+        return ReturnStatement(value)
 
     def expression(self):
         return self.equality()
@@ -123,10 +145,33 @@ class Parser:
 
     def comparison(self):
         """
-        Handles comparisons of type: x > y
+        Handles comparisons of type: x > y.
+        Calls addition instead of 'primary'
+        """
+        expr = self.addition()
+        while self.check(TokenType.GT) or self.check(TokenType.LT):
+            operator = self.advance().type
+            right = self.addition()
+            expr = BinaryOp(expr, operator, right)
+        return expr
+    
+    def addition(self):
+        """
+        Handles + and - (low priority)
+        """
+        expr = self.multiplication()
+        while self.check(TokenType.PLUS) or self.check(TokenType.MINUS):
+            operator = self.advance().type
+            right = self.multiplication()
+            expr = BinaryOp(expr, operator, right)
+        return expr
+    
+    def multiplication(self):
+        """
+        Handles * and / (high priority)
         """
         expr = self.primary()
-        while self.check(TokenType.GT) or self.check(TokenType.LT):
+        while self.check(TokenType.MUL) or self.check(TokenType.DIV):
             operator = self.advance().type
             right = self.primary()
             expr = BinaryOp(expr, operator, right)
