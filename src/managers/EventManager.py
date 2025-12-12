@@ -96,15 +96,18 @@ class EventManager:
             
             return None
 
-        if isinstance(result, dict):
-            if result.get("type") == "Image":
-                self.current_image = result.get("data") 
-            if result.get("type") == "Choice":
-                self.step_index += 1 
-                return result 
-
+        if result is not None:
             self.step_index += 1
             return result
+        # if isinstance(result, dict):
+        #     if result.get("type") == "Image":
+        #         self.current_image = result.get("data") 
+        #     if result.get("type") == "Choice":
+        #         self.step_index += 1 
+        #         return result 
+
+        #     self.step_index += 1
+        #     return result
 
         self.step_index += 1
         return None
@@ -164,9 +167,13 @@ class EventManager:
                 blocking_param = params.get("blocking", None)
                 
                 if blocking_param is not None:
-                    result["blocking"] = blocking_param
+                    if isinstance(result, dict):
+                        result["blocking"] = blocking_param
+                    elif hasattr(result, "blocking"):
+                        result.blocking = blocking_param
                 else:
-                    result["blocking"] = self.is_blocking
+                    if isinstance(result, dict):
+                         result["blocking"] = self.is_blocking
 
             if act in [Actions.TELEPORT, Actions.CHANGE_LEVEL]: 
                 should_kill = False

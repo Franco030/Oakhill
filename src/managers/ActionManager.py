@@ -4,6 +4,10 @@ from src.utils.utils import resource_path
 from .ResourceManager import resource_manager
 from .TweenManager import tween_manager
 from src.utils.Game_Enums import Actions
+from src.core.GameResults import (
+    NoteResult, DialogueResult, ChoiceResult,
+    ImageResult, AnimationResult, DestroyResult
+)
 import pygame
 import random
 
@@ -124,6 +128,7 @@ class ActionManager:
         elif action_type == Actions.SHOW_NOTE:
             note_id = params.get("id")
             should_save = str(params.get("save", "false")).lower() == "true"
+            should_block = str(params.get("blocking", "false")).lower() == "true"
 
             if not note_id:
                 return None
@@ -136,12 +141,8 @@ class ActionManager:
                     if is_new:
                         # What happens when the note is new
                         pass
-
-                return {
-                    "type": "Note",
-                    "data": note_data,
-                    "sound": params.get("sound")
-                }
+                
+                return NoteResult(note_data, blocking=should_block)
             else:
                 return None
         
@@ -149,6 +150,8 @@ class ActionManager:
             text = params.get("text", "...")
             color_str = str(params.get("color", "255,255,255"))
             should_pause = str(params.get("pause_music", "false")).lower() == "true"
+            should_block = str(params.get("blocking", "false")).lower() == "true"
+            
             
             try:
                 text_color = tuple(map(int, color_str.split(',')))
@@ -159,24 +162,18 @@ class ActionManager:
             if should_pause:
                 pygame.mixer.music.pause()
 
-            return {
-                "type": "Dialogue",
-                "data": {
-                    "text": text,
-                    "color": text_color
-                },
-                "sound": params.get("sound"),
-                "pause_music": should_pause,
-            }
+            return DialogueResult(
+                data={"text": text, "color":text_color},
+                blocking=should_block,
+                pause_music=should_pause
+            )
         
         elif action_type == Actions.SHOW_IMAGE:
             path = params.get("image") or params.get("path")
-            return {
-                "type": "Image",
-                "data": path,
-                "sound": params.get("sound"),
-                "pause_music": params.get("pause_music", False)
-            }
+            should_block = str(params.get("blocking", "false")).lower() == "true"
+            should_pause = str(params.get("pause_music", "false")).lower() == "true"
+
+            return ImageResult(path, blocking=should_block, pause_music=should_pause)
         
         elif action_type == Actions.CLOSE_IMAGE:
             pass
@@ -186,6 +183,8 @@ class ActionManager:
             frames = int(params.get("frames", 1))
             speed = float(params.get("speed", 0.1))
             loop = params.get("loop", True)
+            should_block = str(params.get("blocking", "false")).lower() == "true"
+            should_pause = str(params.get("pause_music", "false")).lower() == "true"
 
             image_list = []
             if base_id:
@@ -193,16 +192,15 @@ class ActionManager:
                 for i in range(frames):
                     # Generates "anim_angel_0", "anim_angel_1", etc.
                     image_list.append(f"{base_id}_{i}")
-                
-            return {
-                "type": "Animation",
-                "data": image_list,
-                "speed": speed,
-                "loop": loop,
-                "sound": params.get("sound"),
-                "pause_music": params.get("pause_music", False)
-            }
-        
+
+            return AnimationResult(
+                image_list,
+                speed=speed,
+                blocking=should_block,
+                loop=loop,
+                pause_music=should_pause
+            )
+                        
         elif action_type == Actions.CHANGE_MUSIC:
             # This action needs the path and not the key because of the way pygame manages music and sounds
             music_path = params.get("path") or params.get("music")
@@ -270,14 +268,9 @@ class ActionManager:
             text = params.get("text", "Choose")
             flag_name = params.get("flag", "temp_decision")
 
-            return {
-                "type": "Choice",
-                "data": {
-                    "text": text,
-                    "flag": flag_name
-                },
-                "blocking": True # Always true
-            }
+            # This action will always be blocking
+            return ChoiceResult(text, flag_name, blocking=True)
+
         
         elif action_type == Actions.JUMP_IF_TRUE:
             flag_name = params.get("flag")
@@ -314,6 +307,6 @@ class ActionManager:
                     return None
         
             if target_id:
-                return {"type": "DESTROY", "id": target_id}
+                return DestroyResult(target_id)
 
         return None

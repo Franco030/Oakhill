@@ -16,6 +16,7 @@ from src.core.GameState import game_state
 from src.utils.Game_Enums import Actions, Conditions
 from src.managers.Effects import RetroEffects
 from src.utils.utils import resource_path
+from .GameResults import GameResult
 
 class Game:
     def __init__(self):
@@ -419,36 +420,6 @@ class Game:
         if self.player.is_attacking:
              pygame.draw.rect(self.screen, COLOR_ATTACK, self.player.attack_rect, 2)
                     
-
     def _handle_event_result(self, result):
         if not result: return
-
-        should_block = result.get("blocking", False)
-        should_pause = result.get("pause_music", False)
-        
-        if result["type"] == "Note":
-            self.ui_manager.show_note(result["data"], blocking=should_block)
-
-        elif result["type"] == "Dialogue":
-            self.ui_manager.show_dialogue(result["data"], blocking=should_block, resume_music_on_close=should_pause)
-
-        elif result["type"] == "Choice":
-            self.ui_manager.show_choice(result["data"]["text"], result["data"]["flag"], blocking=should_block)
-                
-        elif result["type"] == "Image":
-            self.ui_manager.show_image(result["data"], blocking=should_block)
-            
-            if result.get("pause_music", False):
-                pygame.mixer.music.pause()
-
-        elif result["type"] == "Animation":
-            self.ui_manager.show_animation(result["data"], speed=result["speed"], blocking=should_block, loop=result.get("loop", True))
-            
-            if result.get("pause_music", False):
-                pygame.mixer.music.pause()
-
-        elif result["type"] == "DESTROY":
-            target_id = result["id"]
-
-            if self.level_manager.current_scene:
-                self.level_manager.current_scene.remove_object_by_id(target_id)
+        result.execute(self)
