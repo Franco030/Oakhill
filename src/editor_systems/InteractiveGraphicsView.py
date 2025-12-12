@@ -24,6 +24,11 @@ class InteractiveGraphicsView(QGraphicsView):
         self._is_panning = False
         self._last_mouse_pos = QPointF()
 
+        self.setSceneRect(-50000, -50000, 100000, 100000)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+
     def dragEnterEvent(self, event):
         if event.mimeData().hasFormat("application/x-qabstractitemmodeldatalist"):
             event.acceptProposedAction()

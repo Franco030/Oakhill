@@ -520,12 +520,12 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
         self.formLayout_2.setWidget(5, QFormLayout.FieldRole, self.btn_zoom_trigger)
 
-        self.lbl_sequence = QLabel("--- Secuencia de Pasos ---", self.group_interaction)
+        self.lbl_sequence = QLabel("Step sequence", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
         self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.lbl_sequence)
         
         self.list_trigger_sequence = SequenceListWidget(self.group_interaction)
-        self.list_trigger_sequence.setMinimumHeight(200)
+        self.list_trigger_sequence.setMinimumHeight(350)
         self.list_trigger_sequence.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         self.formLayout_2.setWidget(7, QFormLayout.SpanningRole, self.list_trigger_sequence)

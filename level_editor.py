@@ -65,7 +65,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         note_ids = self.note_ids if hasattr(self, "note_ids") else []
 
         self.templates = {}
-        self.templates_file = os.path.join(self.base_path, "data", "templates.json")
+        self.templates_file = os.path.join(self.base_path, "data/database", "templates.json")
 
         self.current_scene = QGraphicsScene()
         self.canvas_view.setScene(self.current_scene)
