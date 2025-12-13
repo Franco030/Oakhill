@@ -196,20 +196,38 @@ class Parser:
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
 
     def function_call_or_var(self):
-        """
-        Distinguish between variable, and function
-        """
         token_id = self.advance()
-        
+
         if self.check(TokenType.LPAREN):
             self.advance()
+            
             arguments = []
+            kwargs = {}
+
             if not self.check(TokenType.RPAREN):
                 while True:
-                    arguments.append(self.expression())
+                    if (self.check(TokenType.IDENTIFIER) and 
+                        self.peek_next_token_is(TokenType.ASSIGN)):
+                        
+                        arg_name = self.advance().value
+                        self.consume(TokenType.ASSIGN, "Expected '='")
+                        arg_value = self.expression()
+                        
+                        kwargs[arg_name] = arg_value
+                    else:
+                        if len(kwargs) > 0:
+                            raise Exception(f"[ParserError] Positional argument after keyword argument in line {self.peek().line}")
+                        
+                        arguments.append(self.expression())
+
                     if not self.check(TokenType.COMMA): break
                     self.advance()
-            self.consume(TokenType.RPAREN, "')' was expected after the arguments")
-            return FunctionCall(token_id.value, arguments)
+
+            self.consume(TokenType.RPAREN, "')' was expected")
+            return FunctionCall(token_id.value, arguments, kwargs)
         else:
             return Literal(token_id.value)
+        
+    def peek_next_token_is(self, type):
+        if self.current + 1 >= len(self.tokens): return False
+        return self.tokens[self.current + 1].type == type

@@ -1,4 +1,5 @@
 func on_enter() {
+    show_dialogue("Hola como estas", blocking=false);
     play_sound("sfx_interaction_occurred");
-    show_dialogue("Hola como estas");
+    show_dialogue("Hola como no estas", blocking=false);
 }

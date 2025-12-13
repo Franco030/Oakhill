@@ -36,7 +36,7 @@ class Game:
         self.note_manager = NoteManager(self.base_path, language="en")
         self.action_manager = ActionManager(self.note_manager)
         self.event_manager = EventManager(self.action_manager)
-        self.ui_manager = UIManager(self.retro_effects)
+        self.ui_manager = UIManager(self.retro_effects, self.event_manager)
         self.level_manager = LevelManager(self.retro_effects)
         
         
@@ -424,3 +424,8 @@ class Game:
     def _handle_event_result(self, result):
         if not result: return
         result.execute(self)
+
+    def is_blocking_action_active(self):
+        return (self.ui_manager.is_dialogue_active() or
+                self.ui_manager.is_note_active() or
+                self.cutscene_manager.is_playing)

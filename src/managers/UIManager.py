@@ -4,11 +4,12 @@ from .ResourceManager import resource_manager
 from src.core.GameState import game_state
 
 class UIManager:
-    def __init__(self, retro_effects):
+    def __init__(self, retro_effects, event_manager):
         self.active = False
         self.content_type = None # "NOTE" o "IMAGE" o "Animation"
         self.content_data = None
         self.is_blocking = False
+        self.event_manager = event_manager
 
         self.resume_music_on_close = False
 
@@ -109,6 +110,7 @@ class UIManager:
         if self.resume_music_on_close:
             pygame.mixer.music.unpause()
             self.resume_music_on_close = False
+        self.event_manager.notify_action_completed()
 
     def handle_input(self, event):
         if not self.active:

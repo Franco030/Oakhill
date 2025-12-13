@@ -30,9 +30,10 @@ class IfStatement(ASTNode):
         self.else_branch = else_branch
 
 class FunctionCall(ASTNode):
-    def __init__(self, name, arguments):
+    def __init__(self, name, arguments, kwargs=None):
         self.name = name
         self.arguments = arguments # Value list
+        self.kwargs = kwargs or {}
 
 class Literal(ASTNode):
     def __init__(self, value):

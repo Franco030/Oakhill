@@ -2,6 +2,7 @@ from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
 from src.utils.Game_Enums import Actions
 from src.core.GameState import game_state
+import inspect
 
 class ReturnException(Exception):
     def __init__(self, value):
@@ -20,7 +21,7 @@ class Environment:
             return self.values[name]
         if self.parent:
             return self.parent.get(name)
-        raise Exception(f"Variable '{name}' no definida.")
+        raise Exception(f"Variable '{name}' not defined")
 
 class Interpreter:
     def __init__(self, action_manager, player, scene):
@@ -31,13 +32,49 @@ class Interpreter:
         self.globals = Environment()
         self.environment = self.globals
 
+        self.global_params = ["blocking", "sound", "volume"]
+
         self.native_map = {
-            "play_sound":    (Actions.PLAY_SOUND, ["sound", "volume"]),
-            "show_dialogue": (Actions.SHOW_DIALOGUE, ["text"]),
-            "show_note":     (Actions.SHOW_NOTE, ["id"]),
-            "wait":          (Actions.WAIT, ["time"]),
-            "teleport":      (Actions.TELEPORT, ["zone", "x", "y"]),
-            # Add other functions here
+            # --- AUDIO ---
+            "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
+            "change_music":   (Actions.CHANGE_MUSIC, ["path", "fade", "volume", "loop"]),
+
+            # --- UI & DIALOGUE ---
+            "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
+            "show_note":      (Actions.SHOW_NOTE, ["id", "save"]),
+            "ask_choice":     (Actions.ASK_CHOICE, ["text", "flag"]),
+            
+            # --- VISUALS ---
+            "show_image":     (Actions.SHOW_IMAGE, ["image", "pause_music"]),
+            "close_image":    (Actions.CLOSE_IMAGE, []),
+            "show_animation": (Actions.SHOW_ANIMATION, ["path", "frames", "speed", "loop", "pause_music"]),
+            "modify_light":   (Actions.MODIFY_LIGHT, ["enable"]),
+
+            # --- LEVEL & MOVEMENT ---
+            "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
+            "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
+            "wait":           (Actions.WAIT, ["time"]),
+
+            # --- OBJECT MANIPULATION ---
+            "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
+            "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
+            "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
+            
+            # Move instantly
+            "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
+            
+            # Move smoothly (Tween)
+            "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
+
+            # --- GLOBAL FLAGS ---
+            # While .fer has local vars, these modify the permanent GameState
+            "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
+            "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
+            
+            # --- EXCLUDED ACTIONS ---
+            # MODIFY_OBJECT: Excluded because it accepts arbitrary dynamic parameters (kwargs) 
+            #                which doesn't map well to positional arguments.
+            # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
         }
 
     def load(self, program_node):
@@ -51,7 +88,7 @@ class Interpreter:
             print(f"[Interpreter] Warning: Function '{name}' was not found")
             return None
         
-        return self._execute_user_function(func_node, args)
+        yield from self._execute_user_function(func_node, args)
 
     def _execute_user_function(self, func_node, arguments):
         previous_env = self.environment
@@ -62,14 +99,19 @@ class Interpreter:
             local_env.define(param_name, val)
 
         self.environment = local_env
-        ret_val = None
+        
         try:
-            ret_val = self.visit(func_node.body)
+            generator = self.visit(func_node.body)
+            
+            if inspect.isgenerator(generator):
+                yield from generator
+            elif generator is not None:
+                yield generator
+
         except ReturnException as e:
-            ret_val = e.value
+            pass 
         finally:
             self.environment = previous_env
-        return ret_val
 
     # --- VISIT ---
     def visit(self, node):
@@ -82,16 +124,20 @@ class Interpreter:
         return visitor(node)
 
     def generic_visit(self, node):
-        raise Exception(f"No existe método visit_{type(node).__name__}")
+        raise Exception(f"Method visit_{type(node).__name__} doesn't exist")
 
     # --- NODES ---
 
     def visit_Block(self, node):
-        last_result = None
         for stmt in node.statements:
             if stmt is None: continue
-            last_result = self.visit(stmt)
-        return last_result
+            
+            result = self.visit(stmt)
+            if inspect.isgenerator(result):
+                yield from result
+            
+            elif result is not None and hasattr(result, "blocking"):
+                yield result
 
     def visit_FunctionCall(self, node):
         args = []
@@ -102,11 +148,16 @@ class Interpreter:
             else:
                 args.append(self.visit(arg))
 
+        kwargs = {}
+        for key, val_node in node.kwargs.items():
+            kwargs[key] = self.visit(val_node)
+        
+
         if node.name == "get_flag":
             return game_state.get_flag(args[0])
         
         if node.name in self.native_map:
-            return self._call_native(node.name, args)
+            return self._call_native(node.name, args, kwargs)
 
         if node.name in self.functions:
             return self._execute_user_function(self.functions[node.name], args)
@@ -114,14 +165,22 @@ class Interpreter:
         print(f"[Interpreter] Error: Function '{node.name}' unknown")
         return None
 
-    def _call_native(self, name, args):
+    def _call_native(self, name, args, kwargs):
         action_type, param_names = self.native_map[name]
         param_string = ""
+
         for i, val in enumerate(args):
             if i < len(param_names):
-                param_string += f"{param_names[i]}={val};"
-        
-        print(f"[Interpreter] Native Call: {name}({param_string})")
+                if val is not None:
+                    param_string += f"{param_names[i]}={val};"
+
+        for key, val in kwargs.items():
+            if key in param_names or key in self.global_params:
+                if val is not None:
+                    param_string += f"{key}={val};"
+            else:
+                print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
+
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
 
     def visit_Literal(self, node):
@@ -133,7 +192,8 @@ class Interpreter:
         return node.value
 
     def visit_IfStatement(self, node):
-        if self.visit(node.condition):
+        condition = self.visit(node.condition)
+        if condition:
             return self.visit(node.then_branch)
         elif node.else_branch:
             return self.visit(node.else_branch)

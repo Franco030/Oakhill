@@ -2,10 +2,13 @@ from src.core.GameState import game_state
 from src.utils.Game_Enums import Conditions, Actions
 from src.managers.ScriptManager import script_manager
 from src.scripting.Interpreter import Interpreter
+import inspect
 
 class EventManager:
     def __init__(self, action_manager):
         self.action_manager = action_manager
+        self.current_script_generator = None
+        self.waiting_for_action = False
         
         self.is_active = False
         self.is_blocking = False
@@ -18,6 +21,37 @@ class EventManager:
 
         self.current_source_id = None
 
+    def start_script(self, generator):
+        if inspect.isgenerator(generator):
+            self.current_script_generator = generator
+            self.waiting_for_action = False
+            
+            return self.step_script() 
+        else:
+            return generator
+        
+    def step_script(self):
+        if not self.current_script_generator: return None
+
+        try:
+            result = next(self.current_script_generator)
+            
+            if result and hasattr(result, "blocking") and result.blocking:
+                self.waiting_for_action = True
+                return result
+            
+            return result
+
+        except StopIteration:
+            print("[EventManager] Script .fer finished.")
+            self.current_script_generator = None
+            self.waiting_for_action = False
+            return None
+        except Exception as e:
+            print(f"[EventManager] CRITIC error in coroutine: {e}")
+            self.current_script_generator = None
+            return None
+
     def start_sequence(self, sequence_list, blocking=False, source_id=None):
         if not sequence_list: return
         if self.is_active: return
@@ -29,7 +63,7 @@ class EventManager:
         self.is_blocking = blocking
         self.current_image = None
 
-        self.current_source_id = source_id
+        self.current_source_id = source_id    
         
 
     def end_sequence(self):
@@ -41,6 +75,15 @@ class EventManager:
         self.current_source_id = None
         
     def update(self, delta_time, player, scene):
+        if self.current_script_generator:
+            if self.wait_timer > 0:
+                self.wait_timer -= delta_time
+                return None
+            
+            if not self.waiting_for_action:
+                return self.step_script()
+            return None
+
         if not self.is_active:
             return None
 
@@ -106,44 +149,28 @@ class EventManager:
         return None
 
     def process_trigger(self, obj, player, scene):
-
         if hasattr(obj, "script") and obj.script:
+            if self.current_script_generator:
+                return None
             script_name = obj.script
-            func_name = getattr(obj, "function", "main") or "main" # Default a 'main' si no hay función
-
-            # Obtenemos el AST compilado (caché)
+            func_name = getattr(obj, "function", "main") or "main"
             ast = script_manager.get_script(script_name)
             
             if ast:
-                # Instanciamos el intérprete temporalmente para este evento
                 interpreter = Interpreter(self.action_manager, player, scene)
                 interpreter.load(ast)
-                
-                print(f"[EventManager] Executing Script: {script_name} -> {func_name}()")
+                print(f"[EventManager] Init Script: {script_name} -> {func_name}()")
                 
                 try:
-                    # Ejecutamos la función. 
-                    # Si el script hace 'return show_dialogue(...)', capturamos ese resultado.
-                    result = interpreter.run_function(func_name)
-                    
-                    # Manejo de 'kill' para scripts (si es un trigger de un solo uso)
-                    # Podemos usar params del objeto o lógica interna
-                    should_kill = False
-                    if hasattr(obj, "condition") and obj.condition in [Conditions.ON_ENTER, Conditions.IF_FLAG]:
-                         # Podrías agregar una propiedad "kill_on_script" al JSON si quieres control fino
-                         pass 
-
-                    # Si el script devuelve un GameResult (ej. DialogueResult), lo pasamos al Game
-                    return result
+                    gen_or_val = interpreter.run_function(func_name)
+                    return self.start_script(gen_or_val)
 
                 except Exception as e:
                     print(f"[EventManager] Error executing script '{script_name}': {e}")
                     return None
             else:
-                print(f"[EventManager] Error: script '{script_name}' was not found")
+                print(f"[EventManager] Error: script '{script_name}' not found")
                 return None
-
-
 
         # OLD SYSTEM
 
@@ -212,3 +239,7 @@ class EventManager:
             return result
            
         return None
+    
+    def notify_action_completed(self):
+        if self.current_script_generator and self.waiting_for_action:
+            self.waiting_for_action = False
