@@ -22,6 +22,7 @@ class EventManager:
         self.current_source_id = None
 
     def start_script(self, generator):
+        print(generator)
         if inspect.isgenerator(generator):
             self.current_script_generator = generator
             self.waiting_for_action = False

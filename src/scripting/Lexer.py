@@ -8,6 +8,7 @@ class TokenType:
     LOOP = "LOOP"       # loop
     RETURN = "RETURN"   # return
     VAR = "VAR"         # var (local)
+    IMPORT = "IMPORT"   # import
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -72,7 +73,8 @@ class Lexer:
             "return": TokenType.RETURN,
             "true": TokenType.BOOLEAN,
             "false": TokenType.BOOLEAN,
-            "var": TokenType.VAR
+            "var": TokenType.VAR,
+            "import": TokenType.IMPORT
         }
 
     def advance(self):

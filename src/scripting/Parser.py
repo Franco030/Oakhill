@@ -1,7 +1,8 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import (
     Program, FunctionDecl, Block, FunctionCall, 
-    Literal, IfStatement, BinaryOp, ReturnStatement
+    Literal, IfStatement, BinaryOp, ReturnStatement,
+    ImportStatement, VarDecl
 )
 
 class Parser:
@@ -21,6 +22,10 @@ class Parser:
     # Tokens navigation
     def peek(self):
         return self.tokens[self.current]
+    
+    def peek_next_token_is(self, type):
+        if self.current + 1 >= len(self.tokens): return False
+        return self.tokens[self.current + 1].type == type
 
     def previous(self):
         return self.tokens[self.current - 1]
@@ -41,11 +46,28 @@ class Parser:
         if self.check(type):
             return self.advance()
         raise Exception(f"[Parser Error] {message} in line {self.peek().line}")
+    
+    def match(self, token_type):
+        if self.check(token_type):
+            self.advance()
+            return True
+        return False
 
     # Grammar rules
 
     def declaration(self):
-        """handles 'func name() { ... }'"""
+        """
+        Handles 'func name() { ... }'
+        import (module_name)
+        var x = 2
+        """
+
+        if self.check(TokenType.VAR):
+            return self.var_declaration()
+
+        if self.check(TokenType.IMPORT):
+            return self.import_statement()
+
         if self.check(TokenType.FUNC):
             return self.function_declaration()
         
@@ -70,6 +92,17 @@ class Parser:
         self.consume(TokenType.LBRACE, "'{' was expected before the block")
         body = self.block()
         return FunctionDecl(name, parameters, body)
+    
+    def var_declaration(self):
+        self.consume(TokenType.VAR, "'var' was expected")
+        name_token = self.consume(TokenType.IDENTIFIER, "name of variable was expected")
+
+        initializer = None
+        if self.match(TokenType.ASSIGN):
+            initializer = self.expression()
+        
+        self.consume(TokenType.SEMICOLON, "';' was expected after the variable")
+        return VarDecl(name_token.value, initializer)
 
     def block(self):
         """
@@ -78,7 +111,7 @@ class Parser:
         
         statements = []
         while not self.check(TokenType.RBRACE) and not self.is_at_end():
-            statements.append(self.statement())
+            statements.append(self.declaration())
         
         self.consume(TokenType.RBRACE, "'}' was expected at the end of the block")
         return Block(statements)
@@ -128,6 +161,12 @@ class Parser:
 
         self.consume(TokenType.SEMICOLON, "';' was expected after return")
         return ReturnStatement(value)
+    
+    def import_statement(self):
+        self.consume(TokenType.IMPORT, "'import' was expected")
+        path_token = self.consume(TokenType.STRING, "the name of the file between quotation marks was expected")
+        self.consume(TokenType.SEMICOLON, "';' was expected after the import")
+        return ImportStatement(path_token.value)
 
     def expression(self):
         return self.equality()
@@ -227,7 +266,3 @@ class Parser:
             return FunctionCall(token_id.value, arguments, kwargs)
         else:
             return Literal(token_id.value)
-        
-    def peek_next_token_is(self, type):
-        if self.current + 1 >= len(self.tokens): return False
-        return self.tokens[self.current + 1].type == type

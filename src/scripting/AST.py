@@ -44,3 +44,12 @@ class BinaryOp(ASTNode):
         self.left = left
         self.operator = operator # TokenType (GT, LT, EQUALS...)
         self.right = right
+
+class ImportStatement(ASTNode):
+    def __init__(self, module_name):
+        self.module_name = module_name
+
+class VarDecl(ASTNode):
+    def __init__(self, name, initializer):
+        self.name = name
+        self.initializer = initializer

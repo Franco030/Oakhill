@@ -90,6 +90,14 @@ class Interpreter:
         
         yield from self._execute_user_function(func_node, args)
 
+    def evaluate(self, node):
+        result = self.visit(node)
+
+        if inspect.isgenerator(result):
+            return (yield from result)
+        
+        return result
+
     def _execute_user_function(self, func_node, arguments):
         previous_env = self.environment
         local_env = Environment(self.globals)
@@ -109,9 +117,27 @@ class Interpreter:
                 yield generator
 
         except ReturnException as e:
-            pass 
+            return e.value
         finally:
             self.environment = previous_env
+
+    def _call_native(self, name, args, kwargs):
+        action_type, param_names = self.native_map[name]
+        param_string = ""
+
+        for i, val in enumerate(args):
+            if i < len(param_names):
+                if val is not None:
+                    param_string += f"{param_names[i]}={val};"
+
+        for key, val in kwargs.items():
+            if key in param_names or key in self.global_params:
+                if val is not None:
+                    param_string += f"{key}={val};"
+            else:
+                print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
+
+        return self.action_manager.execute(action_type, param_string, self.player, self.scene)
 
     # --- VISIT ---
     def visit(self, node):
@@ -141,47 +167,37 @@ class Interpreter:
 
     def visit_FunctionCall(self, node):
         args = []
-        for i, arg in enumerate(node.arguments):
-            if arg is None:
-                print(f"[Interpreter ERROR] The argument #{i+1} of '{node.name}' is None.")
-                args.append(None)
-            else:
-                args.append(self.visit(arg))
+        for arg in node.arguments:
+            val = yield from self.evaluate(arg)
+            args.append(val)
 
         kwargs = {}
-        for key, val_node in node.kwargs.items():
-            kwargs[key] = self.visit(val_node)
-        
+        if hasattr(node, "kwargs"):
+            for key, val_node in node.kwargs.items():
+                val = yield from self.evaluate(val_node)
+                kwargs[key] = val
+
+        if node.name == "print":
+            output = " ".join(str(arg) for arg in args)
+            print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}") 
+            return None
 
         if node.name == "get_flag":
             return game_state.get_flag(args[0])
-        
+
         if node.name in self.native_map:
-            return self._call_native(node.name, args, kwargs)
+            result = self._call_native(node.name, args, kwargs)
+            
+            if result is not None:
+                yield result
+            
+            return result
 
         if node.name in self.functions:
-            return self._execute_user_function(self.functions[node.name], args)
-
-        print(f"[Interpreter] Error: Function '{node.name}' unknown")
+            return (yield from self._execute_user_function(self.functions[node.name], args))
+        
+        print(f"[Interpreter] Error: Unknown function '{node.name}'")
         return None
-
-    def _call_native(self, name, args, kwargs):
-        action_type, param_names = self.native_map[name]
-        param_string = ""
-
-        for i, val in enumerate(args):
-            if i < len(param_names):
-                if val is not None:
-                    param_string += f"{param_names[i]}={val};"
-
-        for key, val in kwargs.items():
-            if key in param_names or key in self.global_params:
-                if val is not None:
-                    param_string += f"{key}={val};"
-            else:
-                print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
-
-        return self.action_manager.execute(action_type, param_string, self.player, self.scene)
 
     def visit_Literal(self, node):
         if isinstance(node.value, str) and node.value not in self.native_map:
@@ -190,6 +206,14 @@ class Interpreter:
             except:
                 return node.value
         return node.value
+    
+    def visit_VarDecl(self, node):
+        value = None
+        if node.initializer:
+            value = yield from self.evaluate(node.initializer)
+
+        self.environment.define(node.name, value)
+        return None
 
     def visit_IfStatement(self, node):
         condition = self.visit(node.condition)
@@ -202,12 +226,12 @@ class Interpreter:
     def visit_ReturnStatement(self, node):
         value = None
         if node.value:
-            value = self.visit(node.value)
+            value = yield from self.evaluate(node.value)
         raise ReturnException(value)
 
     def visit_BinaryOp(self, node):
-        left = self.visit(node.left)
-        right = self.visit(node.right)
+        left = yield from self.evaluate(node.left)
+        right = yield from self.evaluate(node.right)
         op = node.operator
 
         if op == TokenType.PLUS:
