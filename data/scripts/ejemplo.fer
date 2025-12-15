@@ -1,17 +1,8 @@
 func main() {
     print("Iniciando prueba...");
     var reporte = @wait(2);
-    print("Datos del reporte");
-    print("Duracion real:", reporte.duration);
-    print("Quien ejecuto", reporte.source);
-    print("Extra", reporte.meta);
-
-    // y le agregue algo para poder como extraer info de las funciones miren
-    // primero sin arroba
-    // como no esta el juego, a lo mejor tampoco jala jajaja
-    // si jalo pai
-    // y eso me sirve para chorros de cosas y asi bro
-
-    // se convierte como en un objeto inteligente mi funcion, ya no nomas se ejecuta, se ejecuta pero muestra quien la ejecuto, cuanto duro en ejecutarse y extras
-
+    // print("Datos del reporte");
+    // print("Duracion real:", reporte.duration);
+    // print("Quien ejecuto", reporte.source);
+    // print("Extra", reporte.meta);
 }
