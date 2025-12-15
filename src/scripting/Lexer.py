@@ -9,6 +9,8 @@ class TokenType:
     RETURN = "RETURN"   # return
     VAR = "VAR"         # var (local)
     IMPORT = "IMPORT"   # import
+    AND = "AND"         # and
+    OR = "OR"           # or
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -79,7 +81,9 @@ class Lexer:
             "true": TokenType.BOOLEAN,
             "false": TokenType.BOOLEAN,
             "var": TokenType.VAR,
-            "import": TokenType.IMPORT
+            "import": TokenType.IMPORT,
+            "and": TokenType.AND,
+            "or": TokenType.OR
         }
 
     def advance(self):

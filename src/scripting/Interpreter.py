@@ -264,3 +264,20 @@ class Interpreter:
         if op == TokenType.NE: return left != right
         
         return False
+    
+    def visit_LogicalOp(self, node):
+        left = yield from self.evaluate(node.left)
+
+        if node.operator == TokenType.OR:
+            if left:
+                return True
+            right = yield from self.evaluate(node.right)
+            return bool(right)
+
+        if node.operator == TokenType.AND:
+            if not left:
+                return False
+            right = yield from self.evaluate(node.right)
+            return bool(right)
+            
+        return None

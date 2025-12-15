@@ -2,7 +2,7 @@ from src.scripting.Lexer import TokenType
 from src.scripting.AST import (
     Program, FunctionDecl, Block, FunctionCall, 
     Literal, IfStatement, BinaryOp, ReturnStatement,
-    ImportStatement, VarDecl, UnaryOP
+    ImportStatement, VarDecl, LogicalOp, UnaryOp
 )
 
 class Parser:
@@ -169,7 +169,23 @@ class Parser:
         return ImportStatement(path_token.value)
 
     def expression(self):
-        return self.equality()
+        return self.logic_or()
+    
+    def logic_or(self):
+        expr = self.logic_and()
+        while self.check(TokenType.OR):
+            operator = self.advance().type
+            right = self.logic_and()
+            expr = LogicalOp(expr, operator, right)
+        return expr
+    
+    def logic_and(self):
+        expr = self.equality()
+        while self.check(TokenType.AND):
+            operator = self.advance().type
+            right = self.equality()
+            expr = LogicalOp(expr, operator, right)
+        return expr
 
     def equality(self):
         expr = self.comparison()
@@ -226,13 +242,10 @@ class Parser:
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
     
     def unary(self):
-        """
-        Maneja !x o -x
-        """
         if self.check(TokenType.NOT) or self.check(TokenType.MINUS):
             operator = self.advance().type
             right = self.unary()
-            return UnaryOP(operator, right)
+            return UnaryOp(operator, right)
         
         return self.primary()
 
