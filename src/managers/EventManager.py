@@ -2,6 +2,7 @@ from src.core.GameState import game_state
 from src.utils.Game_Enums import Conditions, Actions
 from src.managers.ScriptManager import script_manager
 from src.scripting.Interpreter import Interpreter
+from src.core.GameResults import WaitResult
 import inspect
 
 class EventManager:
@@ -37,6 +38,12 @@ class EventManager:
         try:
             result = next(self.current_script_generator)
             
+            if isinstance(result, WaitResult):
+                self.wait_timer = result.duration
+                if result.block_input:
+                    self.is_blocking = True
+                return result
+
             if result and hasattr(result, "blocking") and result.blocking:
                 self.waiting_for_action = True
                 return result
@@ -79,10 +86,16 @@ class EventManager:
         if self.current_script_generator:
             if self.wait_timer > 0:
                 self.wait_timer -= delta_time
-                return None
-            
+                
+                if self.wait_timer <= 0:
+                    self.wait_timer = 0
+                    self.is_blocking = False
+                else:
+                    return None
+
             if not self.waiting_for_action:
                 return self.step_script()
+            
             return None
 
         if not self.is_active:
@@ -158,7 +171,9 @@ class EventManager:
             ast = script_manager.get_script(script_name)
             
             if ast:
-                interpreter = Interpreter(self.action_manager, player, scene)
+                obj_id = getattr(obj, "id", "UNKNOWN_SOURCE")
+
+                interpreter = Interpreter(self.action_manager, player, scene, source_id=obj_id)
                 interpreter.load(ast)
                 print(f"[EventManager] Init Script: {script_name} -> {func_name}()")
                 

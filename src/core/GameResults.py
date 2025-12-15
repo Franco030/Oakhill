@@ -80,3 +80,15 @@ class DestroyResult(GameResult):
     def execute(self, game):
         if game.level_manager.current_scene:
             game.level_manager.current_scene.remove_object_by_id(self.target_id)
+
+class WaitResult(GameResult):
+    def __init__(self, duration, block_input=False):
+        """
+        :param duration: Wait time in seconds only for the script or user input
+        """
+        self.duration = duration
+        self.block_input = block_input
+        self.blocking = False
+
+    def execute(self, game):
+        pass

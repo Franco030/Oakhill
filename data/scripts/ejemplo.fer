@@ -1,3 +1,5 @@
-func main() {
-    print("Hola mundo");
+func on_enter() {
+    print("Iniciando prueba...");
+    wait(2);
+    print("Datos del reporte");
 }

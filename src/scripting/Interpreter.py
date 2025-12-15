@@ -3,10 +3,24 @@ from src.scripting.AST import *
 from src.utils.Game_Enums import Actions
 from src.core.GameState import game_state
 import inspect
+import time
 
 class ReturnException(Exception):
     def __init__(self, value):
         self.value = value
+
+class ActionResult:
+    """
+    The 'receipt' that a function returns when used with '@'
+    """
+    def __init__(self, value, source=None, duration=0.0, meta=None):
+        self.value = value          # The main value (e.g. "si", true, 55)
+        self.source = source        # Who did the action (ID)
+        self.duration = duration    # How much time did it take (sec)
+        self.meta = meta or {}      # Extra data (changed flags, etc)
+
+    def __repr__(self):
+        return f"<Result: {self.value} | Src: {self.source} | Time: {self.duration:.2f}s>"
 
 class Environment:
     def __init__(self, parent=None):
@@ -36,10 +50,11 @@ class Environment:
         raise Exception(f"Variable '{name}' not defined")
 
 class Interpreter:
-    def __init__(self, action_manager, player, scene):
+    def __init__(self, action_manager, player, scene, source_id="SYSTEM"):
         self.action_manager = action_manager
         self.player = player
         self.scene = scene
+        self.source_id = source_id
         self.functions = {}
         self.globals = Environment()
         self.environment = self.globals
@@ -65,7 +80,7 @@ class Interpreter:
             # --- LEVEL & MOVEMENT ---
             "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
             "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
-            "wait":           (Actions.WAIT, ["time"]),
+            "wait":           (Actions.WAIT, ["time", "block_input"]),
 
             # --- OBJECT MANIPULATION ---
             "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
@@ -199,24 +214,52 @@ class Interpreter:
             output = " ".join(str(arg) for arg in args)
             print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}") 
             return None
-
+            
         if node.name == "get_flag":
             return game_state.get_flag(args[0])
 
-        if node.name in self.native_map:
-            result = self._call_native(node.name, args, kwargs)
-            
-            if result is not None:
-                yield result
-            
-            return result
-
-        if node.name in self.functions:
-            return (yield from self._execute_user_function(self.functions[node.name], args))
+        result_value = None
+        executed = False
         
-        print(f"[Interpreter] Error: Unknown function '{node.name}'")
-        return None
+        start_time = time.time()
+        
+        if node.name in self.native_map:
+            result_value = self._call_native(node.name, args, kwargs)
+            if result_value is not None:
+                yield result_value
+            executed = True
+        
+        elif node.name in self.functions:
+            result_value = yield from self._execute_user_function(self.functions[node.name], args)
+            executed = True
+        
+        if getattr(node, 'is_capture', False):
+            end_time = time.time()
+            duration = end_time - start_time
+            
+            final_value = result_value
 
+            if node.name == "ask_choice":
+                flag_name = None
+                if len(args) > 1: flag_name = args[1]
+                elif "flag" in kwargs: flag_name = kwargs["flag"]
+                
+                if flag_name:
+                    final_value = game_state.get_flag(flag_name)
+
+            return ActionResult(
+                value=final_value,
+                source=self.source_id,
+                duration=duration,
+                meta={"original_return": result_value}
+            )
+
+        if not executed:
+            print(f"[Interpreter] Error: Unknown function '{node.name}'")
+            return None
+            
+        return result_value
+    
     def visit_Literal(self, node):
         if isinstance(node.value, str) and node.value not in self.native_map:
             try:
@@ -347,4 +390,17 @@ class Interpreter:
             
             yield from self.evaluate(node.body)
             
+        return None
+    
+    def visit_GetAttribute(self, node):
+        obj = yield from self.evaluate(node.object_node)
+        
+        if isinstance(obj, ActionResult):
+            if hasattr(obj, node.property_name):
+                return getattr(obj, node.property_name)
+            else:
+                print(f"[Interpreter Error] Property '{node.property_name}' does not exist on ActionResult.")
+                return None
+        
+        print(f"[Interpreter Error] Cannot access property '{node.property_name}' on type {type(obj)}.")
         return None
