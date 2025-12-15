@@ -53,3 +53,8 @@ class VarDecl(ASTNode):
     def __init__(self, name, initializer):
         self.name = name
         self.initializer = initializer
+
+class UnaryOP(ASTNode):
+    def __init__(self, operator, right):
+        self.operator = operator
+        self.right = right

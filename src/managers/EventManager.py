@@ -49,7 +49,7 @@ class EventManager:
             self.waiting_for_action = False
             return None
         except Exception as e:
-            print(f"[EventManager] CRITIC error in coroutine: {e}")
+            print(f"[EventManager] CRITIC error in corroutine: {e}")
             self.current_script_generator = None
             return None
 

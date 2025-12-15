@@ -231,6 +231,17 @@ class Interpreter:
         if node.value:
             value = yield from self.evaluate(node.value)
         raise ReturnException(value)
+    
+    def visit_UnaryOp(self, node):
+        right = yield from self.evaluate(node.right)
+        
+        if node.operator == TokenType.NOT:
+            return not right
+        if node.operator == TokenType.MINUS:
+            if isinstance(right, (int, float)):
+                return -right
+            return None
+        return None
 
     def visit_BinaryOp(self, node):
         left = yield from self.evaluate(node.left)
@@ -247,5 +258,9 @@ class Interpreter:
         if op == TokenType.GT: return left > right
         if op == TokenType.LT: return left < right
         if op == TokenType.EQUALS: return left == right
+        
+        if op == TokenType.LE: return left <= right
+        if op == TokenType.GE: return left >= right
+        if op == TokenType.NE: return left != right
         
         return False

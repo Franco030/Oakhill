@@ -2,7 +2,7 @@ from src.scripting.Lexer import TokenType
 from src.scripting.AST import (
     Program, FunctionDecl, Block, FunctionCall, 
     Literal, IfStatement, BinaryOp, ReturnStatement,
-    ImportStatement, VarDecl
+    ImportStatement, VarDecl, UnaryOP
 )
 
 class Parser:
@@ -172,23 +172,17 @@ class Parser:
         return self.equality()
 
     def equality(self):
-        """
-        Handles comparisons of type: x == y
-        """
         expr = self.comparison()
-        while self.check(TokenType.EQUALS): # We may add, Not Equals here
+        while self.check(TokenType.EQUALS) or self.check(TokenType.NE):
             operator = self.advance().type
             right = self.comparison()
             expr = BinaryOp(expr, operator, right)
         return expr
 
     def comparison(self):
-        """
-        Handles comparisons of type: x > y.
-        Calls addition instead of 'primary'
-        """
         expr = self.addition()
-        while self.check(TokenType.GT) or self.check(TokenType.LT):
+        while (self.check(TokenType.GT) or self.check(TokenType.LT) or 
+               self.check(TokenType.LE) or self.check(TokenType.GE)):
             operator = self.advance().type
             right = self.addition()
             expr = BinaryOp(expr, operator, right)
@@ -206,13 +200,10 @@ class Parser:
         return expr
     
     def multiplication(self):
-        """
-        Handles * and / (high priority)
-        """
-        expr = self.primary()
+        expr = self.unary() 
         while self.check(TokenType.MUL) or self.check(TokenType.DIV):
             operator = self.advance().type
-            right = self.primary()
+            right = self.unary()
             expr = BinaryOp(expr, operator, right)
         return expr
 
@@ -233,6 +224,17 @@ class Parser:
             return expr
 
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
+    
+    def unary(self):
+        """
+        Maneja !x o -x
+        """
+        if self.check(TokenType.NOT) or self.check(TokenType.MINUS):
+            operator = self.advance().type
+            right = self.unary()
+            return UnaryOP(operator, right)
+        
+        return self.primary()
 
     def function_call_or_var(self):
         token_id = self.advance()

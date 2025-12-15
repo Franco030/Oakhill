@@ -26,6 +26,11 @@ class TokenType:
     EQUALS = "EQUALS"           # ==
     GT = "GT"                   # >
     LT = "LT"                   # <
+    LE = "LE"                   # <=
+    GE = "GE"                   # >=
+    NE = "NE"                   # !=
+    NOT = "NOT"                 # !
+
 
     PLUS = "PLUS"   # +
     MINUS = "MINUS" # -
@@ -193,6 +198,31 @@ class Lexer:
             self.advance()
         self.advance() # Skip closing "
         return Token(TokenType.STRING, string_val, self.line)
+    
+    @register_token('!')
+    def _handle_not_or_ne(self):
+        if self.peek() == '=':
+            self.advance(); self.advance()
+            return Token(TokenType.NE, line=self.line)
+        else:
+            self.advance()
+            return Token(TokenType.NOT, line=self.line)
+
+    @register_token('<')
+    def _handle_lt_or_le(self):
+        if self.peek() == '=':
+            self.advance(); self.advance()
+            return Token(TokenType.LE, line=self.line)
+        self.advance()
+        return Token(TokenType.LT, line=self.line)
+
+    @register_token('>')
+    def _handle_gt_or_ge(self):
+        if self.peek() == '=':
+            self.advance(); self.advance()
+            return Token(TokenType.GE, line=self.line)
+        self.advance()
+        return Token(TokenType.GT, line=self.line)
 
     def make_number(self):
         """
