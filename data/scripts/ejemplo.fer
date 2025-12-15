@@ -1,5 +1,8 @@
 func on_enter() {
     print("Iniciando prueba...");
-    wait(2);
+    var reporte = @wait(2);
     print("Datos del reporte");
+    print("Duracion real:", reporte.duration);
+    print("Quien ejecuto", reporte.source);
+    print("Extra", reporte.meta);
 }

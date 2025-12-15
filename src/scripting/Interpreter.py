@@ -80,7 +80,7 @@ class Interpreter:
             # --- LEVEL & MOVEMENT ---
             "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
             "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
-            "wait":           (Actions.WAIT, ["time", "block_input"]),
+            "wait":           (Actions.WAIT, ["time"]),
 
             # --- OBJECT MANIPULATION ---
             "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),

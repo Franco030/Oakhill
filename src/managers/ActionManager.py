@@ -292,9 +292,8 @@ class ActionManager:
     @register(Actions.WAIT)
     def _handle_wait(self, params, _, _p, _s, _id):
         time_sec = float(params.get("time", 1.0))
-        should_block_input = str(params.get("block_input", "false")).lower() == "true"
 
-        return WaitResult(duration=time_sec * 1000, block_input=should_block_input)
+        return WaitResult(duration=time_sec * 1000)
 
     @register(Actions.DESTROY_OBJECT)
     def _handle_destroy_object(self, params, _, _p, _s, source_id):

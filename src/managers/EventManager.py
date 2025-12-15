@@ -40,7 +40,7 @@ class EventManager:
             
             if isinstance(result, WaitResult):
                 self.wait_timer = result.duration
-                if result.block_input:
+                if result.blocking:
                     self.is_blocking = True
                 return result
 
