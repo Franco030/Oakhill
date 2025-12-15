@@ -37,7 +37,6 @@ class EventManager:
 
         try:
             result = next(self.current_script_generator)
-            
             if isinstance(result, WaitResult):
                 self.wait_timer = result.duration
                 if result.blocking:

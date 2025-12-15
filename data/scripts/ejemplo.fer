@@ -1,13 +1,4 @@
-struct Persona {
-        nombre;
-        edad;
-        altura;
-    }
-
 func main() {
-    // Probando las estructuras
-    var edwin = Persona(nombre="edwin", edad=21, altura=1.80);
-
-    print("Estructura creada: ", edwin.nombre);
-
+    var resultado = @wait(3, blocking=false);
+    print(resultado);
 }

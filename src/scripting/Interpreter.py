@@ -8,21 +8,6 @@ import time
 class ReturnException(Exception):
     def __init__(self, value):
         self.value = value
-
-
-# This may stop being in use
-class ActionResult:
-    """
-    The 'receipt' that a function returns when used with '@'
-    """
-    def __init__(self, value, source=None, duration=0.0, meta=None):
-        self.value = value          # The main value (e.g. "si", true, 55)
-        self.source = source        # Who did the action (ID)
-        self.duration = duration    # How much time did it take (sec)
-        self.meta = meta or {}      # Extra data (changed flags, etc)
-
-    def __repr__(self):
-        return f"<Result: {self.value} | Src: {self.source} | Time: {self.duration:.2f}s>"
     
 class FerStruct:
     def __init__(self, name, fields):
@@ -36,7 +21,6 @@ class FerInstance:
     def __init__(self, struct_def):
         self.struct_def = struct_def
         self.fields = {}
-
         for field in struct_def.fields:
             self.fields[field] = None
     
@@ -50,6 +34,11 @@ class FerInstance:
             self.fields[name] = value
         else:
             raise Exception(f"Cannot set undefined property '{name}' on {self.struct_def.name}")
+        
+    def __getattr__(self, name):
+        if name in self.fields:
+            return self.fields[name]
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
         
     def __repr__(self):
         return f"<{self.struct_def.name} Instance: {self.fields}>"
@@ -90,8 +79,19 @@ class Interpreter:
         self.functions = {}
         self.structs = {}
         self.globals = Environment()
-        self.environment = self.globals
 
+
+        # The structure of the struct
+        self.structs["ActionResult"] = FerStruct("ActionResult", [
+            "value",
+            "source",
+            "duration",
+            "meta",
+            "original_return",
+        ])
+
+
+        self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
 
         self.native_map = {
@@ -324,9 +324,16 @@ class Interpreter:
             struct_def = self.structs[node.name]
             instance = FerInstance(struct_def)
 
-            if hasattr(node, "kwargs"):
-                for key, val_node in node.kwargs.items():
-                    val = yield from self.evaluate(val_node)
+            for i, val in enumerate(args):
+                if i < len(struct_def.fields):
+                    field_name = struct_def.fields[i]
+                    instance.set(field_name, val)
+
+                else:
+                    print(f"[Interpreter] Too many arguments for struct '{struct_def.name}'")
+
+            if kwargs:
+                for key, val in kwargs.items():
                     instance.set(key, val)
             
             return instance
@@ -350,14 +357,20 @@ class Interpreter:
                     final_value = game_state.get_flag(flag_name)
 
             enriched_meta = self._enrich_meta(node.name, args, kwargs, pre_exec_state)
-            enriched_meta["original_return"] = result_value
+            if result_value and hasattr(result_value, "blocking"):
+                enriched_meta["blocking"] = result_value.blocking
+            
+            struct_def = self.structs.get("ActionResult")
+            instance = FerInstance(struct_def)
 
-            return ActionResult(
-                value=final_value,
-                source=self.source_id,
-                duration=duration,
-                meta=enriched_meta
-            )
+            instance.set("value", final_value)
+            instance.set("source", self.source_id)
+            instance.set("duration", duration)
+            instance.set("meta", enriched_meta)
+            instance.set("original_return", result_value)
+
+            return instance
+
 
         if not executed:
             print(f"[Interpreter] Error: Unknown function '{node.name}'")
@@ -506,15 +519,8 @@ class Interpreter:
     
     def visit_GetAttribute(self, node):
         obj = yield from self.evaluate(node.object_node)
-        
-        if isinstance(obj, ActionResult):
-            if hasattr(obj, node.property_name):
-                return getattr(obj, node.property_name)
-            else:
-                print(f"[Interpreter Error] Property '{node.property_name}' does not exist on ActionResult.")
-                return None
-            
-        elif isinstance(obj, FerInstance):
+
+        if isinstance(obj, FerInstance):
             return obj.get(node.property_name)
         
         print(f"[Interpreter Error] Cannot access property '{node.property_name}' on type {type(obj)}.")
