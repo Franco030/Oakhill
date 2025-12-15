@@ -216,11 +216,14 @@ class Interpreter:
         return None
 
     def visit_IfStatement(self, node):
-        condition = self.visit(node.condition)
+        condition = yield from self.evaluate(node.condition)
+        
         if condition:
-            return self.visit(node.then_branch)
+            return (yield from self.evaluate(node.then_branch))
+        
         elif node.else_branch:
-            return self.visit(node.else_branch)
+            return (yield from self.evaluate(node.else_branch))
+            
         return None
 
     def visit_ReturnStatement(self, node):
