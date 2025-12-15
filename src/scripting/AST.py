@@ -78,3 +78,14 @@ class IndexAccess(ASTNode):
     def __init__(self, target, index):
         self.target = target
         self.index = index
+
+class WhileStatement(ASTNode):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+class ForStatement(ASTNode):
+    def __init__(self, iterator_name, iterable, body):
+        self.iterator_name = iterator_name
+        self.iterable = iterable
+        self.body = body

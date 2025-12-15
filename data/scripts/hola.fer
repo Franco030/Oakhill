@@ -1,7 +1,10 @@
 import "utils";
 
 func main() {
-    var cosas = [10, "Pocion", true];
+    var contador = 10;
 
-    print(cosas[0]);
+    while (contador > 0) {
+        print("cuenta regresifva:", contador);
+        contador = contador - 1;
+    }
 }

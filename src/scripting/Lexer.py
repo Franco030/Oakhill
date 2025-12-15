@@ -11,6 +11,9 @@ class TokenType:
     IMPORT = "IMPORT"   # import
     AND = "AND"         # and
     OR = "OR"           # or
+    FOR = "FOR"         # for
+    WHILE = "WHILE"     # while
+    IN = "IN"           # in
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -85,7 +88,10 @@ class Lexer:
             "var": TokenType.VAR,
             "import": TokenType.IMPORT,
             "and": TokenType.AND,
-            "or": TokenType.OR
+            "or": TokenType.OR,
+            "for": TokenType.FOR,
+            "while": TokenType.WHILE,
+            "in": TokenType.IN
         }
 
     def advance(self):

@@ -3,7 +3,7 @@ from src.scripting.AST import (
     Program, Assign, FunctionDecl, Block, FunctionCall, 
     Literal, IfStatement, BinaryOp, ReturnStatement,
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
-    ListLiteral, IndexAccess
+    ListLiteral, IndexAccess, WhileStatement, ForStatement
 )
 
 class Parser:
@@ -121,10 +121,16 @@ class Parser:
         if self.check(TokenType.IF):
             return self.if_statement()
         
+        if self.check(TokenType.WHILE):
+            return self.while_statement()
+        
+        if self.check(TokenType.FOR):
+            return self.for_statement()
+        
         if self.check(TokenType.RETURN):
             return self.return_statement()
 
-        if self.check(TokenType.LBRACE): # Nested block
+        if self.check(TokenType.LBRACE):
             self.consume(TokenType.LBRACE, "")
             return self.block()
         
@@ -144,6 +150,30 @@ class Parser:
             else_branch = self.statement()
             
         return IfStatement(condition, then_branch, else_branch)
+    
+    def while_statement(self):
+        self.consume(TokenType.WHILE, "Expected 'while'")
+        self.consume(TokenType.LPAREN, "Expected '(' after 'while'")
+        condition = self.expression()
+        self.consume(TokenType.RPAREN, "Expected ')' after condition")
+
+        self.consume(TokenType.LBRACE, "Expected '{' to start while body")
+        body = self.block()
+
+        return WhileStatement(condition, body)
+    
+    def for_statement(self):
+        self.consume(TokenType.FOR, "Expected 'for'")
+
+        iterator_token = self.consume(TokenType.IDENTIFIER, "Expected variable name after 'for'")
+        self.consume(TokenType.IN, "Expected 'in' after variable name")
+
+        iterable = self.expression()
+        
+        self.consume(TokenType.LBRACE, "Expected '{' to start for body")
+        body = self.block()
+
+        return ForStatement(iterator_token.value, iterable, body)
 
     def expression_statement(self):
         """

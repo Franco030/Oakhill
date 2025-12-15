@@ -324,3 +324,27 @@ class Interpreter:
         except IndexError:
             print(f"[Interpreter Error] List index out of range.")
             return None
+        
+    def visit_WhileStatement(self, node):
+        while True:
+            condition = yield from self.evaluate(node.condition)
+            
+            if not condition:
+                break
+            
+            yield from self.evaluate(node.body)
+        return None
+    
+    def visit_ForStatement(self, node):
+        iterable_value = yield from self.evaluate(node.iterable)
+        
+        if not isinstance(iterable_value, list):
+            print(f"[Interpreter Error] 'for' loop expects a list, got {type(iterable_value)}")
+            return None
+
+        for item in iterable_value:
+            self.environment.define(node.iterator_name, item)
+            
+            yield from self.evaluate(node.body)
+            
+        return None
