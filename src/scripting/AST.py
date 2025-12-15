@@ -46,6 +46,12 @@ class GetAttribute(ASTNode):
         self.object_node = object_node
         self.property_name = property_name
 
+class SetAttribute(ASTNode):
+    def __init__(self, object_node, property_name, value):
+        self.object_node = object_node
+        self.property_name = property_name
+        self.value = value
+
 class Literal(ASTNode):
     def __init__(self, value):
         self.value = value
@@ -95,3 +101,8 @@ class ForStatement(ASTNode):
         self.iterator_name = iterator_name
         self.iterable = iterable
         self.body = body
+
+class StructDecl(ASTNode):
+    def __init__(self, name, fields):
+        self.name = name
+        self.fields = fields

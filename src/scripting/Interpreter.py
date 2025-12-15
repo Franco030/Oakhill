@@ -9,6 +9,8 @@ class ReturnException(Exception):
     def __init__(self, value):
         self.value = value
 
+
+# This may stop being in use
 class ActionResult:
     """
     The 'receipt' that a function returns when used with '@'
@@ -21,6 +23,36 @@ class ActionResult:
 
     def __repr__(self):
         return f"<Result: {self.value} | Src: {self.source} | Time: {self.duration:.2f}s>"
+    
+class FerStruct:
+    def __init__(self, name, fields):
+        self.name = name
+        self.fields = fields
+
+    def __repr__(self):
+        return f"<Struct {self.name}>"
+    
+class FerInstance:
+    def __init__(self, struct_def):
+        self.struct_def = struct_def
+        self.fields = {}
+
+        for field in struct_def.fields:
+            self.fields[field] = None
+    
+    def get(self, name):
+        if name in self.fields:
+            return self.fields[name]
+        raise Exception(f"Undefined property '{name}' on instance of {self.struct_def.name}")
+    
+    def set(self, name, value):
+        if name in self.fields:
+            self.fields[name] = value
+        else:
+            raise Exception(f"Cannot set undefined property '{name}' on {self.struct_def.name}")
+        
+    def __repr__(self):
+        return f"<{self.struct_def.name} Instance: {self.fields}>"
 
 class Environment:
     def __init__(self, parent=None):
@@ -56,6 +88,7 @@ class Interpreter:
         self.scene = scene
         self.source_id = source_id
         self.functions = {}
+        self.structs = {}
         self.globals = Environment()
         self.environment = self.globals
 
@@ -108,6 +141,9 @@ class Interpreter:
         for decl in program_node.declarations:
             if isinstance(decl, FunctionDecl):
                 self.functions[decl.name] = decl
+            
+            elif isinstance(decl, StructDecl):
+                self.structs[decl.name] = FerStruct(decl.name, decl.fields)
 
     def run_function(self, name, args=[]):
         func_node = self.functions.get(name)
@@ -283,6 +319,21 @@ class Interpreter:
         elif node.name in self.functions:
             result_value = yield from self._execute_user_function(self.functions[node.name], args)
             executed = True
+
+        elif node.name in self.structs:
+            struct_def = self.structs[node.name]
+            instance = FerInstance(struct_def)
+
+            if hasattr(node, "kwargs"):
+                for key, val_node in node.kwargs.items():
+                    val = yield from self.evaluate(val_node)
+                    instance.set(key, val)
+            
+            return instance
+        
+        else:
+            print(f"[Interpreter] Error: Unknown function or struct '{node.name}'")
+            return None
         
         if getattr(node, 'is_capture', False):
             end_time = time.time()
@@ -313,6 +364,13 @@ class Interpreter:
             return None
             
         return result_value
+    
+    def visit_StructDecl(self, node):
+        """
+        Registers the instance in runtime
+        """
+        self.structs[node.name] = FerStruct(node.name, node.fields)
+        return None
     
     def visit_Literal(self, node):
         if isinstance(node.value, str) and node.value not in self.native_map:
@@ -455,6 +513,20 @@ class Interpreter:
             else:
                 print(f"[Interpreter Error] Property '{node.property_name}' does not exist on ActionResult.")
                 return None
+            
+        elif isinstance(obj, FerInstance):
+            return obj.get(node.property_name)
         
         print(f"[Interpreter Error] Cannot access property '{node.property_name}' on type {type(obj)}.")
+        return None
+    
+    def visit_SetAttribute(self, node):
+        obj = yield from self.evaluate(node.object_node)
+        value = yield from self.evaluate(node.value)
+
+        if isinstance(obj, FerInstance):
+            obj.set(node.property_name, value)
+            return value
+        
+        print(f"[Interpreter] Cannot set property on type {type(obj)}")
         return None

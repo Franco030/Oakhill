@@ -14,6 +14,7 @@ class TokenType:
     FOR = "FOR"         # for
     WHILE = "WHILE"     # while
     IN = "IN"           # in
+    STRUCT = "STRUCT"   # struct
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -93,7 +94,8 @@ class Lexer:
             "or": TokenType.OR,
             "for": TokenType.FOR,
             "while": TokenType.WHILE,
-            "in": TokenType.IN
+            "in": TokenType.IN,
+            "struct": TokenType.STRUCT
         }
 
     def advance(self):

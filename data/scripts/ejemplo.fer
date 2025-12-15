@@ -1,8 +1,13 @@
+struct Persona {
+        nombre;
+        edad;
+        altura;
+    }
+
 func main() {
-    print("Iniciando prueba...");
-    var reporte = @wait(2);
-    // print("Datos del reporte");
-    // print("Duracion real:", reporte.duration);
-    // print("Quien ejecuto", reporte.source);
-    // print("Extra", reporte.meta);
+    // Probando las estructuras
+    var edwin = Persona(nombre="edwin", edad=21, altura=1.80);
+
+    print("Estructura creada: ", edwin.nombre);
+
 }

@@ -4,7 +4,7 @@ from src.scripting.AST import (
     Literal, IfStatement, BinaryOp, ReturnStatement,
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
     ListLiteral, IndexAccess, WhileStatement, ForStatement,
-    GetAttribute
+    GetAttribute, SetAttribute, StructDecl
 )
 
 class Parser:
@@ -73,6 +73,9 @@ class Parser:
         if self.check(TokenType.FUNC):
             return self.function_declaration()
         
+        if self.check(TokenType.STRUCT):
+            return self.struct_declaration()
+        
         return self.statement()
 
     def function_declaration(self):
@@ -94,6 +97,20 @@ class Parser:
         self.consume(TokenType.LBRACE, "'{' was expected before the block")
         body = self.block()
         return FunctionDecl(name, parameters, body)
+    
+    def struct_declaration(self):
+        self.consume(TokenType.STRUCT, "'struct' was expected")
+        name = self.consume(TokenType.IDENTIFIER, "Struct name was expected").value
+        self.consume(TokenType.LBRACE, "'{' expected before struct body")
+
+        fields = []
+        while not self.check(TokenType.RBRACE) and not self.is_at_end():
+            field_name = self.consume(TokenType.IDENTIFIER, "Field name was expected").value
+            self.consume(TokenType.SEMICOLON, "';' expected after field name")
+            fields.append(field_name)
+
+        self.consume(TokenType.RBRACE, "'}' expected after struct body")
+        return StructDecl(name, fields)
     
     def var_declaration(self):
         self.consume(TokenType.VAR, "'var' was expected")
@@ -208,6 +225,9 @@ class Parser:
 
             if isinstance(expr, Literal):
                 return Assign(expr.value, value)
+            
+            elif isinstance(expr, GetAttribute):
+                return SetAttribute(expr.object_node, expr.property_name, value)
             
             raise Exception(f"[Parser Error] Invalid assignment target in line {self.peek().line}")
 
