@@ -1,4 +1,4 @@
-func on_enter() {
+func main() {
     print("Iniciando prueba...");
     var reporte = @wait(2);
     print("Datos del reporte");

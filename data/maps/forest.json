@@ -732,7 +732,7 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "ejemplo",
-                "function": "on_enter"
+                "function": "main"
             }
         ],
         "(2, 3)": [

@@ -165,6 +165,43 @@ class Interpreter:
                 print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
 
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
+    
+    def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
+        """
+        Generates intelligent metadata, depending on the function
+        """
+        meta = {
+            "timestamp": time.time(),
+            "params": {**kwargs}
+        }
+
+        if args:
+            meta["args_list"] = args
+
+        if func_name in ["set_flag", "increment_flag", "ask_choice"]:
+            flag_name = None
+            
+            if func_name == "set_flag" or func_name == "increment_flag":
+                flag_name = args[0] if len(args) > 0 else kwargs.get("flag")
+            elif func_name == "ask_choice":
+                flag_name = args[1] if len(args) > 1 else kwargs.get("flag")
+
+            if flag_name:
+                meta["target_flag"] = flag_name
+                meta["previous_value"] = pre_exec_state.get("flag_val")
+                meta["new_value"] = game_state.get_flag(flag_name)
+                
+                meta["changed"] = meta["previous_value"] != meta["new_value"]
+
+        elif func_name == "play_sound":
+            meta["sound_id"] = args[0] if len(args) > 0 else kwargs.get("sound")
+            meta["volume"] = args[1] if len(args) > 1 else kwargs.get("volume", 1.0)
+
+        elif func_name in ["unhide_object", "move_object", "slide_object", "destroy_object"]:
+            obj_id = args[0] if len(args) > 0 else kwargs.get("id")
+            meta["target_object_id"] = obj_id
+
+        return meta
 
     # --- VISIT ---
     def visit(self, node):
@@ -217,6 +254,20 @@ class Interpreter:
             
         if node.name == "get_flag":
             return game_state.get_flag(args[0])
+        
+        pre_exec_state = {}
+        if getattr(node, 'is_capture', False):
+            start_time = time.time()
+
+            target_flag = None
+            if node.name in ["set_flag", "increment_flag"]:
+                target_flag = args[0] if len(args) > 0 else kwargs.get("flag")
+            elif node.name == "ask_choice":
+                target_flag = args[1] if len(args) > 1 else kwargs.get("flag")
+            
+            if target_flag:
+                pre_exec_state["flag_val"] = game_state.get_flag(target_flag)
+
 
         result_value = None
         executed = False
@@ -247,11 +298,14 @@ class Interpreter:
                 if flag_name:
                     final_value = game_state.get_flag(flag_name)
 
+            enriched_meta = self._enrich_meta(node.name, args, kwargs, pre_exec_state)
+            enriched_meta["original_return"] = result_value
+
             return ActionResult(
                 value=final_value,
                 source=self.source_id,
                 duration=duration,
-                meta={"original_return": result_value}
+                meta=enriched_meta
             )
 
         if not executed:
