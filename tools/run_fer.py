@@ -5,10 +5,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
 
-from src.scripting.Lexer import Lexer
-from src.scripting.Parser import Parser
-from src.scripting.Interpreter import Interpreter, Environment
-from src.scripting.AST import ImportStatement
+from src.managers.ScriptManager import ScriptManager
+from src.scripting.Interpreter import Interpreter
 
 class DummyManager:
     def execute(self, action_type, params, player, scene, source_id=None):
@@ -20,42 +18,39 @@ class FerRuntime:
     def __init__(self):
         self.action_manager = DummyManager()
         self.interpreter = Interpreter(self.action_manager, None, None)
-
-    def load_file(self, filepath):
-        if not os.path.exists(filepath):
-            print(f"Error: '{filepath}' doesn't exist")
-            return None
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return f.read()
+        self.script_manager = None
 
     def run(self, filepath, func_name="main"):
-        code = self.load_file(filepath)
-        if not code: return
+        abs_path = os.path.abspath(filepath)
+        script_dir = os.path.dirname(abs_path)
+        script_filename = os.path.basename(abs_path)
+        
+        script_name = os.path.splitext(script_filename)[0]
 
-        try:
-            lexer = Lexer(code)
-            tokens = lexer.tokenize()
-            parser = Parser(tokens)
-            ast = parser.parse()
-            
-            self.interpreter.load(ast)
+        self.script_manager = ScriptManager(relative_path=script_dir)
 
-            if func_name not in self.interpreter.functions:
-                print(f"Error: Function'{func_name}' is not defined in the file")
-                print(f"Funciones disponibles: {list(self.interpreter.functions.keys())}")
-                return
+        ast = self.script_manager.get_script(script_name)
 
-            generator = self.interpreter.run_function(func_name)
+        if not ast: 
+            print("Error: AST couldn't be done")
+            return
 
-            if generator:
-                try:
-                    if hasattr(generator, '__iter__'):
-                        for _ in generator: pass 
-                except Exception as e:
-                    pass
+        self.interpreter.load(ast)
 
-        except Exception as e:
-            print(f"\n[EXECUTION ERROR]: {e}")
+        if func_name not in self.interpreter.functions:
+            print(f"Error: Function '{func_name}' is not defined in {script_filename} or its imports")
+            print(f"Funciones disponibles: {list(self.interpreter.functions.keys())}")
+            return
+
+        generator = self.interpreter.run_function(func_name)
+
+        if generator:
+            try:
+                if hasattr(generator, '__iter__'):
+                    for val in generator: 
+                        pass 
+            except Exception as e:
+                print(f"\n[RUNTIME EXCEPTION]: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

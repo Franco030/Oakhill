@@ -1,3 +1,11 @@
-func util_sum(a, b) {
-    return (a + b);
+func sumar(a, b) {
+    return a + b;
+}
+
+func restar_vida(hp, damage) {
+    var new_hp = hp - damage;
+    if (new_hp < 0) {
+        return 0;
+    }
+    return new_hp;
 }

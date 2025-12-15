@@ -22,6 +22,8 @@ class TokenType:
     RPAREN = "RPAREN"           # )
     LBRACE = "LBRACE"           # {
     RBRACE = "RBRACE"           # }
+    LBRACKET = "LBRACKET"       # [
+    RBRACKET = "RBRACKET"       # ]
     COMMA = "COMMA"             # ,
     SEMICOLON = "SEMICOLON"     # ;
     ASSIGN = "ASSIGN"           # =
@@ -140,6 +142,16 @@ class Lexer:
     def _handle_rbrace(self):
         self.advance()
         return Token(TokenType.RBRACE, line=self.line)
+    
+    @register_token('[')
+    def _handle_lbracket(self):
+        self.advance()
+        return Token(TokenType.LBRACKET, line=self.line)
+
+    @register_token(']')
+    def _handle_rbracket(self):
+        self.advance()
+        return Token(TokenType.RBRACKET, line=self.line)
 
     @register_token(',')
     def _handle_comma(self):

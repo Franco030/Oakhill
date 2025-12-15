@@ -16,6 +16,18 @@ class Environment:
     def define(self, name, value):
         self.values[name] = value
 
+    def assign(self, name, value):
+        if name in self.values:
+            self.values[name] = value
+            return
+        
+        # if it's not here it looks in a bigger scope
+        if self.parent:
+            self.parent.assign(name, value)
+            return
+        
+        raise Exception(f"Undefined variable '{name}'. Cannot assign value")
+
     def get(self, name):
         if name in self.values:
             return self.values[name]
@@ -165,6 +177,12 @@ class Interpreter:
             elif result is not None and hasattr(result, "blocking"):
                 yield result
 
+    def visit_Assign(self, node):
+        value = yield from self.evaluate(node.value)
+        self.environment.assign(node.name, value)
+        
+        return value
+
     def visit_FunctionCall(self, node):
         args = []
         for arg in node.arguments:
@@ -281,3 +299,28 @@ class Interpreter:
             return bool(right)
             
         return None
+    
+    def visit_ListLiteral(self, node):
+        elements = []
+        for element_node in node.elements:
+            val = yield from self.evaluate(element_node)
+            elements.append(val)
+        return elements
+    
+    def visit_IndexAccess(self, node):
+        target = yield from self.evaluate(node.target)
+        index = yield from self.evaluate(node.index)
+
+        if not isinstance(target, list):
+            print(f"[Interpreter Error] '{target}' is not a list.")
+            return None
+        
+        if not isinstance(index, int):
+            print(f"[Interpreter Error] List indices must be integers.")
+            return None
+
+        try:
+            return target[index]
+        except IndexError:
+            print(f"[Interpreter Error] List index out of range.")
+            return None

@@ -1,8 +1,9 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import (
-    Program, FunctionDecl, Block, FunctionCall, 
+    Program, Assign, FunctionDecl, Block, FunctionCall, 
     Literal, IfStatement, BinaryOp, ReturnStatement,
-    ImportStatement, VarDecl, LogicalOp, UnaryOp
+    ImportStatement, VarDecl, LogicalOp, UnaryOp,
+    ListLiteral, IndexAccess
 )
 
 class Parser:
@@ -169,7 +170,17 @@ class Parser:
         return ImportStatement(path_token.value)
 
     def expression(self):
-        return self.logic_or()
+        expr = self.logic_or()
+
+        if self.match(TokenType.ASSIGN):
+            value = self.expression()
+
+            if isinstance(expr, Literal):
+                return Assign(expr.value, value)
+            
+            raise Exception(f"[Parser Error] Invalid assignment target in line {self.peek().line}")
+
+        return expr
     
     def logic_or(self):
         expr = self.logic_and()
@@ -230,14 +241,26 @@ class Parser:
         if self.check(TokenType.NUMBER) or self.check(TokenType.STRING) or self.check(TokenType.BOOLEAN):
             return Literal(self.advance().value)
             
-        if self.check(TokenType.IDENTIFIER):
-            return self.function_call_or_var()
-            
         if self.check(TokenType.LPAREN):
             self.advance()
             expr = self.expression()
             self.consume(TokenType.RPAREN, "')' was expected")
             return expr
+        
+        if self.check(TokenType.LBRACKET):
+            self.advance()
+            elements = []
+            if not self.check(TokenType.RBRACKET):
+                while True:
+                    elements.append(self.expression())
+                    if not self.check(TokenType.COMMA): break
+                    self.advance()
+
+            self.consume(TokenType.RBRACKET, "Expected ']' after list elements")
+            return ListLiteral(elements)
+        
+        if self.check(TokenType.IDENTIFIER):
+            return self.function_call_or_var()
 
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
     
@@ -251,6 +274,8 @@ class Parser:
 
     def function_call_or_var(self):
         token_id = self.advance()
+
+        expr = Literal(token_id.value)
 
         if self.check(TokenType.LPAREN):
             self.advance()
@@ -278,6 +303,12 @@ class Parser:
                     self.advance()
 
             self.consume(TokenType.RPAREN, "')' was expected")
-            return FunctionCall(token_id.value, arguments, kwargs)
-        else:
-            return Literal(token_id.value)
+            expr = FunctionCall(token_id.value, arguments, kwargs)
+
+        while self.check(TokenType.LBRACKET):
+            self.advance()
+            index = self.expression()
+            self.consume(TokenType.RBRACKET, "Expected ']' after index")
+            expr = IndexAccess(expr, index)
+
+        return expr

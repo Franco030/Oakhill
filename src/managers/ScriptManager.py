@@ -2,7 +2,7 @@ import os
 from src.utils.utils import resource_path
 from src.scripting.Lexer import Lexer
 from src.scripting.Parser import Parser
-from src.scripting.Interpreter import ImportStatement
+from src.scripting.AST import ImportStatement
 
 class ScriptManager:
     def __init__(self, relative_path="data/scripts"):

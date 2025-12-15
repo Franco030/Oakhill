@@ -1,9 +1,7 @@
-func main() {
-    var a = true;
-    var b = false;
-    var c = !b;
+import "utils";
 
-    if (a and !b) {
-        print("hola");
-    }
+func main() {
+    var cosas = [10, "Pocion", true];
+
+    print(cosas[0]);
 }

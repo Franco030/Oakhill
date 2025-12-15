@@ -9,6 +9,11 @@ class Program(ASTNode):
     def __init__(self, declarations):
         self.declarations = declarations # Function's list
 
+class Assign(ASTNode):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
 class FunctionDecl(ASTNode):
     def __init__(self, name, params, body):
         self.name = name
@@ -64,3 +69,12 @@ class UnaryOp(ASTNode):
     def __init__(self, operator, right):
         self.operator = operator
         self.right = right
+
+class ListLiteral(ASTNode):
+    def __init__(self, elements):
+        self.elements = elements
+
+class IndexAccess(ASTNode):
+    def __init__(self, target, index):
+        self.target = target
+        self.index = index
