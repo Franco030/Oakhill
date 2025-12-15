@@ -1,4 +1,3 @@
 func main() {
-    var resultado = @wait(3, blocking=false);
-    print(resultado);
+    
 }

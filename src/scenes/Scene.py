@@ -92,9 +92,6 @@ class Scene:
                         continue
                 self._obstacles.add(obj)
 
-                    
-
-
         if self.location in self._interactables_dict:
             current_ints = self._interactables_dict[self.location]
             for obj in current_ints:

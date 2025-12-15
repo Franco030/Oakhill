@@ -130,10 +130,10 @@ class Interpreter:
             # While .fer has local vars, these modify the permanent GameState
             "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
             "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
+
+            "modify_object":  (Actions.MODIFY_OBJECT, ["id"]),
             
             # --- EXCLUDED ACTIONS ---
-            # MODIFY_OBJECT: Excluded because it accepts arbitrary dynamic parameters (kwargs) 
-            #                which doesn't map well to positional arguments.
             # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
         }
 
@@ -194,9 +194,15 @@ class Interpreter:
                     param_string += f"{param_names[i]}={val};"
 
         for key, val in kwargs.items():
-            if key in param_names or key in self.global_params:
+            is_dynamic_func = (name == "modify_object")
+            if is_dynamic_func or key in param_names or key in self.global_params:
                 if val is not None:
-                    param_string += f"{key}={val};"
+                    val_str = str(val)
+                    param_string += f"{key}={val_str}"
+
+            # if key in param_names or key in self.global_params:
+            #     if val is not None:
+            #         param_string += f"{key}={val};"
             else:
                 print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
 
@@ -233,9 +239,12 @@ class Interpreter:
             meta["sound_id"] = args[0] if len(args) > 0 else kwargs.get("sound")
             meta["volume"] = args[1] if len(args) > 1 else kwargs.get("volume", 1.0)
 
-        elif func_name in ["unhide_object", "move_object", "slide_object", "destroy_object"]:
+        elif func_name in ["unhide_object", "move_object", "slide_object", "destroy_object", "modify_object"]:
             obj_id = args[0] if len(args) > 0 else kwargs.get("id")
             meta["target_object_id"] = obj_id
+
+            if func_name == "modify_object":
+                meta["modifications"] = kwargs
 
         return meta
 
