@@ -731,7 +731,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "hola",
+                "script": "ejemplo",
                 "function": "on_enter"
             }
         ],

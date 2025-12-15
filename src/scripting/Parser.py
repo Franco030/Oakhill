@@ -3,7 +3,8 @@ from src.scripting.AST import (
     Program, Assign, FunctionDecl, Block, FunctionCall, 
     Literal, IfStatement, BinaryOp, ReturnStatement,
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
-    ListLiteral, IndexAccess, WhileStatement, ForStatement
+    ListLiteral, IndexAccess, WhileStatement, ForStatement,
+    GetAttribute
 )
 
 class Parser:
@@ -268,6 +269,20 @@ class Parser:
         """
         Literals, identifiers, calls
         """
+        if self.check(TokenType.AT):
+            self.advance()
+
+            if not self.check(TokenType.IDENTIFIER):
+                raise Exception(f"[Parser Error] Expected function call after '@' in line {self.peek().line}")
+            
+            node = self.function_call_or_var()
+
+            if isinstance(node, FunctionCall):
+                node.is_capture = True
+                return node
+            else:
+                raise Exception(f"[Parser Error] '@' can only be used with function calls, not variables, in line {self.peek().line}")
+        
         if self.check(TokenType.NUMBER) or self.check(TokenType.STRING) or self.check(TokenType.BOOLEAN):
             return Literal(self.advance().value)
             
@@ -335,10 +350,19 @@ class Parser:
             self.consume(TokenType.RPAREN, "')' was expected")
             expr = FunctionCall(token_id.value, arguments, kwargs)
 
-        while self.check(TokenType.LBRACKET):
-            self.advance()
-            index = self.expression()
-            self.consume(TokenType.RBRACKET, "Expected ']' after index")
-            expr = IndexAccess(expr, index)
+        while True:
+            if self.check(TokenType.LBRACKET):
+                self.advance()
+                index = self.expression()
+                self.consume(TokenType.RBRACKET, "Expected ']' after index")
+                expr = IndexAccess(expr, index)
+            
+            elif self.check(TokenType.DOT):
+                self.advance()
+                prop_name_token = self.consume(TokenType.IDENTIFIER, "Expected property name after '.'")
+                expr = GetAttribute(expr, prop_name_token.value)
+
+            else:
+                break
 
         return expr

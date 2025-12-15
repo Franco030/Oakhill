@@ -37,6 +37,8 @@ class TokenType:
     GE = "GE"                   # >=
     NE = "NE"                   # !=
     NOT = "NOT"                 # !
+    AT = "AT"                   # @
+    DOT = "DOT"                 # .
 
 
     PLUS = "PLUS"   # +
@@ -245,6 +247,16 @@ class Lexer:
             return Token(TokenType.GE, line=self.line)
         self.advance()
         return Token(TokenType.GT, line=self.line)
+    
+    @register_token('@')
+    def _handle_at(self):
+        self.advance()
+        return Token(TokenType.AT, line=self.line)
+
+    @register_token('.')
+    def _handle_dot(self):
+        self.advance()
+        return Token(TokenType.DOT, line=self.line)
 
     def make_number(self):
         """
