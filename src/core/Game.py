@@ -2,7 +2,6 @@ import os
 import warnings
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
 warnings.filterwarnings("ignore", message=".*pkg_resources.*")
-
 import pygame
 import sys
 from src.utils.Game_Constants import (
@@ -21,6 +20,7 @@ from src.managers.ScriptManager import script_manager
 from src.utils.Game_Enums import Actions, Conditions
 from src.managers.Effects import RetroEffects
 from src.utils.utils import resource_path
+from src.utils.DebugConsole import DebugConsole
 from .GameResults import GameResult
 
 class Game:
@@ -43,7 +43,6 @@ class Game:
         self.ui_manager = UIManager(self.retro_effects, self.event_manager)
         self.level_manager = LevelManager(self.retro_effects)
         
-        
         self.state = "MAIN_MENU"
         self.game_over_sound_played = False
         self.death_screen_delay = DEATH_DELAY
@@ -60,6 +59,8 @@ class Game:
         self.player_group = pygame.sprite.GroupSingle()
         self.player = Player(0, 0)
         self.player_group.add(self.player)
+
+        self.console = DebugConsole(self)
 
     def _load_resources(self):
         icon = resource_manager.get_image("spr_logo")
@@ -185,6 +186,10 @@ class Game:
             if event.type == pygame.QUIT:
                 self.state = "QUIT"
                 return
+            
+            if self.console.is_active:
+                if self.console.handle_event(event):
+                    continue
 
             if event.type == MUSIC_END_EVENT:
                 self.level_manager.on_music_ended()
@@ -200,6 +205,7 @@ class Game:
                 elif event.key == pygame.K_ESCAPE: self._handle_pause_or_exit()
                 elif event.key == pygame.K_F11: pygame.display.toggle_fullscreen()
                 elif event.key == pygame.K_F1: self.debug_mode = not self.debug_mode
+                elif event.key == pygame.K_BACKQUOTE: self.console.toggle(); continue
             
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE: self.player.stop_attack()
@@ -254,6 +260,8 @@ class Game:
                 print("[Game] Transition finished")
 
     def _update_gameplay(self, delta_time):
+        self.console.update(delta_time)
+
         if not self.ui_manager.active or not self.ui_manager.is_blocking:
             seq_result = self.event_manager.update(delta_time, self.player, self.level_manager.current_scene)
             if seq_result: self._handle_event_result(seq_result)
@@ -293,7 +301,9 @@ class Game:
             self.ui_manager.draw(self.screen)
             if self.event_manager.current_image:
                 self.ui_manager.show_image(self.event_manager.current_image)
-            self.retro_effects.update_and_draw(self.screen, delta_time)    
+            self.retro_effects.update_and_draw(self.screen, delta_time)
+
+            self.console.draw(self.screen)    
 
     def _handle_pause_or_exit(self):
         if self.player.is_defeated:

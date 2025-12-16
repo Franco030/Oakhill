@@ -168,6 +168,32 @@ class Interpreter:
             return (yield from result)
         
         return result
+    
+    def execute_raw_call(self, source_code):
+        """
+        Takes a raw string, wraps it into a a temporal function and immediately executes it
+        """
+        from src.scripting.Lexer import Lexer
+        from src.scripting.Parser import Parser
+
+        wrapped_source = f"func _debug_exec() {{ {source_code} }}"
+        try:
+            lexer = Lexer(wrapped_source)
+            tokens = lexer.tokenize()
+            parser = Parser(tokens)
+            program_node = parser.parse()
+
+            self.load(program_node)
+
+            gen = self.run_function("_debug_exec")
+
+            result = None
+            if gen:
+                for step in gen:
+                    result = step
+            return f"Result: {result}"
+        except Exception as e:
+            return f"Error: {e}"
 
     def _execute_user_function(self, func_node, arguments):
         previous_env = self.environment
