@@ -100,6 +100,8 @@ class Interpreter:
         self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
 
+
+        # This functions are slowly becoming more easy to make in FER
         self.native_map = {
             # --- AUDIO ---
             "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
@@ -136,8 +138,6 @@ class Interpreter:
             # While .fer has local vars, these modify the permanent GameState
             "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
             "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
-
-            "modify_object":  (Actions.MODIFY_OBJECT, ["id"]),
             
             # --- EXCLUDED ACTIONS ---
             # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
