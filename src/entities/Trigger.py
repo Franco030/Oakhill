@@ -38,6 +38,34 @@ class Trigger(pygame.sprite.Sprite):
         self.rect.x = sprite_left + offset[0]
         self.rect.y = sprite_top + offset[1]
 
+        self._apply_persistence()
+
+    @property
+    def enabled(self):
+        return not self.is_hidden
+
+    @enabled.setter
+    def enabled(self, value):
+        self.is_hidden = not value
+        # NOTE: Hidden triggers don't go into EventManager,
+        # so this efectively turns them off/on
+
+    @property
+    def script_name(self):
+        return self.script
+
+    @script_name.setter
+    def script_name(self, value):
+        self.script = value
+
+    @property
+    def function_name(self):
+        return self.function
+    
+    @function_name.setter
+    def function_name(self, value):
+        self.function = value
+
     def hide(self):
         self.is_hidden = True
 
@@ -46,3 +74,18 @@ class Trigger(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+    def _apply_persistence(self):
+        if not self.id: return
+        
+        from src.core.GameState import game_state
+        prefix = f"OBJ_{self.id}_"
+        len_prefix = len(prefix)
+
+        for key, value in game_state.flags.items():
+            if key.startswith(prefix):
+                prop_name = key[len_prefix:]
+                try:
+                    setattr(self, prop_name, value)
+                except Exception as e:
+                    print(f"[Trigger Persistence Error] {self.id}.{prop_name}: {e}")

@@ -47,6 +47,39 @@ class NativeProxy:
             return (value.get("x"), value.get("y"))
         
         return value
+    
+class RemoteObject:
+    def __init__(self, obj_id, map_id, zone_id, interpreter):
+        self._id = obj_id
+        self._map_id = map_id
+        self._zone_id = zone_id
+        self._interpreter = interpreter
+
+    def __getattr__(self, name):
+        if name.startswith("_"): return None
+        
+        flag_key = f"OBJ_{self._id}_{name}"
+        stored_val = game_state.get_flag(flag_key)
+        
+        if stored_val is not None:
+             return stored_val
+             
+        if self._map_id:
+            print(f"[RemoteObject] Warning: Property '{name}' unknown. In '{self._id}' of '{self._map_id}' zone '{self._zone_id}'")
+        return None
+
+    def __setattr__(self, name, value):
+        if name.startswith("_"): 
+            super().__setattr__(name, value)
+            return
+
+        py_val = NativeProxy.fer_to_py(value)
+        flag_key = f"OBJ_{self._id}_{name}"
+        
+        game_state.set_flag(flag_key, py_val)
+        
+        location_info = f" [{self._map_id} {self._zone_id}]" if self._map_id else ""
+        print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
 
 class NativeObject:
     """

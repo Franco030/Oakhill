@@ -80,6 +80,8 @@ class Obstacle(pygame.sprite.Sprite):
         if animation_ids:
             self.animation = Animation(self, animation_ids, data.get("animation_speed", 0.1))
 
+        self._apply_persistence()
+
     def update(self):
         if self.animation and self.is_animating:
             self.animation.animate()
@@ -183,6 +185,22 @@ class Obstacle(pygame.sprite.Sprite):
             
             old_center = self.rect.center
             self.rect = self.image.get_rect(center=old_center)
+
+    def _apply_persistence(self):
+        if not self.id or self.id == "NO_ID": return
+
+        from src.core.GameState import game_state
+
+        prefix = f"OBJ_{self.id}_"
+        len_prefix = len(prefix)
+
+        for key, value in game_state.flags.items():
+            if key.startswith(prefix):
+                prop_name = key[len_prefix:]
+                try:
+                    setattr(self, prop_name, value)
+                except Exception as e:
+                    print(f"[Persistence Error] Failed to restore '{prop_name}' in '{self.id}': {e}")
     
     # def modify(self, new_properties):
     #     if hasattr(self, 'data') and isinstance(self.data, dict):

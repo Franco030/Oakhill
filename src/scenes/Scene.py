@@ -90,6 +90,8 @@ class Scene:
         if self.location in self.obstacles_dict:
             current_obs = self.obstacles_dict[self.location]
             for obj in current_obs: 
+                if hasattr(obj, "_apply_persistence"):
+                    obj._apply_persistence()
                 self._register_object_id(obj)
                 if obj.is_hidden:
                     if not game_state.has_interacted(obj.id):
@@ -99,9 +101,10 @@ class Scene:
         if self.location in self._interactables_dict:
             current_ints = self._interactables_dict[self.location]
             for obj in current_ints:
+                if hasattr(obj, "_apply_persistence"):
+                    obj._apply_persistence()
                 self._register_object_id(obj)
                 is_hidden = getattr(obj, 'is_hidden', False)
-
                 
                 should_show = not is_hidden and (not obj.interacted_once or obj.used_image)
                 if should_show:
@@ -113,6 +116,8 @@ class Scene:
         if self.location in self._triggers_dict:
             current_trigs = self._triggers_dict[self.location]
             for trig in current_trigs:
+                if hasattr(obj, "_apply_persistence"):
+                    obj._apply_persistence()
                 self._register_object_id(trig)
                 if trig.id and game_state.has_interacted(trig.id) or trig.is_hidden:
                     continue

@@ -1,6 +1,10 @@
+import os
+import warnings
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
+warnings.filterwarnings("ignore", message=".*pkg_resources.*")
+
 import pygame
 import sys
-import os
 from src.utils.Game_Constants import (
     SCREEN_WIDTH, SCREEN_HEIGHT, DEATH_DELAY, WORLD_MAP_LEVEL, INITIAL_ZONE,
     LEVEL_MUSIC, LEVEL_DARKNESS, MUSIC_END_EVENT

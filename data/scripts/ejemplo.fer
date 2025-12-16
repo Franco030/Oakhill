@@ -1,2 +1,5 @@
 func main() {
+    var arbol = get_object("obj_1765498403553_511");
+    var arbol_other_scene = get_object("obj_1764800403_8", "forest", 3, 1);
+    arbol_other_scene.is_passable = true;
 }

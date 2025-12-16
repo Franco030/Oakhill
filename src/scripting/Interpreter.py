@@ -1,6 +1,6 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
-from src.scripting.NativeProxy import NativeObject, NativeProxy
+from src.scripting.NativeProxy import NativeObject, RemoteObject, NativeProxy
 from src.utils.Game_Enums import Actions
 from src.core.GameState import game_state
 import inspect
@@ -95,7 +95,9 @@ class Interpreter:
 
         # The global function 'get_object'. Before setting up self.environment
         # A lambda function calls an internal method with access to self.scene
-        self.globals.define("get_object", lambda obj_id: self._native_get_object(obj_id))
+        self.globals.define("get_object", 
+            lambda obj_id, map_id=None, zx=None, zy=None: self._native_get_object(obj_id, map_id, zx, zy)
+        )
 
         self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
@@ -211,34 +213,28 @@ class Interpreter:
 
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
     
-    def _native_get_object(self, obj_id):
-        """
-        Busca un objeto nativo en la escena actual por su ID.
-        """
-        if not self.scene: return None
-        
-        if obj_id == "player":
-            return NativeObject(self.player, "player", self)
+    def _native_get_object(self, obj_id, map_id, zx, zy):
+        if self.scene:
+            if obj_id == "player":
+                return NativeObject(self.player, "player", self)
 
-        for obj in self.scene.obstacles:
-            if getattr(obj, "id", None) == obj_id:
-                return NativeObject(obj, obj_id, self)
+            for obj in self.scene.obstacles:
+                if getattr(obj, "id", None) == obj_id:
+                    return NativeObject(obj, obj_id, self)
 
-        for obj in self.scene.interactables:
-            if getattr(obj, "id", None) == obj_id:
-                return NativeObject(obj, obj_id, self)
-        
-        # for enemy in self.scene.enemies:
-        #     if getattr(enemy, "id", None) == obj_id:
-        #         return NativeObject(enemy, obj_id, self)
+            for obj in self.scene.interactables:
+                if getattr(obj, "id", None) == obj_id:
+                    return NativeObject(obj, obj_id, self)
+                
+            triggers_list = getattr(self.scene, "triggers", getattr(self.scene, "_triggers", []))
+            for trig in triggers_list:
+                if getattr(trig, "id", None) == obj_id:
+                    return NativeObject(trig, obj_id, self)
 
-        triggers_list = getattr(self.scene, "triggers", getattr(self.scene, "_triggers", []))
-        for trig in triggers_list:
-            if getattr(trig, "id", None) == obj_id:
-                return NativeObject(trig, obj_id, self)
 
-        print(f"[Interpreter] Objeto '{obj_id}' no encontrado en la escena.")
-        return None
+        from src.scripting.NativeProxy import RemoteObject
+        zone_str = f"({zx}, {zy})" if (zx is not None and zy is not None) else None
+        return RemoteObject(obj_id, map_id, zone_str, self)
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
         """
@@ -597,7 +593,7 @@ class Interpreter:
         if isinstance(obj, FerInstance):
             return obj.get(node.property_name)
         
-        if isinstance(obj, NativeObject):
+        if isinstance(obj, (NativeObject, RemoteObject)):
             # getattr is overriden in the NativeObject class so that it works as I like
             val = getattr(obj, node.property_name)
             return val
@@ -619,8 +615,8 @@ class Interpreter:
             obj.set(node.property_name, value)
             return value
 
-        if isinstance(obj, NativeObject):
-            # setattr is override in the NativeObject class so that it works as I like
+        if isinstance(obj, (NativeObject, RemoteObject)):
+            # setattr is overriden in the NativeObject class so that it works as I like
             setattr(obj, node.property_name, value)
             return value
         
