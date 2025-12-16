@@ -1,5 +1,11 @@
 from src.core.GameState import game_state
 from src.scripting.AST import *
+
+import os
+import warnings
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
+warnings.filterwarnings("ignore", message=".*pkg_resources.*")
+
 import pygame
 
 class NativeProxy:

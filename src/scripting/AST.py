@@ -106,3 +106,7 @@ class StructDecl(ASTNode):
     def __init__(self, name, fields):
         self.name = name
         self.fields = fields
+
+class DictLiteral(ASTNode):
+    def __init__(self, pairs):
+        self.pairs = pairs

@@ -30,6 +30,7 @@ class TokenType:
     RBRACKET = "RBRACKET"       # ]
     COMMA = "COMMA"             # ,
     SEMICOLON = "SEMICOLON"     # ;
+    COLON = "COLON"             # :
     ASSIGN = "ASSIGN"           # =
     EQUALS = "EQUALS"           # ==
     GT = "GT"                   # >
@@ -172,6 +173,11 @@ class Lexer:
     def _handle_semicolon(self):
         self.advance()
         return Token(TokenType.SEMICOLON, line=self.line)
+    
+    @register_token(':')
+    def _handle_colon(self):
+        self.advance()
+        return Token(TokenType.COLON, line=self.line)
 
     @register_token('>')
     def _handle_gt(self):

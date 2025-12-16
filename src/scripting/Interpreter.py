@@ -281,6 +281,7 @@ class Interpreter:
         return meta
 
     # --- VISIT ---
+
     def visit(self, node):
         if node is None:
             print("[Interpreter DEBUG] Attempt to visit a 'None' node. This indicates an error in the Parser or in the AST")
@@ -531,23 +532,37 @@ class Interpreter:
             elements.append(val)
         return elements
     
+    def visit_DictLiteral(self, node):
+        dict_pairs = {}
+        for key_node, value_node in node.pairs:
+            key = yield from self.evaluate(key_node)
+            value = yield from self.evaluate(value_node)
+
+            if not isinstance(key, (str, int, float, bool)):
+                key = str(key)
+
+            dict_pairs[key] = value
+        return dict_pairs
+    
     def visit_IndexAccess(self, node):
         target = yield from self.evaluate(node.target)
         index = yield from self.evaluate(node.index)
 
-        if not isinstance(target, list):
-            print(f"[Interpreter Error] '{target}' is not a list.")
-            return None
-        
-        if not isinstance(index, int):
-            print(f"[Interpreter Error] List indices must be integers.")
-            return None
+        if isinstance(target, list):
+            if not isinstance(index, int):
+                print(f"[Interpreter Error] List indices must be integers.")
+                return None
+            try:
+                return target[index]
+            except IndexError:
+                print(f"[Interpreter Error] List index out of range.")
+                return None
+            
+        if isinstance(target, dict):
+            return target.get(index)
 
-        try:
-            return target[index]
-        except IndexError:
-            print(f"[Interpreter Error] List index out of range.")
-            return None
+        print(f"[Interpreter Error] Type {type(target)} is not subscriptable.")
+        return None
         
     def visit_WhileStatement(self, node):
         while True:
@@ -586,6 +601,9 @@ class Interpreter:
             # getattr is overriden in the NativeObject class so that it works as I like
             val = getattr(obj, node.property_name)
             return val
+        
+        if isinstance(obj, dict):
+            return obj.get(node.property_name)
 
         print(f"[Interpreter Error] Cannot read property '{node.property_name}' on {type(obj)}")
         return None
@@ -604,6 +622,10 @@ class Interpreter:
         if isinstance(obj, NativeObject):
             # setattr is override in the NativeObject class so that it works as I like
             setattr(obj, node.property_name, value)
+            return value
+        
+        if isinstance(obj, dict):
+            obj[node.property_name] = value
             return value
         
         print(f"[Interpreter Error] Cannot set property on type {type(obj)}")

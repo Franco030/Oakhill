@@ -4,7 +4,7 @@ from src.scripting.AST import (
     Literal, IfStatement, BinaryOp, ReturnStatement,
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
     ListLiteral, IndexAccess, WhileStatement, ForStatement,
-    GetAttribute, SetAttribute, StructDecl
+    GetAttribute, SetAttribute, StructDecl, DictLiteral
 )
 
 class Parser:
@@ -323,6 +323,24 @@ class Parser:
 
             self.consume(TokenType.RBRACKET, "Expected ']' after list elements")
             return ListLiteral(elements)
+        
+        if self.check(TokenType.LBRACE):
+            self.consume(TokenType.LBRACE, "Expected '{'")
+            pairs = []
+
+            if not self.check(TokenType.RBRACE):
+                while True:
+                    key = self.expression()
+                    self.consume(TokenType.COLON, "Expected ':' after dictionary key")
+                    
+                    value = self.expression()
+                    pairs.append((key, value))
+
+                    if not self.check(TokenType.COMMA): break
+                    self.advance()
+
+            self.consume(TokenType.RBRACE, "Expected '}' after dictionary")
+            return DictLiteral(pairs)
         
         if self.check(TokenType.IDENTIFIER):
             return self.function_call_or_var()
