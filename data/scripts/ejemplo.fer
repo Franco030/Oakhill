@@ -1,6 +1,10 @@
 func main() {
     // get_object does not behave like a normal function, but I don't know why still
     var key = get_object("obj_1765500959_15");
+    var tree_right = get_object("obj_1765498403553_511");
 
-    print(key.data);
+    tree_right.is_passable = true;
+
+    print(tree_right.image_id);
+    print(tree_right.is_passable);
 }

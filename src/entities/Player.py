@@ -243,3 +243,21 @@ class Player(pygame.sprite.Sprite):
         self._move_y(obstacles)
 
         self.rect = self.image.get_rect(center = (int(self.pos.x), int(self.pos.y)))
+
+    @property
+    def speed(self):
+        return self.current_speed
+
+    @speed.setter
+    def speed(self, value):
+        self.current_speed = value
+
+    @property
+    def look_at(self):
+        return self.facing
+
+    @look_at.setter
+    def look_at(self, direction_str):
+        if direction_str in ["up", "down", "left", "right"]:
+            self.facing = direction_str
+            self.image = self.animations[direction_str].images[0]

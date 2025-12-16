@@ -65,6 +65,22 @@ class Interactable(Obstacle):
                 self.image = self.used_image
                 self.original_image = self.used_image
 
+    @property
+    def blocked(self):
+        return self.interaction_blocked
+
+    @blocked.setter
+    def blocked(self, value):
+        self.interaction_blocked = value
+        
+    @property
+    def script_name(self):
+        return self.script
+
+    @script_name.setter
+    def script_name(self, value):
+        self.script = value
+
     def unhide(self):
         """
         Makes the object visibe, therefore, interactable.

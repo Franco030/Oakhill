@@ -212,22 +212,33 @@ class Interpreter:
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
     
     def _native_get_object(self, obj_id):
+        """
+        Busca un objeto nativo en la escena actual por su ID.
+        """
         if not self.scene: return None
+        
+        if obj_id == "player":
+            return NativeObject(self.player, "player", self)
+
+        for obj in self.scene.obstacles:
+            if getattr(obj, "id", None) == obj_id:
+                return NativeObject(obj, obj_id, self)
 
         for obj in self.scene.interactables:
             if getattr(obj, "id", None) == obj_id:
                 return NativeObject(obj, obj_id, self)
-
-        # Enemies have no ID at this point in time  
+        
         # for enemy in self.scene.enemies:
-        #     if getattr(enemy.id, None) == self.obj_id:
+        #     if getattr(enemy, "id", None) == obj_id:
         #         return NativeObject(enemy, obj_id, self)
 
-        for trig in self.scene.triggers:
+        triggers_list = getattr(self.scene, "triggers", getattr(self.scene, "_triggers", []))
+        for trig in triggers_list:
             if getattr(trig, "id", None) == obj_id:
                 return NativeObject(trig, obj_id, self)
-            
-        print(f"[Interpreter] Objeto '{obj.id}' was not found in scene")
+
+        print(f"[Interpreter] Objeto '{obj_id}' no encontrado en la escena.")
+        return None
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
         """
