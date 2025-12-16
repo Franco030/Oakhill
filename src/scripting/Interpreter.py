@@ -1,5 +1,6 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
+from src.scripting.NativeProxy import NativeObject, NativeProxy
 from src.utils.Game_Enums import Actions
 from src.core.GameState import game_state
 import inspect
@@ -81,7 +82,9 @@ class Interpreter:
         self.globals = Environment()
 
 
-        # The structure of the struct
+        # The structures for function helpers and Marshalling
+        self.structs["Vector2"] = FerStruct("Vector2", ["x", "y"]) # Structure for python tuples
+
         self.structs["ActionResult"] = FerStruct("ActionResult", [
             "value",
             "source",
@@ -90,6 +93,9 @@ class Interpreter:
             "original_return",
         ])
 
+        # The global function 'get_object'. Before setting up self.environment
+        # A lambda function calls an internal method with access to self.scene
+        self.globals.define("get_object", lambda obj_id: self._native_get_object(obj_id))
 
         self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
@@ -200,13 +206,28 @@ class Interpreter:
                     val_str = str(val)
                     param_string += f"{key}={val_str}"
 
-            # if key in param_names or key in self.global_params:
-            #     if val is not None:
-            #         param_string += f"{key}={val};"
             else:
                 print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
 
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
+    
+    def _native_get_object(self, obj_id):
+        if not self.scene: return None
+
+        for obj in self.scene.interactables:
+            if getattr(obj, "id", None) == obj_id:
+                return NativeObject(obj, obj_id, self)
+
+        # Enemies have no ID at this point in time  
+        # for enemy in self.scene.enemies:
+        #     if getattr(enemy.id, None) == self.obj_id:
+        #         return NativeObject(enemy, obj_id, self)
+
+        for trig in self.scene.triggers:
+            if getattr(trig, "id", None) == obj_id:
+                return NativeObject(trig, obj_id, self)
+            
+        print(f"[Interpreter] Objeto '{obj.id}' was not found in scene")
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
         """
@@ -319,16 +340,19 @@ class Interpreter:
         
         start_time = time.time()
         
+        # Here we check if the literal is a native function
         if node.name in self.native_map:
             result_value = self._call_native(node.name, args, kwargs)
             if result_value is not None:
                 yield result_value
             executed = True
         
+        # If it is a user made function (in FER)
         elif node.name in self.functions:
             result_value = yield from self._execute_user_function(self.functions[node.name], args)
             executed = True
 
+        # If it is a struct
         elif node.name in self.structs:
             struct_def = self.structs[node.name]
             instance = FerInstance(struct_def)
@@ -347,8 +371,20 @@ class Interpreter:
             
             return instance
         
+        # If its anything else. And, in this case, anything alse might be a Native python Object
         else:
-            print(f"[Interpreter] Error: Unknown function or struct '{node.name}'")
+            try:
+                func_obj = self.environment.get(node.name)
+
+                if callable(func_obj):
+                    py_args = [NativeProxy.fer_to_py(arg) for arg in args]
+                    result = func_obj(*py_args)
+
+                    return NativeProxy.py_to_fer(result, self)
+            except:
+                pass
+
+            print(f"[Interpreter] Error: Unknown function '{node.name}'")
             return None
         
         if getattr(node, 'is_capture', False):
@@ -527,21 +563,37 @@ class Interpreter:
         return None
     
     def visit_GetAttribute(self, node):
+        """
+        Gets attributes from either Structs or from Native python Objects
+        """
         obj = yield from self.evaluate(node.object_node)
-
+        
         if isinstance(obj, FerInstance):
             return obj.get(node.property_name)
         
-        print(f"[Interpreter Error] Cannot access property '{node.property_name}' on type {type(obj)}.")
+        if isinstance(obj, NativeObject):
+            # getattr is overriden in the NativeObject class so that it works as I like
+            val = getattr(obj, node.property_name)
+            return val
+
+        print(f"[Interpreter Error] Cannot read property '{node.property_name}' on {type(obj)}")
         return None
     
     def visit_SetAttribute(self, node):
+        """
+        Sets attributes to either Structs or Native python Objects
+        """
         obj = yield from self.evaluate(node.object_node)
         value = yield from self.evaluate(node.value)
 
         if isinstance(obj, FerInstance):
             obj.set(node.property_name, value)
             return value
+
+        if isinstance(obj, NativeObject):
+            # setattr is override in the NativeObject class so that it works as I like
+            setattr(obj, node.property_name, value)
+            return value
         
-        print(f"[Interpreter] Cannot set property on type {type(obj)}")
+        print(f"[Interpreter Error] Cannot set property on type {type(obj)}")
         return None

@@ -64,6 +64,10 @@ class Scene:
         return self._interactables
     
     @property
+    def triggers(self):
+        return self._triggers
+    
+    @property
     def enemies(self):
         return self._enemies
     

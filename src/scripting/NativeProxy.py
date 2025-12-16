@@ -1,5 +1,6 @@
 from src.core.GameState import game_state
 from src.scripting.AST import *
+import pygame
 
 class NativeProxy:
     """
@@ -7,20 +8,32 @@ class NativeProxy:
     """
 
     @staticmethod
-    def py_to_fer(value, interpreter_ref):
+    def py_to_fer(value, interpreter):
         if value is None:
             return None
         
         if isinstance(value, (tuple, list)) and len(value) == 2:
-            if "Vector2" in interpreter_ref.structs:
-                from src.scripting.Interpreter import FerInstance
-                struct_def = interpreter_ref.structs["Vector2"]
-                instance = FerInstance(struct_def)
-                instance.set("x", value[0])
-                instance.set("y", value[1])
-                return instance
+            return NativeProxy._create_vector2(value[0], value[1], interpreter)
+            
+        if isinstance(value, pygame.math.Vector2):
+            return NativeProxy._create_vector2(value.x, value.y, interpreter)
+
+        if isinstance(value, pygame.Rect):
+            from src.scripting.NativeProxy import NativeObject
+            return NativeObject(value, None, interpreter)
         
         return value
+    
+    @staticmethod
+    def _create_vector2(x, y, interpreter):
+        if "Vector2" in interpreter.structs:
+            from src.scripting.Interpreter import FerInstance 
+            struct_def = interpreter.structs["Vector2"]
+            instance = FerInstance(struct_def)
+            instance.set("x", x)
+            instance.set("y", y)
+            return instance
+        return (x, y)
     
     @staticmethod
     def fer_to_py(value):

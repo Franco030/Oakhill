@@ -24,7 +24,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.z_index = int(data.get("z_index", 0))
         self.sort_offset_y = int(data.get("sort_offset_y", 0))
         self.is_ground = data.get("is_ground", False)
-        self.is_passable = data.get("is_passable", False)
+        self._is_passable = data.get("is_passable", False)
         self.resize_factor = float(data.get("resize_factor", RESIZE_FACTOR))
         self.collision_rect_offset = list(data.get("collision_rect_offset", [0, 0, 0, 0]))
         self.is_hidden = data.get("starts_hidden", False)
@@ -61,8 +61,7 @@ class Obstacle(pygame.sprite.Sprite):
 
         self.is_ground = data.get("is_ground", False)
 
-        if data.get("is_passable", False):
-
+        if self._is_passable:
             self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
         else:
             offset = data.get("collision_rect_offset", [0, 0, 0, 0])
@@ -107,6 +106,24 @@ class Obstacle(pygame.sprite.Sprite):
         Returns the custom hitbox
         """
         return self._collision_rect
+    
+    @property
+    def is_passable(self):
+        return self._is_passable
+
+    @is_passable.setter
+    def is_passable(self, value):
+        self._is_passable = value
+        if self._is_passable:
+            self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
+        else:
+            offset = self.data.get("collision_rect_offset", [0, 0, 0, 0])
+            self._collision_rect = pygame.Rect(
+                self.rect.left + offset[0],
+                self.rect.top + offset[1],
+                self.rect.width + offset[2],
+                self.rect.height + offset[3]
+            )
 
     def collides_with(self, other_sprite):
         """
@@ -130,17 +147,6 @@ class Obstacle(pygame.sprite.Sprite):
         for key, value in new_properties.items():
             if key in ["interaction_blocked", "is_passable", "z_index", "starts_hidden"]:
                 setattr(self, key, value)
-                if key == "is_passable":
-                    if self.is_passable:
-                        self._collision_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 0, 0)
-                    else:
-                        offset = self.data.get("collision_rect_offset", [0, 0, 0, 0])
-                        self._collision_rect = pygame.Rect(
-                            self.rect.left + offset[0],
-                            self.rect.top + offset[1],
-                            self.rect.width + offset[2],
-                            self.rect.height + offset[3]
-                        )
             
             elif key not in special_keys and hasattr(self, key):
                 setattr(self, key, value)

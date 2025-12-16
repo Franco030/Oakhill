@@ -1,3 +1,6 @@
 func main() {
-    
+    // get_object does not behave like a normal function, but I don't know why still
+    var key = get_object("obj_1765500959_15");
+
+    print(key.data);
 }
