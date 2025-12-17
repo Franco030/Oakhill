@@ -1,8 +1,9 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
-from src.scripting.NativeProxy import NativeObject, RemoteObject, NativeProxy
+from src.scripting.NativeProxy import NativeProxy, NativeObject, NativeFunction, NativeSystem, RemoteObject
 from src.utils.Game_Enums import Actions
 from src.core.GameState import game_state
+from src.managers.TweenManager import tween_manager
 import inspect
 import time
 
@@ -81,6 +82,9 @@ class Interpreter:
         self.structs = {}
         self.globals = Environment()
 
+        self.systems = {
+            "Tween": tween_manager
+        }
 
         # The structures for function helpers and Marshalling
         self.structs["Vector2"] = FerStruct("Vector2", ["x", "y"]) # Structure for python tuples
@@ -98,6 +102,8 @@ class Interpreter:
         self.globals.define("get_object", 
             lambda obj_id, map_id=None, zx=None, zy=None: self._native_get_object(obj_id, map_id, zx, zy)
         )
+
+        self.globals.define("get_system", self._native_get_system)
 
         self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
@@ -130,11 +136,11 @@ class Interpreter:
             "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
             "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
             
-            # Move instantly
-            "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
+            # # Move instantly
+            # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
             
-            # Move smoothly (Tween)
-            "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
+            # # Move smoothly (Tween)
+            # "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
 
             # --- GLOBAL FLAGS ---
             # While .fer has local vars, these modify the permanent GameState
@@ -261,6 +267,14 @@ class Interpreter:
         from src.scripting.NativeProxy import RemoteObject
         zone_str = f"({zx}, {zy})" if (zx is not None and zy is not None) else None
         return RemoteObject(obj_id, map_id, zone_str, self)
+    
+    def _native_get_system(self, system_name):
+        if system_name in self.systems:
+            real_system = self.systems[system_name]
+            return NativeSystem(real_system, self)
+        
+        print(f"[Interpreter] System '{system_name}' not found")
+        return None
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
         """

@@ -20,13 +20,27 @@ class NativeProxy:
         
         if isinstance(value, (tuple, list)) and len(value) == 2:
             return NativeProxy._create_vector2(value[0], value[1], interpreter)
-            
         if isinstance(value, pygame.math.Vector2):
             return NativeProxy._create_vector2(value.x, value.y, interpreter)
 
         if isinstance(value, pygame.Rect):
-            from src.scripting.NativeProxy import NativeObject
             return NativeObject(value, None, interpreter)
+        
+        if callable(value):
+            return NativeFunction(value, interpreter)
+        
+        return value
+    
+    @staticmethod
+    def fer_to_py(value):
+        if isinstance(value, NativeObject):
+            return value._real_obj
+        
+        if isinstance(value, NativeSystem):
+            return value._real_system
+        
+        if hasattr(value, "struct_def") and value.struct_def.name == "Vector2":
+            return (value.get("x"), value.get("y"))
         
         return value
     
@@ -41,12 +55,78 @@ class NativeProxy:
             return instance
         return (x, y)
     
-    @staticmethod
-    def fer_to_py(value):
-        if hasattr(value, "struct_def") and value.struct_def.name == "Vector2":
-            return (value.get("x"), value.get("y"))
-        
-        return value
+class NativeFunction:
+    def __init__(self, py_func, interpreter):
+        self.func = py_func
+        self.interpreter = interpreter
+
+    def __call__(self, *args):
+        py_args = [NativeProxy.fer_to_py(arg) for arg in args]
+
+        try:
+            result = self.func(*py_args)
+            return NativeProxy.py_to_fer(result, self.interpreter)
+        except Exception as e:
+            print(f"[NativeProxy] Error executing '{self.func.__name__}': {e}")
+            return None
+    
+class NativeSystem:
+    def __init__(self, system_obj, interpreter):
+        self._real_system = system_obj
+        self._interpreter = interpreter
+
+    def __getattr__(self, name):
+        if name.startswith("_"): return None
+
+        if hasattr(self._real_system, name):
+            val = getattr(self._real_system, name)
+            return NativeProxy.py_to_fer(val, self._interpreter)
+        return None
+    
+class NativeObject:
+    """
+    Wrapper para Entidades del juego (Player, Obstacles).
+    Tiene ID y persistencia automática.
+    """
+    def __init__(self, real_obj, obj_id, interpreter):
+        super().__setattr__("_real_obj", real_obj)
+        super().__setattr__("_id", obj_id)
+        super().__setattr__("_interpreter", interpreter)
+
+    def __getattr__(self, name):
+        if name.startswith("_"): return None
+
+        try:
+            if isinstance(self._real_obj, dict):
+                val = self._real_obj.get(name)
+                return NativeProxy.py_to_fer(val, self._interpreter)
+
+            if hasattr(self._real_obj, name):
+                val = getattr(self._real_obj, name)
+                return NativeProxy.py_to_fer(val, self._interpreter)
+                
+        except Exception as e:
+            pass
+        return None
+
+    def __setattr__(self, name, value):
+        if name.startswith("_"): return
+
+        try:
+            py_val = NativeProxy.fer_to_py(value)
+            
+            if isinstance(self._real_obj, dict):
+                self._real_obj[name] = py_val
+                return
+
+            setattr(self._real_obj, name, py_val)
+
+            if self._id:
+                flag_key = f"OBJ_{self._id}_{name}"
+                game_state.set_flag(flag_key, py_val)
+
+        except Exception as e:
+            print(f"[NativeBridge] Write Error '{name}': {e}")
     
 class RemoteObject:
     def __init__(self, obj_id, map_id, zone_id, interpreter):
@@ -80,49 +160,3 @@ class RemoteObject:
         
         location_info = f" [{self._map_id} {self._zone_id}]" if self._map_id else ""
         print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
-
-class NativeObject:
-    """
-    Wrapper to wrap real objects in python
-    """
-    def __init__(self, real_obj, obj_id, interpreter):
-        super().__setattr__("_real_obj", real_obj)
-        super().__setattr__("_id", obj_id)
-        super().__setattr__("_interpreter", interpreter)
-
-    def __getattr__(self, name):
-        if name.startswith("_"):
-            print(f"[NativeObject] Access denied to private attribute '{name}'")
-            return None
-
-        try:
-            if not hasattr(self._real_obj, name):
-                return None
-            
-            val = getattr(self._real_obj, name)
-
-            if callable(val):
-                return val 
-            
-            return NativeProxy.py_to_fer(val, self._interpreter)
-
-        except Exception as e:
-            print(f"[NativeObject] Error reading '{name}': {e}")
-            return None
-        
-    def __setattr__(self, name, value):
-        if name.startswith("_"):
-            print(f"[NativeObject] Cannot modify private attribute '{name}'")
-            return
-
-        try:
-            py_val = NativeProxy.fer_to_py(value)
-            setattr(self._real_obj, name, py_val)
-
-            if self._id:
-                flag_key = f"OBJ_{self._id}_{name}"
-                game_state.set_flag(flag_key, py_val)
-                print(f"[NativeBridge] Persisted: {flag_key} = {py_val}")
-
-        except Exception as e:
-            print(f"[NativeObject] Error writing '{name}': {e}")
