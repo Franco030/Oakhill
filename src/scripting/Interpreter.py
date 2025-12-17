@@ -415,7 +415,7 @@ class Interpreter:
                 func_obj = yield from self.evaluate(node.callee)
 
                 if isinstance(func_obj, NativeFunction):
-                    result_value = func_obj(*args)
+                    result_value = func_obj(*args, **kwargs)
                     executed = True
                 
                 elif callable(func_obj): 

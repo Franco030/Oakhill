@@ -60,11 +60,15 @@ class NativeFunction:
         self.func = py_func
         self.interpreter = interpreter
 
-    def __call__(self, *args):
+    def __call__(self, *args, **kwargs):
         py_args = [NativeProxy.fer_to_py(arg) for arg in args]
 
+        py_kwargs = {}
+        for key, value in kwargs.items():
+            py_kwargs[key] = NativeProxy.fer_to_py(value)
+
         try:
-            result = self.func(*py_args)
+            result = self.func(*py_args, **py_kwargs)
             return NativeProxy.py_to_fer(result, self.interpreter)
         except Exception as e:
             print(f"[NativeProxy] Error executing '{self.func.__name__}': {e}")
@@ -84,10 +88,6 @@ class NativeSystem:
         return None
     
 class NativeObject:
-    """
-    Wrapper para Entidades del juego (Player, Obstacles).
-    Tiene ID y persistencia automática.
-    """
     def __init__(self, real_obj, obj_id, interpreter):
         super().__setattr__("_real_obj", real_obj)
         super().__setattr__("_id", obj_id)
