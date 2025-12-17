@@ -83,7 +83,8 @@ class Interpreter:
         self.globals = Environment()
 
         self.systems = {
-            "TweenManager": tween_manager
+            "TweenManager": tween_manager,
+            "GameState": game_state
         }
 
         # The structures for function helpers and Marshalling
@@ -109,7 +110,6 @@ class Interpreter:
         self.global_params = ["blocking", "sound", "volume"]
 
 
-        # This functions are slowly becoming more easy to make in FER
         self.native_map = {
             # --- AUDIO ---
             "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
@@ -131,10 +131,18 @@ class Interpreter:
             "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
             "wait":           (Actions.WAIT, ["time"]),
 
+
+            # ---------------------------------------------------------------------
+            # ---------------------------------------------------------------------
+            # ---------- ALL OF THE ACTIONS BELOW CAN BE MADE IN FER NOW ----------
+            # ---------------------------------------------------------------------
+            # ---------------------------------------------------------------------
+
+
             # --- OBJECT MANIPULATION ---
-            "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
-            "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
-            "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
+            # "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
+            # "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
+            # "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
             
             # # Move instantly
             # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
@@ -144,8 +152,8 @@ class Interpreter:
 
             # --- GLOBAL FLAGS ---
             # While .fer has local vars, these modify the permanent GameState
-            "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
-            "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
+            # "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
+            # "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
             
             # --- EXCLUDED ACTIONS ---
             # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
@@ -278,38 +286,46 @@ class Interpreter:
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):
         """
-        Generates intelligent metadata, depending on the function
+        Generates intelligent metadata, separated by system logic.
         """
         meta = {
             "timestamp": time.time(),
-            "params": {**kwargs}
+            "params": kwargs.copy()
         }
 
         if args:
-            meta["args_list"] = args
+            meta["args_list"] = list(args)
 
-        if func_name in ["set_flag", "increment_flag", "ask_choice"]:
-            flag_name = None
+        if func_name in ["set_flag", "increment_flag"]:
+            flag_name = args[0] if args else kwargs.get("flag")
             
-            if func_name == "set_flag" or func_name == "increment_flag":
-                flag_name = args[0] if len(args) > 0 else kwargs.get("flag")
-            elif func_name == "ask_choice":
-                flag_name = args[1] if len(args) > 1 else kwargs.get("flag")
-
             if flag_name:
                 meta["target_flag"] = flag_name
                 meta["previous_value"] = pre_exec_state.get("flag_val")
                 meta["new_value"] = game_state.get_flag(flag_name)
-                
                 meta["changed"] = meta["previous_value"] != meta["new_value"]
 
+
+        elif func_name in ["ask_choice", "show_choice"]:
+            flag_name = args[1] if len(args) > 1 else kwargs.get("flag")
+            
+            if flag_name:
+                meta["target_flag"] = flag_name
+                meta["current_value"] = game_state.get_flag(flag_name)
+
+
         elif func_name == "play_sound":
-            meta["sound_id"] = args[0] if len(args) > 0 else kwargs.get("sound")
+            meta["sound_id"] = args[0] if args else kwargs.get("sound")
             meta["volume"] = args[1] if len(args) > 1 else kwargs.get("volume", 1.0)
 
-        elif func_name in ["unhide_object", "move_object", "slide_object", "destroy_object", "modify_object"]:
-            obj_id = args[0] if len(args) > 0 else kwargs.get("id")
-            meta["target_object_id"] = obj_id
+
+        elif func_name in ["unhide_object", "move_object", "slide_object", "destroy_object", "modify_object", "start_move", "teleport"]:
+            target = args[0] if args else kwargs.get("id") or kwargs.get("obj")
+            
+            if hasattr(target, "_id"):
+                meta["target_object_id"] = target._id
+            else:
+                meta["target_object_raw"] = str(target)
 
             if func_name == "modify_object":
                 meta["modifications"] = kwargs
@@ -364,6 +380,8 @@ class Interpreter:
         func_name = None
         if hasattr(node.callee, "value"):
             func_name = node.callee.value
+        elif isinstance(node.callee, GetAttribute):
+            func_name = node.callee.property_name
 
         pre_exec_state = {}
         is_capture = getattr(node, 'is_capture', False)
@@ -427,7 +445,6 @@ class Interpreter:
             except Exception as e:
                 pass
         
-        if func_name == "get_flag": return result_value
         if func_name == "print": 
             output = " ".join(str(arg) for arg in args)
             print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}")

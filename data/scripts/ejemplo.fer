@@ -1,5 +1,6 @@
 func main() {
-    var contador = 10;
-    var c = contador /~ 3;
-    
+    var gs = get_system("GameState");
+    var reporte = gs.set_flag("DoorOpen", true);
+    var report = @gs.set_flag("DoorOpen", false);
+    print(report);
 }
