@@ -161,6 +161,9 @@ class Interpreter:
             "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
             "wait":           (Actions.WAIT, ["time"]),
 
+            # --- OBJECT MANIPULATION ---
+            "destroy_object": (Actions.DESTROY_OBJECT, ["id"])
+
 
             # ---------------------------------------------------------------------
             # ---------------------------------------------------------------------
@@ -172,7 +175,6 @@ class Interpreter:
             # --- OBJECT MANIPULATION ---
             # "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
             # "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
-            # "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
             
             # # Move instantly
             # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),

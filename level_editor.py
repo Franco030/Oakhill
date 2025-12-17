@@ -291,13 +291,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_anim_speed.setValue(float(obj_data.get('animation_speed', 0.1)))
             self.chk_auto_play.setChecked(obj_data.get('animation_auto_play', False))
 
-            flash_val = obj_data.get('flash_image_id', obj_data.get('flash_image_path', 'None'))
+            flash_val = obj_data.get('flash_image_id', obj_data.get('flash_image_id', 'None'))
             self.prop_flash_image_path_combo.setCurrentText(flash_val)
             
-            charge_val = obj_data.get('charge_sound_id', obj_data.get('charge_sound_path', 'None'))
+            charge_val = obj_data.get('charge_sound_id', obj_data.get('charge_sound_id', 'None'))
             self.prop_charge_sound_combo.setCurrentText(charge_val)
             
-            used_val = obj_data.get('used_image_id', obj_data.get('used_image_path', 'None'))
+            used_val = obj_data.get('used_image_id', obj_data.get('used_image_id', 'None'))
             self.prop_used_image_path_combo.setCurrentText(used_val)
             
             self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))

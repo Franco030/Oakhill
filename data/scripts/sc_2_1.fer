@@ -6,21 +6,43 @@ func open_note() {
 }
 
 func on_grab_key() {
+    play_sound("sfx_interaction_occurred");
+    show_dialogue("You grabbed a key");
     gamestate.set_flag("has_cemetery_key", true);
 }
 
 func open_door() {
+    var door = get_object("obj_1765238461284_230");
+    var block_1 = get_object("obj_1765315172180_589");
+    var block_2 = get_object("obj_1765315172346_490");
+    play_sound("sfx_interaction_occurred");
+    door.is_passable = true;
+    block_1.is_passable = false;
+    block_2.is_passable = false;
 
+}
+
+// Called in door_trigger
+func unlock_door() {
+    var door = get_object("obj_1765238461284_230");
+    door.image_id = "spr_cemetery_door_closed";
+    door.flash_image = "spr_cemetery_door_flash";
+    door.charge_sound = "sfx_interacting";
+    door.interaction_blocked = false;
 }
 
 func door_trigger() {
     var has_key = gamestate.get_flag("has_cemetery_key");
 
     play_sound("sfx_dialogue_occurred");
+    show_dialogue("There's a door here");
     if (has_key) {
         var choice = @ask_choice("Unlock this door?", "use_key");
-        print(choice);
+        if (choice.value) {
+            unlock_door();
+            destroy_object(choice.source);
+        }
     } else {
-
+        show_dialogue("It's locked");
     }
 }

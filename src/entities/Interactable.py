@@ -27,37 +27,37 @@ class Interactable(Obstacle):
         self.current_progress = 0
         self.original_image = self.image.copy()
 
-        self.charge_sound = None
+
+        self._charge_sound = None
         self.is_playing_charge = False
-
         charge_key = data.get("charge_sound_id", data.get("charge_sound_path", "None"))
-
         if charge_key and charge_key != "None":
-            self.charge_sound = resource_manager.get_sound(charge_key)
-            if self.charge_sound:
-                self.charge_sound.set_volume(0.85)
+            self._charge_sound = resource_manager.get_sound(charge_key)
+            if self._charge_sound:
+                self._charge_sound.set_volume(0.85)
 
-        self.used_image = None
+
+        self._used_image = None
         used_key = data.get("used_image_id", data.get("used_image_path", "None"))
-
         if used_key and used_key != "None":
             raw_used = resource_manager.get_image(used_key)
             if raw_used:
-                self.used_image = pygame.transform.scale(
+                self._used_image = pygame.transform.scale(
                     raw_used, 
                     (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
                 )
         
 
-        flash_key = data.get("flash_image_id", data.get("flash_image_path"))
-        raw_flash = resource_manager.get_image(flash_key)
-
-        if raw_flash:
-            self.flash_image = pygame.transform.scale(
+        self._flash_image = None
+        flash_key = data.get("flash_image_id", None)
+        if flash_key and flash_key != "None":
+            raw_flash = resource_manager.get_image(flash_key)
+            self._flash_image = pygame.transform.scale(
                 raw_flash, (self.image.get_width(), self.image.get_height())
             )
         else:
-            self.flash_image = self.original_image.copy()
+            self._flash_image = self.original_image.copy()
+
 
         if game_state.has_interacted(self.id):
             self.interacted_once = True
@@ -80,6 +80,45 @@ class Interactable(Obstacle):
     @script_name.setter
     def script_name(self, value):
         self.script = value
+
+    @property
+    def charge_sound(self):
+        return self._charge_sound
+    
+    @charge_sound.setter
+    def charge_sound(self, key):
+        if key and key != "None":
+            self._charge_sound = resource_manager.get_sound(key)
+            if self._charge_sound:
+                self._charge_sound.set_volume(0.85)
+
+    @property
+    def used_image(self):
+        return self._used_image
+    
+    @used_image.setter
+    def used_image(self, key):
+        if key and key != "None":
+            raw_used = resource_manager.get_image(key)
+            if raw_used:
+                self._used_image = pygame.transform.scale(
+                    raw_used, 
+                    (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
+                )
+
+    @property
+    def flash_image(self):
+        return self._flash_image
+    
+    @flash_image.setter
+    def flash_image(self, key):
+        if key and key != "None":
+            raw_flash = resource_manager.get_image(key)
+            self._flash_image = pygame.transform.scale(
+                raw_flash, (self.image.get_width(), self.image.get_height())
+            )
+        else:
+            self._flash_image = self.original_image.copy()
 
     def unhide(self):
         """
