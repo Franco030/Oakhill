@@ -295,7 +295,7 @@ class Parser:
             if not self.check(TokenType.IDENTIFIER):
                 raise Exception(f"[Parser Error] Expected function call after '@' in line {self.peek().line}")
             
-            node = self.function_call_or_var()
+            node = self.call() 
 
             if isinstance(node, FunctionCall):
                 node.is_capture = True
@@ -343,7 +343,7 @@ class Parser:
             return DictLiteral(pairs)
         
         if self.check(TokenType.IDENTIFIER):
-            return self.function_call_or_var()
+            return Literal(self.advance().value)
 
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
     
@@ -353,54 +353,48 @@ class Parser:
             right = self.unary()
             return UnaryOp(operator, right)
         
-        return self.primary()
+        return self.call()
 
-    def function_call_or_var(self):
-        token_id = self.advance()
-
-        expr = Literal(token_id.value)
-
-        if self.check(TokenType.LPAREN):
-            self.advance()
-            
-            arguments = []
-            kwargs = {}
-
-            if not self.check(TokenType.RPAREN):
-                while True:
-                    if (self.check(TokenType.IDENTIFIER) and 
-                        self.peek_next_token_is(TokenType.ASSIGN)):
-                        
-                        arg_name = self.advance().value
-                        self.consume(TokenType.ASSIGN, "Expected '='")
-                        arg_value = self.expression()
-                        
-                        kwargs[arg_name] = arg_value
-                    else:
-                        if len(kwargs) > 0:
-                            raise Exception(f"[ParserError] Positional argument after keyword argument in line {self.peek().line}")
-                        
-                        arguments.append(self.expression())
-
-                    if not self.check(TokenType.COMMA): break
-                    self.advance()
-
-            self.consume(TokenType.RPAREN, "')' was expected")
-            expr = FunctionCall(token_id.value, arguments, kwargs)
+    def call(self):
+        expr = self.primary()
 
         while True:
-            if self.check(TokenType.LBRACKET):
-                self.advance()
+            if self.match(TokenType.LPAREN):
+                expr = self.finish_call(expr)
+
+            elif self.match(TokenType.DOT):
+                name_token = self.consume(TokenType.IDENTIFIER, "Expected property name after '.'")
+                expr = GetAttribute(expr, name_token.value)
+
+            elif self.match(TokenType.LBRACKET):
                 index = self.expression()
                 self.consume(TokenType.RBRACKET, "Expected ']' after index")
                 expr = IndexAccess(expr, index)
-            
-            elif self.check(TokenType.DOT):
-                self.advance()
-                prop_name_token = self.consume(TokenType.IDENTIFIER, "Expected property name after '.'")
-                expr = GetAttribute(expr, prop_name_token.value)
 
             else:
                 break
-
+        
         return expr
+    
+    def finish_call(self, callee):
+        arguments = []
+        kwargs = {}
+
+        if not self.check(TokenType.RPAREN):
+            while True:
+                if (self.check(TokenType.IDENTIFIER) and self.peek_next_token_is(TokenType.ASSIGN)):
+                    arg_name = self.advance().value
+                    self.consume(TokenType.ASSIGN, "Expected '='")
+                    arg_value = self.expression()
+                    kwargs[arg_name] = arg_value
+                else:
+                    if len(kwargs) > 0:
+                        raise Exception(f"[ParserError] Positional argument after keyword argument in line {self.peek().line}")
+                    arguments.append(self.expression())
+
+                if not self.check(TokenType.COMMA): break
+                self.advance()
+
+        self.consume(TokenType.RPAREN, "')' was expected")
+        
+        return FunctionCall(callee, arguments, kwargs)

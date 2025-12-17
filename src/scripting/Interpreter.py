@@ -83,7 +83,7 @@ class Interpreter:
         self.globals = Environment()
 
         self.systems = {
-            "Tween": tween_manager
+            "TweenManager": tween_manager
         }
 
         # The structures for function helpers and Marshalling
@@ -361,23 +361,20 @@ class Interpreter:
                 val = yield from self.evaluate(val_node)
                 kwargs[key] = val
 
-        if node.name == "print":
-            output = " ".join(str(arg) for arg in args)
-            print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}") 
-            return None
-            
-        if node.name == "get_flag":
-            return game_state.get_flag(args[0])
-        
-        pre_exec_state = {}
-        if getattr(node, 'is_capture', False):
-            start_time = time.time()
+        func_name = None
+        if hasattr(node.callee, "value"):
+            func_name = node.callee.value
 
+        pre_exec_state = {}
+        is_capture = getattr(node, 'is_capture', False)
+        
+        if is_capture:
             target_flag = None
-            if node.name in ["set_flag", "increment_flag"]:
-                target_flag = args[0] if len(args) > 0 else kwargs.get("flag")
-            elif node.name == "ask_choice":
-                target_flag = args[1] if len(args) > 1 else kwargs.get("flag")
+            if func_name:
+                if func_name in ["set_flag", "increment_flag"]:
+                    target_flag = args[0] if len(args) > 0 else kwargs.get("flag")
+                elif func_name == "ask_choice":
+                    target_flag = args[1] if len(args) > 1 else kwargs.get("flag")
             
             if target_flag:
                 pre_exec_state["flag_val"] = game_state.get_flag(target_flag)
@@ -385,90 +382,93 @@ class Interpreter:
 
         result_value = None
         executed = False
-        
         start_time = time.time()
-        
-        # Here we check if the literal is a native function
-        if node.name in self.native_map:
-            result_value = self._call_native(node.name, args, kwargs)
+
+        if func_name and func_name in self.native_map:
+            result_value = self._call_native(func_name, args, kwargs)
             if result_value is not None:
                 yield result_value
             executed = True
         
-        # If it is a user made function (in FER)
-        elif node.name in self.functions:
-            result_value = yield from self._execute_user_function(self.functions[node.name], args)
+        elif func_name and func_name in self.functions:
+            result_value = yield from self._execute_user_function(self.functions[func_name], args)
             executed = True
 
-        # If it is a struct
-        elif node.name in self.structs:
-            struct_def = self.structs[node.name]
+        elif func_name and func_name in self.structs:
+            struct_def = self.structs[func_name]
             instance = FerInstance(struct_def)
-
+            
             for i, val in enumerate(args):
                 if i < len(struct_def.fields):
-                    field_name = struct_def.fields[i]
-                    instance.set(field_name, val)
-
+                    instance.set(struct_def.fields[i], val)
                 else:
                     print(f"[Interpreter] Too many arguments for struct '{struct_def.name}'")
-
             if kwargs:
                 for key, val in kwargs.items():
                     instance.set(key, val)
             
-            return instance
+            result_value = instance
+            executed = True
         
-        # If its anything else. And, in this case, anything alse might be a Native python Object
         else:
             try:
-                func_obj = self.environment.get(node.name)
+                func_obj = yield from self.evaluate(node.callee)
 
-                if callable(func_obj):
+                if isinstance(func_obj, NativeFunction):
+                    result_value = func_obj(*args)
+                    executed = True
+                
+                elif callable(func_obj): 
                     py_args = [NativeProxy.fer_to_py(arg) for arg in args]
-                    result = func_obj(*py_args)
+                    raw_result = func_obj(*py_args)
+                    result_value = NativeProxy.py_to_fer(raw_result, self)
+                    executed = True
 
-                    return NativeProxy.py_to_fer(result, self)
-            except:
+            except Exception as e:
                 pass
-
-            print(f"[Interpreter] Error: Unknown function '{node.name}'")
-            return None
         
-        if getattr(node, 'is_capture', False):
+        if func_name == "get_flag": return result_value
+        if func_name == "print": 
+            output = " ".join(str(arg) for arg in args)
+            print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}")
+            return None
+
+        if not executed:
+            name_repr = func_name if func_name else "expression"
+            print(f"[Interpreter] Error: Unknown function or callable '{name_repr}'")
+            return None
+
+        if is_capture:
             end_time = time.time()
             duration = end_time - start_time
             
             final_value = result_value
 
-            if node.name == "ask_choice":
+            if func_name == "ask_choice":
                 flag_name = None
                 if len(args) > 1: flag_name = args[1]
                 elif "flag" in kwargs: flag_name = kwargs["flag"]
-                
                 if flag_name:
                     final_value = game_state.get_flag(flag_name)
 
-            enriched_meta = self._enrich_meta(node.name, args, kwargs, pre_exec_state)
+            meta_name = func_name if func_name else "dynamic_call"
+            enriched_meta = self._enrich_meta(meta_name, args, kwargs, pre_exec_state)
+            
             if result_value and hasattr(result_value, "blocking"):
                 enriched_meta["blocking"] = result_value.blocking
             
             struct_def = self.structs.get("ActionResult")
-            instance = FerInstance(struct_def)
+            if struct_def:
+                instance = FerInstance(struct_def)
+                instance.set("value", final_value)
+                instance.set("source", self.source_id)
+                instance.set("duration", duration)
+                instance.set("meta", enriched_meta)
+                instance.set("original_return", result_value)
+                return instance
+            else:
+                return final_value
 
-            instance.set("value", final_value)
-            instance.set("source", self.source_id)
-            instance.set("duration", duration)
-            instance.set("meta", enriched_meta)
-            instance.set("original_return", result_value)
-
-            return instance
-
-
-        if not executed:
-            print(f"[Interpreter] Error: Unknown function '{node.name}'")
-            return None
-            
         return result_value
     
     def visit_StructDecl(self, node):
@@ -633,7 +633,7 @@ class Interpreter:
         if isinstance(obj, FerInstance):
             return obj.get(node.property_name)
         
-        if isinstance(obj, (NativeObject, RemoteObject)):
+        if isinstance(obj, (NativeObject, NativeSystem, NativeFunction, RemoteObject)):
             # getattr is overriden in the NativeObject class so that it works as I like
             val = getattr(obj, node.property_name)
             return val
@@ -641,7 +641,7 @@ class Interpreter:
         if isinstance(obj, dict):
             return obj.get(node.property_name)
 
-        print(f"[Interpreter Error] Cannot read property '{node.property_name}' on {type(obj)}")
+        print(f"[Interpreter] Error: Cannot read property '{node.property_name}' on {type(obj)}")
         return None
     
     def visit_SetAttribute(self, node):
@@ -655,7 +655,7 @@ class Interpreter:
             obj.set(node.property_name, value)
             return value
 
-        if isinstance(obj, (NativeObject, RemoteObject)):
+        if isinstance(obj, (NativeObject, NativeSystem, NativeFunction, RemoteObject)):
             # setattr is overriden in the NativeObject class so that it works as I like
             setattr(obj, node.property_name, value)
             return value

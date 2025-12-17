@@ -35,11 +35,10 @@ class IfStatement(ASTNode):
         self.else_branch = else_branch
 
 class FunctionCall(ASTNode):
-    def __init__(self, name, arguments, kwargs=None, is_capture=False):
-        self.name = name
-        self.arguments = arguments # Value list
-        self.kwargs = kwargs or {} # accepts keyword arguements
-        self.is_capture = is_capture # True if @
+    def __init__(self, callee, arguments, kwargs=None):
+        self.callee = callee
+        self.arguments = arguments
+        self.kwargs = kwargs if kwargs else {}
 
 class GetAttribute(ASTNode):
     def __init__(self, object_node, property_name):
