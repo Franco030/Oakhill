@@ -1,6 +1,7 @@
 func main() {
-    var gs = get_system("GameState");
-    var reporte = gs.set_flag("DoorOpen", true);
-    var report = @gs.set_flag("DoorOpen", false);
-    print(report);
+    var arbol = get_object("obj_1765498403553_511");
+
+    var Tweener = get_system("TweenManager");
+
+    teleport(arbol, 100, 100, true);
 }

@@ -380,8 +380,6 @@ class Interpreter:
         func_name = None
         if hasattr(node.callee, "value"):
             func_name = node.callee.value
-        elif isinstance(node.callee, GetAttribute):
-            func_name = node.callee.property_name
 
         pre_exec_state = {}
         is_capture = getattr(node, 'is_capture', False)
@@ -443,7 +441,9 @@ class Interpreter:
                     executed = True
 
             except Exception as e:
-                pass
+                print(f"[Interpreter Error] Fallo ejecutando llamada: {e}")
+                import traceback
+                traceback.print_exc()
         
         if func_name == "print": 
             output = " ".join(str(arg) for arg in args)
