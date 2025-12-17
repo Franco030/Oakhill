@@ -67,6 +67,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.templates = {}
         self.templates_file = os.path.join(self.base_path, "data/database", "templates.json")
 
+        self.script_files = []
+        self.populate_scripts_list()
+
         self.current_scene = QGraphicsScene()
         self.canvas_view.setScene(self.current_scene)
         self.current_scene.setSceneRect(0, 0, GAME_WIDTH, GAME_HEIGHT)
@@ -102,6 +105,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.list_objects.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.list_objects.currentItemChanged.connect(self.on_object_selected)
+
+        self.combo_script_file.currentTextChanged.connect(lambda v: self.on_property_changed('script', v))
+        self.line_edit_function.textChanged.connect(lambda v: self.on_property_changed('function', v))
+        self.btn_open_script.clicked.connect(self.open_script_in_external_editor)
 
         self.prop_x.valueChanged.connect(lambda v: self.on_property_changed('x', v))
         self.prop_y.valueChanged.connect(lambda v: self.on_property_changed('y', v))
@@ -296,6 +303,12 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             self.prop_interaction_duration.setValue(int(obj_data.get('interaction_duration', 60)))
             self.chk_interaction_blocked.setChecked(obj_data.get('interaction_blocked', False)) 
 
+
+            script_val = obj_data.get('script', 'None')
+            self.combo_script_file.setCurrentText(script_val)
+            
+            func_val = obj_data.get('function', '')
+            self.line_edit_function.setText(func_val)
 
             trig_action = obj_data.get("trigger_action", Actions.SET_FLAG)
             self.prop_trigger_action.setCurrentText(str(trig_action))
@@ -874,6 +887,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 try: obj["interaction_blocked"] = bool(obj.get("interaction_blocked", False))
                 except: obj["interaction_blocked"] = False
 
+                if obj.get("script") == "None" or not obj.get("script"):
+                    obj["script"] = ""
+                    obj["function"] = ""
+
     def save_json(self):
         filepath, _ = QFileDialog.getSaveFileName(self, "Guardar JSON", self.base_path, "JSON (*.json)")
         if not filepath: return
@@ -1243,7 +1260,10 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_used_image_path_combo.setCurrentText(data.get("used_image_id", "None"))
         self.prop_interaction_duration.setValue(int(data.get("interaction_duration", 60)))
         self.chk_interaction_blocked.setChecked(data.get("interaction_blocked", False))
-            
+        
+        self.combo_script_file.setCurrentText(data.get('script', 'None'))
+        self.line_edit_function.setText(data.get('function', ''))
+
         self.prop_trigger_condition.setCurrentText(data.get('trigger_condition', Conditions.ON_STAY))
         self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
@@ -1783,6 +1803,32 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 
         return new_id
 
+    def populate_scripts_list(self):
+        script_dir = os.path.join(self.base_path, "data/scripts")
+        self.script_files = ["None"]
+        
+        if os.path.exists(script_dir):
+            for file in os.listdir(script_dir):
+                if file.endswith(".fer"):
+                    self.script_files.append(file)
+        
+        if hasattr(self, 'combo_script_file'):
+            self.combo_script_file.clear()
+            self.combo_script_file.addItems(self.script_files)
+
+    def open_script_in_external_editor(self):
+        obj_data = self.get_real_object_data()
+        if not obj_data: return
+        
+        script_name = obj_data.get("script", "None")
+        if script_name and script_name != "None":
+            script_path = os.path.join(self.base_path, "data/scripts", script_name)
+            if os.path.exists(script_path):
+                if sys.platform == "win32":
+                    os.startfile(script_path)
+                else:
+                    import subprocess
+                    subprocess.call(('xdg-open', script_path))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

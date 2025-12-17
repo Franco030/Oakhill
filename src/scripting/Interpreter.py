@@ -408,8 +408,13 @@ class Interpreter:
                 kwargs[key] = val
 
         func_name = None
+        is_method_call = False
+
         if hasattr(node.callee, "value"):
             func_name = node.callee.value
+        elif isinstance(node.callee, GetAttribute):
+            func_name = node.callee.property_name
+            is_method_call = True
 
         pre_exec_state = {}
         is_capture = getattr(node, 'is_capture', False)
@@ -430,17 +435,17 @@ class Interpreter:
         executed = False
         start_time = time.time()
 
-        if func_name and func_name in self.native_map:
+        if func_name and func_name in self.native_map and not is_method_call:
             result_value = self._call_native(func_name, args, kwargs)
             if result_value is not None:
                 yield result_value
             executed = True
         
-        elif func_name and func_name in self.functions:
+        elif func_name and func_name in self.functions and not is_method_call:
             result_value = yield from self._execute_user_function(self.functions[func_name], args)
             executed = True
 
-        elif func_name and func_name in self.structs:
+        elif func_name and func_name in self.structs and not is_method_call:
             struct_def = self.structs[func_name]
             instance = FerInstance(struct_def)
             

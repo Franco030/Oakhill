@@ -57,7 +57,9 @@
                     }
                 ],
                 "image_id": "spr_cemetery_door_locked",
-                "used_image_id": "spr_cemetery_doors_open"
+                "used_image_id": "spr_cemetery_doors_open",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765239436110_287",
@@ -95,7 +97,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cemetery_walls_0"
+                "image_id": "spr_cemetery_walls_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765240971_3",
@@ -133,7 +137,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cemetery_walls_1"
+                "image_id": "spr_cemetery_walls_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765261277750_284",
@@ -171,7 +177,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cemetery_column_wall"
+                "image_id": "spr_cemetery_column_wall",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765261299_5",
@@ -209,7 +217,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cemetery_column_wall"
+                "image_id": "spr_cemetery_column_wall",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765315172180_589",
@@ -247,7 +257,9 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765315172346_490",
@@ -285,7 +297,9 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765495681237_66",
@@ -326,7 +340,9 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765497765529_294",
@@ -364,7 +380,9 @@
                 "sort_offset_y": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -403,7 +421,9 @@
                 "x": 173,
                 "y": 582,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -442,7 +462,9 @@
                 "x": 972,
                 "y": 491,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -481,7 +503,9 @@
                 "x": 322,
                 "y": 394,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -520,7 +544,9 @@
                 "y": 577,
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765498426950_777",
@@ -549,7 +575,9 @@
                 "border_width": 0,
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765498595669_24",
@@ -641,7 +669,9 @@
                         "action": "PlaySound",
                         "params": "sound=sfx_flee_loop"
                     }
-                ]
+                ],
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765500959_15",
@@ -690,7 +720,9 @@
                         "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred\nblocking=false"
                     }
                 ],
-                "is_ground": true
+                "is_ground": true,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Interactable",
@@ -731,7 +763,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "ejemplo",
+                "script": "ejemplo.fer",
                 "function": "main"
             }
         ],
@@ -773,7 +805,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764906085_1",
@@ -812,7 +846,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764906089_2",
@@ -851,7 +887,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907530957_675",
@@ -890,7 +928,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_1"
+                "image_id": "spr_broken_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907560_4",
@@ -929,7 +969,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907568_5",
@@ -968,7 +1010,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907585_6",
@@ -1007,7 +1051,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_2"
+                "image_id": "spr_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907589062_899",
@@ -1046,7 +1092,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907603_8",
@@ -1085,7 +1133,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907615234_183",
@@ -1124,7 +1174,9 @@
                 "image_id": "spr_gravestone_0",
                 "flash_image_id": "spr_gravestone_flash_0",
                 "used_image_id": "spr_bloody_gravestone_0",
-                "charge_sound_id": "sfx_interacting"
+                "charge_sound_id": "sfx_interacting",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907637735_209",
@@ -1163,7 +1215,9 @@
                 "image_id": "spr_gravestone_1",
                 "flash_image_id": "spr_gravestone_flash_1",
                 "used_image_id": "spr_bloody_gravestone_1",
-                "charge_sound_id": "sfx_interacting"
+                "charge_sound_id": "sfx_interacting",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907669435_682",
@@ -1202,7 +1256,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cross_grave_1"
+                "image_id": "spr_cross_grave_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907688986_164",
@@ -1241,7 +1297,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_2"
+                "image_id": "spr_flowered_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907700697_497",
@@ -1280,7 +1338,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_0"
+                "image_id": "spr_flowered_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907724_14",
@@ -1319,7 +1379,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cross_grave"
+                "image_id": "spr_cross_grave",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907761_15",
@@ -1358,7 +1420,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907763_16",
@@ -1397,7 +1461,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907770_17",
@@ -1436,7 +1502,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764907774_18",
@@ -1475,7 +1543,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             }
         ],
         "(2, 4)": [
@@ -1516,7 +1586,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909140_4",
@@ -1555,7 +1627,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909151_5",
@@ -1594,7 +1668,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909156_6",
@@ -1633,7 +1709,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909165_7",
@@ -1672,7 +1750,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909172_8",
@@ -1711,7 +1791,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909177_9",
@@ -1750,7 +1832,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909191_10",
@@ -1789,7 +1873,9 @@
                 "interaction_blocked": false,
                 "image_id": "spr_cross_grave",
                 "flash_image_id": "spr_cross_grave_flash_0",
-                "charge_sound_id": "sfx_interacting"
+                "charge_sound_id": "sfx_interacting",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909205_11",
@@ -1828,7 +1914,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909209_12",
@@ -1867,7 +1955,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909219_13",
@@ -1906,7 +1996,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909226_14",
@@ -1945,7 +2037,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765000689343_108",
@@ -1984,7 +2078,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_bloody_tree_0"
+                "image_id": "spr_bloody_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Interactable",
@@ -2024,7 +2120,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_note"
+                "image_id": "spr_note",
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -2063,7 +2161,9 @@
                 "y": 486,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_1"
+                "image_id": "spr_broken_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -2102,7 +2202,9 @@
                 "y": 459,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_0"
+                "image_id": "spr_broken_tree_0",
+                "script": "",
+                "function": ""
             }
         ],
         "(2, 5)": [
@@ -2143,7 +2245,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_1"
+                "image_id": "spr_stake_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909288_1",
@@ -2182,7 +2286,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_1"
+                "image_id": "spr_stake_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909293_2",
@@ -2221,7 +2327,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_1"
+                "image_id": "spr_stake_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909322_6",
@@ -2260,7 +2368,9 @@
                 "sort_offset_y": -25,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_0"
+                "image_id": "spr_stake_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909332_7",
@@ -2299,7 +2409,9 @@
                 "sort_offset_y": -30,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_burned_stake_0"
+                "image_id": "spr_burned_stake_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909356_7",
@@ -2338,7 +2450,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_0"
+                "image_id": "spr_broken_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909427313_161",
@@ -2377,7 +2491,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_bloody_tree_1"
+                "image_id": "spr_bloody_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909507474_968",
@@ -2416,7 +2532,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_2"
+                "image_id": "spr_broken_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909557_13",
@@ -2455,7 +2573,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cross_grave_1"
+                "image_id": "spr_cross_grave_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909568_14",
@@ -2494,7 +2614,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909575_15",
@@ -2533,7 +2655,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764909589_15",
@@ -2572,7 +2696,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_broken_tree_0"
+                "image_id": "spr_broken_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764910698915_916",
@@ -2611,7 +2737,9 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764911804_17",
@@ -2650,7 +2778,9 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764911828_18",
@@ -2689,7 +2819,9 @@
                 "interaction_data": "",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
-                "interaction_blocked": false
+                "interaction_blocked": false,
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -2728,7 +2860,9 @@
                 "y": 446,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_bloody_tree_0"
+                "image_id": "spr_bloody_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "type": "Obstacle",
@@ -2767,7 +2901,9 @@
                 "y": 513,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_bloody_tree_0"
+                "image_id": "spr_bloody_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765236691_19",
@@ -2806,7 +2942,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_1"
+                "image_id": "spr_stake_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765236703_19",
@@ -2845,7 +2983,9 @@
                 "sort_offset_y": -40,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stake_1"
+                "image_id": "spr_stake_1",
+                "script": "",
+                "function": ""
             }
         ],
         "(3, 1)": [
@@ -2886,7 +3026,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800230_1",
@@ -2925,7 +3067,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800233_2",
@@ -2964,7 +3108,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800246490_600",
@@ -3003,7 +3149,9 @@
                 "image_id": "spr_gravestone_1",
                 "flash_image_id": "spr_gravestone_flash_1",
                 "used_image_id": "spr_bloody_gravestone_1",
-                "charge_sound_id": "sfx_interacting"
+                "charge_sound_id": "sfx_interacting",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800302702_540",
@@ -3042,7 +3190,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_2"
+                "image_id": "spr_flowered_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800366893_173",
@@ -3081,7 +3231,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_1"
+                "image_id": "spr_flowered_grass_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800388_6",
@@ -3120,7 +3272,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800399_7",
@@ -3159,7 +3313,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800403_8",
@@ -3198,7 +3354,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800413_9",
@@ -3237,7 +3395,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800414_10",
@@ -3276,7 +3436,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800420_11",
@@ -3315,7 +3477,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764800435_12",
@@ -3354,7 +3518,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             }
         ],
         "(3, 2)": [
@@ -3395,7 +3561,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799670_1",
@@ -3434,7 +3602,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799674_2",
@@ -3473,7 +3643,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799681_3",
@@ -3512,7 +3684,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799690_4",
@@ -3551,7 +3725,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799694_5",
@@ -3590,7 +3766,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799703_6",
@@ -3629,7 +3807,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799718_7",
@@ -3668,7 +3848,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799742_8",
@@ -3707,7 +3889,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799752_9",
@@ -3746,7 +3930,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799762_10",
@@ -3785,7 +3971,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799765829_903",
@@ -3824,7 +4012,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799797189_332",
@@ -3863,7 +4053,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799823869_938",
@@ -3902,7 +4094,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_2"
+                "image_id": "spr_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764799845_14",
@@ -3941,7 +4135,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             }
         ],
         "(3, 3)": [
@@ -3982,7 +4178,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905874_2",
@@ -4021,7 +4219,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905885_3",
@@ -4060,7 +4260,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905887_4",
@@ -4099,7 +4301,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905890_5",
@@ -4138,7 +4342,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905904_6",
@@ -4177,7 +4383,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905910_7",
@@ -4216,7 +4424,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905917_8",
@@ -4255,7 +4465,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905923_9",
@@ -4294,7 +4506,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905930_10",
@@ -4333,7 +4547,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905935_11",
@@ -4372,7 +4588,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905941_12",
@@ -4411,7 +4629,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905961_13",
@@ -4450,7 +4670,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905986_14",
@@ -4489,7 +4711,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905990_15",
@@ -4528,7 +4752,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764905993_16",
@@ -4567,7 +4793,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764906003186_509",
@@ -4606,7 +4834,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_1"
+                "image_id": "spr_grass_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764906017468_249",
@@ -4645,7 +4875,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_2"
+                "image_id": "spr_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764906038_19",
@@ -4684,7 +4916,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1765499390800_527",
@@ -4732,7 +4966,9 @@
                         "action": "ShowDialogue",
                         "params": "text=You've found a key\\nIt opens a lock.\nsound=sfx_interaction_occurred"
                     }
-                ]
+                ],
+                "script": "",
+                "function": ""
             }
         ],
         "(4, 2)": [
@@ -4773,7 +5009,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793525_1",
@@ -4812,7 +5050,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793530_2",
@@ -4851,7 +5091,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793538_3",
@@ -4890,7 +5132,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793542_4",
@@ -4929,7 +5173,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793550_5",
@@ -4968,7 +5214,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793563_6",
@@ -5007,7 +5255,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793570206_187",
@@ -5046,7 +5296,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793594860_301",
@@ -5085,7 +5337,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_1"
+                "image_id": "spr_grass_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793660749_255",
@@ -5124,7 +5378,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793675_10",
@@ -5163,7 +5419,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793703_11",
@@ -5202,7 +5460,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793727368_229",
@@ -5242,7 +5502,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_note"
+                "image_id": "spr_note",
+                "script": "",
+                "function": ""
             }
         ],
         "(4, 4)": [],
@@ -5284,7 +5546,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823713_1",
@@ -5323,7 +5587,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823717_2",
@@ -5362,7 +5628,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823725_3",
@@ -5401,7 +5669,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823729_4",
@@ -5440,7 +5710,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823739_5",
@@ -5479,7 +5751,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823749_6",
@@ -5518,7 +5792,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823755_7",
@@ -5557,7 +5833,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823763_8",
@@ -5596,7 +5874,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823772_9",
@@ -5635,7 +5915,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823780_10",
@@ -5674,7 +5956,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823792_11",
@@ -5713,7 +5997,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823796288_764",
@@ -5752,7 +6038,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_1"
+                "image_id": "spr_grass_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823811308_184",
@@ -5791,7 +6079,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_2"
+                "image_id": "spr_grass_2",
+                "script": "",
+                "function": ""
             }
         ],
         "(5, 2)": [
@@ -5832,7 +6122,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793185_1",
@@ -5871,7 +6163,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793192856_490",
@@ -5910,7 +6204,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793283496_124",
@@ -5949,7 +6245,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793311079_197",
@@ -5988,7 +6286,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793348751_846",
@@ -6027,7 +6327,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793410_6",
@@ -6066,7 +6368,9 @@
                 "sort_offset_y": -20,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764793421797_741",
@@ -6105,7 +6409,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823696_8",
@@ -6144,7 +6450,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764824708_9",
@@ -6184,7 +6492,8 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_note"
+                "image_id": "spr_note",
+                "script": "debug.fer"
             }
         ],
         "(5, 3)": [
@@ -6225,7 +6534,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823111_1",
@@ -6264,7 +6575,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823114_2",
@@ -6303,7 +6616,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_2"
+                "image_id": "spr_tree_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823122_3",
@@ -6342,7 +6657,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823126_4",
@@ -6381,7 +6698,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823133_5",
@@ -6420,7 +6739,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_1"
+                "image_id": "spr_tree_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823137_6",
@@ -6459,7 +6780,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_tree_0"
+                "image_id": "spr_tree_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823149_7",
@@ -6498,7 +6821,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_0"
+                "image_id": "spr_stone_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823158_8",
@@ -6537,7 +6862,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_2"
+                "image_id": "spr_stone_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823166_9",
@@ -6576,7 +6903,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_3"
+                "image_id": "spr_stone_3",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823187_10",
@@ -6615,7 +6944,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823192_11",
@@ -6654,7 +6985,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_4"
+                "image_id": "spr_stone_4",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823212519_290",
@@ -6693,7 +7026,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_stone_1"
+                "image_id": "spr_stone_1",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823276655_618",
@@ -6732,7 +7067,9 @@
                 "image_id": "spr_gravestone_2",
                 "flash_image_id": "spr_gravestone_flash_2",
                 "used_image_id": "spr_bloody_gravestone_2",
-                "charge_sound_id": "sfx_interacting"
+                "charge_sound_id": "sfx_interacting",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823625448_390",
@@ -6771,7 +7108,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_0"
+                "image_id": "spr_flowered_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823645344_539",
@@ -6810,7 +7149,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_flowered_grass_2"
+                "image_id": "spr_flowered_grass_2",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764823661722_269",
@@ -6849,7 +7190,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_grass_0"
+                "image_id": "spr_grass_0",
+                "script": "",
+                "function": ""
             },
             {
                 "id": "obj_1764824516074_883",
@@ -6888,7 +7231,9 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "image_id": "spr_cross_grave"
+                "image_id": "spr_cross_grave",
+                "script": "",
+                "function": ""
             }
         ]
     }

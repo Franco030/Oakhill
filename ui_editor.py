@@ -496,18 +496,46 @@ class Ui_LevelEditor(object):
         self.line_logic.setFrameShape(QFrame.HLine)
         self.line_logic.setFrameShadow(QFrame.Sunken)
         self.formLayout_2.setWidget(1, QFormLayout.SpanningRole, self.line_logic)
+        
+
+        self.lbl_script = QLabel("Script File:", self.group_interaction)
+        self.layout_script = QHBoxLayout()
+        
+        self.combo_script_file = CustomComboBox(self.group_interaction)
+        sizePolicyScript = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicyScript.setHorizontalStretch(0)
+        sizePolicyScript.setVerticalStretch(0)
+        sizePolicyScript.setHeightForWidth(self.combo_script_file.sizePolicy().hasHeightForWidth())
+        self.combo_script_file.setSizePolicy(sizePolicyScript)
+        
+        self.btn_open_script = QPushButton("Abrir", self.group_interaction)
+        self.btn_open_script.setMaximumWidth(40)
+        self.btn_open_script.setToolTip("Abrir script en editor externo")
+
+        self.layout_script.addWidget(self.combo_script_file)
+        self.layout_script.addWidget(self.btn_open_script)
+        
+        self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.lbl_script)
+        self.formLayout_2.setLayout(2, QFormLayout.FieldRole, self.layout_script)
+
+        self.lbl_function = QLabel("Function Name:", self.group_interaction)
+        self.line_edit_function = QLineEdit(self.group_interaction)
+        self.line_edit_function.setPlaceholderText("ej: on_lever_pull")
+        
+        self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_function)
+        self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.line_edit_function)
 
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
         self.prop_trigger_condition = CustomComboBox(self.group_interaction)
         self.prop_trigger_condition.addItems(Conditions.get_conditions())
-        self.formLayout_2.setWidget(2, QFormLayout.LabelRole, self.lbl_trig_cond)
-        self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.prop_trigger_condition)
+        self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_cond)
+        self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_condition)
         
         self.lbl_trig_act = QLabel("Acción Global:", self.group_interaction)
         self.prop_trigger_action = CustomComboBox()
         self.prop_trigger_action.addItems(Actions.get_actions())
-        self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_trig_act)
-        self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.prop_trigger_action)
+        self.formLayout_2.setWidget(5, QFormLayout.LabelRole, self.lbl_trig_act)
+        self.formLayout_2.setWidget(5, QFormLayout.FieldRole, self.prop_trigger_action)
         
         self.lbl_trig_params = QLabel("Params Globales:\n(blocking=true)", self.group_interaction)
         self.prop_trigger_params = QTextEdit() 
@@ -516,19 +544,20 @@ class Ui_LevelEditor(object):
         self.btn_zoom_trigger.setMaximumWidth(30)
         self.btn_zoom_trigger.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.prop_trigger_params.setMaximumHeight(60)
-        self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_params)
-        self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_params)
-        self.formLayout_2.setWidget(5, QFormLayout.FieldRole, self.btn_zoom_trigger)
+        
+        self.formLayout_2.setWidget(6, QFormLayout.LabelRole, self.lbl_trig_params)
+        self.formLayout_2.setWidget(6, QFormLayout.FieldRole, self.prop_trigger_params)
+        self.formLayout_2.setWidget(7, QFormLayout.FieldRole, self.btn_zoom_trigger)
 
         self.lbl_sequence = QLabel("Step sequence", self.group_interaction)
         self.lbl_sequence.setAlignment(Qt.AlignCenter)
-        self.formLayout_2.setWidget(6, QFormLayout.SpanningRole, self.lbl_sequence)
+        self.formLayout_2.setWidget(8, QFormLayout.SpanningRole, self.lbl_sequence)
         
         self.list_trigger_sequence = SequenceListWidget(self.group_interaction)
         self.list_trigger_sequence.setMinimumHeight(350)
         self.list_trigger_sequence.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
-        self.formLayout_2.setWidget(7, QFormLayout.SpanningRole, self.list_trigger_sequence)
+        self.formLayout_2.setWidget(9, QFormLayout.SpanningRole, self.list_trigger_sequence)
         
         self.layout_seq_btns = QHBoxLayout()
         self.btn_seq_add = QPushButton("+", self.group_interaction)
@@ -540,7 +569,7 @@ class Ui_LevelEditor(object):
         self.layout_seq_btns.addWidget(self.btn_seq_up)
         self.layout_seq_btns.addWidget(self.btn_seq_down)
         
-        self.formLayout_2.setLayout(8, QFormLayout.SpanningRole, self.layout_seq_btns)
+        self.formLayout_2.setLayout(10, QFormLayout.SpanningRole, self.layout_seq_btns)
         
         self.group_step_detail = QGroupBox("Editar Paso Seleccionado", self.group_interaction)
         self.layout_step = QFormLayout(self.group_step_detail)
@@ -553,7 +582,6 @@ class Ui_LevelEditor(object):
         self.lbl_step_params = QLabel("Params Paso:", self.group_step_detail)
         self.prop_step_params = QTextEdit(self.group_step_detail)
         self.prop_step_params.setPlaceholderText("time=2.0")
-        # Le damos más altura a esto también
         self.prop_step_params.setMinimumHeight(80) 
 
         self.btn_zoom_step = QPushButton("|--|", self.group_interaction)
@@ -564,7 +592,7 @@ class Ui_LevelEditor(object):
         self.layout_step.addRow(self.lbl_step_params, self.prop_step_params)
         self.layout_step.addWidget(self.btn_zoom_step)
         
-        self.formLayout_2.setWidget(9, QFormLayout.SpanningRole, self.group_step_detail)
+        self.formLayout_2.setWidget(11, QFormLayout.SpanningRole, self.group_step_detail) 
         self.layout_content_logic.addWidget(self.group_interaction)
         
         self.spacer_logic = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -661,6 +689,10 @@ class Ui_LevelEditor(object):
         self.label_13.setText(QCoreApplication.translate("LevelEditor", u"Speed:", None))
         
         self.group_interaction.setTitle(QCoreApplication.translate("LevelEditor", u"Configuración Específica", None))
+
+        self.lbl_script.setText(QCoreApplication.translate("LevelEditor", u"Script (.fer):", None))
+        self.btn_open_script.setText(QCoreApplication.translate("LevelEditor", u"...", None))
+        self.lbl_function.setText(QCoreApplication.translate("LevelEditor", u"Function to call:", None))
         
         self.lbl_flash.setText(QCoreApplication.translate("LevelEditor", u"Flash Image:", None))
         self.btn_browse_flash.setText(QCoreApplication.translate("LevelEditor", u"...", None))
