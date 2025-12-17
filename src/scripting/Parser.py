@@ -279,7 +279,8 @@ class Parser:
     
     def multiplication(self):
         expr = self.unary() 
-        while self.check(TokenType.MUL) or self.check(TokenType.DIV):
+        while (self.check(TokenType.MUL) or self.check(TokenType.DIV) or
+               self.check(TokenType.MOD) or self.check(TokenType.FLOOR_DIV)):
             operator = self.advance().type
             right = self.unary()
             expr = BinaryOp(expr, operator, right)

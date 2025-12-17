@@ -41,6 +41,8 @@ class TokenType:
     NOT = "NOT"                 # !
     AT = "AT"                   # @
     DOT = "DOT"                 # .
+    MOD = "MOD"                 # %
+    FLOOR_DIV = "FLOOR_DIV"     # /~
 
 
     PLUS = "PLUS"   # +
@@ -202,7 +204,10 @@ class Lexer:
     def _handle_slash_or_comment(self):
         if self.peek() == '/':
             self.skip_comment()
-            return None # No token generated
+            return None
+        elif self.peek() == "~":
+            self.advance(); self.advance()
+            return Token(TokenType.FLOOR_DIV, line=self.line)
         self.advance()
         return Token(TokenType.DIV, line=self.line)
     
@@ -230,6 +235,11 @@ class Lexer:
             self.advance()
         self.advance() # Skip closing "
         return Token(TokenType.STRING, string_val, self.line)
+    
+    @register_token('%')
+    def _handle_percent(self):
+        self.advance()
+        return Token(TokenType.MOD, line=self.line)
     
     @register_token('!')
     def _handle_not_or_ne(self):

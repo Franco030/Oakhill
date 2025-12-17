@@ -1,7 +1,5 @@
 func main() {
-    var arbol = get_object("obj_1765498403553_511");
-    var Tweener = get_system("TweenManager");
-
-
-    Tweener.teleport(arbol, 100, 100, relative=true);
+    var contador = 10;
+    var c = contador /~ 3;
+    
 }

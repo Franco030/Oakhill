@@ -533,6 +533,8 @@ class Interpreter:
         if op == TokenType.MINUS: return left - right
         if op == TokenType.MUL:   return left * right
         if op == TokenType.DIV:   return 0 if right == 0 else left / right
+        if op == TokenType.FLOOR_DIV: return 0 if right == 0 else left // right
+        if op == TokenType.MOD: return 0 if right == 0 else left % right
         
         if op == TokenType.GT: return left > right
         if op == TokenType.LT: return left < right
