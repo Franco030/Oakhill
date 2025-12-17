@@ -5,16 +5,10 @@
             "en": "Hi"
         }
     },
-    "note_clue_01": {
+    "note_cemetery_entrance_0": {
         "content": {
-            "es": "123456789ABCDEF123456789ABCDEF",
-            "en": "123456789ABCDEF123456789ABCDEF"
-        }
-    },
-    "note_test": {
-        "content": {
-            "es": "Hola Hola",
-            "en": "Hola aqui se hacen las notas y aqui\\n\nles doy id, si paso pagina ya se ve\\n\nbien"
+            "es": "",
+            "en": "I sense an evil presence\nThat cemetery has something evil\nI really want to go back\nbut that thing is following me."
         }
     }
 }

@@ -8,7 +8,7 @@ class Trigger(pygame.sprite.Sprite):
         self.id = data.get("id")
 
         self.script = data.get("script") # Name of the script
-        self.function = data.get("function") # Condition e.g. (on_enter)
+        self.function = data.get("function") # function of the script to execute
 
         self.condition = data.get("trigger_condition", Conditions.ON_STAY)
         self.action = data.get("trigger_action", "None")

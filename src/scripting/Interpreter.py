@@ -190,12 +190,26 @@ class Interpreter:
         }
 
     def load(self, program_node):
-        for decl in program_node.declarations:
-            if isinstance(decl, FunctionDecl):
-                self.functions[decl.name] = decl
-            
-            elif isinstance(decl, StructDecl):
-                self.structs[decl.name] = FerStruct(decl.name, decl.fields)
+        previous_env = self.environment
+        self.environment = self.globals
+
+        try:
+            for decl in program_node.declarations:
+                if isinstance(decl, FunctionDecl):
+                    self.functions[decl.name] = decl
+                
+                elif isinstance(decl, StructDecl):
+                    self.structs[decl.name] = FerStruct(decl.name, decl.fields)
+
+                elif isinstance(decl, VarDecl):
+                    gen = self.visit_VarDecl(decl)
+                    try:
+                        while True:
+                            next(gen)
+                    except StopIteration:
+                        pass
+        finally:
+            self.environment = previous_env
 
     def run_function(self, name, args=[]):
         func_node = self.functions.get(name)

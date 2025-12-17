@@ -582,8 +582,8 @@
             {
                 "id": "obj_1765498595669_24",
                 "type": "Trigger",
-                "x": 452,
-                "y": -87,
+                "x": 164,
+                "y": -103,
                 "image_id": "",
                 "resize_factor": 1.0,
                 "is_passable": false,
@@ -721,8 +721,8 @@
                     }
                 ],
                 "is_ground": true,
-                "script": "",
-                "function": ""
+                "script": "sc_2_1.fer",
+                "function": "on_grab_key"
             },
             {
                 "type": "Interactable",
@@ -758,13 +758,54 @@
                 "reflection_offset_y": 0,
                 "interaction_data": "",
                 "id": "obj_1765521118864_921",
-                "x": 463,
-                "y": 638,
+                "x": 456,
+                "y": 618,
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "ejemplo.fer",
-                "function": "main"
+                "script": "sc_2_1.fer",
+                "function": "open_note"
+            },
+            {
+                "id": "obj_1766008993_17",
+                "type": "Trigger",
+                "x": 458,
+                "y": -81,
+                "image_id": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    136,
+                    436,
+                    89,
+                    7
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnEnter",
+                "trigger_action": "ShowDialogue",
+                "trigger_params": "",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false,
+                "scripted_events": [],
+                "script": "sc_2_1.fer",
+                "function": "door_trigger"
             }
         ],
         "(2, 3)": [

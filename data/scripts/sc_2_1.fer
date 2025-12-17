@@ -1,0 +1,26 @@
+var gamestate = get_system("GameState");
+
+func open_note() {
+    play_sound("sfx_interaction_occurred");
+    show_note("note_cemetery_entrance_0", save=true);
+}
+
+func on_grab_key() {
+    gamestate.set_flag("has_cemetery_key", true);
+}
+
+func open_door() {
+
+}
+
+func door_trigger() {
+    var has_key = gamestate.get_flag("has_cemetery_key");
+
+    play_sound("sfx_dialogue_occurred");
+    if (has_key) {
+        var choice = @ask_choice("Unlock this door?", "use_key");
+        print(choice);
+    } else {
+
+    }
+}
