@@ -2,8 +2,13 @@ from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
 from src.scripting.NativeProxy import NativeProxy, NativeObject, NativeFunction, NativeSystem, RemoteObject
 from src.utils.Game_Enums import Actions
+
+# Standard libraries
 from src.core.GameState import game_state
 from src.managers.TweenManager import tween_manager
+from src.scripting.libraries.MathLib import MathLib
+
+
 import inspect
 import time
 
@@ -82,10 +87,24 @@ class Interpreter:
         self.structs = {}
         self.globals = Environment()
 
+
+        # ----------------------------------------------
+        # ----------------------------------------------
+        # --------------- GLOBAL SYSTEMS ---------------
+        # ----------------------------------------------
+        # ----------------------------------------------
+
         self.systems = {
+            "Math": MathLib(),
             "TweenManager": tween_manager,
             "GameState": game_state
         }
+        
+        # ------------------------------------------------
+        # ------------------------------------------------
+        # --------------- GLOBAL SRUCTURES ---------------
+        # ------------------------------------------------
+        # ------------------------------------------------
 
         # The structures for function helpers and Marshalling
         self.structs["Vector2"] = FerStruct("Vector2", ["x", "y"]) # Structure for python tuples
@@ -98,14 +117,25 @@ class Interpreter:
             "original_return",
         ])
 
+        # ------------------------------------------------
+        # ------------------------------------------------
+        # --------------- GLOBAL FUNCTIONS ---------------
+        # ------------------------------------------------
+        # ------------------------------------------------
+
         # The global function 'get_object'. Before setting up self.environment
         # A lambda function calls an internal method with access to self.scene
         self.globals.define("get_object", 
             lambda obj_id, map_id=None, zx=None, zy=None: self._native_get_object(obj_id, map_id, zx, zy)
         )
-
         self.globals.define("get_system", self._native_get_system)
+        self.globals.define("len", lambda obj: len(obj))
+        self.globals.define("push", lambda lst, val: lst.append(val))
+        self.globals.define("pop", lambda lst: lst.pop())
+        self.globals.define("keys", lambda dct: list(dct.keys()))
 
+
+        # Setting up the environment and global parameters (global parameters are only for native_map functions (ActionManager actions))
         self.environment = self.globals
         self.global_params = ["blocking", "sound", "volume"]
 

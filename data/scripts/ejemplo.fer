@@ -1,7 +1,4 @@
 func main() {
-    var arbol = get_object("obj_1765498403553_511");
-
-    var Tweener = get_system("TweenManager");
-
-    teleport(arbol, 100, 100, true);
+    var Math = get_system("Math");
+    print(Math.random_int(1, 5));
 }
