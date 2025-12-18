@@ -121,9 +121,9 @@ class NativeObject:
 
             setattr(self._real_obj, name, py_val)
 
-            if self._id:
-                flag_key = f"OBJ_{self._id}_{name}"
-                game_state.set_flag(flag_key, py_val)
+            # if self._id:
+            #     flag_key = f"OBJ_{self._id}_{name}"
+            #     game_state.set_flag(flag_key, py_val)
 
         except Exception as e:
             print(f"[NativeBridge] Write Error '{name}': {e}")
