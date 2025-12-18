@@ -37,15 +37,15 @@ class Interactable(Obstacle):
                 self._charge_sound.set_volume(0.85)
 
 
-        self._used_image = None
-        used_key = data.get("used_image_id", data.get("used_image_path", "None"))
-        if used_key and used_key != "None":
-            raw_used = resource_manager.get_image(used_key)
-            if raw_used:
-                self._used_image = pygame.transform.scale(
-                    raw_used, 
-                    (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
-                )
+        # self._used_image = None
+        # used_key = data.get("used_image_id", data.get("used_image_path", "None"))
+        # if used_key and used_key != "None":
+        #     raw_used = resource_manager.get_image(used_key)
+        #     if raw_used:
+        #         self._used_image = pygame.transform.scale(
+        #             raw_used, 
+        #             (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
+        #         )
         
 
         self._flash_image = None
@@ -59,11 +59,11 @@ class Interactable(Obstacle):
             self._flash_image = self.original_image.copy()
 
 
-        if game_state.has_interacted(self.id):
-            self.interacted_once = True
-            if self.used_image:
-                self.image = self.used_image
-                self.original_image = self.used_image
+        # if game_state.has_interacted(self.id):
+        #     self.interacted_once = True
+        #     if self.used_image:
+        #         self.image = self.used_image
+        #         self.original_image = self.used_image
 
     @property
     def blocked(self):
@@ -92,19 +92,19 @@ class Interactable(Obstacle):
             if self._charge_sound:
                 self._charge_sound.set_volume(0.85)
 
-    @property
-    def used_image(self):
-        return self._used_image
+    # @property
+    # def used_image(self):
+    #     return self._used_image
     
-    @used_image.setter
-    def used_image(self, key):
-        if key and key != "None":
-            raw_used = resource_manager.get_image(key)
-            if raw_used:
-                self._used_image = pygame.transform.scale(
-                    raw_used, 
-                    (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
-                )
+    # @used_image.setter
+    # def used_image(self, key):
+    #     if key and key != "None":
+    #         raw_used = resource_manager.get_image(key)
+    #         if raw_used:
+    #             self._used_image = pygame.transform.scale(
+    #                 raw_used, 
+    #                 (int(raw_used.get_width() * self.resize_factor), int(raw_used.get_height() * self.resize_factor))
+    #             )
 
     @property
     def flash_image(self):
@@ -186,11 +186,11 @@ class Interactable(Obstacle):
         """
         self.interacted_once=True
         game_state.register_interaction(self.id)
-        if self._used_image:
-            self.image = self._used_image
-            self.original_image = self._used_image
-        else:
-            self.kill()
+        # if self._used_image:
+        #     self.image = self._used_image
+        #     self.original_image = self._used_image
+        # else:
+        #     self.kill()
         
     
     def update(self):

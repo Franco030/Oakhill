@@ -134,6 +134,9 @@ class Interpreter:
         self.globals.define("pop", lambda lst: lst.pop())
         self.globals.define("keys", lambda dct: list(dct.keys()))
 
+        if self.source_id and self.source_id != "SYSTEM":
+            self_obj = self._native_get_object(self.source_id, None, None, None)
+            self.globals.define("self", self_obj)
 
         # Setting up the environment and global parameters (global parameters are only for native_map functions (ActionManager actions))
         self.environment = self.globals
@@ -162,7 +165,9 @@ class Interpreter:
             "wait":           (Actions.WAIT, ["time"]),
 
             # --- OBJECT MANIPULATION ---
-            "destroy_object": (Actions.DESTROY_OBJECT, ["id"])
+            "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
+            "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
+            "hide_object":    (Actions.HIDE_OBJECT, ["id"])
 
 
             # ---------------------------------------------------------------------
@@ -173,9 +178,6 @@ class Interpreter:
 
 
             # --- OBJECT MANIPULATION ---
-            # "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
-            # "hide_object":    (Actions.HIDE_OBJECT, ["id"]),
-            
             # # Move instantly
             # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
             

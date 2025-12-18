@@ -127,6 +127,11 @@ class NativeObject:
 
         except Exception as e:
             print(f"[NativeBridge] Write Error '{name}': {e}")
+
+    # def __str__(self):
+    #     if self._id:
+    #         return str(self._id)
+    #     return str(self._real_obj)
     
 class RemoteObject:
     def __init__(self, obj_id, map_id, zone_id, interpreter):
@@ -161,3 +166,6 @@ class RemoteObject:
         location_info = f" [{self._map_id} {self._zone_id}]" if self._map_id else ""
         # print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
         print(f"[RemoteObject] Warning: Assignment to '{name}' ignored. Use @persist to save changes to remote objects.")
+
+    # def __str__(self):
+    #     return str(self._id)

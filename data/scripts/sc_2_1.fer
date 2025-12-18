@@ -3,23 +3,25 @@ var gamestate = get_system("GameState");
 func open_note() {
     play_sound("sfx_interaction_occurred");
     show_note("note_cemetery_entrance_0", save=true);
+    destroy_object(self.id);
 }
 
 func on_grab_key() {
     play_sound("sfx_interaction_occurred");
-    show_dialogue("You grabbed a key");
+    show_dialogue("You grabbed a key", blocking=false);
     gamestate.set_flag("has_cemetery_key", true);
+    destroy_object(self.id);
 }
 
+// This function is called by the door
 func open_door() {
-    var door = get_object("obj_1765238461284_230");
     var block_1 = get_object("obj_1765315172180_589");
     var block_2 = get_object("obj_1765315172346_490");
     play_sound("sfx_interaction_occurred");
-    door.is_passable = true;
+    self.is_passable = true;
+    self.image_id = "spr_cemetery_doors_open";
     block_1.is_passable = false;
     block_2.is_passable = false;
-
 }
 
 // Called in door_trigger
