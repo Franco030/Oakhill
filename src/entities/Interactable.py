@@ -187,7 +187,6 @@ class Interactable(Obstacle):
         self.interacted_once=True
         game_state.register_interaction(self.id)
         if self._used_image:
-            print("HOLA")
             self.image = self._used_image
             self.original_image = self._used_image
         else:

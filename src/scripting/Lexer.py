@@ -15,6 +15,7 @@ class TokenType:
     WHILE = "WHILE"     # while
     IN = "IN"           # in
     STRUCT = "STRUCT"   # struct
+    PERSIST = "PERSIST" # persist
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -98,7 +99,8 @@ class Lexer:
             "for": TokenType.FOR,
             "while": TokenType.WHILE,
             "in": TokenType.IN,
-            "struct": TokenType.STRUCT
+            "struct": TokenType.STRUCT,
+            "persist": TokenType.PERSIST
         }
 
     def advance(self):

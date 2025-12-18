@@ -572,6 +572,23 @@ class Interpreter:
             return (yield from self.evaluate(node.else_branch))
             
         return None
+    
+    def visit_PersistAssignment(self, node):
+        target_obj = yield from self.evaluate(node.target)
+        value = yield from self.evaluate(node.value)
+
+        obj_id = getattr(target_obj, "_id", None)
+
+        if not obj_id:
+            print(f"[Interpreter] Error: @persist requires and object with an ID.")
+            return None
+        
+        flag_key = f"OBJ_{obj_id}_{node.property_name}"
+        game_state.set_flag(flag_key, value)
+        print(f"[Persist] Saved {flag_key} = {value}")
+
+        setattr(target_obj, node.property_name, value)
+        return None
 
     def visit_ReturnStatement(self, node):
         value = None

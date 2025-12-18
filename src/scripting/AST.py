@@ -109,3 +109,12 @@ class StructDecl(ASTNode):
 class DictLiteral(ASTNode):
     def __init__(self, pairs):
         self.pairs = pairs
+
+# Until now I was delaying the fact that I had to make "custom" nodes. All of the other ones were kind of global
+# Every programming languages needs the above nodes, but this one is completely to make my life easier with the game
+# I'll see how this goes
+class PersistAssignment(ASTNode):
+    def __init__(self, target, property_name, value):
+        self.target = target
+        self.property_name = property_name
+        self.value = value

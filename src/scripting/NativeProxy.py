@@ -159,4 +159,5 @@ class RemoteObject:
         game_state.set_flag(flag_key, py_val)
         
         location_info = f" [{self._map_id} {self._zone_id}]" if self._map_id else ""
-        print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
+        # print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
+        print(f"[RemoteObject] Warning: Assignment to '{name}' ignored. Use @persist to save changes to remote objects.")

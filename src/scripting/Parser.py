@@ -4,7 +4,8 @@ from src.scripting.AST import (
     Literal, IfStatement, BinaryOp, ReturnStatement,
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
     ListLiteral, IndexAccess, WhileStatement, ForStatement,
-    GetAttribute, SetAttribute, StructDecl, DictLiteral
+    GetAttribute, SetAttribute, StructDecl, DictLiteral,
+    PersistAssignment
 )
 
 class Parser:
@@ -147,6 +148,9 @@ class Parser:
         
         if self.check(TokenType.RETURN):
             return self.return_statement()
+        
+        if self.check(TokenType.AT) and self.peek_next_token_is(TokenType.PERSIST):
+            return self.persist_statement()
 
         if self.check(TokenType.LBRACE):
             self.consume(TokenType.LBRACE, "")
@@ -192,6 +196,25 @@ class Parser:
         body = self.block()
 
         return ForStatement(iterator_token.value, iterable, body)
+    
+    def persist_statement(self):
+        self.consume(TokenType.AT, "Expected '@'")
+        self.consume(TokenType.PERSIST, "Expected 'persist'")
+
+        left_side = self.call()
+
+        if not isinstance(left_side, GetAttribute):
+            raise Exception(f"[Parser Error] @persist requires a property access (e.g. object.prop) in line {self.peek().line}")
+        
+        target = left_side.object_node
+        prop_name = left_side.property_name
+
+        self.consume(TokenType.ASSIGN, "Expected '='")
+        value = self.expression()
+
+        self.consume(TokenType.SEMICOLON, "';' was expected")
+
+        return PersistAssignment(target, prop_name, value)
 
     def expression_statement(self):
         """
@@ -302,7 +325,7 @@ class Parser:
                 node.is_capture = True
                 return node
             else:
-                raise Exception(f"[Parser Error] '@' can only be used with function calls, not variables, in line {self.peek().line}")
+                raise Exception(f"[Parser Error] '@' can only be used with function calls or as a property modifier, not variables, in line {self.peek().line}")
         
         if self.check(TokenType.NUMBER) or self.check(TokenType.STRING) or self.check(TokenType.BOOLEAN):
             return Literal(self.advance().value)
