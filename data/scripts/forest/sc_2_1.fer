@@ -18,10 +18,11 @@ func open_door() {
     var block_1 = get_object("obj_1765315172180_589");
     var block_2 = get_object("obj_1765315172346_490");
     play_sound("sfx_interaction_occurred");
-    self.is_passable = true;
-    self.image_id = "spr_cemetery_doors_open";
-    block_1.is_passable = false;
-    block_2.is_passable = false;
+    @persist self.is_passable = true;
+    @persist self.image_id = "spr_cemetery_doors_open";
+    @persist self.sort_offset_y = 20;
+    @persist block_1.is_passable = false;
+    @persist block_2.is_passable = false;
 }
 
 // Called in door_trigger
@@ -42,6 +43,7 @@ func door_trigger() {
         var choice = @ask_choice("Unlock this door?", "use_key");
         if (choice.value) {
             unlock_door();
+            // choice.source it's equal to self.id but when I made this, "self" didnt' exist.
             destroy_object(choice.source);
         }
     } else {

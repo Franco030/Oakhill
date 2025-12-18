@@ -2,6 +2,7 @@ import pygame
 import os
 import json
 from src.utils.utils import resource_path
+from src.utils.Game_Enums import Colors
 
 class ResourceManager:
     _instance = None
@@ -30,7 +31,7 @@ class ResourceManager:
             path = os.path.join(project_root, "data/database", "assets.json")
             
             if not os.path.exists(path):
-                print(f"[ResourceManager] WARNING: Manifest not found at {path}")
+                print(f"{Colors.BRIGHT_YELLOW}[ResourceManager]{Colors.RESET} WARNING: Manifest not found at {path}")
                 return
 
             with open(path, "r") as f:
@@ -41,10 +42,10 @@ class ResourceManager:
                     if category in data:
                         self.asset_map.update(data[category])
                 
-            print(f"[ResourceManager] Manifest loaded. {len(self.asset_map)} assets registered.")
+            print(f"{Colors.CYAN}[ResourceManager]{Colors.RESET} Manifest loaded. {len(self.asset_map)} assets registered.")
             
         except Exception as e:
-            print(f"[ResourceManager] Error loading manifest: {e}")
+            print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Error loading manifest: {e}")
     
     def get_image(self, key_or_path):
         if not key_or_path or key_or_path == "None": return None
@@ -58,7 +59,7 @@ class ResourceManager:
             full_path = resource_path(real_path)
             
             if not os.path.exists(full_path):
-                print(f"[ResourceManager] Error: File not found '{full_path}' (Key: {key_or_path})")
+                print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Error: File not found '{full_path}' (Key: {key_or_path})")
                 return self._get_placeholder()
 
             surface = pygame.image.load(full_path).convert_alpha()
@@ -67,7 +68,7 @@ class ResourceManager:
             return surface
 
         except Exception as e:
-            print(f"[ResourceManager] Critical Error loading '{real_path}': {e}")
+            print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Critical Error loading '{real_path}': {e}")
             return self._get_placeholder()
 
     def get_sound(self, key_or_path):
@@ -81,14 +82,14 @@ class ResourceManager:
         try:
             full_path = resource_path(real_path)
             if not os.path.exists(full_path):
-                print(f"[ResourceManager] Sound file not found: {full_path}")
+                print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Sound file not found: {full_path}")
                 return None
                 
             sound = pygame.mixer.Sound(full_path)
             self.sounds[real_path] = sound
             return sound
         except Exception as e:
-            print(f"[ResourceManager] Error loading sound '{key_or_path}': {e}")
+            print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Error loading sound '{key_or_path}': {e}")
             return None
 
     def play_music(self, music_id, volume=0.6, loops=-1, fade_ms=500):
@@ -99,10 +100,10 @@ class ResourceManager:
 
             full_path = resource_path(real_path)
             if not os.path.exists(full_path):
-                print(f"[ResourceManager] Music not found: {full_path}")
+                print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Music not found: {full_path}")
                 return
 
-            print(f"[ResourceManager] Playing music: {music_id} -> {real_path}")
+            print(f"{Colors.CYAN}[ResourceManager]{Colors.RESET} Playing music: {music_id} -> {real_path}")
             pygame.mixer.music.fadeout(fade_ms)
             pygame.mixer.music.load(full_path)
             pygame.mixer.music.set_volume(volume)
@@ -111,7 +112,7 @@ class ResourceManager:
             self.current_music = real_path
             
         except Exception as e:
-            print(f"[ResourceManager] Error music '{music_id}': {e}")
+            print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Error music '{music_id}': {e}")
         
     def get_font(self, size):
         if size not in self.fonts:
@@ -120,7 +121,7 @@ class ResourceManager:
                 font = pygame.font.Font(font_path, size)
                 self.fonts[size] = font
             except Exception as e:
-                print(f"[ResourceManager] Error loading font size {size}: {e}")
+                print(f"{Colors.BRIGHT_RED}[ResourceManager]{Colors.RESET} Error loading font size {size}: {e}")
                 self.fonts[size] = pygame.font.SysFont("Arial", size)
             
         return self.fonts[size]
@@ -143,6 +144,6 @@ class ResourceManager:
     def clear_cache(self):
         self.images.clear()
         self.sounds.clear()
-        print(f"[ResourceManager] Cache cleared.")
+        print(f"{Colors.BRIGHT_YELLOW}[ResourceManager]{Colors.RESET} Cache cleared.")
 
 resource_manager = ResourceManager()

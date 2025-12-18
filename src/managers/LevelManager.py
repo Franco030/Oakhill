@@ -4,6 +4,7 @@ from .ResourceManager import resource_manager
 from .TweenManager import tween_manager
 from src.utils.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS, SCREEN_WIDTH, SCREEN_HEIGHT, TRANSITION_BIAS, MUSIC_END_EVENT
 from src.utils.utils import resource_path
+from src.utils.Game_Enums import Colors
 import random
 
 class LevelManager:
@@ -14,7 +15,7 @@ class LevelManager:
             key for key in resource_manager.asset_map.keys() 
             if key.startswith("amb_")
         ]
-        print(f"[LevelManager] Detected {len(self.ambience_ids)} ambience tracks IDs.")
+        print(f"{Colors.BRIGHT_CYAN}[LevelManager]{Colors.RESET} Detected {len(self.ambience_ids)} ambience tracks IDs.")
 
         self.current_scene = None
         self.current_music_path = None
@@ -84,13 +85,13 @@ class LevelManager:
 
         tween_manager.clear()
 
-        print(f"[LevelManager] Level loaded at zone: {self.current_zone}")
+        print(f"{Colors.BRIGHT_CYAN}[LevelManager]{Colors.RESET} Level loaded at zone: {self.current_zone}")
 
     def on_music_ended(self):
         self.silence_timer = random.randint(80000, 100000)
         self.is_in_silence = True
         self.ambience_timer = random.randint(15000, 30000)
-        print(f"[LevelManager] Music ended. Silence for {self.silence_timer/1000} seconds.")
+        print(f"{Colors.BRIGHT_CYAN}[LevelManager]{Colors.RESET} Music ended. Silence for {self.silence_timer/1000} seconds.")
 
     def update(self, delta_time):
         if self.current_scene:
@@ -113,7 +114,7 @@ class LevelManager:
                         vol = random.uniform(0.5, 1)
                         sound.set_volume(vol)
                         sound.play()
-                        print(f"[Ambience] Played '{random_id}' at vol {vol:.2f}")
+                        print(f"{Colors.BRIGHT_CYAN}[Ambience]{Colors.RESET} Played '{random_id}' at vol {vol:.2f}")
                         self.retro_effects.add_trauma(1)
 
                 self.ambience_timer = random.randint(15000, 30000)
@@ -122,7 +123,7 @@ class LevelManager:
                 self.is_in_silence = False
                 if self.current_music_path:
                     try:
-                        print("[LevelManager] Silence over. Replaying music.")
+                        print(f"{Colors.BRIGHT_CYAN}[LevelManager]{Colors.RESET} Silence over. Replaying music.")
                         resource_manager.play_music(self.current_music_path, loops=0, fade_ms=0)
                         pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
                     except Exception as e:

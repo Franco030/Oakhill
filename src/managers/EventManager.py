@@ -1,5 +1,5 @@
 from src.core.GameState import game_state
-from src.utils.Game_Enums import Conditions, Actions
+from src.utils.Game_Enums import Conditions, Actions, Colors
 from src.managers.ScriptManager import script_manager
 from src.scripting.Interpreter import Interpreter
 from src.core.GameResults import WaitResult
@@ -23,7 +23,6 @@ class EventManager:
         self.current_source_id = None
 
     def start_script(self, generator):
-        print(generator)
         if inspect.isgenerator(generator):
             self.current_script_generator = generator
             self.waiting_for_action = False
@@ -50,12 +49,12 @@ class EventManager:
             return result
 
         except StopIteration:
-            print("[EventManager] Script .fer finished.")
+            print(f"{Colors.BRIGHT_GREEN}[EventManager]{Colors.RESET} Script .fer finished.")
             self.current_script_generator = None
             self.waiting_for_action = False
             return None
         except Exception as e:
-            print(f"[EventManager] CRITIC error in corroutine: {e}")
+            print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} CRITIC error in corroutine: {e}")
             self.current_script_generator = None
             return None
 
@@ -120,6 +119,9 @@ class EventManager:
 
         result = self.action_manager.execute(action, raw_params, player, scene, source_id=self.current_source_id)
 
+
+        # OLD SYSTEM
+
         if action == Actions.LABEL:
             self.step_index += 1
             return None
@@ -132,7 +134,7 @@ class EventManager:
             target_label = result.get("target")
             
             if not target_label:
-                print(f"[EventManager] Error: Jump without label target.")
+                print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} Error: Jump without label target.")
                 self.step_index += 1
                 return None
 
@@ -174,17 +176,17 @@ class EventManager:
 
                 interpreter = Interpreter(self.action_manager, player, scene, source_id=obj_id)
                 interpreter.load(ast)
-                print(f"[EventManager] Init Script: {script_name} -> {func_name}()")
+                print(f"{Colors.BRIGHT_GREEN}[EventManager]{Colors.RESET} Init Script: {script_name} -> {func_name}()")
                 
                 try:
                     gen_or_val = interpreter.run_function(func_name)
                     return self.start_script(gen_or_val)
 
                 except Exception as e:
-                    print(f"[EventManager] Error executing script '{script_name}': {e}")
+                    print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} Error executing script '{script_name}': {e}")
                     return None
             else:
-                print(f"[EventManager] Error: script '{script_name}' not found")
+                print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} Error: script '{script_name}' not found")
                 return None
 
         # OLD SYSTEM

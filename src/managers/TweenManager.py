@@ -1,3 +1,5 @@
+from src.utils.Game_Enums import Colors
+
 class TweenManager:
     _instance = None
 
@@ -22,7 +24,7 @@ class TweenManager:
 
         self._apply_to_object(obj, final_x, final_y)
         
-        print(f"[TweenManager] Teleported object to ({final_x}, {final_y})")
+        print(f"{Colors.BLUE}[TweenManager]{Colors.RESET} Teleported object to ({final_x}, {final_y})")
 
     def start_move(self, obj, target_x, target_y, duration, relative=False, on_complete=None):
         start_x = obj.rect.x
@@ -51,7 +53,7 @@ class TweenManager:
         }
         
         self.active_tweens.append(tween)
-        print(f"[TweenManager] Started moving object to ({final_x}, {final_y})")
+        print(f"{Colors.BLUE}[TweenManager]{Colors.RESET} Started moving object to ({final_x}, {final_y})")
 
     def update(self, delta_time):
         for tween in self.active_tweens[:]:

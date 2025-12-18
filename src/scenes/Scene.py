@@ -2,6 +2,7 @@ import pygame
 from src.entities.Interactable import Interactable
 from src.entities.Trigger import Trigger
 from src.core.GameState import game_state
+from src.utils.Game_Enums import Colors
 
 class Scene:
     """
@@ -145,7 +146,7 @@ class Scene:
         obj = self._id_map.get(clean_target)
 
         if obj:
-            print(f"[SCENE] Object '{target_id}' found in map. Revealing...")
+            print(f"{Colors.BRIGHT_BLUE}[SCENE]{Colors.RESET} Object '{target_id}' found in map. Revealing...")
             obj.unhide()
             
             if isinstance(obj, Interactable):
@@ -159,20 +160,20 @@ class Scene:
 
             return
             
-        print(f"[SCENE] ERROR: No object id found similar to '{target_id}' in {self.location}")
+        print(f"{Colors.BRIGHT_RED}[SCENE]{Colors.RESET} ERROR: No object id found similar to '{target_id}' in {self.location}")
 
     def hide_object_by_id(self, target_id):
         clean_target = str(target_id).replace(" ", "")
         obj = self._id_map.get(clean_target)
 
         if obj:
-            print(f"[SCENE] Hiding object with id: '{target_id}'")
+            print(f"{Colors.BRIGHT_BLUE}[SCENE]{Colors.RESET} Hiding object with id: '{target_id}'")
             if hasattr(obj, 'hide'):
                 obj.hide()
             
             obj.kill()
         else:
-            print(f"[SCENE] Warning: Object '{target_id}' not found to hide.")
+            print(f"{Colors.BRIGHT_YELLOW}[SCENE]{Colors.RESET} Warning: Object '{target_id}' not found to hide.")
             
     def unhide_object_by_interaction_type(self, interaction_type_to_unhide: str):
         """
@@ -191,7 +192,6 @@ class Scene:
                 self._obstacles.add(obj)
                 
                 found_and_unhidden = True
-                print(f"Secret revealed. type {interaction_type_to_unhide} appeared")
 
         return found_and_unhidden
     
@@ -256,7 +256,7 @@ class Scene:
             new_loc = (int(parts[0]), int(parts[1]))
             self.change_zone(new_loc)
         except Exception as e:
-            print(f"Error changing zone to {zone_str}: {e}")
+            print(f"{Colors.BRIGHT_RED}[Scene]{Colors.RESET} Error changing zone to {zone_str}: {e}")
 
 
     def get_object_by_id(self, target_id):
@@ -268,11 +268,11 @@ class Scene:
         
         if obj and hasattr(obj, 'modify'):
             obj.modify(new_properties)
-            print(f"[Scene] Modified object '{target_id}'")
+            print(f"{Colors.BRIGHT_BLUE}[Scene]{Colors.RESET} Modified object '{target_id}'")
         elif obj:
-            print(f"[Scene] Object '{target_id}' found but has no 'modify' method.")
+            print(f"{Colors.BRIGHT_YELLOW}[Scene]{Colors.RESET} Object '{target_id}' found but has no 'modify' method.")
         else:
-            print(f"[Scene] Warning: Cannot modify '{target_id}', not found.")
+            print(f"{Colors.BRIGHT_YELLOW}[Scene]{Colors.RESET} Warning: Cannot modify '{target_id}', not found.")
 
 
     def remove_object_by_id(self, target_id):
@@ -301,9 +301,9 @@ class Scene:
                         found_in_data = True
             
             if found_in_data:
-                print(f"[Scene] Object '{target_id}' permanently deleted")
+                print(f"{Colors.BRIGHT_BLUE}[Scene]{Colors.RESET} Object '{target_id}' permanently deleted")
             else:
-                print(f"[Scene] Object '{target_id}' visually deteleted.")
+                print(f"{Colors.BRIGHT_BLUE}[Scene]{Colors.RESET} Object '{target_id}' visually deteleted.")
 
         else:
-            print(f"[Scene] Warning: Object '{target_id}' was not found to be deleted")
+            print(f"{Colors.BRIGHT_YELLOW}[Scene]{Colors.RESET} Warning: Object '{target_id}' was not found to be deleted")

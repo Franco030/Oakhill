@@ -1,5 +1,6 @@
 from src.core.GameState import game_state
 from src.scripting.AST import *
+from src.utils.Game_Enums import Colors
 
 import os
 import warnings
@@ -71,7 +72,7 @@ class NativeFunction:
             result = self.func(*py_args, **py_kwargs)
             return NativeProxy.py_to_fer(result, self.interpreter)
         except Exception as e:
-            print(f"[NativeProxy] Error executing '{self.func.__name__}': {e}")
+            print(f"{Colors.RED}[NativeProxy]{Colors.RESET} Error executing '{self.func.__name__}': {e}")
             return None
     
 class NativeSystem:
@@ -126,7 +127,7 @@ class NativeObject:
             #     game_state.set_flag(flag_key, py_val)
 
         except Exception as e:
-            print(f"[NativeBridge] Write Error '{name}': {e}")
+            print(f"{Colors.RED}[NativeBridge]{Colors.RESET} Write Error '{name}': {e}")
 
     # def __str__(self):
     #     if self._id:
@@ -150,7 +151,7 @@ class RemoteObject:
              return stored_val
              
         if self._map_id:
-            print(f"[RemoteObject] Warning: Property '{name}' unknown. In '{self._id}' of '{self._map_id}' zone '{self._zone_id}'")
+            print(f"{Colors.YELLOW}[RemoteObject]{Colors.RESET} Warning: Property '{name}' unknown. In '{self._id}' of '{self._map_id}' zone '{self._zone_id}'")
         return None
 
     def __setattr__(self, name, value):
@@ -165,7 +166,7 @@ class RemoteObject:
         
         location_info = f" [{self._map_id} {self._zone_id}]" if self._map_id else ""
         # print(f"[RemoteObject] Persisting change for '{self._id}'{location_info}: {name} = {py_val}")
-        print(f"[RemoteObject] Warning: Assignment to '{name}' ignored. Use @persist to save changes to remote objects.")
+        print(f"{Colors.YELLOW}[RemoteObject]{Colors.RESET} Warning: Assignment to '{name}' ignored. Use @persist to save changes to remote objects.")
 
     # def __str__(self):
     #     return str(self._id)

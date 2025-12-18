@@ -1,3 +1,5 @@
+from src.utils.Game_Enums import Colors
+
 class GameState:
     """
     Global memory of the game
@@ -20,7 +22,7 @@ class GameState:
         Stores a value (True, False, Number, String)
         """
         self.flags[key] = value
-        print(f"[GameState] Flag '{key}' set to {value}" )
+        print(f"{Colors.MAGENTA}[GameState]{Colors.RESET} Flag '{key}' set to {value}" )
 
     def get_flag(self, key, default=None):
         """
@@ -62,7 +64,7 @@ class GameState:
     def unlock_note(self, note_id):
         if note_id not in self._collected_notes:
             self._collected_notes.append(note_id)
-            print(f"[GameState] Note saved: {note_id}")
+            print(f"{Colors.MAGENTA}[GameState]{Colors.RESET} Note saved: {note_id}")
             return True
         return False
     
@@ -119,6 +121,6 @@ class GameState:
         self.interacted_objects = set()
         self.pending_level_change = None
         self.teleport_req = None
-        print("[GameState] Memory restarted (Reset)")
+        print(f"{Colors.BRIGHT_YELLOW}[GameState]{Colors.RESET} Memory restarted (Reset)")
     
 game_state = GameState()
