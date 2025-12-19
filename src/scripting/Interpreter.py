@@ -602,6 +602,14 @@ class Interpreter:
             value = yield from self.evaluate(node.value)
         raise ReturnException(value)
     
+    def visit_ExternalCast(self, node):
+        raw_obj = yield from self.evaluate(node.value)
+
+        if raw_obj is None:
+            return None
+        
+        return NativeObject(raw_obj, "external_obj", self)
+    
     def visit_UnaryOp(self, node):
         right = yield from self.evaluate(node.right)
         

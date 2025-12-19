@@ -1,8 +1,10 @@
 func p_s(id, volume) {
     var resource_manager = get_system("ResourceManager");
-    var snd = resource_manager.get_sound(id);
+    var snd = @external resource_manager.get_sound(id);
     if (snd) {
-        snd.set_volume(volume);
+        if (volume) {
+            snd.set_volume(volume);
+        }
         snd.play();
     } else {
         print("No hay sonido");

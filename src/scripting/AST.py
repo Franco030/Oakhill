@@ -118,3 +118,7 @@ class PersistAssignment(ASTNode):
         self.target = target
         self.property_name = property_name
         self.value = value
+
+class ExternalCast(ASTNode):
+    def __init__(self, value):
+        self.value = value

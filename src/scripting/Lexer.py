@@ -2,20 +2,21 @@ import re
 
 class TokenType:
     # Keywords
-    FUNC = "FUNC"       # func
-    IF = "IF"           # if
-    ELSE = "ELSE"       # else
-    LOOP = "LOOP"       # loop
-    RETURN = "RETURN"   # return
-    VAR = "VAR"         # var (local)
-    IMPORT = "IMPORT"   # import
-    AND = "AND"         # and
-    OR = "OR"           # or
-    FOR = "FOR"         # for
-    WHILE = "WHILE"     # while
-    IN = "IN"           # in
-    STRUCT = "STRUCT"   # struct
-    PERSIST = "PERSIST" # persist
+    FUNC = "FUNC"           # func
+    IF = "IF"               # if
+    ELSE = "ELSE"           # else
+    LOOP = "LOOP"           # loop
+    RETURN = "RETURN"       # return
+    VAR = "VAR"             # var (local or global)
+    IMPORT = "IMPORT"       # import
+    AND = "AND"             # and
+    OR = "OR"               # or
+    FOR = "FOR"             # for
+    WHILE = "WHILE"         # while
+    IN = "IN"               # in
+    STRUCT = "STRUCT"       # struct
+    PERSIST = "PERSIST"     # persist
+    EXTERNAL = "EXTERNAL"   # external
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -100,7 +101,8 @@ class Lexer:
             "while": TokenType.WHILE,
             "in": TokenType.IN,
             "struct": TokenType.STRUCT,
-            "persist": TokenType.PERSIST
+            "persist": TokenType.PERSIST,
+            "external": TokenType.EXTERNAL
         }
 
     def advance(self):

@@ -5,7 +5,7 @@ from src.scripting.AST import (
     ImportStatement, VarDecl, LogicalOp, UnaryOp,
     ListLiteral, IndexAccess, WhileStatement, ForStatement,
     GetAttribute, SetAttribute, StructDecl, DictLiteral,
-    PersistAssignment
+    PersistAssignment, ExternalCast
 )
 
 class Parser:
@@ -48,7 +48,7 @@ class Parser:
     def consume(self, type, message):
         if self.check(type):
             return self.advance()
-        raise Exception(f"[Parser Error] {message} in line {self.peek().line}")
+        raise Exception(f"[Parser] Error: {message} in line {self.peek().line}")
     
     def match(self, token_type):
         if self.check(token_type):
@@ -372,6 +372,13 @@ class Parser:
         raise Exception(f"[Parser] Unexpected token '{self.peek().type}' in line {self.peek().line}")
     
     def unary(self):
+        if self.check(TokenType.AT) and self.peek_next_token_is(TokenType.EXTERNAL):
+            self.advance()
+            self.advance()
+
+            right = self.unary()
+            return ExternalCast(right)
+
         if self.check(TokenType.NOT) or self.check(TokenType.MINUS):
             operator = self.advance().type
             right = self.unary()
