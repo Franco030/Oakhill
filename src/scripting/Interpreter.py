@@ -1,11 +1,12 @@
 from src.scripting.Lexer import TokenType
 from src.scripting.AST import *
 from src.scripting.NativeProxy import NativeProxy, NativeObject, NativeFunction, NativeSystem, RemoteObject
-from src.utils.Game_Enums import Actions
+from src.utils.Game_Enums import Actions, Colors
 
 # Standard libraries
 from src.core.GameState import game_state
 from src.managers.TweenManager import tween_manager
+from src.managers.ResourceManager import resource_manager
 from src.scripting.libraries.MathLib import MathLib
 
 
@@ -97,6 +98,7 @@ class Interpreter:
         self.systems = {
             "Math": MathLib(),
             "TweenManager": tween_manager,
+            "ResourceManager": resource_manager,
             "GameState": game_state
         }
         
@@ -146,7 +148,7 @@ class Interpreter:
         self.native_map = {
             # --- AUDIO ---
             "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
-            "change_music":   (Actions.CHANGE_MUSIC, ["path", "fade", "volume", "loop"]),
+            
 
             # --- UI & DIALOGUE ---
             "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
@@ -160,8 +162,6 @@ class Interpreter:
             "modify_light":   (Actions.MODIFY_LIGHT, ["enable"]),
 
             # --- LEVEL & MOVEMENT ---
-            "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
-            "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
             "wait":           (Actions.WAIT, ["time"]),
 
             # --- OBJECT MANIPULATION ---
@@ -180,7 +180,8 @@ class Interpreter:
             # --- OBJECT MANIPULATION ---
             # # Move instantly
             # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
-            
+            # "change_music":   (Actions.CHANGE_MUSIC, ["path", "fade", "volume", "loop"]),
+
             # # Move smoothly (Tween)
             # "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
 
@@ -188,7 +189,10 @@ class Interpreter:
             # While .fer has local vars, these modify the permanent GameState
             # "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
             # "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
-            
+
+            # "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
+            # "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),            
+
             # --- EXCLUDED ACTIONS ---
             # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
         }
@@ -297,7 +301,7 @@ class Interpreter:
                     param_string += f"{key}={val_str}"
 
             else:
-                print(f"[Interpreter Warning] The parameter '{key}' doesn't exist in '{name}'")
+                print(f"{Colors.BRIGHT_YELLOW}[Interpreter]{Colors.RESET} Warning The parameter '{key}' doesn't exist in '{name}'")
 
         return self.action_manager.execute(action_type, param_string, self.player, self.scene)
     
@@ -384,7 +388,7 @@ class Interpreter:
 
     def visit(self, node):
         if node is None:
-            print("[Interpreter DEBUG] Attempt to visit a 'None' node. This indicates an error in the Parser or in the AST")
+            print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Attempt to visit a 'None' node. This indicates an error in the Parser or in the AST")
             return None
 
         method_name = f'visit_{type(node).__name__}'
@@ -471,7 +475,7 @@ class Interpreter:
                 if i < len(struct_def.fields):
                     instance.set(struct_def.fields[i], val)
                 else:
-                    print(f"[Interpreter] Too many arguments for struct '{struct_def.name}'")
+                    print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Too many arguments for struct '{struct_def.name}'")
             if kwargs:
                 for key, val in kwargs.items():
                     instance.set(key, val)
@@ -494,7 +498,7 @@ class Interpreter:
                     executed = True
 
             except Exception as e:
-                print(f"[Interpreter Error] Fallo ejecutando llamada: {e}")
+                print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Failed executing function call: {e}")
                 import traceback
                 traceback.print_exc()
         
@@ -505,7 +509,7 @@ class Interpreter:
 
         if not executed:
             name_repr = func_name if func_name else "expression"
-            print(f"[Interpreter] Error: Unknown function or callable '{name_repr}'")
+            print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: Unknown function or callable '{name_repr}'")
             return None
 
         if is_capture:
@@ -582,12 +586,12 @@ class Interpreter:
         obj_id = getattr(target_obj, "_id", None)
 
         if not obj_id:
-            print(f"[Interpreter] Error: @persist requires and object with an ID.")
+            print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: @persist requires and object with an ID.")
             return None
         
         flag_key = f"OBJ_{obj_id}_{node.property_name}"
         game_state.set_flag(flag_key, value)
-        print(f"[Persist] Saved {flag_key} = {value}")
+        print(f"{Colors.MAGENTA}[Interpreter -> Persist]{Colors.RESET} Saved {flag_key} = {value}")
 
         setattr(target_obj, node.property_name, value)
         return None
@@ -675,18 +679,18 @@ class Interpreter:
 
         if isinstance(target, list):
             if not isinstance(index, int):
-                print(f"[Interpreter Error] List indices must be integers.")
+                print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: List indices must be integers.")
                 return None
             try:
                 return target[index]
             except IndexError:
-                print(f"[Interpreter Error] List index out of range.")
+                print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: List index out of range.")
                 return None
             
         if isinstance(target, dict):
             return target.get(index)
 
-        print(f"[Interpreter Error] Type {type(target)} is not subscriptable.")
+        print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: Type {type(target)} is not subscriptable.")
         return None
         
     def visit_WhileStatement(self, node):
@@ -703,7 +707,7 @@ class Interpreter:
         iterable_value = yield from self.evaluate(node.iterable)
         
         if not isinstance(iterable_value, list):
-            print(f"[Interpreter Error] 'for' loop expects a list, got {type(iterable_value)}")
+            print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: 'for' loop expects a list, got {type(iterable_value)}")
             return None
 
         for item in iterable_value:
@@ -730,7 +734,7 @@ class Interpreter:
         if isinstance(obj, dict):
             return obj.get(node.property_name)
 
-        print(f"[Interpreter] Error: Cannot read property '{node.property_name}' on {type(obj)}")
+        print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: Cannot read property '{node.property_name}' on {type(obj)}")
         return None
     
     def visit_SetAttribute(self, node):
@@ -753,5 +757,5 @@ class Interpreter:
             obj[node.property_name] = value
             return value
         
-        print(f"[Interpreter Error] Cannot set property on type {type(obj)}")
+        print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: Cannot set property on type {type(obj)}")
         return None

@@ -4,7 +4,7 @@ from src.utils.Game_Constants import MAPS, LEVEL_MUSIC, LEVEL_DARKNESS
 from src.utils.utils import resource_path
 from .ResourceManager import resource_manager
 from .TweenManager import tween_manager
-from src.utils.Game_Enums import Actions
+from src.utils.Game_Enums import Actions, Colors
 
 from src.core.GameResults import (
     NoteResult, DialogueResult, ChoiceResult, 
@@ -68,34 +68,15 @@ class ActionManager:
                     result.blocking = params.get("blocking")
             return result
         else:
-            print(f"[ActionManager] Warning: Action {action_type} not implemented")
+            print(f"{Colors.BRIGHT_YELLOW}[ActionManager]{Colors.RESET} Warning: Action {action_type} not implemented")
             return None
-        
-    
-    @register(Actions.SET_FLAG)
-    def _handle_set_flag(self, params, _, _p, _s, _id):
-        key = params.get("flag")
-        val = params.get("value")
-        if key: game_state.set_flag(key, val)
-
-    @register(Actions.INCREMENT_FLAG)
-    def _handle_increment_flag(self, params, _, _p, _s, _id):
-        key = params.get("flag")
-        amount = params.get("value", 1)
-        if key: game_state.increment_flag(key, amount)
-
-    @register(Actions.TELEPORT)
-    def _handle_teleport(self, params, _, _p, _s, _id):
-        zone_str = str(params.get("zone"))
-        x = params.get("x")
-        y = params.get("y")
-        if x is not None and y is not None:
-            game_state.request_teleport(zone_str, x, y)
 
     @register(Actions.PLAY_SOUND)
     def _handle_play_sound(self, params, _, _p, _s, _id):
         pass
+    
 
+    # Scene Methods (I still don't implement scene into the interpreter)
     @register(Actions.UNHIDE_OBJECT)
     def _handle_unhide_object(self, params, _, _p, scene, _id):
         tid = params.get("id")
@@ -110,40 +91,6 @@ class ActionManager:
     def _handle_modify_light(self, params, _, _p, scene, _id):
         enable = params.get("enable", False)
         scene.has_darkness = enable
-
-    @register(Actions.RANDOM_ACTION)
-    def _handle_random_action(self, params, raw_param_string, player, scene, source_id):
-        chance = int(params.get("chance", 50))
-        roll = random.randint(1, 100)
-        if roll <= chance:
-            sub_action = params.get("action")
-            return self.execute(sub_action, raw_param_string, player, scene, source_id)
-        return None
-
-    @register(Actions.CHANGE_LEVEL)
-    def _handle_change_level(self, params, _, _p, _s, _id):
-        level_name = params.get("level")
-        json_file = params.get("json")
-        zone_str = str(params.get("zone"))
-        x = params.get("x")
-        y = params.get("y")
-        
-        if level_name in MAPS and json_file:
-            clean = zone_str.replace("(", "").replace(")", "")
-            parts = clean.split(",")
-            new_zone = (int(parts[0]), int(parts[1]))
-            
-            music = LEVEL_MUSIC.get(level_name)
-            is_dark = LEVEL_DARKNESS.get(level_name, False)
-            
-            game_state.request_level_change(
-                json_path=resource_path(json_file),
-                map_matrix=MAPS[level_name],
-                entry_zone=new_zone,
-                player_pos=(x, y),
-                music_path=music,
-                darkness=is_dark
-            )
 
     @register(Actions.SHOW_NOTE)
     def _handle_show_note(self, params, _, _p, _s, _id):
@@ -207,87 +154,11 @@ class ActionManager:
             pause_music=should_pause
         )
 
-    @register(Actions.CHANGE_MUSIC)
-    def _handle_change_music(self, params, _, _p, _s, _id):
-        music_path = params.get("path") or params.get("music")
-        fade_ms = int(params.get("fade", 500))
-        volume = float(params.get("volume", 0.6))
-        loop_count = int(params.get("loop", -1))
-
-        if music_path:
-            resource_manager.play_music(music_path, volume, loop_count, fade_ms)
-
-    @register(Actions.MOVE_OBJECT)
-    def _handle_move_object(self, params, _, _p, scene, _id):
-        tid = params.get("id")
-        if tid:
-            target_obj = scene.get_object_by_id(tid)
-            if target_obj:
-                try:
-                    tx = int(params.get("x", 0))
-                    ty = int(params.get("y", 0))
-                    is_rel = str(params.get("relative", "false")).lower() == "true"
-                    tween_manager.teleport(target_obj, tx, ty, relative=is_rel)
-                except ValueError: pass
-
-    @register(Actions.SLIDE_OBJECT)
-    def _handle_slide_object(self, params, _, _p, scene, _id):
-        tid = params.get("id")
-        if tid:
-            target_obj = scene.get_object_by_id(tid)
-            if target_obj:
-                try:
-                    tx = int(params.get("x", 0))
-                    ty = int(params.get("y", 0))
-                    dur = float(params.get("duration", 1.0))
-                    is_rel = str(params.get("relative", "false")).lower() == "true"
-                    should_animate = str(params.get("animate", "false")).lower() == "true"
-
-                    if should_animate and hasattr(target_obj, "start_animation"):
-                        target_obj.start_animation()
-
-                    def on_slide_complete():
-                        if should_animate and hasattr(target_obj, "stop_animation"):
-                            target_obj.stop_animation()
-                    
-                    tween_manager.start_move(target_obj, tx, ty, dur, relative=is_rel, on_complete=on_slide_complete)
-                except ValueError: pass
-
-    @register(Actions.MODIFY_OBJECT)
-    def _handle_modify_object(self, params, _, _p, scene, _id):
-        tid = params.get("id")
-        changes = {k: v for k, v in params.items() if k != "id"}
-        scene.modify_object_by_id(tid, changes)
-
     @register(Actions.ASK_CHOICE)
     def _handle_ask_choice(self, params, _, _p, _s, _id):
         text = params.get("text", "Choose")
         flag_name = params.get("flag", "temp_decision")
         return ChoiceResult(text, flag_name, blocking=True)
-
-    @register(Actions.JUMP_IF_TRUE)
-    def _handle_jump_if_true(self, params, _, _p, _s, _id):
-        flag_name = params.get("flag")
-        target_label = params.get("label") or params.get("target")
-        if flag_name and game_state.get_flag(flag_name, False) == True:
-            return {"type": "Jump", "target": target_label}
-        return None
-
-    @register(Actions.JUMP_IF_FALSE)
-    def _handle_jump_if_false(self, params, _, _p, _s, _id):
-        flag_name = params.get("flag")
-        target_label = params.get("label") or params.get("target")
-        if flag_name and game_state.get_flag(flag_name, False) == False:
-            return {"type": "Jump", "target": target_label}
-        return None
-
-    @register(Actions.EXIT)
-    def _handle_exit(self, params, _, _p, _s, _id):
-        return {"type": "Exit"}
-
-    @register(Actions.LABEL)
-    def _handle_label(self, params, _, _p, _s, _id):
-        return None
 
     @register(Actions.WAIT)
     def _handle_wait(self, params, _, _p, _s, _id):

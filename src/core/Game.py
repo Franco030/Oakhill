@@ -17,7 +17,7 @@ from src.managers.LevelManager import LevelManager
 from src.managers.NoteManager import NoteManager
 from src.core.GameState import game_state
 from src.managers.ScriptManager import script_manager
-from src.utils.Game_Enums import Actions, Conditions
+from src.utils.Game_Enums import Actions, Conditions, Colors
 from src.managers.Effects import RetroEffects
 from src.utils.utils import resource_path
 from src.utils.DebugConsole import DebugConsole
@@ -216,7 +216,7 @@ class Game:
             self.pending_teleport = teleport_req
             self.transition_state = "OUT"
             self.transition_timer = 0
-            print("[Game] Starting Teleport Transition")
+            print(f"{Colors.MAGENTA}[Game]{Colors.RESET} Starting Teleport Transition")
             return True 
         
         level_req = game_state.consume_level_change()
@@ -244,7 +244,7 @@ class Game:
                         self.level_manager.current_scene.change_zone_by_string(data["zone"])
                     self.player.teleport(data["x"], data["y"])
                     self.pending_teleport = None
-                    print("[Game] Teleport executed mid-transition")
+                    print(f"{Colors.MAGENTA}[Game]{Colors.RESET} Teleport executed mid-transition")
 
                 self.transition_state = "IN"
                 self.transition_timer = 0 
@@ -257,7 +257,7 @@ class Game:
             if progress >= 1.0:
                 self.transition_state = "NONE"
                 self.retro_effects.set_transition(0.0)
-                print("[Game] Transition finished")
+                print(f"{Colors.MAGENTA}[Game]{Colors.RESET} Transition finished")
 
     def _update_gameplay(self, delta_time):
         self.console.update(delta_time)

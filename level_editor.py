@@ -310,7 +310,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             func_val = obj_data.get('function', '')
             self.line_edit_function.setText(func_val)
 
-            trig_action = obj_data.get("trigger_action", Actions.SET_FLAG)
+            trig_action = obj_data.get("trigger_action", Actions.WAIT)
             self.prop_trigger_action.setCurrentText(str(trig_action))
             
             self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
@@ -434,7 +434,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             
             "interaction_duration": 120, 
             "trigger_condition": Conditions.ON_STAY,    
-            "trigger_action": Actions.SET_FLAG, 
+            "trigger_action": Actions.WAIT, 
             "trigger_params": ""
         }
         
@@ -1265,7 +1265,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.line_edit_function.setText(data.get('function', ''))
 
         self.prop_trigger_condition.setCurrentText(data.get('trigger_condition', Conditions.ON_STAY))
-        self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.SET_FLAG))
+        self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.WAIT))
         self.prop_trigger_params.setText(data.get("trigger_params", ""))
 
         self.list_trigger_sequence.clear()
@@ -1808,13 +1808,24 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.script_files = ["None"]
         
         if os.path.exists(script_dir):
-            for file in os.listdir(script_dir):
-                if file.endswith(".fer"):
-                    self.script_files.append(file)
+            for root, dirs, files in os.walk(script_dir):
+                for file in files:
+                    if file.endswith(".fer"):
+                        full_path = os.path.join(root, file)
+                        
+                        rel_path = os.path.relpath(full_path, script_dir)
+                        
+                        rel_path = rel_path.replace("\\", "/")
+                        
+                        self.script_files.append(rel_path)
         
+        self.script_files[1:] = sorted(self.script_files[1:])
+
         if hasattr(self, 'combo_script_file'):
+            self.combo_script_file.blockSignals(True)
             self.combo_script_file.clear()
             self.combo_script_file.addItems(self.script_files)
+            self.combo_script_file.blockSignals(False)
 
     def open_script_in_external_editor(self):
         obj_data = self.get_real_object_data()
