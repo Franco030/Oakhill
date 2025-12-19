@@ -1,12 +1,24 @@
-func p_s(id, volume) {
-    var resource_manager = get_system("ResourceManager");
+var resource_manager = get_system("ResourceManager");
+var scene = get_system("Scene");
+
+func play_sound(id, volume) {
     var snd = @external resource_manager.get_sound(id);
     if (snd) {
         if (volume) {
             snd.set_volume(volume);
         }
         snd.play();
-    } else {
-        print("No hay sonido");
+    }
+}
+
+func unhide_object(id) {
+    if (id) {
+        scene.unhide_object_by_id(id);
+    }
+}
+
+func hide_object(id) {
+    if (id) {
+        scene.hide_object_by_id(id);
     }
 }

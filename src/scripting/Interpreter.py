@@ -101,6 +101,11 @@ class Interpreter:
             "ResourceManager": resource_manager,
             "GameState": game_state
         }
+
+        self.dynamic_systems = {
+            "Scene": lambda: self.scene,
+            "Player": lambda: self.player
+        }
         
         # ------------------------------------------------
         # ------------------------------------------------
@@ -146,10 +151,6 @@ class Interpreter:
 
 
         self.native_map = {
-            # --- AUDIO ---
-            "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
-            
-
             # --- UI & DIALOGUE ---
             "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
             "show_note":      (Actions.SHOW_NOTE, ["id", "save"]),
@@ -166,8 +167,7 @@ class Interpreter:
 
             # --- OBJECT MANIPULATION ---
             "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),
-            "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
-            "hide_object":    (Actions.HIDE_OBJECT, ["id"])
+            
 
 
             # ---------------------------------------------------------------------
@@ -181,6 +181,8 @@ class Interpreter:
             # # Move instantly
             # "move_object":    (Actions.MOVE_OBJECT, ["id", "x", "y", "relative"]),
             # "change_music":   (Actions.CHANGE_MUSIC, ["path", "fade", "volume", "loop"]),
+            # "unhide_object":  (Actions.UNHIDE_OBJECT, ["id"]),
+            # "hide_object":    (Actions.HIDE_OBJECT, ["id"])
 
             # # Move smoothly (Tween)
             # "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
@@ -191,7 +193,10 @@ class Interpreter:
             # "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
 
             # "teleport":       (Actions.TELEPORT, ["zone", "x", "y"]),
-            # "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),            
+            # "change_level":   (Actions.CHANGE_LEVEL, ["level", "json", "zone", "x", "y"]),
+
+            # --- AUDIO ---
+            # "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
 
             # --- EXCLUDED ACTIONS ---
             # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
@@ -333,7 +338,17 @@ class Interpreter:
             real_system = self.systems[system_name]
             return NativeSystem(real_system, self)
         
-        print(f"[Interpreter] System '{system_name}' not found")
+        if system_name in self.dynamic_systems:
+            provider_func = self.dynamic_systems[system_name]
+            real_obj = provider_func()
+
+            if real_obj:
+                return NativeFunction(real_obj, self)
+            else:
+                print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: System '{system_name}' is currently unavailable (None)")
+                return None
+        
+        print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} System '{system_name}' not found")
         return None
     
     def _enrich_meta(self, func_name, args, kwargs, pre_exec_state=None):

@@ -70,12 +70,7 @@ class ActionManager:
         else:
             print(f"{Colors.BRIGHT_YELLOW}[ActionManager]{Colors.RESET} Warning: Action {action_type} not implemented")
             return None
-
-    @register(Actions.PLAY_SOUND)
-    def _handle_play_sound(self, params, _, _p, _s, _id):
-        pass
     
-
     # Scene Methods (I still don't implement scene into the interpreter)
     @register(Actions.UNHIDE_OBJECT)
     def _handle_unhide_object(self, params, _, _p, scene, _id):

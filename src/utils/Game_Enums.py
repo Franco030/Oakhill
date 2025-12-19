@@ -1,13 +1,10 @@
 class Actions:
     WAIT = "Wait"
-    PLAY_SOUND = "PlaySound"
-    UNHIDE_OBJECT = "UnhideObject"
     SHOW_DIALOGUE = "ShowDialogue"
     SHOW_IMAGE = "ShowImage"
     CLOSE_IMAGE = "CloseImage"
     SHOW_NOTE = "ShowNote"
     SHOW_ANIMATION = "ShowAnimation"
-    HIDE_OBJECT = "HideObject"
     MODIFY_LIGHT = "ModifyLight"
     ASK_CHOICE = "AskChoice"
     DESTROY_OBJECT = "DestroyObject"
@@ -15,7 +12,7 @@ class Actions:
     @classmethod
     def get_actions(cls):
         return [
-            cls.WAIT, cls.PLAY_SOUND, cls.UNHIDE_OBJECT, cls.HIDE_OBJECT, cls.SHOW_DIALOGUE,
+            cls.WAIT, cls.SHOW_DIALOGUE,
             cls.SHOW_IMAGE, cls.CLOSE_IMAGE, cls.SHOW_NOTE,
             cls.SHOW_ANIMATION, cls.MODIFY_LIGHT,
             cls.ASK_CHOICE, cls.DESTROY_OBJECT

@@ -3,5 +3,6 @@ var gamestate = get_system("GameState");
 
 func main() {
     gamestate.request_teleport("5, 2", 200, 200);
-    p_s("sfx_interaction_occurred");
+    play_sound("sfx_interaction_occurred");
+    hide_object(self.id);
 }
