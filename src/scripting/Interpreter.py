@@ -158,9 +158,7 @@ class Interpreter:
             
             # --- VISUALS ---
             "show_image":     (Actions.SHOW_IMAGE, ["image", "pause_music"]),
-            "close_image":    (Actions.CLOSE_IMAGE, []),
             "show_animation": (Actions.SHOW_ANIMATION, ["path", "frames", "speed", "loop", "pause_music"]),
-            "modify_light":   (Actions.MODIFY_LIGHT, ["enable"]),
 
             # --- LEVEL & MOVEMENT ---
             "wait":           (Actions.WAIT, ["time"]),

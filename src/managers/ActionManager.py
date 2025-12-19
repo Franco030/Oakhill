@@ -70,22 +70,6 @@ class ActionManager:
         else:
             print(f"{Colors.BRIGHT_YELLOW}[ActionManager]{Colors.RESET} Warning: Action {action_type} not implemented")
             return None
-    
-    # Scene Methods (I still don't implement scene into the interpreter)
-    @register(Actions.UNHIDE_OBJECT)
-    def _handle_unhide_object(self, params, _, _p, scene, _id):
-        tid = params.get("id")
-        if tid: scene.unhide_object_by_id(tid)
-
-    @register(Actions.HIDE_OBJECT)
-    def _handle_hide_object(self, params, _, _p, scene, _id):
-        tid = params.get("id")
-        if tid: scene.hide_object_by_id(tid)
-
-    @register(Actions.MODIFY_LIGHT)
-    def _handle_modify_light(self, params, _, _p, scene, _id):
-        enable = params.get("enable", False)
-        scene.has_darkness = enable
 
     @register(Actions.SHOW_NOTE)
     def _handle_show_note(self, params, _, _p, _s, _id):
@@ -123,10 +107,6 @@ class ActionManager:
         should_pause = str(params.get("pause_music", "false")).lower() == "true"
         blocking = str(params.get("blocking", "false")).lower() == "true"
         return ImageResult(path, blocking=blocking, pause_music=should_pause)
-
-    @register(Actions.CLOSE_IMAGE)
-    def _handle_close_image(self, params, _, _p, _s, _id):
-        pass
 
     @register(Actions.SHOW_ANIMATION)
     def _handle_show_animation(self, params, _, _p, _s, _id):
