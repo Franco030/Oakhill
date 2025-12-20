@@ -1,7 +1,6 @@
 class Actions:
     SHOW_IMAGE = "ShowImage"
     SHOW_ANIMATION = "ShowAnimation"
-    ASK_CHOICE = "AskChoice"
     DESTROY_OBJECT = "DestroyObject"
 
     @classmethod

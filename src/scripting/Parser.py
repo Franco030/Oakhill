@@ -86,13 +86,24 @@ class Parser:
         self.consume(TokenType.LPAREN, "'(' was expected after the name")
 
         parameters = []
+        had_default = False
         if not self.check(TokenType.RPAREN):
             while True:
                 param_token = self.consume(TokenType.IDENTIFIER, "a parameter was expected")
-                parameters.append(param_token.value)
+
+                default_value = None
+                if self.match(TokenType.ASSIGN):
+                    default_value = self.expression()
+                    had_default = True
+                else:
+                    if had_default:
+                        raise Exception(f"[SyntaxError] Non-default argument '{param_token.value}' follows default argument in function '{name}' (line {param_token.line})")
+
+                parameters.append((param_token.value, default_value))
 
                 if not self.check(TokenType.COMMA): break
                 self.advance()
+
         self.consume(TokenType.RPAREN, "')' was expected")
         
         self.consume(TokenType.LBRACE, "'{' was expected before the block")

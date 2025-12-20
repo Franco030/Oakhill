@@ -98,12 +98,6 @@ class ActionManager:
             pause_music=should_pause
         )
 
-    @register(Actions.ASK_CHOICE)
-    def _handle_ask_choice(self, params, _, _p, _s, _id):
-        text = params.get("text", "Choose")
-        flag_name = params.get("flag", "temp_decision")
-        return ChoiceResult(text, flag_name, blocking=True)
-
     @register(Actions.DESTROY_OBJECT)
     def _handle_destroy_object(self, params, _, _p, _s, source_id):
         target_id = params.get("id")

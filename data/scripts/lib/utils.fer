@@ -28,18 +28,18 @@ func sleep(miliseconds) {
     w;
 }
 
-func show_dialogue(text, color, pause_music, blocking, sound) {
+func show_dialogue(text, color="#ffffff", pause_music=false, blocking=true) {
     var dlg = DialogueResult(text, color, pause_music, blocking);
     dlg;
 }
 
-func show_note(note_id, blocking) {
+func show_note(note_id, blocking=true) {
     play_sound("sfx_interaction_occurred");
     var nt = NoteResult(note_id, blocking);
     nt;
 }
 
-func ask_choice(question, flag_name, blocking) {
+func ask_choice(question, flag_name, blocking=true) {
     var ch = ChoiceResult(question, flag_name, blocking);
     ch;
 }

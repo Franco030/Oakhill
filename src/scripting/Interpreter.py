@@ -274,8 +274,16 @@ class Interpreter:
         previous_env = self.environment
         local_env = Environment(self.globals)
         
-        for i, param_name in enumerate(func_node.params):
-            val = arguments[i] if i < len(arguments) else None
+        for i, (param_name, default_node) in enumerate(func_node.params):
+            # val = arguments[i] if i < len(arguments) else None
+            # local_env.define(param_name, val)
+            val = None
+            if i < len(arguments):
+                val = arguments[i]
+
+            elif default_node is not None:
+                val = yield from self.evaluate(default_node)
+
             local_env.define(param_name, val)
 
         self.environment = local_env
@@ -610,7 +618,7 @@ class Interpreter:
         
         flag_key = f"OBJ_{obj_id}_{node.property_name}"
         game_state.set_flag(flag_key, value)
-        print(f"{Colors.MAGENTA}[Interpreter -> Persist]{Colors.RESET} Saved {flag_key} = {value}")
+        print(f"{Colors.MAGENTA}[Interpreter]{Colors.RESET}-> Persist Saved {flag_key} = {value}")
 
         setattr(target_obj, node.property_name, value)
         return None
@@ -619,6 +627,10 @@ class Interpreter:
         value = None
         if node.value:
             value = yield from self.evaluate(node.value)
+
+        if value and value.blocking:
+            yield value
+
         raise ReturnException(value)
     
     def visit_ExternalCast(self, node):
