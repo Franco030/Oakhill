@@ -272,5 +272,25 @@
         "reflection_offset_y": 0,
         "interaction_data": "",
         "sort_offset_y": -20
+    },
+    "small_stone": {
+        "type": "Obstacle",
+        "z_index": 0,
+        "image_id": "spr_stone_3",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "width": 60,
+        "height": 60,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "collision_rect_offset": [
+            17,
+            19,
+            -22,
+            -18
+        ]
     }
 }

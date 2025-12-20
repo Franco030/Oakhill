@@ -16,5 +16,11 @@
             "es": "Encontraste un error!\nDeberia de haber una nota aqui...",
             "en": "You encountered an error! There should be a note here...\n"
         }
+    },
+    "note_warning_0": {
+        "content": {
+            "es": "",
+            "en": "I lost one of the patients, she was a sweet girl.\n\nThe people in this town are insane.\nThey don't care for safety.\nThey only care for, sacrifices?"
+        }
     }
 }

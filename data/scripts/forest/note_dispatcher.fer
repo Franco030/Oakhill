@@ -1,0 +1,13 @@
+import "lib/utils";
+
+func note_5_2() {
+    play_sound("sfx_interaction_occurred");
+    show_note("note_welcome");
+    hide_object(self.id);
+}
+
+func note_4_2() {
+    play_sound("sfx_interaction_occurred");
+    show_note("note_warning_0");
+    hide_object(self.id);
+}

@@ -216,7 +216,8 @@
         "sfx_secret_found": "assets/sounds/secret_found.wav",
         "sfx_select_choice": "assets/sounds/select_choice.wav",
         "sfx_surprise_attack": "assets/sounds/surprise_attack.wav",
-        "sfx_turn_pages": "assets/sounds/turn_pages.wav"
+        "sfx_turn_pages": "assets/sounds/turn_pages.wav",
+        "sfx_crow_flying": "assets/sounds/crow_flying.wav"
     },
     "SPRITES": {
         "spr_bench_0": "assets/images/furniture/bench_0.png",

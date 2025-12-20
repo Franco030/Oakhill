@@ -1,0 +1,16 @@
+import "lib/utils";
+
+func dlg_1() {
+    play_sound("sfx_dialogue_occurred");
+    show_dialogue("You can feel the ashes in the air", blocking=false);
+}
+
+func dlg_2() {
+    play_sound("sfx_dialogue_occurred");
+    show_dialogue("Recently burned...", blocking=false);
+}
+
+func dlg_3() {
+    play_sound("sfx_dialogue_occurred");
+    show_dialogue("Ready to be used.", color="#e00f0fff");
+}
