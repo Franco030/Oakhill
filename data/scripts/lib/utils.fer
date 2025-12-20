@@ -28,8 +28,12 @@ func sleep(miliseconds) {
     w;
 }
 
-func show_dlg(text, color, pause_music, blocking) {
-    var data = {"text": text, "color": color};
-    var dlg = DialogueResult(data, pause_music, blocking);
+func dialogue(text, color, pause_music, blocking) {
+    var dlg = DialogueResult(text, color, pause_music, blocking);
     dlg;
+}
+
+func note(note_id, blocking) {
+    var nt = NoteResult(note_id, blocking);
+    nt;
 }

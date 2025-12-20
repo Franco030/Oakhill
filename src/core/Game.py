@@ -36,9 +36,7 @@ class Game:
 
         self.retro_effects = RetroEffects()
 
-        self.base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.note_manager = NoteManager(self.base_path, language="en")
-        self.action_manager = ActionManager(self.note_manager)
+        self.action_manager = ActionManager()
         self.event_manager = EventManager(self.action_manager)
         self.ui_manager = UIManager(self.retro_effects, self.event_manager)
         self.level_manager = LevelManager(self.retro_effects)

@@ -41,3 +41,5 @@ class NoteManager:
             "pages": clean_pages,
             "total_pages": len(clean_pages)
         }
+    
+note_manager = NoteManager(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "en")

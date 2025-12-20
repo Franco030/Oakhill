@@ -1,6 +1,4 @@
 class Actions:
-    WAIT = "Wait"
-    SHOW_DIALOGUE = "ShowDialogue"
     SHOW_IMAGE = "ShowImage"
     SHOW_NOTE = "ShowNote"
     SHOW_ANIMATION = "ShowAnimation"
@@ -10,7 +8,6 @@ class Actions:
     @classmethod
     def get_actions(cls):
         return [
-            cls.WAIT, cls.SHOW_DIALOGUE,
             cls.SHOW_IMAGE, cls.SHOW_NOTE,
             cls.SHOW_ANIMATION,
             cls.ASK_CHOICE, cls.DESTROY_OBJECT

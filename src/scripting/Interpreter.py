@@ -158,7 +158,7 @@ class Interpreter:
 
         self.native_map = {
             # --- UI & DIALOGUE ---
-            "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
+            # "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
             "show_note":      (Actions.SHOW_NOTE, ["id", "save"]),
             "ask_choice":     (Actions.ASK_CHOICE, ["text", "flag"]),
             
@@ -167,7 +167,7 @@ class Interpreter:
             "show_animation": (Actions.SHOW_ANIMATION, ["path", "frames", "speed", "loop", "pause_music"]),
 
             # --- LEVEL & MOVEMENT ---
-            "wait":           (Actions.WAIT, ["time"]),
+            # "wait":           (Actions.WAIT, ["time"]),
 
             # --- OBJECT MANIPULATION ---
             "destroy_object": (Actions.DESTROY_OBJECT, ["id"]),

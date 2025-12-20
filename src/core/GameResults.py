@@ -1,5 +1,6 @@
 import pygame
 from abc import ABC, abstractmethod
+from src.managers.NoteManager import note_manager
 
 class GameResult(ABC):
     """
@@ -14,17 +15,25 @@ class GameResult(ABC):
         """
         pass
 
-class NoteResult(GameResult):
-    def __init__(self, note_data, blocking=False):
-        self.note_data = note_data
-        self.blocking = blocking
+# class NoteResult(GameResult):
+#     def __init__(self, note_data, blocking=False):
+#         self.note_data = note_data
+#         self.blocking = blocking
 
+#     def execute(self, game):
+#         game.ui_manager.show_note(self.note_data, blocking=self.blocking)
+
+class NoteResult(GameResult):
+    def __init__(self, note_id, blocking=True):
+        self.note_data = note_manager.get_note_content(note_id)
+        self.blocking = blocking
+    
     def execute(self, game):
         game.ui_manager.show_note(self.note_data, blocking=self.blocking)
 
 class DialogueResult(GameResult):
-    def __init__(self, data, pause_music=False, blocking=False):
-        self.dialogue_data = data
+    def __init__(self, text, text_color, pause_music=False, blocking=False):
+        self.dialogue_data = {"text": text, "color": text_color}
         self.blocking = blocking
         self.pause_music = pause_music
 

@@ -22,9 +22,8 @@ def register(action_enum):
     return decorator
 
 class ActionManager:
-    def __init__(self, note_manager):
-        self.note_manager = note_manager
-
+    def __init__(self):
+        pass
     
     def parse_params(self, param_string):
         params = {}
@@ -70,36 +69,6 @@ class ActionManager:
         else:
             print(f"{Colors.BRIGHT_YELLOW}[ActionManager]{Colors.RESET} Warning: Action {action_type} not implemented")
             return None
-
-    @register(Actions.SHOW_NOTE)
-    def _handle_show_note(self, params, _, _p, _s, _id):
-        note_id = params.get("id")
-        should_save = str(params.get("save", "false")).lower() == "true"
-        if not note_id: return None
-        
-        note_data = self.note_manager.get_note_content(note_id)
-        if note_data:
-            if should_save:
-                game_state.unlock_note(note_id)
-            return NoteResult(note_data, blocking=True)
-        return None
-
-    @register(Actions.SHOW_DIALOGUE)
-    def _handle_show_dialogue(self, params, _, _p, _s, _id):
-        text = params.get("text", "...")
-        color_str = str(params.get("color", "255,255,255"))
-        should_pause = str(params.get("pause_music", "false")).lower() == "true"
-        
-        try:
-            text_color = tuple(map(int, color_str.split(',')))
-        except:
-            text_color = (255, 255, 255)
-
-        return DialogueResult(
-            data={"text": text, "color": text_color},
-            blocking=True,
-            pause_music=should_pause
-        )
 
     @register(Actions.SHOW_IMAGE)
     def _handle_show_image(self, params, _, _p, _s, _id):
