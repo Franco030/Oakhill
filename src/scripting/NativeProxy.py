@@ -34,6 +34,9 @@ class NativeProxy:
     
     @staticmethod
     def fer_to_py(value):
+        if value is None:
+            return None
+
         if isinstance(value, NativeObject):
             return value._real_obj
         

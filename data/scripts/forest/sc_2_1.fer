@@ -1,3 +1,5 @@
+import "lib/utils";
+
 var gamestate = get_system("GameState");
 
 func open_note() {
@@ -36,6 +38,7 @@ func unlock_door() {
 
 func door_trigger() {
     var has_key = gamestate.get_flag("has_cemetery_key");
+    var has_key = true;
 
     play_sound("sfx_dialogue_occurred");
     show_dialogue("There's a door here");

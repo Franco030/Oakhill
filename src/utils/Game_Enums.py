@@ -1,6 +1,5 @@
 class Actions:
     SHOW_IMAGE = "ShowImage"
-    SHOW_NOTE = "ShowNote"
     SHOW_ANIMATION = "ShowAnimation"
     ASK_CHOICE = "AskChoice"
     DESTROY_OBJECT = "DestroyObject"
@@ -8,7 +7,7 @@ class Actions:
     @classmethod
     def get_actions(cls):
         return [
-            cls.SHOW_IMAGE, cls.SHOW_NOTE,
+            cls.SHOW_IMAGE,
             cls.SHOW_ANIMATION,
             cls.ASK_CHOICE, cls.DESTROY_OBJECT
         ]

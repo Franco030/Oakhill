@@ -17,6 +17,7 @@ class TokenType:
     STRUCT = "STRUCT"       # struct
     PERSIST = "PERSIST"     # persist
     EXTERNAL = "EXTERNAL"   # external
+    NULL = "NULL"           # null
 
     # Literals and identifiers
     IDENTIFIER = "IDENTIFIER"   # my_function, player_hp
@@ -102,7 +103,8 @@ class Lexer:
             "in": TokenType.IN,
             "struct": TokenType.STRUCT,
             "persist": TokenType.PERSIST,
-            "external": TokenType.EXTERNAL
+            "external": TokenType.EXTERNAL,
+            "null": TokenType.NULL
         }
 
     def advance(self):

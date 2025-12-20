@@ -195,71 +195,71 @@ class EventManager:
 
         # OLD SYSTEM
 
-        raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
-        params = self.action_manager.parse_params(raw_params)
+        # raw_params = getattr(obj, "trigger_params", getattr(obj, "params", ""))
+        # params = self.action_manager.parse_params(raw_params)
         
-        if hasattr(obj, "condition") and obj.condition == Conditions.IF_FLAG:
-            flag_a = params.get("flag_a") or params.get("flag")
-            flag_b = params.get("flag_b")
-            expected_val = params.get("value")
-            operator = str(params.get("condition", "")).upper()
+        # if hasattr(obj, "condition") and obj.condition == Conditions.IF_FLAG:
+        #     flag_a = params.get("flag_a") or params.get("flag")
+        #     flag_b = params.get("flag_b")
+        #     expected_val = params.get("value")
+        #     operator = str(params.get("condition", "")).upper()
 
-            if not flag_b:
-                if not game_state.check_flag(flag_a, expected_val):
-                    return None
+        #     if not flag_b:
+        #         if not game_state.check_flag(flag_a, expected_val):
+        #             return None
                 
-            else:
-                val_a = game_state.get_flag(flag_a)
-                val_b = game_state.get_flag(flag_b)
-                condition_met = False
+        #     else:
+        #         val_a = game_state.get_flag(flag_a)
+        #         val_b = game_state.get_flag(flag_b)
+        #         condition_met = False
 
-                if operator == "AND":
-                    condition_met = (val_a == expected_val) and (val_b == expected_val)
-                elif operator == "OR":
-                    condition_met = (val_a == expected_val) or (val_b == expected_val)
-                elif operator == "EQUAL":
-                    condition_met = (val_a == val_b)
-                elif operator == "NOT_EQUAL":
-                    condition_met = (val_a != val_b)
+        #         if operator == "AND":
+        #             condition_met = (val_a == expected_val) and (val_b == expected_val)
+        #         elif operator == "OR":
+        #             condition_met = (val_a == expected_val) or (val_b == expected_val)
+        #         elif operator == "EQUAL":
+        #             condition_met = (val_a == val_b)
+        #         elif operator == "NOT_EQUAL":
+        #             condition_met = (val_a != val_b)
 
-                if not condition_met:
-                    return None
+        #         if not condition_met:
+        #             return None
 
-        should_kill = False
-        if hasattr(obj, "condition") and obj.condition in [Conditions.ON_STAY, Conditions.IF_FLAG, Conditions.ON_ENTER] and not hasattr(obj, "interaction_type"):
-             should_kill = params.get("kill", True)
+        # should_kill = False
+        # if hasattr(obj, "condition") and obj.condition in [Conditions.ON_STAY, Conditions.IF_FLAG, Conditions.ON_ENTER] and not hasattr(obj, "interaction_type"):
+        #      should_kill = params.get("kill", True)
 
-        if hasattr(obj, "data") and obj.data.get("scripted_events"):
-            sequence = obj.data.get("scripted_events")
-            blocking = params.get("blocking", False)
+        # if hasattr(obj, "data") and obj.data.get("scripted_events"):
+        #     sequence = obj.data.get("scripted_events")
+        #     blocking = params.get("blocking", False)
 
-            obj_id = getattr(obj, "id", None)
-            self.start_sequence(sequence, blocking, source_id=obj_id)
+        #     obj_id = getattr(obj, "id", None)
+        #     self.start_sequence(sequence, blocking, source_id=obj_id)
             
-            if should_kill:
-                obj.kill()
-            return None 
+        #     if should_kill:
+        #         obj.kill()
+        #     return None 
 
-        act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
-        if act and act != "None":
-            obj_id = getattr(obj, "id", None)
-            result = self.action_manager.execute(act, raw_params, player, scene, source_id=obj_id)
+        # act = getattr(obj, "trigger_action", getattr(obj, "action", "None"))
+        # if act and act != "None":
+        #     obj_id = getattr(obj, "id", None)
+        #     result = self.action_manager.execute(act, raw_params, player, scene, source_id=obj_id)
 
-            if result:
-                if self.is_blocking and hasattr(result, "blocking"):
-                    pass
+        #     if result:
+        #         if self.is_blocking and hasattr(result, "blocking"):
+        #             pass
 
-            if act in [Actions.TELEPORT, Actions.CHANGE_LEVEL]: 
-                should_kill = False
+        #     if act in [Actions.TELEPORT, Actions.CHANGE_LEVEL]: 
+        #         should_kill = False
             
-            if should_kill:
-                obj.kill()
-                if hasattr(obj, "id") and obj.id:
-                    game_state.register_interaction(obj.id)
+        #     if should_kill:
+        #         obj.kill()
+        #         if hasattr(obj, "id") and obj.id:
+        #             game_state.register_interaction(obj.id)
 
-            return result
+        #     return result
            
-        return None
+        # return None
     
     def notify_action_completed(self):
         if self.current_script_generator and self.waiting_for_action:

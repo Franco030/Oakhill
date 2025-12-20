@@ -313,6 +313,9 @@ class Parser:
         """
         Literals, identifiers, calls
         """
+        if self.match(TokenType.NULL):
+            return Literal(None)
+
         if self.check(TokenType.AT):
             self.advance()
 

@@ -159,8 +159,8 @@ class Interpreter:
         self.native_map = {
             # --- UI & DIALOGUE ---
             # "show_dialogue":  (Actions.SHOW_DIALOGUE, ["text", "color", "pause_music"]),
-            "show_note":      (Actions.SHOW_NOTE, ["id", "save"]),
-            "ask_choice":     (Actions.ASK_CHOICE, ["text", "flag"]),
+            # "show_note":      (Actions.SHOW_NOTE, ["id", "save"]),
+            # "ask_choice":     (Actions.ASK_CHOICE, ["text", "flag"]),
             
             # --- VISUALS ---
             "show_image":     (Actions.SHOW_IMAGE, ["image", "pause_music"]),
