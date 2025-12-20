@@ -140,15 +140,15 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.prop_is_ground.stateChanged.connect(lambda v: self.on_property_changed('is_ground', bool(v)))
 
         self.prop_trigger_condition.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_condition', v))
-        self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
-        self.prop_trigger_params.textChanged.connect(self.on_trigger_params_changed)
-        self.btn_seq_add.clicked.connect(self.add_sequence_step)
-        self.btn_seq_remove.clicked.connect(self.remove_sequence_step)
-        self.btn_seq_up.clicked.connect(lambda: self.move_sequence_step(-1))
-        self.btn_seq_down.clicked.connect(lambda: self.move_sequence_step(1))
-        self.list_trigger_sequence.currentRowChanged.connect(lambda row: self.load_selected_step_to_ui())
-        self.prop_step_action.currentTextChanged.connect(self.update_selected_step_data)
-        self.prop_step_params.textChanged.connect(self.update_selected_step_data)
+        # self.prop_trigger_action.currentTextChanged.connect(lambda v: self.on_property_changed('trigger_action', v))
+        # self.prop_trigger_params.textChanged.connect(self.on_trigger_params_changed)
+        # self.btn_seq_add.clicked.connect(self.add_sequence_step)
+        # self.btn_seq_remove.clicked.connect(self.remove_sequence_step)
+        # self.btn_seq_up.clicked.connect(lambda: self.move_sequence_step(-1))
+        # self.btn_seq_down.clicked.connect(lambda: self.move_sequence_step(1))
+        # self.list_trigger_sequence.currentRowChanged.connect(lambda row: self.load_selected_step_to_ui())
+        # self.prop_step_action.currentTextChanged.connect(self.update_selected_step_data)
+        # self.prop_step_params.textChanged.connect(self.update_selected_step_data)
 
 
         self.btn_anim_add.clicked.connect(self.add_animation_frame)
@@ -159,8 +159,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.btn_browse_flash.clicked.connect(lambda: self.browse_file_for_combo(self.prop_flash_image_path_combo))
         self.btn_browse_charge.clicked.connect(lambda: self.browse_audio_for_combo(self.prop_charge_sound_combo))
         self.btn_browse_used.clicked.connect(lambda: self.browse_file_for_combo(self.prop_used_image_path_combo))
-        self.btn_zoom_trigger.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_trigger_params))
-        self.btn_zoom_step.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_step_params))
+        # self.btn_zoom_trigger.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_trigger_params))
+        # self.btn_zoom_step.clicked.connect(lambda: self.open_text_editor_dialog(self.prop_step_params))
         self.shortcut_up = QShortcut(QKeySequence(Qt.Key_Up), self)
         self.shortcut_up.activated.connect(lambda: self.navigate_zone(0, -1))
         self.shortcut_down = QShortcut(QKeySequence(Qt.Key_Down), self)
@@ -192,8 +192,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.chk_layer_triggers.stateChanged.connect(self.update_layers)
         self.chk_layer_interactables.stateChanged.connect(self.update_layers)
         self.chk_lock_ground.stateChanged.connect(self.update_layers)
-        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
-        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
+        # self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
+        # self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
         self.populate_image_combos()
         self.populate_sound_combos()
         self.populate_assets_list()
@@ -310,29 +310,33 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             func_val = obj_data.get('function', '')
             self.line_edit_function.setText(func_val)
 
-            trig_action = obj_data.get("trigger_action", Actions.WAIT)
-            self.prop_trigger_action.setCurrentText(str(trig_action))
-            
-            self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
-            
-            self.list_trigger_sequence.clear()
-            sequence = obj_data.get("scripted_events", [])
-            
-            for step in sequence:
-                action = step.get("action", Actions.WAIT)
-                params = step.get("params", "")
-                item_text = f"{action} ({params})"
-                
-                list_item = QListWidgetItem(item_text)
-                list_item.setData(Qt.UserRole, step)
-                self.list_trigger_sequence.addItem(list_item)
-                
-            self.group_step_detail.setEnabled(False)
-            
-            if self.list_trigger_sequence.count() > 0:
-                self.list_trigger_sequence.setCurrentRow(0)
 
-            self.list_trigger_sequence.apply_logic_coloring()  
+            trig_condition = obj_data.get("trigger_condition", Conditions.ON_ENTER)
+            self.prop_trigger_condition.setCurrentText(str(trig_condition))
+
+            # trig_action = obj_data.get("trigger_action", Actions.WAIT)
+            # self.prop_trigger_action.setCurrentText(str(trig_action))
+            
+            # self.prop_trigger_params.setText(obj_data.get("trigger_params", ""))
+            
+            # self.list_trigger_sequence.clear()
+            # sequence = obj_data.get("scripted_events", [])
+            
+            # for step in sequence:
+            #     action = step.get("action", Actions.WAIT)
+            #     params = step.get("params", "")
+            #     item_text = f"{action} ({params})"
+                
+            #     list_item = QListWidgetItem(item_text)
+            #     list_item.setData(Qt.UserRole, step)
+            #     self.list_trigger_sequence.addItem(list_item)
+                
+            # self.group_step_detail.setEnabled(False)
+            
+            # if self.list_trigger_sequence.count() > 0:
+            #     self.list_trigger_sequence.setCurrentRow(0)
+
+            # self.list_trigger_sequence.apply_logic_coloring()  
             
             current.setText(f"[{obj_data.get('type')}] {obj_data.get('id')}")
             
@@ -434,8 +438,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             
             "interaction_duration": 120, 
             "trigger_condition": Conditions.ON_STAY,    
-            "trigger_action": Actions.WAIT, 
-            "trigger_params": ""
+            # "trigger_action": Actions.WAIT, 
+            # "trigger_params": ""
         }
         
         cmd = CmdAddObject(self, current_zone_key, new_obj_data)
@@ -581,13 +585,13 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         pixmap_item = current_item.data(Qt.UserRole + 1)
         if pixmap_item: self.update_canvas_item(obj_data, pixmap_item)
 
-    def on_trigger_params_changed(self):
-        if self.is_programmatic_change: return
+    # def on_trigger_params_changed(self):
+    #     if self.is_programmatic_change: return
         
-        obj_data = self.get_real_object_data()
-        if not obj_data: return
+    #     obj_data = self.get_real_object_data()
+    #     if not obj_data: return
         
-        obj_data['trigger_params'] = self.prop_trigger_params.toPlainText()
+    #     obj_data['trigger_params'] = self.prop_trigger_params.toPlainText()
 
     def navigate_zone(self, dx, dy):
         focus_widget = QApplication.focusWidget()
@@ -1265,24 +1269,24 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         self.line_edit_function.setText(data.get('function', ''))
 
         self.prop_trigger_condition.setCurrentText(data.get('trigger_condition', Conditions.ON_STAY))
-        self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.WAIT))
-        self.prop_trigger_params.setText(data.get("trigger_params", ""))
+        # self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.WAIT))
+        # self.prop_trigger_params.setText(data.get("trigger_params", ""))
 
-        self.list_trigger_sequence.clear()
-        sequence = data.get("scripted_events", [])
+        # self.list_trigger_sequence.clear()
+        # sequence = data.get("scripted_events", [])
         
-        for step in sequence:
-            action = step.get("action", Actions.WAIT)
-            params = step.get("params", "")
-            item_text = f"{action} ({params})"
+        # for step in sequence:
+        #     action = step.get("action", Actions.WAIT)
+        #     params = step.get("params", "")
+        #     item_text = f"{action} ({params})"
             
-            list_item = QListWidgetItem(item_text)
-            list_item.setData(Qt.UserRole, step)
-            self.list_trigger_sequence.addItem(list_item)
+        #     list_item = QListWidgetItem(item_text)
+        #     list_item.setData(Qt.UserRole, step)
+        #     self.list_trigger_sequence.addItem(list_item)
 
-        self.list_trigger_sequence.apply_logic_coloring()
+        # self.list_trigger_sequence.apply_logic_coloring()
             
-        self.group_step_detail.setEnabled(False)
+        # self.group_step_detail.setEnabled(False)
 
         self.on_main_type_changed()
         self.update_image_preview()
@@ -1427,83 +1431,83 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
             except Exception as e:
                 print(f"{e}")
 
-    def save_sequence_changes(self):
-        if self.is_programmatic_change: return
+    # def save_sequence_changes(self):
+    #     if self.is_programmatic_change: return
         
-        obj_data = self.get_real_object_data()
-        if not obj_data: return
+    #     obj_data = self.get_real_object_data()
+    #     if not obj_data: return
         
-        new_sequence = []
-        for i in range(self.list_trigger_sequence.count()):
-            item = self.list_trigger_sequence.item(i)
-            step_data = item.data(Qt.UserRole)
-            new_sequence.append(copy.deepcopy(step_data))
+    #     new_sequence = []
+    #     for i in range(self.list_trigger_sequence.count()):
+    #         item = self.list_trigger_sequence.item(i)
+    #         step_data = item.data(Qt.UserRole)
+    #         new_sequence.append(copy.deepcopy(step_data))
         
-        old_sequence = obj_data.get("scripted_events", [])
-        if new_sequence != old_sequence:
-            cmd = CmdPropertyChange(self, obj_data, "scripted_events", old_sequence, new_sequence)
-            self.undo_manager.push(cmd, execute_now=False)
+    #     old_sequence = obj_data.get("scripted_events", [])
+    #     if new_sequence != old_sequence:
+    #         cmd = CmdPropertyChange(self, obj_data, "scripted_events", old_sequence, new_sequence)
+    #         self.undo_manager.push(cmd, execute_now=False)
             
-            obj_data["scripted_events"] = new_sequence
+    #         obj_data["scripted_events"] = new_sequence
 
-            self.list_trigger_sequence.apply_logic_coloring()
+    #         self.list_trigger_sequence.apply_logic_coloring()
 
-    def add_sequence_step(self):
-        new_step = {"action": Actions.WAIT, "params": "time=1.0"}
+    # def add_sequence_step(self):
+    #     new_step = {"action": Actions.WAIT, "params": "time=1.0"}
         
-        item = QListWidgetItem(f"{Actions.WAIT} (time=1.0)")
-        item.setData(Qt.UserRole, new_step)
-        self.list_trigger_sequence.addItem(item)
-        self.list_trigger_sequence.setCurrentItem(item)
-        self.save_sequence_changes()
+    #     item = QListWidgetItem(f"{Actions.WAIT} (time=1.0)")
+    #     item.setData(Qt.UserRole, new_step)
+    #     self.list_trigger_sequence.addItem(item)
+    #     self.list_trigger_sequence.setCurrentItem(item)
+    #     self.save_sequence_changes()
 
-    def remove_sequence_step(self):
-        row = self.list_trigger_sequence.currentRow()
-        if row >= 0:
-            self.list_trigger_sequence.takeItem(row)
-            self.save_sequence_changes()
+    # def remove_sequence_step(self):
+    #     row = self.list_trigger_sequence.currentRow()
+    #     if row >= 0:
+    #         self.list_trigger_sequence.takeItem(row)
+    #         self.save_sequence_changes()
 
-    def move_sequence_step(self, direction):
-        row = self.list_trigger_sequence.currentRow()
-        new_row = row + direction
-        if 0 <= new_row < self.list_trigger_sequence.count():
-            item = self.list_trigger_sequence.takeItem(row)
-            self.list_trigger_sequence.insertItem(new_row, item)
-            self.list_trigger_sequence.setCurrentRow(new_row)
-            self.save_sequence_changes()
+    # def move_sequence_step(self, direction):
+    #     row = self.list_trigger_sequence.currentRow()
+    #     new_row = row + direction
+    #     if 0 <= new_row < self.list_trigger_sequence.count():
+    #         item = self.list_trigger_sequence.takeItem(row)
+    #         self.list_trigger_sequence.insertItem(new_row, item)
+    #         self.list_trigger_sequence.setCurrentRow(new_row)
+    #         self.save_sequence_changes()
 
-    def load_selected_step_to_ui(self):
-        item = self.list_trigger_sequence.currentItem()
-        self.group_step_detail.setEnabled(item is not None)
+    # def load_selected_step_to_ui(self):
+    #     item = self.list_trigger_sequence.currentItem()
+    #     self.group_step_detail.setEnabled(item is not None)
         
-        if not item: return
+    #     if not item: return
         
-        step_data = item.data(Qt.UserRole)
+    #     step_data = item.data(Qt.UserRole)
         
-        self.is_programmatic_change = True
-        self.prop_step_action.setCurrentText(step_data.get("action", Actions.WAIT))
-        self.prop_step_params.setText(step_data.get("params", ""))
-        self.is_programmatic_change = False
+    #     self.is_programmatic_change = True
+    #     self.prop_step_action.setCurrentText(step_data.get("action", Actions.WAIT))
+    #     self.prop_step_params.setText(step_data.get("params", ""))
+    #     self.is_programmatic_change = False
 
-    def update_selected_step_data(self):
-        if self.is_programmatic_change: return
+    # def update_selected_step_data(self):
+    #     if self.is_programmatic_change: return
         
-        item = self.list_trigger_sequence.currentItem()
-        if not item: return
+    #     item = self.list_trigger_sequence.currentItem()
+    #     if not item: return
         
-        new_action = self.prop_step_action.currentText()
-        new_params = self.prop_step_params.toPlainText()
+    #     new_action = self.prop_step_action.currentText()
+    #     new_params = self.prop_step_params.toPlainText()
 
-        step_data = item.data(Qt.UserRole)
-        step_data["action"] = new_action
-        step_data["params"] = new_params
-        item.setData(Qt.UserRole, step_data)
+    #     step_data = item.data(Qt.UserRole)
+    #     step_data["action"] = new_action
+    #     step_data["params"] = new_params
+    #     item.setData(Qt.UserRole, step_data)
         
-        item.setText(f"{new_action} ({new_params})")
+    #     item.setText(f"{new_action} ({new_params})")
 
 
-        self.list_trigger_sequence.apply_logic_coloring()
-        self.save_sequence_changes()
+    #     self.list_trigger_sequence.apply_logic_coloring()
+    #     self.save_sequence_changes()
 
     def update_layers(self):
         show_obstacles = self.chk_layer_obstacles.isChecked()
@@ -1744,8 +1748,8 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         asset_ids = list(self.asset_map.keys())
         note_ids = self.note_ids if hasattr(self, "note_ids") else []
 
-        self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
-        self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
+        # self.highlighter_trigger = SyntaxHighlighter(self.prop_trigger_params.document(), asset_ids, note_ids)
+        # self.highlighter_step = SyntaxHighlighter(self.prop_step_params.document(), asset_ids, note_ids)
 
     def change_background_color(self):
         if self.background_toggle:
