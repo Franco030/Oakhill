@@ -34,6 +34,18 @@ func show_dialogue(text, color="#ffffff", pause_music=false, blocking=true) {
 }
 
 func show_note(note_id, save, blocking=true) {
+    var note_manager = get_system("NoteManager");
+    var nt_ex = note_manager.note_exists(note_id);
+    if (nt_ex) {
+        if (save) {
+            var gamestate = get_system("GameState");
+            gamestate.unlock_note(note_id);
+        }
+    }
+    else {
+        // fallback
+        note_id = "note_error";
+    }
     var nt = NoteResult(note_id, blocking);
     nt;
 }

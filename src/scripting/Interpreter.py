@@ -7,6 +7,7 @@ from src.utils.Game_Enums import Actions, Colors
 from src.core.GameState import game_state
 from src.managers.TweenManager import tween_manager
 from src.managers.ResourceManager import resource_manager
+from src.managers.NoteManager import note_manager
 from src.scripting.libraries.MathLib import MathLib
 
 import src.core.GameResults as GameResultsModule
@@ -99,6 +100,7 @@ class Interpreter:
             "Math": MathLib(),
             "TweenManager": tween_manager,
             "ResourceManager": resource_manager,
+            "NoteManager": note_manager,
             "GameState": game_state
         }
 

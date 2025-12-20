@@ -2,13 +2,19 @@
     "note_welcome": {
         "content": {
             "es": "Hola",
-            "en": "Hi"
+            "en": "Hi, my name is Matt Gray. I came here as a doctor.\nIt was supposed to be a simple trip, but now...\n\nI don't know why you're here but you should turn around.\nGet out of here.\n\nIf you choose to stay here, you're up for no fun."
         }
     },
     "note_cemetery_entrance_0": {
         "content": {
             "es": "",
             "en": "I sense an evil presence\nThat cemetery has something evil\nI really want to go back\nbut that thing is following me."
+        }
+    },
+    "note_error": {
+        "content": {
+            "es": "Encontraste un error!\nDeberia de haber una nota aqui...",
+            "en": "You encountered an error! There should be a note here...\n"
         }
     }
 }

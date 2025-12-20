@@ -1,5 +1,6 @@
 import json
 import os
+from src.utils.Game_Enums import Colors
 
 class NoteManager:
     _instance = None
@@ -29,9 +30,9 @@ class NoteManager:
                 with open(path, "r", encoding="utf-8") as f:
                     self.notes_data = json.load(f)
             except Exception as e:
-                print(f"[NoteManager] Error loading JSON: {e}")
+                print(f"{Colors.BRIGHT_RED}[NoteManager]{Colors.RESET} Error loading JSON: {e}")
         else:
-            print(f"[NoteManager] ERROR: {path} not found")
+            print(f"{Colors.BRIGHT_RED}[NoteManager]{Colors.RESET} ERROR: {path} not found")
 
     def set_language(self, lang_code):
         self.current_language = lang_code
@@ -53,5 +54,13 @@ class NoteManager:
             "pages": clean_pages,
             "total_pages": len(clean_pages)
         }
+    
+    def note_exists(self, note_id):
+        raw_data = self.notes_data.get(note_id)
+
+        if not raw_data:
+            return False
+
+        return True
     
 note_manager = NoteManager(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "en")

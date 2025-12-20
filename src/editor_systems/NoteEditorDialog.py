@@ -13,7 +13,7 @@ class NoteLimitHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
     
-        self.MAX_CHARS_PER_LINE = 39
+        self.MAX_CHARS_PER_LINE = 59
         self.MAX_LINES_PER_PAGE = 14 
         
         self.error_format = QTextCharFormat()
@@ -21,7 +21,7 @@ class NoteLimitHighlighter(QSyntaxHighlighter):
         self.error_format.setFontWeight(QFont.Bold)
 
         self.page_break_format = QTextCharFormat()
-        self.page_break_format.setForeground(QColor("#FFFF00"))
+        self.page_break_format.setForeground(QColor("#FF8800"))
         self.page_break_format.setFontWeight(QFont.Bold)
 
     def highlightBlock(self, text):

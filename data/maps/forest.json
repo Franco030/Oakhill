@@ -276,8 +276,8 @@
             {
                 "id": "obj_1765495681237_66",
                 "type": "Obstacle",
-                "x": 499,
-                "y": 199,
+                "x": 505,
+                "y": 204,
                 "image_id": "spr_crow_0",
                 "resize_factor": 4.0,
                 "is_passable": true,
@@ -297,8 +297,7 @@
                 ],
                 "border_width": 3,
                 "animation_images": [
-                    "spr_crow_1",
-                    "spr_crow_2"
+                    "spr_crow_1"
                 ],
                 "animation_speed": 0.15,
                 "flash_image_id": "",
@@ -578,6 +577,44 @@
                 "interaction_blocked": false,
                 "script": "forest/sc_2_1.fer",
                 "function": "door_trigger"
+            },
+            {
+                "id": "obj_1766262023503_857",
+                "type": "Trigger",
+                "x": 376,
+                "y": -108,
+                "image_id": "",
+                "resize_factor": 1.0,
+                "is_passable": false,
+                "starts_hidden": false,
+                "collision_rect_offset": [
+                    -407,
+                    537,
+                    1352,
+                    155
+                ],
+                "width": 100,
+                "height": 100,
+                "color": [
+                    255,
+                    255,
+                    255
+                ],
+                "border_width": 0,
+                "animation_images": [],
+                "animation_speed": 0.1,
+                "flash_image_id": "",
+                "charge_sound_id": "",
+                "used_image_id": "",
+                "interaction_duration": 120,
+                "trigger_condition": "OnEnter",
+                "z_index": 0,
+                "sort_offset_y": 0,
+                "reflection_offset_y": 0,
+                "animation_auto_play": false,
+                "interaction_blocked": false,
+                "script": "forest/sc_2_1.fer",
+                "function": "move_crow"
             }
         ],
         "(2, 3)": [

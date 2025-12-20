@@ -3,7 +3,7 @@ var gamestate = get_system("GameState");
 
 func main() {
     play_sound("sfx_interaction_occurred");
-    show_note("note_welcomde");
+    show_note("note_welcome");
     // sleep(6);
     // gamestate.request_teleport("5, 2", 200, 200);
     // play_sound("sfx_interaction_occurred");

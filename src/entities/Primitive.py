@@ -37,27 +37,27 @@ class Primitive(Obstacle):
 
         self._apply_persistence()
 
-    @property
-    def color(self):
-        return self._color
+    # @property
+    # def color(self):
+    #     return self._color
 
-    @color.setter
-    def color(self, value):
-        self._color = value
-        self._redraw()
+    # @color.setter
+    # def color(self, value):
+    #     self._color = value
+    #     self._redraw()
 
-    @property
-    def size(self):
-        return pygame.math.Vector2(self.width, self.height)
+    # @property
+    # def size(self):
+    #     return pygame.math.Vector2(self.width, self.height)
 
-    @size.setter
-    def size(self, value):
-        if hasattr(value, "x"):
-            self.width, self.height = int(value.x), int(value.y)
-        elif isinstance(value, (list, tuple)):
-            self.width, self.height = int(value[0]), int(value[1])
+    # @size.setter
+    # def size(self, value):
+    #     if hasattr(value, "x"):
+    #         self.width, self.height = int(value.x), int(value.y)
+    #     elif isinstance(value, (list, tuple)):
+    #         self.width, self.height = int(value[0]), int(value[1])
             
-        self._redraw()
-        old_center = self.rect.center
-        self.rect = self.image.get_rect(center=old_center)
-        self._update_collision_rect()
+    #     self._redraw()
+    #     old_center = self.rect.center
+    #     self.rect = self.image.get_rect(center=old_center)
+    #     self._update_collision_rect()

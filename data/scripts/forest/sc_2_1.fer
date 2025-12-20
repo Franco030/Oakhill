@@ -52,3 +52,10 @@ func door_trigger() {
         show_dialogue("It's locked");
     }
 }
+
+func move_crow() {
+    var tween_manager = get_system("TweenManager");
+    var crow = get_object("obj_1765495681237_66");
+    tween_manager.start_move(crow, -100, -100, 10);
+    destroy_object(self.id);
+}
