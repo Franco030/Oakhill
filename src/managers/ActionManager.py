@@ -135,12 +135,6 @@ class ActionManager:
         flag_name = params.get("flag", "temp_decision")
         return ChoiceResult(text, flag_name, blocking=True)
 
-    @register(Actions.WAIT)
-    def _handle_wait(self, params, _, _p, _s, _id):
-        time_sec = float(params.get("time", 1.0))
-
-        return WaitResult(duration=time_sec * 1000)
-
     @register(Actions.DESTROY_OBJECT)
     def _handle_destroy_object(self, params, _, _p, _s, source_id):
         target_id = params.get("id")

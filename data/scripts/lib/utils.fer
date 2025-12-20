@@ -22,3 +22,14 @@ func hide_object(id) {
         scene.hide_object_by_id(id);
     }
 }
+
+func sleep(miliseconds) {
+    var w = WaitResult(miliseconds * 1000, true);
+    w;
+}
+
+func show_dlg(text, color, pause_music, blocking) {
+    var data = {"text": text, "color": color};
+    var dlg = DialogueResult(data, pause_music, blocking);
+    dlg;
+}

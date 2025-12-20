@@ -9,7 +9,7 @@ from src.managers.TweenManager import tween_manager
 from src.managers.ResourceManager import resource_manager
 from src.scripting.libraries.MathLib import MathLib
 
-
+import src.core.GameResults as GameResultsModule
 import inspect
 import time
 
@@ -102,10 +102,16 @@ class Interpreter:
             "GameState": game_state
         }
 
+        # --- Dynamic Systems ---
+
         self.dynamic_systems = {
             "Scene": lambda: self.scene,
             "Player": lambda: self.player
         }
+
+        for name, obj in inspect.getmembers(GameResultsModule):
+            if inspect.isclass(obj) and obj.__module__ == GameResultsModule.__name__:
+                self.globals.define(name, obj)
         
         # ------------------------------------------------
         # ------------------------------------------------
@@ -341,7 +347,7 @@ class Interpreter:
             real_obj = provider_func()
 
             if real_obj:
-                return NativeFunction(real_obj, self)
+                return NativeSystem(real_obj, self)
             else:
                 print(f"{Colors.BRIGHT_RED}[Interpreter]{Colors.RESET} Error: System '{system_name}' is currently unavailable (None)")
                 return None

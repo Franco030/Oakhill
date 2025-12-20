@@ -36,6 +36,10 @@ class EventManager:
 
         try:
             result = next(self.current_script_generator)
+
+            if hasattr(result, "_real_obj"):
+                result = result._real_obj
+
             if isinstance(result, WaitResult):
                 self.wait_timer = result.duration
                 if result.blocking:

@@ -23,7 +23,7 @@ class NoteResult(GameResult):
         game.ui_manager.show_note(self.note_data, blocking=self.blocking)
 
 class DialogueResult(GameResult):
-    def __init__(self, data, blocking=False, pause_music=False):
+    def __init__(self, data, pause_music=False, blocking=False):
         self.dialogue_data = data
         self.blocking = blocking
         self.pause_music = pause_music
@@ -82,12 +82,12 @@ class DestroyResult(GameResult):
             game.level_manager.current_scene.remove_object_by_id(self.target_id)
 
 class WaitResult(GameResult):
-    def __init__(self, duration):
+    def __init__(self, duration, blocking=True):
         """
         :param duration: Wait time in seconds only for the script or user input
         """
         self.duration = duration
-        self.blocking = True
+        self.blocking = blocking
 
     def execute(self, game):
         pass
