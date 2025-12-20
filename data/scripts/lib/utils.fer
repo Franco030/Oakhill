@@ -28,12 +28,13 @@ func sleep(miliseconds) {
     w;
 }
 
-func dialogue(text, color, pause_music, blocking) {
+func dialogue(text, color, pause_music, blocking, sound) {
     var dlg = DialogueResult(text, color, pause_music, blocking);
     dlg;
 }
 
 func note(note_id, blocking) {
+    play_sound("sfx_interaction_occurred");
     var nt = NoteResult(note_id, blocking);
     nt;
 }

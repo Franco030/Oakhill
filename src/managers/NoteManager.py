@@ -2,12 +2,24 @@ import json
 import os
 
 class NoteManager:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(NoteManager, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, base_path, language="en"):
+        if hasattr(self, "_initialized") and self._initialized:
+            return
+
         self.base_path = base_path
         self.current_language = language
         self.notes_data = {}
         
         self.load_database()
+
+        self._initialized = True
 
     def load_database(self):
         path = os.path.join(self.base_path, "data/database/notes.json")
