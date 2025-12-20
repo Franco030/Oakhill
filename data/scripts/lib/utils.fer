@@ -33,8 +33,7 @@ func show_dialogue(text, color="#ffffff", pause_music=false, blocking=true) {
     dlg;
 }
 
-func show_note(note_id, blocking=true) {
-    play_sound("sfx_interaction_occurred");
+func show_note(note_id, save, blocking=true) {
     var nt = NoteResult(note_id, blocking);
     nt;
 }

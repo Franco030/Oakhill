@@ -126,39 +126,39 @@ class EventManager:
 
         # OLD SYSTEM
 
-        if action == Actions.LABEL:
-            self.step_index += 1
-            return None
+        # if action == Actions.LABEL:
+        #     self.step_index += 1
+        #     return None
 
-        if isinstance(result, dict) and result.get("type") == "Exit":
-            self.end_sequence()
-            return None
+        # if isinstance(result, dict) and result.get("type") == "Exit":
+        #     self.end_sequence()
+        #     return None
 
-        if isinstance(result, dict) and result.get("type") == "Jump":
-            target_label = result.get("target")
+        # if isinstance(result, dict) and result.get("type") == "Jump":
+        #     target_label = result.get("target")
             
-            if not target_label:
-                print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} Error: Jump without label target.")
-                self.step_index += 1
-                return None
+        #     if not target_label:
+        #         print(f"{Colors.BRIGHT_RED}[EventManager]{Colors.RESET} Error: Jump without label target.")
+        #         self.step_index += 1
+        #         return None
 
-            found_index = -1
-            for i, s in enumerate(self.current_sequence):
-                if s.get("action") == Actions.LABEL:
-                    p = self.action_manager.parse_params(s.get("params", ""))
-                    lbl_id = p.get("id", p.get("name"))
-                    if lbl_id == target_label:
-                        found_index = i
-                        break
+        #     found_index = -1
+        #     for i, s in enumerate(self.current_sequence):
+        #         if s.get("action") == Actions.LABEL:
+        #             p = self.action_manager.parse_params(s.get("params", ""))
+        #             lbl_id = p.get("id", p.get("name"))
+        #             if lbl_id == target_label:
+        #                 found_index = i
+        #                 break
             
-            if found_index != -1:
-                print(f"[EventManager] Jump to '{target_label}' (index {found_index})")
-                self.step_index = found_index
-            else:
-                print(f"[EventManager] ERROR: Label '{target_label}' not found. Continuing")
-                self.step_index += 1
+        #     if found_index != -1:
+        #         print(f"[EventManager] Jump to '{target_label}' (index {found_index})")
+        #         self.step_index = found_index
+        #     else:
+        #         print(f"[EventManager] ERROR: Label '{target_label}' not found. Continuing")
+        #         self.step_index += 1
             
-            return None
+        #     return None
 
         if result is not None:
             self.step_index += 1

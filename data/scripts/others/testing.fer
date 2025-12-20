@@ -2,8 +2,8 @@ import "lib/utils";
 var gamestate = get_system("GameState");
 
 func main() {
-    show_dialogue("Text", "#ff0000", false, true);
-    show_note("note_welcome");
+    play_sound("sfx_interaction_occurred");
+    show_note("note_welcomde");
     // sleep(6);
     // gamestate.request_teleport("5, 2", 200, 200);
     // play_sound("sfx_interaction_occurred");
