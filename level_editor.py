@@ -108,6 +108,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
 
         self.combo_script_file.currentTextChanged.connect(lambda v: self.on_property_changed('script', v))
         self.line_edit_function.textChanged.connect(lambda v: self.on_property_changed('function', v))
+        self.line_edit_interaction_data.textChanged.connect(lambda v: self.on_property_changed('interaction_data', v))
         self.btn_open_script.clicked.connect(self.open_script_in_external_editor)
 
         self.prop_x.valueChanged.connect(lambda v: self.on_property_changed('x', v))
@@ -894,6 +895,9 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
                 if obj.get("script") == "None" or not obj.get("script"):
                     obj["script"] = ""
                     obj["function"] = ""
+                    
+                if "interaction_data" not in obj:
+                    obj["interaction_data"] = ""
 
     def save_json(self):
         filepath, _ = QFileDialog.getSaveFileName(self, "Guardar JSON", self.base_path, "JSON (*.json)")
@@ -1267,6 +1271,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         
         self.combo_script_file.setCurrentText(data.get('script', 'None'))
         self.line_edit_function.setText(data.get('function', ''))
+        self.line_edit_interaction_data.setText(data.get('interaction_data', ''))
 
         self.prop_trigger_condition.setCurrentText(data.get('trigger_condition', Conditions.ON_STAY))
         # self.prop_trigger_action.setCurrentText(data.get("trigger_action", Actions.WAIT))
@@ -1814,7 +1819,7 @@ class LevelEditor(QMainWindow, Ui_LevelEditor):
         if os.path.exists(script_dir):
             for root, dirs, files in os.walk(script_dir):
                 for file in files:
-                    if file.endswith(".fer"):
+                    if file.endswith(".nang"):
                         full_path = os.path.join(root, file)
                         
                         rel_path = os.path.relpath(full_path, script_dir)

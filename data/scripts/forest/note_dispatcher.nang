@@ -1,5 +1,17 @@
 import "lib/utils";
 
+func read_note() {
+    play_sound("sfx_interaction_occurred");
+    
+    if (self.interaction_data) {
+        show_note(self.interaction_data);
+    } else {
+        show_note("note_error");
+    }
+    
+    hide_object(self.id);
+}
+
 func note_5_2() {
     play_sound("sfx_interaction_occurred");
     show_note("note_welcome");

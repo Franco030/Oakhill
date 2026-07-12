@@ -45,7 +45,7 @@
                 "scripted_events": [],
                 "image_id": "spr_cemetery_door_locked",
                 "used_image_id": "spr_cemetery_doors_open",
-                "script": "forest/sc_2_1.fer",
+                "script": "forest/sc_2_1.nang",
                 "function": "open_door"
             },
             {
@@ -605,7 +605,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_1.fer",
+                "script": "forest/sc_2_1.nang",
                 "function": "open_note"
             },
             {
@@ -646,7 +646,7 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "scripted_events": [],
-                "script": "forest/sc_2_1.fer",
+                "script": "forest/sc_2_1.nang",
                 "function": "door_trigger"
             }
         ],
@@ -1478,7 +1478,7 @@
                     }
                 ],
                 "is_ground": true,
-                "script": "forest/sc_2_1.fer",
+                "script": "forest/sc_2_1.nang",
                 "function": "on_grab_key"
             }
         ],
@@ -6377,7 +6377,7 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "image_id": "spr_note",
-                "script": "others/testing.fer",
+                "script": "others/testing.nang",
                 "function": "main"
             }
         ],

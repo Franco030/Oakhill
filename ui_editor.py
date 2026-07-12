@@ -525,11 +525,18 @@ class Ui_LevelEditor(object):
         self.formLayout_2.setWidget(3, QFormLayout.LabelRole, self.lbl_function)
         self.formLayout_2.setWidget(3, QFormLayout.FieldRole, self.line_edit_function)
 
+        self.lbl_interaction_data = QLabel("Interaction Data:", self.group_interaction)
+        self.line_edit_interaction_data = QLineEdit(self.group_interaction)
+        self.line_edit_interaction_data.setPlaceholderText("ej: note_welcome")
+        
+        self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_interaction_data)
+        self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.line_edit_interaction_data)
+
         self.lbl_trig_cond = QLabel("Condición Global:", self.group_interaction)
         self.prop_trigger_condition = CustomComboBox(self.group_interaction)
         self.prop_trigger_condition.addItems(Conditions.get_conditions())
-        self.formLayout_2.setWidget(4, QFormLayout.LabelRole, self.lbl_trig_cond)
-        self.formLayout_2.setWidget(4, QFormLayout.FieldRole, self.prop_trigger_condition)
+        self.formLayout_2.setWidget(5, QFormLayout.LabelRole, self.lbl_trig_cond)
+        self.formLayout_2.setWidget(5, QFormLayout.FieldRole, self.prop_trigger_condition)
         
         # self.lbl_trig_act = QLabel("Acción Global:", self.group_interaction)
         # self.prop_trigger_action = CustomComboBox()
@@ -690,9 +697,10 @@ class Ui_LevelEditor(object):
         
         self.group_interaction.setTitle(QCoreApplication.translate("LevelEditor", u"Configuración Específica", None))
 
-        self.lbl_script.setText(QCoreApplication.translate("LevelEditor", u"Script (.fer):", None))
+        self.lbl_script.setText(QCoreApplication.translate("LevelEditor", u"Script (.nang):", None))
         self.btn_open_script.setText(QCoreApplication.translate("LevelEditor", u"...", None))
         self.lbl_function.setText(QCoreApplication.translate("LevelEditor", u"Function to call:", None))
+        self.lbl_interaction_data.setText(QCoreApplication.translate("LevelEditor", u"Interaction Data:", None))
         
         self.lbl_flash.setText(QCoreApplication.translate("LevelEditor", u"Flash Image:", None))
         self.btn_browse_flash.setText(QCoreApplication.translate("LevelEditor", u"...", None))

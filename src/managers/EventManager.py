@@ -53,7 +53,7 @@ class EventManager:
             return result
 
         except StopIteration:
-            print(f"{Colors.BRIGHT_GREEN}[EventManager]{Colors.RESET} Script .fer finished.")
+            print(f"{Colors.BRIGHT_GREEN}[EventManager]{Colors.RESET} Script .nang finished.")
             self.current_script_generator = None
             self.waiting_for_action = False
             return None

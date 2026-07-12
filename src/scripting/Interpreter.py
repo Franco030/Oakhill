@@ -194,7 +194,7 @@ class Interpreter:
             # "slide_object":   (Actions.SLIDE_OBJECT, ["id", "x", "y", "duration", "relative", "animate"]),
 
             # --- GLOBAL FLAGS ---
-            # While .fer has local vars, these modify the permanent GameState
+            # While .nang has local vars, these modify the permanent GameState
             # "set_flag":       (Actions.SET_FLAG, ["flag", "value"]),
             # "increment_flag": (Actions.INCREMENT_FLAG, ["flag", "value"]),
 
@@ -205,7 +205,7 @@ class Interpreter:
             # "play_sound":     (Actions.PLAY_SOUND, ["sound", "volume"]),
 
             # --- EXCLUDED ACTIONS ---
-            # JUMP/LABEL/EXIT: Excluded because .fer handles flow control natively (if/func/return).
+            # JUMP/LABEL/EXIT: Excluded because .nang handles flow control natively (if/func/return).
         }
 
     def load(self, program_node):
@@ -521,7 +521,7 @@ class Interpreter:
                     executed = True
                 
                 elif callable(func_obj): 
-                    py_args = [NativeProxy.fer_to_py(arg) for arg in args]
+                    py_args = [NativeProxy.nang_to_py(arg) for arg in args]
                     raw_result = func_obj(*py_args)
                     result_value = NativeProxy.py_to_fer(raw_result, self)
                     executed = True

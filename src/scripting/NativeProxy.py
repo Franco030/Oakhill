@@ -33,7 +33,7 @@ class NativeProxy:
         return value
     
     @staticmethod
-    def fer_to_py(value):
+    def nang_to_py(value):
         if value is None:
             return None
 
@@ -65,11 +65,11 @@ class NativeFunction:
         self.interpreter = interpreter
 
     def __call__(self, *args, **kwargs):
-        py_args = [NativeProxy.fer_to_py(arg) for arg in args]
+        py_args = [NativeProxy.nang_to_py(arg) for arg in args]
 
         py_kwargs = {}
         for key, value in kwargs.items():
-            py_kwargs[key] = NativeProxy.fer_to_py(value)
+            py_kwargs[key] = NativeProxy.nang_to_py(value)
 
         try:
             result = self.func(*py_args, **py_kwargs)
@@ -117,7 +117,7 @@ class NativeObject:
         if name.startswith("_"): return
 
         try:
-            py_val = NativeProxy.fer_to_py(value)
+            py_val = NativeProxy.nang_to_py(value)
             
             if isinstance(self._real_obj, dict):
                 self._real_obj[name] = py_val
@@ -162,7 +162,7 @@ class RemoteObject:
             super().__setattr__(name, value)
             return
 
-        py_val = NativeProxy.fer_to_py(value)
+        py_val = NativeProxy.nang_to_py(value)
         flag_key = f"OBJ_{self._id}_{name}"
         
         game_state.set_flag(flag_key, py_val)

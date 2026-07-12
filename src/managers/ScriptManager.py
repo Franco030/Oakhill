@@ -44,7 +44,7 @@ class ScriptManager:
                 accumulated_decls.append(decl)
 
     def _load_and_parse(self, name):
-        filename = name if name.endswith(".fer") else f"{name}.fer"
+        filename = name if name.endswith(".nang") else f"{name}.nang"
         full_path = resource_path(os.path.join(self.base_dir, filename))
 
         if not os.path.exists(full_path):

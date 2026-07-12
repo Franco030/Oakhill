@@ -42,8 +42,9 @@
                 "interaction_blocked": true,
                 "image_id": "spr_cemetery_door_locked",
                 "used_image_id": "spr_cemetery_doors_open",
-                "script": "forest/sc_2_1.fer",
-                "function": "open_door"
+                "script": "forest/sc_2_1.nang",
+                "function": "open_door",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765239436110_287",
@@ -81,7 +82,8 @@
                 "interaction_blocked": false,
                 "image_id": "spr_cemetery_walls_0",
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765240971_3",
@@ -119,7 +121,8 @@
                 "interaction_blocked": false,
                 "image_id": "spr_cemetery_walls_1",
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765261277750_284",
@@ -157,7 +160,8 @@
                 "interaction_blocked": false,
                 "image_id": "spr_cemetery_column_wall",
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765261299_5",
@@ -195,7 +199,8 @@
                 "interaction_blocked": false,
                 "image_id": "spr_cemetery_column_wall",
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765315172180_589",
@@ -233,7 +238,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765315172346_490",
@@ -271,7 +277,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1765495681237_66",
@@ -312,7 +319,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "type": "Obstacle",
@@ -460,7 +468,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "type": "Interactable",
@@ -499,7 +508,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_1.fer",
+                "script": "forest/sc_2_1.nang",
                 "function": "open_note"
             },
             {
@@ -537,8 +546,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_1.fer",
-                "function": "door_trigger"
+                "script": "forest/sc_2_1.nang",
+                "function": "door_trigger",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1766262023503_857",
@@ -575,8 +585,9 @@
                 "reflection_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_1.fer",
-                "function": "move_crow"
+                "script": "forest/sc_2_1.nang",
+                "function": "move_crow",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1766267425019_938",
@@ -607,7 +618,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1766267455961_632",
@@ -638,7 +650,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1766267486174_339",
@@ -669,7 +682,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "type": "Obstacle",
@@ -782,7 +796,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "id": "obj_1766269338_21",
@@ -813,7 +828,8 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "script": "",
-                "function": ""
+                "function": "",
+                "interaction_data": ""
             },
             {
                 "type": "Obstacle",
@@ -1635,8 +1651,9 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "is_ground": true,
-                "script": "forest/sc_2_1.fer",
-                "function": "on_grab_key"
+                "script": "forest/sc_2_1.nang",
+                "function": "on_grab_key",
+                "interaction_data": ""
             }
         ],
         "(2, 4)": [
@@ -2771,7 +2788,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_5.fer",
+                "script": "forest/sc_2_5.nang",
                 "function": "dlg_1"
             },
             {
@@ -2810,7 +2827,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_5.fer",
+                "script": "forest/sc_2_5.nang",
                 "function": "dlg_2"
             },
             {
@@ -2849,7 +2866,7 @@
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
-                "script": "forest/sc_2_5.fer",
+                "script": "forest/sc_2_5.nang",
                 "function": "dlg_3"
             },
             {
@@ -5354,7 +5371,7 @@
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "image_id": "spr_note",
-                "script": "forest/note_dispatcher.fer",
+                "script": "forest/note_dispatcher.nang",
                 "function": "note_4_2"
             }
         ],
@@ -6291,13 +6308,13 @@
                 "is_ground": true,
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": "",
+                "interaction_data": "note_welcome",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
                 "image_id": "spr_note",
-                "script": "forest/note_dispatcher.fer",
-                "function": "note_5_2"
+                "script": "forest/note_dispatcher.nang",
+                "function": "read_note"
             }
         ],
         "(5, 3)": [

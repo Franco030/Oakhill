@@ -18,6 +18,7 @@ class Interactable(Obstacle):
 
         self.script = data.get("script")
         self.function = data.get("function")
+        self.interaction_data = data.get("interaction_data", "")
         
         self.interacted_once = False
         self.is_hidden = data.get("starts_hidden", False)

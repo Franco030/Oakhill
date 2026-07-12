@@ -1,0 +1,30 @@
+{
+    "name": "nang-language",
+    "displayName": "Nang Language Support",
+    "description": "Syntax highlighting for .nang files",
+    "version": "0.1.0",
+    "publisher": "oakhill",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "nang",
+                "aliases": ["Nang", "nang"],
+                "extensions": [".nang"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "nang",
+                "scopeName": "source.nang",
+                "path": "./syntaxes/nang.tmLanguage.json"
+            }
+        ]
+    }
+}
