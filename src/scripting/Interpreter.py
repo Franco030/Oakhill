@@ -246,30 +246,52 @@ class Interpreter:
         
         return result
     
-    def execute_raw_call(self, source_code):
+    def execute_raw_call(self, source_code, print_callback=None):
         """
-        Takes a raw string, wraps it into a a temporal function and immediately executes it
+        Takes a raw string, parses it and executes it in the global scope so variables persist.
+        Returns a generator for the EventManager.
         """
         from src.scripting.Lexer import Lexer
         from src.scripting.Parser import Parser
+        
+        if print_callback:
+            self.print_callback = print_callback
 
-        wrapped_source = f"func _debug_exec() {{ {source_code} }}"
         try:
-            lexer = Lexer(wrapped_source)
+            # Auto-append semicolon for REPL convenience
+            if not source_code.strip().endswith(";") and not source_code.strip().endswith("}"):
+                source_code += ";"
+
+            lexer = Lexer(source_code)
             tokens = lexer.tokenize()
             parser = Parser(tokens)
             program_node = parser.parse()
 
-            self.load(program_node)
+            def execution_gen():
+                previous_env = self.environment
+                self.environment = self.globals
+                try:
+                    for decl in program_node.declarations:
+                        # Register structs/functions if they happen to type them
+                        if isinstance(decl, FunctionDecl):
+                            self.functions[decl.name] = decl
+                            continue
+                        elif isinstance(decl, StructDecl):
+                            self.structs[decl.name] = FerStruct(decl.name, decl.fields)
+                            continue
+                        
+                        result = self.visit(decl)
+                        if inspect.isgenerator(result):
+                            yield from result
+                        elif result is not None and hasattr(result, "blocking"):
+                            yield result
+                finally:
+                    self.environment = previous_env
 
-            gen = self.run_function("_debug_exec")
-
-            result = None
-            if gen:
-                for step in gen:
-                    result = step
-            return f"Result: {result}"
+            return execution_gen()
         except Exception as e:
+            if hasattr(self, 'print_callback') and self.print_callback:
+                self.print_callback(f"Parse Error: {e}")
             return f"Error: {e}"
 
     def _execute_user_function(self, func_node, arguments):
@@ -533,6 +555,8 @@ class Interpreter:
         
         if func_name == "print": 
             output = " ".join(str(arg) for arg in args)
+            if hasattr(self, 'print_callback') and self.print_callback:
+                self.print_callback(output)
             print(f"\033[96m[SCRIPT DEBUG]\033[0m {output}")
             return None
 

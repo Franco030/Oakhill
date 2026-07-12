@@ -5,11 +5,16 @@ func read_note() {
     
     if (self.interaction_data) {
         show_note(self.interaction_data);
+
+        if (self.used_image) {
+            self.image = self.used_image;
+            self.original_image = self.used_image;
+        } else {
+            destroy_object(self.id);
+        }
     } else {
         show_note("note_error");
     }
-    
-    hide_object(self.id);
 }
 
 func note_5_2() {

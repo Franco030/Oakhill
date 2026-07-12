@@ -3,6 +3,7 @@ import warnings
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
 warnings.filterwarnings("ignore", message=".*pkg_resources.*")
 import pygame
+import inspect
 from src.scripting.Interpreter import Interpreter
 
 class DebugConsole:
@@ -71,8 +72,14 @@ class DebugConsole:
             self.interpreter.scene = self.game.level_manager.current_scene
             
             if hasattr(self.interpreter, 'execute_raw_call'):
-                result = self.interpreter.execute_raw_call(cmd)
-                self.log(result, is_error=str(result).startswith("Error"))
+                gen = self.interpreter.execute_raw_call(cmd, print_callback=self.log)
+                if inspect.isgenerator(gen):
+                    self.game.event_manager.start_script(gen)
+                elif gen is not None:
+                    if isinstance(gen, str) and gen.startswith("Error"):
+                        pass # error is already logged by execute_raw_call if print_callback is present, but let's be safe
+                    else:
+                        self.log(str(gen))
             else:
                 self.log("Error: Interpreter missing 'execute_raw_call'", True)
 

@@ -292,5 +292,34 @@
             -22,
             -18
         ]
+    },
+    "wood_cross": {
+        "type": "Obstacle",
+        "z_index": 0,
+        "image_id": "spr_cross_grave_1",
+        "resize_factor": 4.0,
+        "is_passable": false,
+        "width": 100,
+        "height": 136,
+        "color": [
+            255,
+            255,
+            255
+        ],
+        "collision_rect_offset": [
+            45,
+            59,
+            -66,
+            -57
+        ],
+        "interaction_duration": 60,
+        "sort_offset_y": 0,
+        "border_width": 0,
+        "reflection_offset_y": 0,
+        "animation_auto_play": false,
+        "interaction_blocked": false,
+        "script": "",
+        "function": "",
+        "interaction_data": ""
     }
 }

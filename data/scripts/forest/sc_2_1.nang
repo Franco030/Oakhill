@@ -42,6 +42,7 @@ func door_trigger() {
     play_sound("sfx_dialogue_occurred");
     show_dialogue("There's a door here");
     if (has_key) {
+        // The '@' tells the interpreter to return the result the function made otherwise it will do something and that's it no result returned.
         var choice = @ask_choice("Unlock this door?", "use_key");
         if (choice.value) {
             unlock_door();

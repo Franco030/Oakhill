@@ -670,10 +670,10 @@
                     255
                 ],
                 "collision_rect_offset": [
-                    0,
-                    0,
-                    0,
-                    0
+                    45,
+                    59,
+                    -66,
+                    -57
                 ],
                 "interaction_duration": 60,
                 "sort_offset_y": 0,
@@ -3172,7 +3172,7 @@
                 "trigger_condition": "OnInteract",
                 "z_index": 0,
                 "reflection_offset_y": 0,
-                "interaction_data": "",
+                "interaction_data": "note_grave_01",
                 "sort_offset_y": 0,
                 "animation_auto_play": false,
                 "interaction_blocked": false,
@@ -3180,8 +3180,8 @@
                 "flash_image_id": "spr_gravestone_flash_1",
                 "used_image_id": "spr_bloody_gravestone_1",
                 "charge_sound_id": "sfx_interacting",
-                "script": "",
-                "function": ""
+                "script": "forest/note_dispatcher.nang",
+                "function": "read_note"
             },
             {
                 "id": "obj_1764800302702_540",
