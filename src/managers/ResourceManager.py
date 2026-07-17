@@ -96,7 +96,7 @@ class ResourceManager:
         try:
             real_path = self.asset_map.get(music_id, music_id)
             
-            if self.current_music == real_path: return
+            if self.current_music == real_path and pygame.mixer.music.get_busy(): return
 
             full_path = resource_path(real_path)
             if not os.path.exists(full_path):

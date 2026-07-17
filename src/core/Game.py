@@ -24,7 +24,7 @@ from src.utils.DebugConsole import DebugConsole
 from .GameResults import GameResult
 
 class Game:
-    def __init__(self):
+    def __init__(self, args=None):
         pygame.init()
         pygame.mixer.init()
         
@@ -59,6 +59,15 @@ class Game:
         self.player_group.add(self.player)
 
         self.console = DebugConsole(self)
+        
+        self.playtest_data = None
+        if args and len(args) >= 6 and args[1] == "--playtest":
+            self.playtest_data = {
+                "json_path": args[2],
+                "zone": args[3],
+                "x": float(args[4]),
+                "y": float(args[5])
+            }
 
     def _load_resources(self):
         icon = resource_manager.get_image("spr_logo")
@@ -71,6 +80,10 @@ class Game:
         if flee: flee.set_volume(0.4)
 
     def run(self):
+        if self.playtest_data:
+            self._start_new_game(self.playtest_data)
+            self.state = "GAMEPLAY"
+            
         while self.state != "QUIT":
             if self.state == "MAIN_MENU":
                 self._menu_loop()
@@ -133,7 +146,7 @@ class Game:
             pygame.display.flip()
             self.clock.tick(60)
 
-    def _start_new_game(self):
+    def _start_new_game(self, playtest_data=None):
         game_state.reset()
         self.game_over_sound_played = False
         self.death_screen_delay = DEATH_DELAY
@@ -148,14 +161,30 @@ class Game:
         self.player.facing = "down"
         self.player.image = self.player.animations["down"].images[0]
         
-        start_req = {
-            "json_path": resource_path("data/maps/forest.json"),
-            "map_matrix": WORLD_MAP_LEVEL,
-            "entry_zone": INITIAL_ZONE,
-            "player_pos": (600, 600),
-            "music_path": LEVEL_MUSIC.get("forest"),
-            "darkness": False
-        }
+        if playtest_data:
+            try:
+                zone_parts = playtest_data["zone"].split("_")
+                entry_zone_tuple = (int(zone_parts[0]), int(zone_parts[1]))
+            except:
+                entry_zone_tuple = INITIAL_ZONE
+                
+            start_req = {
+                "json_path": playtest_data["json_path"],
+                "map_matrix": WORLD_MAP_LEVEL,
+                "entry_zone": entry_zone_tuple,
+                "player_pos": (playtest_data["x"], playtest_data["y"]),
+                "music_path": LEVEL_MUSIC.get(os.path.splitext(os.path.basename(playtest_data["json_path"]))[0], LEVEL_MUSIC.get("forest")),
+                "darkness": False
+            }
+        else:
+            start_req = {
+                "json_path": resource_path("data/maps/forest.json"),
+                "map_matrix": WORLD_MAP_LEVEL,
+                "entry_zone": INITIAL_ZONE,
+                "player_pos": (600, 600),
+                "music_path": LEVEL_MUSIC.get("forest"),
+                "darkness": False
+            }
         self.level_manager.load_level_from_request(start_req, self.player)
 
     def _game_loop(self):

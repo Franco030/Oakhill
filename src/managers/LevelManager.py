@@ -76,9 +76,9 @@ class LevelManager:
             player_sprite.teleport(player_pos[0], player_pos[1])
 
         if music_path:
-            # music_path es un ID (ej: "bgm_forest"), play_music ya sabe manejarlo
             # music_path is an ID, play_music knows how to handle it
-            resource_manager.play_music(music_path, fade_ms=1000)
+            resource_manager.play_music(music_path, loops=0, fade_ms=1000)
+            pygame.mixer.music.set_endevent(MUSIC_END_EVENT)
             self.current_music_path = music_path
 
         self.current_zone = level_req["entry_zone"]
@@ -88,6 +88,11 @@ class LevelManager:
         print(f"{Colors.BRIGHT_CYAN}[LevelManager]{Colors.RESET} Level loaded at zone: {self.current_zone}")
 
     def on_music_ended(self):
+        if pygame.mixer.music.get_busy():
+            # Si hay música sonando, significa que este evento es un remanente
+            # de una canción anterior que fue detenida o cambiada manualmente.
+            return
+            
         self.silence_timer = random.randint(80000, 100000)
         self.is_in_silence = True
         self.ambience_timer = random.randint(15000, 30000)
